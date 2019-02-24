@@ -1,0 +1,57 @@
+{
+	"name": "framework/mvc",
+	"type": "library",
+	"description": "The MVC package",
+	"keywords": [
+		"app",
+		"application",
+		"mvc"
+	],
+	"homepage": "https://gitlab.com/the-framework/mvc",
+	"license": "proprietary",
+	"authors": [
+		{
+			"name": "Natan Felles",
+			"email": "natanfelles@gmail.com"
+		}
+	],
+	"require": {
+		"php": ">=7.3"
+	},
+	"require-dev": {
+		"ext-xdebug": "*",
+		"apigen/apigen": "dev-master#85290e8",
+		"friendsofphp/php-cs-fixer": "^2.14",
+		"localheinz/composer-normalize": "^1.1",
+		"phpmd/phpmd": "^2.6",
+		"phpstan/phpstan": "^0.11",
+		"phpunit/phpunit": "^7.5"
+	},
+	"autoload": {
+		"psr-4": {
+			"Framework\\MVC\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Tests\\MVC\\": "tests/"
+		}
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"scripts": {
+		"post-install-cmd": [
+			".hooks/init"
+		],
+		"post-update-cmd": [
+			"composer dump-autoload"
+		]
+	},
+	"support": {
+		"email": "natanfelles@gmail.com",
+		"issues": "https://gitlab.com/the-framework/packages/mvc/issues",
+		"wiki": "https://gitlab.com/the-framework/packages/mvc",
+		"source": "https://gitlab.com/the-framework/packages/mvc",
+		"docs": "https://the-framework.gitlab.io/packages/mvc/docs"
+	}
+}
