@@ -16,7 +16,10 @@
 		}
 	],
 	"require": {
-		"php": ">=7.3"
+		"php": ">=7.3",
+		"framework/database": "dev-master",
+		"framework/http": "dev-master",
+		"framework/routing": "dev-master"
 	},
 	"require-dev": {
 		"ext-xdebug": "*",
@@ -37,6 +40,12 @@
 			"Tests\\MVC\\": "tests/"
 		}
 	},
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://the-framework.gitlab.io/satis/"
+		}
+	],
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"scripts": {
