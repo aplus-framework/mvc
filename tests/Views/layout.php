@@ -1,0 +1,1 @@
+<div><?= $contents; ?></div>
