@@ -105,7 +105,7 @@ abstract class Model
 	/**
 	 * @param string $connection read or write
 	 *
-	 * @see $connections
+	 * @see Model::$connections
 	 *
 	 * @return Database
 	 */
