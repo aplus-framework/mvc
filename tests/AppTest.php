@@ -1,6 +1,7 @@
 <?php namespace Tests\MVC;
 
 use Framework\Autoload\Autoloader;
+use Framework\Autoload\Locator;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\MVC\App;
@@ -48,6 +49,7 @@ class AppTest extends TestCase
 	public function testServicesInstances()
 	{
 		$this->assertInstanceOf(Autoloader::class, $this->app->getAutoloader());
+		$this->assertInstanceOf(Locator::class, $this->app->getLocator());
 		//$this->assertInstanceOf(Request::class, $this->app->getRequest());
 		//$this->assertInstanceOf(Response::class, $this->app->getResponse());
 		$this->assertInstanceOf(Router::class, $this->app->getRouter());

@@ -1,6 +1,7 @@
 <?php namespace Framework\MVC;
 
 use Framework\Autoload\Autoloader;
+use Framework\Autoload\Locator;
 use Framework\Database\Database;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
@@ -76,6 +77,15 @@ class App
 				'database',
 				new Database($this->getConfig('database', $instance)),
 				$instance
+			);
+	}
+
+	public function getLocator() : Locator
+	{
+		return $this->getService('locator')
+			?? $this->setService(
+				'locator',
+				new Locator($this->getAutoloader())
 			);
 	}
 
