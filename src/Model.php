@@ -1,5 +1,7 @@
 <?php namespace Framework\MVC;
 
+use Framework\Database\Database;
+
 /**
  * Class Model.
  */
@@ -85,7 +87,7 @@ abstract class Model
 	protected function filterAllowedColumns(array $columns) : array
 	{
 		if (empty($this->allowedColumns)) {
-			throw new \RuntimeException(
+			throw new \LogicException(
 				'Allowed columns not defined for INSERT and UPDATE'
 			);
 		}
@@ -100,9 +102,22 @@ abstract class Model
 		return $columns;
 	}
 
+	/**
+	 * @param string $connection read or write
+	 *
+	 * @see $connections
+	 *
+	 * @return Database
+	 */
+	protected function getDatabase(string $connection) : Database
+	{
+		global $app;
+		return $app->getDatabase($this->connections[$connection]);
+	}
+
 	public function count() : int
 	{
-		return App::database($this->connections['read'])
+		return $this->getDatabase('read')
 			->select()
 			->expressions([
 				'count' => function () {
@@ -117,7 +132,8 @@ abstract class Model
 	public function paginate(int $page, int $per_page = 10) : array
 	{
 		$page = $page === 1 ? 0 : $page * $per_page - $per_page;
-		$data = App::database($this->connections['read'])->select()
+		$data = $this->getDatabase('read')
+			->select()
 			->from($this->getTable())
 			->limit($per_page, $page)
 			->run()
@@ -136,7 +152,8 @@ abstract class Model
 	public function find($id)
 	{
 		$this->checkId($id);
-		$data = App::database($this->connections['read'])->select()
+		$data = $this->getDatabase('read')
+			->select()
 			->from($this->getTable())
 			->whereEqual($this->primaryKey, $id)
 			->limit(1)
@@ -193,7 +210,7 @@ abstract class Model
 			$data[$this->datetimeColumns['update']] = $data[$this->datetimeColumns['update']]
 				?? $datetime;
 		}
-		$database = App::database($this->connections['write']);
+		$database = $this->getDatabase('write');
 		return $database->insert()->into($this->getTable())->set($data)->run()
 			? $this->find($database->insertId())
 			: false;
@@ -227,7 +244,7 @@ abstract class Model
 			$data[$this->datetimeColumns['update']] = $data[$this->datetimeColumns['update']]
 				?? $this->makeDatetime();
 		}
-		App::database($this->connections['write'])
+		$this->getDatabase('write')
 			->update()
 			->table($this->getTable())
 			->set($data)
@@ -249,7 +266,7 @@ abstract class Model
 	public function delete($id) : bool
 	{
 		$this->checkId($id);
-		return App::database($this->connections['write'])
+		return $this->getDatabase('write')
 			->delete()
 			->from($this->getTable())
 			->whereEqual($this->primaryKey, $id)
