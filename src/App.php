@@ -79,6 +79,23 @@ class App
 			?? $this->setService('response', new Response($this->getRequest()));
 	}
 
+	public function getView(string $instance = 'default') : View
+	{
+		$service = $this->getService('view', $instance);
+		if ($service) {
+			return $service;
+		}
+		$service = new View(null);
+		$config = $this->getConfig('view', $instance);
+		if (isset($config['base_path'])) {
+			$service->setBasePath($config['base_path']);
+		}
+		if (isset($config['extension'])) {
+			$service->setExtension($config['base_path']);
+		}
+		return $this->setService('view', $service, $instance);
+	}
+
 	public function run() : void
 	{
 		\ob_start();

@@ -3,6 +3,7 @@
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\MVC\App;
+use Framework\MVC\View;
 use Framework\Routing\Router;
 use PHPUnit\Framework\TestCase;
 
@@ -48,5 +49,6 @@ class AppTest extends TestCase
 		//$this->assertInstanceOf(Request::class, $this->app->getRequest());
 		//$this->assertInstanceOf(Response::class, $this->app->getResponse());
 		$this->assertInstanceOf(Router::class, $this->app->getRouter());
+		$this->assertInstanceOf(View::class, $this->app->getView());
 	}
 }
