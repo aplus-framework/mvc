@@ -7,7 +7,7 @@ class View
 	protected $basePath;
 	protected $extension;
 
-	public function __construct(?string $base_path, string $extension = '.php')
+	public function __construct(string $base_path = null, string $extension = '.php')
 	{
 		if ($base_path !== null) {
 			$this->setBasePath($base_path);

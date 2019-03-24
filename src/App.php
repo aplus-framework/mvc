@@ -1,5 +1,6 @@
 <?php namespace Framework\MVC;
 
+use Framework\Autoload\Autoloader;
 use Framework\Database\Database;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
@@ -51,6 +52,23 @@ class App
 		return $this->services[$name][$instance] = $service;
 	}
 
+	public function getAutoloader() : Autoloader
+	{
+		$service = $this->getService('autoloader');
+		if ($service) {
+			return $service;
+		}
+		$service = new Autoloader();
+		$config = $this->getConfig('autoloader');
+		if (isset($config['namespaces'])) {
+			$service->setNamespaces($config['namespaces']);
+		}
+		if (isset($config['classes'])) {
+			$service->setClasses($config['classes']);
+		}
+		return $this->setService('autoloader', $service);
+	}
+
 	public function getDatabase(string $instance = 'default') : Database
 	{
 		return $this->getService('database', $instance)
@@ -85,7 +103,7 @@ class App
 		if ($service) {
 			return $service;
 		}
-		$service = new View(null);
+		$service = new View();
 		$config = $this->getConfig('view', $instance);
 		if (isset($config['base_path'])) {
 			$service->setBasePath($config['base_path']);
@@ -100,6 +118,7 @@ class App
 	{
 		\ob_start();
 		$this->prepareConfigs();
+		$this->getAutoloader();
 		$this->prepareRoutes();
 		$response = $this->getRouter()->match(
 			$this->getRequest()->getMethod(),

@@ -17,6 +17,7 @@
 	],
 	"require": {
 		"php": ">=7.3",
+		"framework/autoload": "dev-master",
 		"framework/database": "dev-master",
 		"framework/http": "dev-master",
 		"framework/routing": "dev-master"
