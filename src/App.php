@@ -133,7 +133,7 @@ class App
 		require $file;
 		if ( ! isset($config) || ! \is_array($config)) {
 			throw new \LogicException(
-				"Configs file must have an \$config array var: {$file}"
+				"Configs file must have a config array variable: {$file}"
 			);
 		}
 		foreach ($config as $service => $instances) {
