@@ -119,7 +119,7 @@ class App
 			$service->setBasePath($config['base_path']);
 		}
 		if (isset($config['extension'])) {
-			$service->setExtension($config['base_path']);
+			$service->setExtension($config['extension']);
 		}
 		return $this->setService('view', $service, $instance);
 	}
