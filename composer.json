@@ -5,7 +5,15 @@
 	"keywords": [
 		"app",
 		"application",
-		"mvc"
+		"mvc",
+		"model",
+		"view",
+		"controller",
+		"entity",
+		"layout",
+		"pages",
+		"api",
+		"resource"
 	],
 	"homepage": "https://gitlab.com/the-framework/mvc",
 	"license": "proprietary",
@@ -18,6 +26,7 @@
 	"require": {
 		"php": ">=7.3",
 		"framework/autoload": "dev-master",
+		"framework/cache": "dev-master",
 		"framework/database": "dev-master",
 		"framework/http": "dev-master",
 		"framework/routing": "dev-master"
