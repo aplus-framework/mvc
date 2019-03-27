@@ -2,6 +2,7 @@
 
 use Framework\Autoload\Autoloader;
 use Framework\Autoload\Locator;
+use Framework\Cache\Cache;
 use Framework\Database\Database;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
@@ -68,6 +69,25 @@ class App
 			$service->setClasses($config['classes']);
 		}
 		return $this->setService('autoloader', $service);
+	}
+
+	public function getCache(string $instance = 'default') : Cache
+	{
+		$service = $this->getService('cache', $instance);
+		if ($service) {
+			return $service;
+		}
+		$config = $this->getConfig('cache', $instance);
+		if (\strpos($config['driver'], '\\') === false) {
+			$config['driver'] = \ucfirst($config['driver']);
+			$config['driver'] = "Framework\\Cache\\{$config['driver']}";
+		}
+		$service = new $config['driver'](
+			$config['configs'],
+			$config['prefix'],
+			$config['serializer']
+		);
+		return $this->setService('cache', $service, $instance);
 	}
 
 	public function getDatabase(string $instance = 'default') : Database
