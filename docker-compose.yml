@@ -1,0 +1,29 @@
+---
+version: "3"
+services:
+  package:
+    image: natanfelles/package
+    container_name: mvc-package
+    working_dir: /package
+    volumes:
+      - .:/package
+    depends_on:
+      - mariadb
+      - memcached
+      - redis
+  mariadb:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: framework-tests
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+    container_name: mvc-mariadb
+  memcached:
+    image: memcached:alpine
+    container_name: mvc-memcached
+  redis:
+    image: redis:alpine
+    container_name: mvc-redis
+
