@@ -150,7 +150,9 @@ abstract class Model
 
 	public function paginate(int $page, int $per_page = 10) : array
 	{
-		$page = $page === 1 ? 0 : $page * $per_page - $per_page;
+		$page = \abs($page);
+		$per_page = \abs($per_page);
+		$page = $page <= 1 ? null : $page * $per_page - $per_page;
 		$data = $this->getDatabase('read')
 			->select()
 			->from($this->getTable())
