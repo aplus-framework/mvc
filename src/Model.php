@@ -1,6 +1,7 @@
 <?php namespace Framework\MVC;
 
 use Framework\Database\Database;
+use Framework\Validation\Validation;
 
 /**
  * Class Model.
@@ -62,6 +63,20 @@ abstract class Model
 		'create' => 'createdAt',
 		'update' => 'updatedAt',
 	];
+	/**
+	 * @var Validation
+	 */
+	protected $validation;
+	/**
+	 * @var string
+	 */
+	protected $validationInstance = 'default';
+	/**
+	 * @see Validation::setRules
+	 *
+	 * @var array
+	 */
+	protected $validationRules = [];
 
 	protected function getTable() : string
 	{
@@ -75,9 +90,9 @@ abstract class Model
 		return $this->table = $class;
 	}
 
-	protected function checkId($id) : void
+	protected function checkPrimaryKey($primary_key) : void
 	{
-		if (empty($id)) {
+		if (empty($primary_key)) {
 			throw new \InvalidArgumentException(
 				'Primary Key can not be empty'
 			);
@@ -145,17 +160,17 @@ abstract class Model
 	}
 
 	/**
-	 * @param int|string $id
+	 * @param int|string $primary_key
 	 *
 	 * @return array|Entity|object|null
 	 */
-	public function find($id)
+	public function find($primary_key)
 	{
-		$this->checkId($id);
+		$this->checkPrimaryKey($primary_key);
 		$data = $this->getDatabase('read')
 			->select()
 			->from($this->getTable())
-			->whereEqual($this->primaryKey, $id)
+			->whereEqual($this->primaryKey, $primary_key)
 			->limit(1)
 			->run()
 			->fetchArray();
@@ -203,6 +218,10 @@ abstract class Model
 	public function create($data)
 	{
 		$data = $this->prepareData($data);
+		$validated = $this->getValidation()->setData($data)->run();
+		if ($validated === false) {
+			return false;
+		}
 		if ($this->useDatetime === true) {
 			$datetime = $this->makeDatetime();
 			$data[$this->datetimeColumns['create']] = $data[$this->datetimeColumns['create']]
@@ -231,15 +250,19 @@ abstract class Model
 	}
 
 	/**
-	 * @param int|string          $id
+	 * @param int|string          $primary_key
 	 * @param array|Entity|object $data
 	 *
 	 * @return array|Entity|false|object|null
 	 */
-	public function update($id, $data)
+	public function update($primary_key, $data)
 	{
-		$this->checkId($id);
+		$this->checkPrimaryKey($primary_key);
 		$data = $this->prepareData($data);
+		$validated = $this->getValidation()->setData($data)->runOnly();
+		if ($validated === false) {
+			return false;
+		}
 		if ($this->useDatetime === true) {
 			$data[$this->datetimeColumns['update']] = $data[$this->datetimeColumns['update']]
 				?? $this->makeDatetime();
@@ -248,52 +271,44 @@ abstract class Model
 			->update()
 			->table($this->getTable())
 			->set($data)
-			->whereEqual($this->primaryKey, $id)
+			->whereEqual($this->primaryKey, $primary_key)
 			->run();
-		return $this->find($id);
+		return $this->find($primary_key);
 	}
 
-	public function replace($id, $data)
+	public function replace($primary_key, $data)
 	{
 		// TODO
 	}
 
 	/**
-	 * @param int|string $id
+	 * @param int|string $primary_key
 	 *
 	 * @return bool
 	 */
-	public function delete($id) : bool
+	public function delete($primary_key) : bool
 	{
-		$this->checkId($id);
+		$this->checkPrimaryKey($primary_key);
 		return $this->getDatabase('write')
 			->delete()
 			->from($this->getTable())
-			->whereEqual($this->primaryKey, $id)
+			->whereEqual($this->primaryKey, $primary_key)
 			->run();
 	}
 
-	/**
-	 * Validates the input data according to all rules.
-	 *
-	 * @param array $data
-	 *
-	 * @return array An empty array on success or array with errors
-	 */
-	public function validate(array $data) : array
+	protected function getValidation() : Validation
 	{
-		// TODO
+		if ($this->validation) {
+			return $this->validation;
+		}
+		global $app;
+		return $this->validation = $app
+			->getValidation($this->validationInstance)
+			->setRules($this->validationRules);
 	}
 
-	/**
-	 * Validates rules mathing only input data fields.
-	 *
-	 * @param array $data
-	 *
-	 * @return array
-	 */
-	public function validateOnly(array $data) : array
+	public function getErrors() : array
 	{
-		// TODO
+		return $this->getValidation()->getErrors();
 	}
 }

@@ -7,6 +7,7 @@ use Framework\Database\Database;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Routing\Router;
+use Framework\Validation\Validation;
 
 class App
 {
@@ -125,6 +126,19 @@ class App
 	{
 		return $this->getService('response')
 			?? $this->setService('response', new Response($this->getRequest()));
+	}
+
+	public function getValidation(string $instance = 'default') : Validation
+	{
+		$service = $this->getService('validation', $instance);
+		if ($service) {
+			return $service;
+		}
+		$config = $this->getConfig('validation', $instance);
+		$service = isset($config['validators'])
+			? new Validation($config['validators'])
+			: new Validation();
+		return $this->setService('validation', $service, $instance);
 	}
 
 	public function getView(string $instance = 'default') : View

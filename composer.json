@@ -29,7 +29,8 @@
 		"framework/cache": "dev-master",
 		"framework/database": "dev-master",
 		"framework/http": "dev-master",
-		"framework/routing": "dev-master"
+		"framework/routing": "dev-master",
+		"framework/validation": "dev-master"
 	},
 	"require-dev": {
 		"ext-xdebug": "*",
