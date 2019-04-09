@@ -6,6 +6,7 @@ use Framework\Cache\Cache;
 use Framework\Database\Database;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
+use Framework\Language\Language;
 use Framework\Routing\Router;
 use Framework\Validation\Validation;
 
@@ -101,6 +102,36 @@ class App
 			);
 	}
 
+	public function getLanguage() : Language
+	{
+		$service = $this->getService('language');
+		if ($service) {
+			return $service;
+		}
+		$config = $this->getConfig('language');
+		$service = new Language($config['default'] ?? 'en');
+		if (isset($config['supported'])) {
+			$service->setSupportedLocales($config['supported']);
+		}
+		if (isset($config['fallback_level'])) {
+			$service->setFallbackLevel($config['fallback_level']);
+		}
+		if (isset($config['directories'])) {
+			$service->setDirectories($config['directories']);
+		} else {
+			foreach ($this->getAutoloader()->getNamespaces() as $directory) {
+				$directory = "{$directory}Languages";
+				if (\is_dir($directory)) {
+					$directories[] = $directory;
+				}
+			}
+			if (isset($directories)) {
+				$service->setDirectories($directories);
+			}
+		}
+		return $this->setService('language', $service);
+	}
+
 	public function getLocator() : Locator
 	{
 		return $this->getService('locator')
@@ -135,10 +166,11 @@ class App
 			return $service;
 		}
 		$config = $this->getConfig('validation', $instance);
-		$service = isset($config['validators'])
-			? new Validation($config['validators'])
-			: new Validation();
-		return $this->setService('validation', $service, $instance);
+		return $this->setService(
+			'validation',
+			new Validation($config['validators'] ?? null, $this->getLanguage()),
+			$instance
+		);
 	}
 
 	public function getView(string $instance = 'default') : View

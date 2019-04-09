@@ -29,6 +29,7 @@
 		"framework/cache": "dev-master",
 		"framework/database": "dev-master",
 		"framework/http": "dev-master",
+		"framework/language": "dev-master",
 		"framework/routing": "dev-master",
 		"framework/validation": "dev-master"
 	},

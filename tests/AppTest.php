@@ -4,6 +4,7 @@ use Framework\Autoload\Autoloader;
 use Framework\Autoload\Locator;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
+use Framework\Language\Language;
 use Framework\MVC\App;
 use Framework\MVC\View;
 use Framework\Routing\Router;
@@ -50,6 +51,7 @@ class AppTest extends TestCase
 	public function testServicesInstances()
 	{
 		$this->assertInstanceOf(Autoloader::class, $this->app->getAutoloader());
+		$this->assertInstanceOf(Language::class, $this->app->getLanguage());
 		$this->assertInstanceOf(Locator::class, $this->app->getLocator());
 		//$this->assertInstanceOf(Request::class, $this->app->getRequest());
 		//$this->assertInstanceOf(Response::class, $this->app->getResponse());
