@@ -224,8 +224,7 @@ abstract class Model
 	public function create($data)
 	{
 		$data = $this->prepareData($data);
-		$validated = $this->getValidation()->setData($data)->run();
-		if ($validated === false) {
+		if ($this->getValidation()->validate($data) === false) {
 			return false;
 		}
 		if ($this->useDatetime === true) {
@@ -265,8 +264,7 @@ abstract class Model
 	{
 		$this->checkPrimaryKey($primary_key);
 		$data = $this->prepareData($data);
-		$validated = $this->getValidation()->setData($data)->runOnly();
-		if ($validated === false) {
+		if ($this->getValidation()->validateOnly($data) === false) {
 			return false;
 		}
 		if ($this->useDatetime === true) {
