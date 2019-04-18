@@ -2,6 +2,7 @@
 
 use Framework\Autoload\Autoloader;
 use Framework\Autoload\Locator;
+use Framework\Database\Database;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Language\Language;
@@ -13,18 +14,14 @@ use PHPUnit\Framework\TestCase;
 
 class AppTest extends TestCase
 {
-	/**
-	 * @var App
-	 */
-	protected $app;
-
 	public function setup()
 	{
-		$this->app = new App([
-			'database' => [
-				'default' => [
-				],
-			],
+		App::setConfig('database', [
+			'host' => \getenv('DB_HOST'),
+			'port' => \getenv('DB_PORT'),
+			'username' => \getenv('DB_USERNAME'),
+			'password' => \getenv('DB_PASSWORD'),
+			'schema' => \getenv('DB_SCHEMA'),
 		]);
 	}
 
@@ -33,30 +30,42 @@ class AppTest extends TestCase
 		$this->assertEquals([
 			'database' => [
 				'default' => [
+					'host' => \getenv('DB_HOST'),
+					'port' => \getenv('DB_PORT'),
+					'username' => \getenv('DB_USERNAME'),
+					'password' => \getenv('DB_PASSWORD'),
+					'schema' => \getenv('DB_SCHEMA'),
 				],
 			],
-		], $this->app->getConfigs());
-		$this->assertEquals([], $this->app->getConfig('database'));
-		$this->assertNull($this->app->getConfig('database', 'other'));
-		$this->app->setConfig('foo', ['bar', 'baz']);
-		$this->assertEquals(['bar', 'baz'], $this->app->getConfig('foo'));
-		$this->app->setConfig('foo', ['replaced']);
-		$this->assertEquals(['replaced'], $this->app->getConfig('foo'));
-		$this->app->addConfig('foo', ['added']);
-		$this->assertEquals(['replaced', 'added'], $this->app->getConfig('foo'));
-		$this->app->addConfig('database', ['password' => 'foo'], 'other');
-		$this->assertEquals(['password' => 'foo'], $this->app->getConfig('database', 'other'));
+		], App::getConfigs());
+		$this->assertEquals([
+			'host' => \getenv('DB_HOST'),
+			'port' => \getenv('DB_PORT'),
+			'username' => \getenv('DB_USERNAME'),
+			'password' => \getenv('DB_PASSWORD'),
+			'schema' => \getenv('DB_SCHEMA'),
+		], App::getConfig('database'));
+		$this->assertNull(App::getConfig('database', 'other'));
+		App::setConfig('foo', ['bar', 'baz']);
+		$this->assertEquals(['bar', 'baz'], App::getConfig('foo'));
+		App::setConfig('foo', ['replaced']);
+		$this->assertEquals(['replaced'], App::getConfig('foo'));
+		App::addConfig('foo', ['added']);
+		$this->assertEquals(['replaced', 'added'], App::getConfig('foo'));
+		App::addConfig('database', ['password' => 'foo'], 'other');
+		$this->assertEquals(['password' => 'foo'], App::getConfig('database', 'other'));
 	}
 
 	public function testServicesInstances()
 	{
-		$this->assertInstanceOf(Autoloader::class, $this->app->getAutoloader());
-		$this->assertInstanceOf(Language::class, $this->app->getLanguage());
-		$this->assertInstanceOf(Locator::class, $this->app->getLocator());
-		//$this->assertInstanceOf(Request::class, $this->app->getRequest());
-		//$this->assertInstanceOf(Response::class, $this->app->getResponse());
-		$this->assertInstanceOf(Router::class, $this->app->getRouter());
-		$this->assertInstanceOf(Validation::class, $this->app->getValidation());
-		$this->assertInstanceOf(View::class, $this->app->getView());
+		$this->assertInstanceOf(Autoloader::class, App::getAutoloader());
+		$this->assertInstanceOf(Database::class, App::getDatabase());
+		$this->assertInstanceOf(Language::class, App::getLanguage());
+		$this->assertInstanceOf(Locator::class, App::getLocator());
+		//$this->assertInstanceOf(Request::class, App::getRequest());
+		//$this->assertInstanceOf(Response::class, App::getResponse());
+		$this->assertInstanceOf(Router::class, App::getRouter());
+		$this->assertInstanceOf(Validation::class, App::getValidation());
+		$this->assertInstanceOf(View::class, App::getView());
 	}
 }

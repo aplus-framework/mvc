@@ -12,74 +12,76 @@ use Framework\Validation\Validation;
 
 class App
 {
-	protected $configs = [];
-	protected $services = [];
+	protected static $configs = [];
+	protected static $services = [];
+	protected static $isRunning = false;
 
-	public function __construct(array $configs)
+	public static function getConfigs() : array
 	{
-		$this->configs = $configs;
+		return static::$configs;
 	}
 
-	public function getConfigs() : array
+	public static function getConfig(string $name, string $instance = 'default') : ?array
 	{
-		return $this->configs;
+		return static::$configs[$name][$instance] ?? null;
 	}
 
-	public function getConfig(string $name, string $instance = 'default') : ?array
-	{
-		return $this->configs[$name][$instance] ?? null;
+	public static function setConfig(
+		string $name,
+		array $config,
+		string $instance = 'default'
+	) : array {
+		return static::$configs[$name][$instance] = $config;
 	}
 
-	public function setConfig(string $name, array $config, string $instance = 'default') : array
-	{
-		return $this->configs[$name][$instance] = $config;
-	}
-
-	public function addConfig(string $name, array $config, string $instance = 'default') : array
-	{
-		if (isset($this->configs[$name][$instance])) {
-			return $this->configs[$name][$instance] = \array_merge_recursive(
-				$this->configs[$name][$instance],
+	public static function addConfig(
+		string $name,
+		array $config,
+		string $instance = 'default'
+	) : array {
+		if (isset(static::$configs[$name][$instance])) {
+			return static::$configs[$name][$instance] = \array_merge_recursive(
+				static::$configs[$name][$instance],
 				$config
 			);
 		}
-		return $this->configs[$name][$instance] = $config;
+		return static::$configs[$name][$instance] = $config;
 	}
 
-	public function getService(string $name, string $instance = 'default')
+	public static function getService(string $name, string $instance = 'default')
 	{
-		return $this->services[$name][$instance] ?? null;
+		return static::$services[$name][$instance] ?? null;
 	}
 
-	public function setService(string $name, $service, string $instance = 'default')
+	public static function setService(string $name, $service, string $instance = 'default')
 	{
-		return $this->services[$name][$instance] = $service;
+		return static::$services[$name][$instance] = $service;
 	}
 
-	public function getAutoloader() : Autoloader
+	public static function getAutoloader() : Autoloader
 	{
-		$service = $this->getService('autoloader');
+		$service = static::getService('autoloader');
 		if ($service) {
 			return $service;
 		}
 		$service = new Autoloader();
-		$config = $this->getConfig('autoloader');
+		$config = static::getConfig('autoloader');
 		if (isset($config['namespaces'])) {
 			$service->setNamespaces($config['namespaces']);
 		}
 		if (isset($config['classes'])) {
 			$service->setClasses($config['classes']);
 		}
-		return $this->setService('autoloader', $service);
+		return static::setService('autoloader', $service);
 	}
 
-	public function getCache(string $instance = 'default') : Cache
+	public static function getCache(string $instance = 'default') : Cache
 	{
-		$service = $this->getService('cache', $instance);
+		$service = static::getService('cache', $instance);
 		if ($service) {
 			return $service;
 		}
-		$config = $this->getConfig('cache', $instance);
+		$config = static::getConfig('cache', $instance);
 		if (\strpos($config['driver'], '\\') === false) {
 			$config['driver'] = \ucfirst($config['driver']);
 			$config['driver'] = "Framework\\Cache\\{$config['driver']}";
@@ -89,26 +91,26 @@ class App
 			$config['prefix'],
 			$config['serializer']
 		);
-		return $this->setService('cache', $service, $instance);
+		return static::setService('cache', $service, $instance);
 	}
 
-	public function getDatabase(string $instance = 'default') : Database
+	public static function getDatabase(string $instance = 'default') : Database
 	{
-		return $this->getService('database', $instance)
-			?? $this->setService(
+		return static::getService('database', $instance)
+			?? static::setService(
 				'database',
-				new Database($this->getConfig('database', $instance)),
+				new Database(static::getConfig('database', $instance)),
 				$instance
 			);
 	}
 
-	public function getLanguage() : Language
+	public static function getLanguage() : Language
 	{
-		$service = $this->getService('language');
+		$service = static::getService('language');
 		if ($service) {
 			return $service;
 		}
-		$config = $this->getConfig('language');
+		$config = static::getConfig('language');
 		$service = new Language($config['default'] ?? 'en');
 		if (isset($config['supported'])) {
 			$service->setSupportedLocales($config['supported']);
@@ -119,7 +121,7 @@ class App
 		if (isset($config['directories'])) {
 			$service->setDirectories($config['directories']);
 		} else {
-			foreach ($this->getAutoloader()->getNamespaces() as $directory) {
+			foreach (static::getAutoloader()->getNamespaces() as $directory) {
 				$directory = "{$directory}Languages";
 				if (\is_dir($directory)) {
 					$directories[] = $directory;
@@ -129,95 +131,99 @@ class App
 				$service->setDirectories($directories);
 			}
 		}
-		return $this->setService('language', $service);
+		return static::setService('language', $service);
 	}
 
-	public function getLocator() : Locator
+	public static function getLocator() : Locator
 	{
-		return $this->getService('locator')
-			?? $this->setService(
+		return static::getService('locator')
+			?? static::setService(
 				'locator',
-				new Locator($this->getAutoloader())
+				new Locator(static::getAutoloader())
 			);
 	}
 
-	public function getRouter() : Router
+	public static function getRouter() : Router
 	{
-		return $this->getService('router')
-			?? $this->setService('router', new Router());
+		return static::getService('router')
+			?? static::setService('router', new Router());
 	}
 
-	public function getRequest() : Request
+	public static function getRequest() : Request
 	{
-		return $this->getService('request')
-			?? $this->setService('request', new Request());
+		return static::getService('request')
+			?? static::setService('request', new Request());
 	}
 
-	public function getResponse() : Response
+	public static function getResponse() : Response
 	{
-		return $this->getService('response')
-			?? $this->setService('response', new Response($this->getRequest()));
+		return static::getService('response')
+			?? static::setService('response', new Response(static::getRequest()));
 	}
 
-	public function getValidation(string $instance = 'default') : Validation
+	public static function getValidation(string $instance = 'default') : Validation
 	{
-		$service = $this->getService('validation', $instance);
+		$service = static::getService('validation', $instance);
 		if ($service) {
 			return $service;
 		}
-		$config = $this->getConfig('validation', $instance);
-		return $this->setService(
+		$config = static::getConfig('validation', $instance);
+		return static::setService(
 			'validation',
-			new Validation($config['validators'] ?? null, $this->getLanguage()),
+			new Validation($config['validators'] ?? null, static::getLanguage()),
 			$instance
 		);
 	}
 
-	public function getView(string $instance = 'default') : View
+	public static function getView(string $instance = 'default') : View
 	{
-		$service = $this->getService('view', $instance);
+		$service = static::getService('view', $instance);
 		if ($service) {
 			return $service;
 		}
 		$service = new View();
-		$config = $this->getConfig('view', $instance);
+		$config = static::getConfig('view', $instance);
 		if (isset($config['base_path'])) {
 			$service->setBasePath($config['base_path']);
 		}
 		if (isset($config['extension'])) {
 			$service->setExtension($config['extension']);
 		}
-		return $this->setService('view', $service, $instance);
+		return static::setService('view', $service, $instance);
 	}
 
-	public function run() : void
+	public static function run() : void
 	{
+		if (static::$isRunning) {
+			throw new \LogicException('App already is running');
+		}
+		static::$isRunning = true;
 		\ob_start();
-		$this->prepareConfigs();
-		$this->getAutoloader();
-		$this->prepareRoutes();
-		$response = $this->getRouter()->match(
-			$this->getRequest()->getMethod(),
-			$this->getRequest()->getURL()
-		)->run($this->getRequest(), $this->getResponse());
-		$response = $this->makeResponseBodyPart($response);
-		$this->getResponse()->appendBody($response)->send();
+		static::prepareConfigs();
+		static::getAutoloader();
+		static::prepareRoutes();
+		$response = static::getRouter()->match(
+			static::getRequest()->getMethod(),
+			static::getRequest()->getURL()
+		)->run(static::getRequest(), static::getResponse());
+		$response = static::makeResponseBodyPart($response);
+		static::getResponse()->appendBody($response)->send();
 	}
 
-	protected function prepareConfigs(string $instance = 'default') : array
+	protected static function prepareConfigs(string $instance = 'default') : array
 	{
-		$files = $this->getConfig('configs', $instance);
+		$files = static::getConfig('configs', $instance);
 		if ( ! $files) {
 			return [];
 		}
 		$files = \array_unique($files);
 		foreach ($files as $file) {
-			$this->mergeFileConfigs($file);
+			static::mergeFileConfigs($file);
 		}
 		return $files;
 	}
 
-	protected function mergeFileConfigs(string $file) : array
+	protected static function mergeFileConfigs(string $file) : array
 	{
 		if ( ! \is_file($file)) {
 			throw new \RuntimeException(
@@ -243,20 +249,20 @@ class App
 						"Config instance name '{$instance}' of service name '{$service}' must be an array on file '{$file}'"
 					);
 				}
-				$this->addConfig($service, $config, $instance);
+				static::addConfig($service, $config, $instance);
 			}
 		}
-		return $this->getConfigs();
+		return static::getConfigs();
 	}
 
-	protected function prepareRoutes(string $instance = 'default') : array
+	protected static function prepareRoutes(string $instance = 'default') : array
 	{
-		$files = $this->getConfig('routes', $instance);
+		$files = static::getConfig('routes', $instance);
 		if ( ! $files) {
 			return [];
 		}
 		$files = \array_unique($files);
-		$router = $this->getRouter();
+		$router = static::getRouter();
 		foreach ($files as $file) {
 			require $file;
 		}
@@ -270,7 +276,7 @@ class App
 	 *
 	 * @return string
 	 */
-	protected function makeResponseBodyPart($response) : string
+	protected static function makeResponseBodyPart($response) : string
 	{
 		if ($response === null || $response instanceof Response) {
 			return '';
@@ -285,7 +291,7 @@ class App
 		if ($type === 'object') {
 			$type = \get_class($response);
 		}
-		$action = $this->getRouter()->getMatchedRoute()->getAction();
+		$action = static::getRouter()->getMatchedRoute()->getAction();
 		if ($action instanceof \Closure) {
 			$action = '{closure}';
 		}

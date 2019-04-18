@@ -130,8 +130,7 @@ abstract class Model
 	 */
 	protected function getDatabase(string $connection) : Database
 	{
-		global $app;
-		return $app->getDatabase($this->connections[$connection]);
+		return App::getDatabase($this->connections[$connection]);
 	}
 
 	public function count() : int
@@ -305,9 +304,7 @@ abstract class Model
 		if ($this->validation) {
 			return $this->validation;
 		}
-		global $app;
-		return $this->validation = $app
-			->getValidation($this->validationInstance)
+		return $this->validation = App::getValidation($this->validationInstance)
 			->setLabels($this->validationLabels)
 			->setRules($this->validationRules);
 	}

@@ -23,8 +23,8 @@ abstract class Controller extends RouteAction
 
 	protected function validate(array $rules, array $data) : array
 	{
-		return App::validation()->run($rules, $data)
+		return App::getValidation()->setRules($rules)->validate($data)
 			? []
-			: App::validation()->errors();
+			: App::getValidation()->getErrors();
 	}
 }
