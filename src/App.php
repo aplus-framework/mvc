@@ -8,6 +8,7 @@ use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Language\Language;
 use Framework\Routing\Router;
+use Framework\Session\Session;
 use Framework\Validation\Validation;
 
 class App
@@ -159,6 +160,18 @@ class App
 	{
 		return static::getService('response')
 			?? static::setService('response', new Response(static::getRequest()));
+	}
+
+	public static function getSession() : Session
+	{
+		$service = static::getService('session');
+		if ($service) {
+			return $service;
+		}
+		$config = static::getConfig('session');
+		$service = new Session($config['options'] ?? [], $config['save_handler'] ?? null);
+		$service->start();
+		return static::setService('session', $service);
 	}
 
 	public static function getValidation(string $instance = 'default') : Validation

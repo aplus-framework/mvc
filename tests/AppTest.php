@@ -9,6 +9,7 @@ use Framework\Language\Language;
 use Framework\MVC\App;
 use Framework\MVC\View;
 use Framework\Routing\Router;
+use Framework\Session\Session;
 use Framework\Validation\Validation;
 use PHPUnit\Framework\TestCase;
 
@@ -56,6 +57,9 @@ class AppTest extends TestCase
 		$this->assertEquals(['password' => 'foo'], App::getConfig('database', 'other'));
 	}
 
+	/**
+	 * @runInSeparateProcess
+	 */
 	public function testServicesInstances()
 	{
 		$this->assertInstanceOf(Autoloader::class, App::getAutoloader());
@@ -65,6 +69,7 @@ class AppTest extends TestCase
 		//$this->assertInstanceOf(Request::class, App::getRequest());
 		//$this->assertInstanceOf(Response::class, App::getResponse());
 		$this->assertInstanceOf(Router::class, App::getRouter());
+		$this->assertInstanceOf(Session::class, App::getSession());
 		$this->assertInstanceOf(Validation::class, App::getValidation());
 		$this->assertInstanceOf(View::class, App::getView());
 	}
