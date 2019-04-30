@@ -1,5 +1,6 @@
 <?php namespace Tests\MVC;
 
+use Framework\HTTP\Response;
 use Framework\MVC\ResourceController;
 use PHPUnit\Framework\TestCase;
 
@@ -28,8 +29,16 @@ class ResourceControllerTest extends TestCase
 		$this->assertIsString($this->resourceController->replace('25'));
 	}
 
-	public function testHasResourceMethods()
+	public function testResourceMethods()
 	{
-		$this->assertTrue(\method_exists($this->resourceController, 'respondOK'));
+		$this->assertInstanceOf(Response::class, $this->resourceController->respondOK([]));
+		$this->assertInstanceOf(Response::class, $this->resourceController->respondOK());
+		$this->assertInstanceOf(Response::class, $this->resourceController->respondNotModified());
+		$this->assertInstanceOf(Response::class, $this->resourceController->respondNotFound());
+		$this->assertInstanceOf(Response::class, $this->resourceController->respondNoContent());
+		$this->assertInstanceOf(Response::class, $this->resourceController->respondForbidden());
+		$this->assertInstanceOf(Response::class, $this->resourceController->respondCreated());
+		$this->assertInstanceOf(Response::class, $this->resourceController->respondBadRequest());
+		$this->assertInstanceOf(Response::class, $this->resourceController->respondAccepted());
 	}
 }

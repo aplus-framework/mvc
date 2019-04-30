@@ -45,4 +45,44 @@ class ResourceControllerMock extends ResourceController
 	{
 		return $id;
 	}
+
+	public function respondAccepted($data = null) : Response
+	{
+		return parent::respondAccepted($data);
+	}
+
+	public function respondBadRequest($data = null) : Response
+	{
+		return parent::respondBadRequest($data);
+	}
+
+	public function respondCreated($data = null) : Response
+	{
+		return parent::respondCreated($data);
+	}
+
+	public function respondForbidden($data = null) : Response
+	{
+		return parent::respondForbidden($data);
+	}
+
+	public function respondNoContent($data = null) : Response
+	{
+		return parent::respondNoContent($data);
+	}
+
+	public function respondNotFound($data = null) : Response
+	{
+		return parent::respondNotFound($data);
+	}
+
+	public function respondNotModified($data = null) : Response
+	{
+		return parent::respondNotModified($data);
+	}
+
+	public function respondOK($data = null) : Response
+	{
+		return parent::respondOK($data);
+	}
 }
