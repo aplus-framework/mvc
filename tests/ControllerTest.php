@@ -19,4 +19,14 @@ class ControllerTest extends TestCase
 	{
 		$this->assertInstanceOf(Controller::class, $this->controller);
 	}
+
+	public function testValidate()
+	{
+		$rules = [
+			'foo' => 'minLength:5',
+		];
+		$this->assertArrayHasKey('foo', $this->controller->validate($rules, []));
+		$this->assertArrayHasKey('foo', $this->controller->validate($rules, ['foo' => '1234']));
+		$this->assertEquals([], $this->controller->validate($rules, ['foo' => '12345']));
+	}
 }

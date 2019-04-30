@@ -68,10 +68,6 @@ abstract class Model
 	 */
 	protected $validation;
 	/**
-	 * @var string
-	 */
-	protected $validationInstance = 'default';
-	/**
 	 * @var array
 	 */
 	protected $validationLabels = [];
@@ -304,7 +300,7 @@ abstract class Model
 		if ($this->validation) {
 			return $this->validation;
 		}
-		return $this->validation = App::getValidation($this->validationInstance)
+		return $this->validation = App::getValidation('Model:' . \get_class($this))
 			->setLabels($this->validationLabels)
 			->setRules($this->validationRules);
 	}
