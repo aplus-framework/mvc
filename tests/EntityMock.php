@@ -5,7 +5,10 @@ use Framework\MVC\Entity;
 class EntityMock extends Entity
 {
 	protected $id;
+	protected $data;
 	protected $datetime;
+	protected $createdAt;
+	protected $updatedAt;
 
 	public function setId($id)
 	{

@@ -138,7 +138,7 @@ abstract class Model
 		return $this->getDatabase('read')
 			->select()
 			->expressions([
-				'count' => function () {
+				'count' => static function () {
 					return 'COUNT(*)';
 				},
 			])
