@@ -116,6 +116,13 @@ class App
 		if (isset($config['supported'])) {
 			$service->setSupportedLocales($config['supported']);
 		}
+		if (isset($config['negotiate']) && $config['negotiate'] === true) {
+			$service->setCurrentLocale(
+				static::getRequest()->negotiateLanguage(
+					$service->getSupportedLocales()
+				)
+			);
+		}
 		if (isset($config['fallback_level'])) {
 			$service->setFallbackLevel($config['fallback_level']);
 		}
