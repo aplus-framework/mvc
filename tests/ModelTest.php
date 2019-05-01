@@ -104,6 +104,23 @@ class ModelTest extends TestCase
 		$this->assertNotNull($row->updatedAt);
 	}
 
+	public function testReplace()
+	{
+		$row = $this->model->replace(1, new EntityMock(['data' => 'x']));
+		$this->assertEquals('x', $row->data);
+		$this->assertNull($row->createdAt);
+		$this->assertNull($row->updatedAt);
+		$row = $this->model->replace(1, ['data' => 'x']);
+		$this->assertEquals('x', $row->data);
+		$this->assertNull($row->createdAt);
+		$this->assertNull($row->updatedAt);
+		$this->model->useDatetime = true;
+		$row = $this->model->replace(1, ['data' => 'y']);
+		$this->assertEquals('y', $row->data);
+		$this->assertNotNull($row->createdAt);
+		$this->assertNotNull($row->updatedAt);
+	}
+
 	public function testSave()
 	{
 		$this->model->allowedColumns = ['id', 'data'];
@@ -164,6 +181,9 @@ class ModelTest extends TestCase
 		$this->assertFalse($row);
 		$this->assertArrayHasKey('data', $this->model->getErrors());
 		$row = $this->model->update(1, ['data' => 'Value']);
+		$this->assertFalse($row);
+		$this->assertArrayHasKey('data', $this->model->getErrors());
+		$row = $this->model->replace(1, ['data' => 'Value']);
 		$this->assertFalse($row);
 		$this->assertArrayHasKey('data', $this->model->getErrors());
 	}

@@ -275,9 +275,33 @@ abstract class Model
 		return $this->find($primary_key);
 	}
 
+	/**
+	 * @param int|string          $primary_key
+	 * @param array|Entity|object $data
+	 *
+	 * @return array|Entity|false|object|null
+	 */
 	public function replace($primary_key, $data)
 	{
-		// TODO
+		$this->checkPrimaryKey($primary_key);
+		$data = $this->prepareData($data);
+		$data[$this->primaryKey] = $primary_key;
+		if ($this->getValidation()->validate($data) === false) {
+			return false;
+		}
+		if ($this->useDatetime === true) {
+			$datetime = $this->makeDatetime();
+			$data[$this->datetimeColumns['create']] = $data[$this->datetimeColumns['create']]
+				?? $datetime;
+			$data[$this->datetimeColumns['update']] = $data[$this->datetimeColumns['update']]
+				?? $datetime;
+		}
+		$this->getDatabase('write')
+			->replace()
+			->into($this->getTable())
+			->set($data)
+			->run();
+		return $this->find($primary_key);
 	}
 
 	/**
