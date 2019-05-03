@@ -9,7 +9,7 @@ trait Resource
 		if ($data !== null) {
 			$this->response->setJSON($data);
 		}
-		return $this->response->setStatusCode($code);
+		return $this->response->setStatusLine($code);
 	}
 
 	protected function respondOK($data = null) : Response
