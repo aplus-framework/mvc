@@ -2,6 +2,7 @@
 
 use Framework\Autoload\Autoloader;
 use Framework\Autoload\Locator;
+use Framework\CLI\Console;
 use Framework\Database\Database;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
@@ -63,6 +64,7 @@ class AppTest extends TestCase
 	public function testServicesInstances()
 	{
 		$this->assertInstanceOf(Autoloader::class, App::getAutoloader());
+		$this->assertInstanceOf(Console::class, App::getConsole());
 		$this->assertInstanceOf(Database::class, App::getDatabase());
 		$this->assertInstanceOf(Language::class, App::getLanguage());
 		$this->assertInstanceOf(Locator::class, App::getLocator());

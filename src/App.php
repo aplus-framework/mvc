@@ -3,6 +3,8 @@
 use Framework\Autoload\Autoloader;
 use Framework\Autoload\Locator;
 use Framework\Cache\Cache;
+use Framework\CLI\Command;
+use Framework\CLI\Console;
 use Framework\Database\Database;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
@@ -95,6 +97,29 @@ class App
 		return static::setService('cache', $service, $instance);
 	}
 
+	public static function getConsole() : Console
+	{
+		$service = static::getService('console');
+		if ($service) {
+			return $service;
+		}
+		$service = new Console(static::getLanguage());
+		$files = static::getLocator()->getFiles('Commands');
+		foreach ($files as $file) {
+			$className = static::getLocator()->getClassName($file);
+			if ($className === false) {
+				continue;
+			}
+			$class = new \ReflectionClass($className);
+			if ( ! $class->isInstantiable() || ! $class->isSubclassOf(Command::class)) {
+				continue;
+			}
+			$service->addCommand(new $className($service));
+			unset($class);
+		}
+		return static::setService('console', $service);
+	}
+
 	public static function getDatabase(string $instance = 'default') : Database
 	{
 		return static::getService('database', $instance)
@@ -116,7 +141,10 @@ class App
 		if (isset($config['supported'])) {
 			$service->setSupportedLocales($config['supported']);
 		}
-		if (isset($config['negotiate']) && $config['negotiate'] === true) {
+		if (isset($config['negotiate'])
+			&& $config['negotiate'] === true
+			&& ! static::isCLI()
+		) {
 			$service->setCurrentLocale(
 				static::getRequest()->negotiateLanguage(
 					$service->getSupportedLocales()
@@ -222,12 +250,22 @@ class App
 		static::prepareConfigs();
 		static::getAutoloader();
 		static::prepareRoutes();
+		if (static::isCLI()) {
+			static::getConsole()->run();
+			return;
+		}
 		$response = static::getRouter()->match(
 			static::getRequest()->getMethod(),
 			static::getRequest()->getURL()
 		)->run(static::getRequest(), static::getResponse());
 		$response = static::makeResponseBodyPart($response);
 		static::getResponse()->appendBody($response)->send();
+	}
+
+	protected static function isCLI() : bool
+	{
+		static $is_cli;
+		return $is_cli ?? $is_cli = (\PHP_SAPI === 'cli' || \defined('STDIN'));
 	}
 
 	protected static function prepareConfigs(string $instance = 'default') : array
