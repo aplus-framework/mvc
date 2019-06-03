@@ -41,8 +41,20 @@ class View
 		return $this->extension;
 	}
 
+	private function getNamespacedFilepath(string $view) : string
+	{
+		$path = App::getLocator()->getNamespacedFilepath($view, $this->getExtension());
+		if ($path) {
+			return $path;
+		}
+		throw new \InvalidArgumentException("Namespaced view path does not match a file: {$view} ");
+	}
+
 	protected function makePath(string $view) : string
 	{
+		if (isset($view[0]) && $view[0] === '\\') {
+			return $this->getNamespacedFilepath($view);
+		}
 		$view = $this->getBasePath() . $view . $this->getExtension();
 		$real = \realpath($view);
 		if ( ! $real || ! \is_file($real)) {

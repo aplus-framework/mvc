@@ -1,5 +1,6 @@
 <?php namespace Tests\MVC;
 
+use Framework\MVC\App;
 use Framework\MVC\View;
 use PHPUnit\Framework\TestCase;
 
@@ -26,6 +27,22 @@ class ViewTest extends TestCase
 			"<div>xxx</div>\n",
 			$this->view->render('layout', ['contents' => 'xxx'])
 		);
+	}
+
+	public function testRenderNamespacedView()
+	{
+		App::getAutoloader()->setNamespace('Tests\MVC', __DIR__);
+		$this->assertEquals(
+			"<h1>Block</h1>\n",
+			$this->view->render('\Tests\MVC\Views\include/block')
+		);
+		$this->assertEquals(
+			"<div>ns</div>\n",
+			$this->view->render('\Tests\MVC\Views\layout', ['contents' => 'ns'])
+		);
+		$this->expectException(\InvalidArgumentException::class);
+		$this->expectExceptionMessage('Namespaced view path does not match a file: \\Foo\\bar');
+		$this->view->render('\\Foo\\bar');
 	}
 
 	public function testFileNotFound()
