@@ -143,15 +143,31 @@ abstract class Model
 			->fetch()->count;
 	}
 
-	public function paginate(int $page, int $per_page = 10) : array
+	/**
+	 * @param int $page
+	 * @param int $per_page
+	 *
+	 * @see Model::paginate
+	 *
+	 * @return array
+	 */
+	protected function makePageLimitAndOffset(int $page, int $per_page = 10) : array
 	{
 		$page = \abs($page);
 		$per_page = \abs($per_page);
 		$page = $page <= 1 ? null : $page * $per_page - $per_page;
+		return [
+			$per_page,
+			$page,
+		];
+	}
+
+	public function paginate(int $page, int $per_page = 10) : array
+	{
 		$data = $this->getDatabase('read')
 			->select()
 			->from($this->getTable())
-			->limit($per_page, $page)
+			->limit(...$this->makePageLimitAndOffset($page, $per_page))
 			->run()
 			->fetchArrayAll();
 		foreach ($data as &$row) {
