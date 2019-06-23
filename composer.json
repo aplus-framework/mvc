@@ -31,6 +31,7 @@
 		"framework/database": "dev-master",
 		"framework/http": "dev-master",
 		"framework/language": "dev-master",
+		"framework/pagination": "dev-master",
 		"framework/routing": "dev-master",
 		"framework/session": "dev-master",
 		"framework/validation": "dev-master"

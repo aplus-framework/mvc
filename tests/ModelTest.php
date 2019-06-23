@@ -154,7 +154,7 @@ class ModelTest extends TestCase
 				'createdAt' => null,
 				'updatedAt' => null,
 			],
-		], $this->model->paginate(-1, 1));
+		], $this->model->paginate(-1, 1)->getItems());
 		$this->assertEquals([
 			[
 				'id' => 1,
@@ -162,7 +162,7 @@ class ModelTest extends TestCase
 				'createdAt' => null,
 				'updatedAt' => null,
 			],
-		], $this->model->paginate(1, 1));
+		], $this->model->paginate(1, 1)->getItems());
 		$this->assertEquals([
 			[
 				'id' => 2,
@@ -170,8 +170,8 @@ class ModelTest extends TestCase
 				'createdAt' => null,
 				'updatedAt' => null,
 			],
-		], $this->model->paginate(2, 1));
-		$this->assertEquals([], $this->model->paginate(3, 1));
+		], $this->model->paginate(2, 1)->getItems());
+		$this->assertEquals([], $this->model->paginate(3, 1)->getItems());
 	}
 
 	public function testValidation()

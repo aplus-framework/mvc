@@ -1,6 +1,7 @@
 <?php namespace Framework\MVC;
 
 use Framework\Database\Database;
+use Framework\Pagination\Pager;
 use Framework\Validation\Validation;
 
 /**
@@ -162,7 +163,7 @@ abstract class Model
 		];
 	}
 
-	public function paginate(int $page, int $per_page = 10) : array
+	public function paginate(int $page, int $per_page = 10) : Pager
 	{
 		$data = $this->getDatabase('read')
 			->select()
@@ -173,7 +174,7 @@ abstract class Model
 		foreach ($data as &$row) {
 			$row = $this->makeEntity($row);
 		}
-		return $data;
+		return new Pager($page, $per_page, $this->count(), $data, App::getLanguage());
 	}
 
 	/**
