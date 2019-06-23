@@ -119,20 +119,28 @@ abstract class Model
 	}
 
 	/**
-	 * @param string $connection read or write
-	 *
 	 * @see Model::$connections
 	 *
 	 * @return Database
 	 */
-	protected function getDatabase(string $connection) : Database
+	protected function getDatabaseForRead() : Database
 	{
-		return App::getDatabase($this->connections[$connection]);
+		return App::getDatabase($this->connections['read']);
+	}
+
+	/**
+	 * @see Model::$connections
+	 *
+	 * @return Database
+	 */
+	protected function getDatabaseForWrite() : Database
+	{
+		return App::getDatabase($this->connections['write']);
 	}
 
 	public function count() : int
 	{
-		return $this->getDatabase('read')
+		return $this->getDatabaseForRead()
 			->select()
 			->expressions([
 				'count' => static function () {
@@ -165,7 +173,7 @@ abstract class Model
 
 	public function paginate(int $page, int $per_page = 10) : Pager
 	{
-		$data = $this->getDatabase('read')
+		$data = $this->getDatabaseForRead()
 			->select()
 			->from($this->getTable())
 			->limit(...$this->makePageLimitAndOffset($page, $per_page))
@@ -185,7 +193,7 @@ abstract class Model
 	public function find($primary_key)
 	{
 		$this->checkPrimaryKey($primary_key);
-		$data = $this->getDatabase('read')
+		$data = $this->getDatabaseForRead()
 			->select()
 			->from($this->getTable())
 			->whereEqual($this->primaryKey, $primary_key)
@@ -246,7 +254,7 @@ abstract class Model
 			$data[$this->datetimeColumns['update']] = $data[$this->datetimeColumns['update']]
 				?? $datetime;
 		}
-		$database = $this->getDatabase('write');
+		$database = $this->getDatabaseForWrite();
 		return $database->insert()->into($this->getTable())->set($data)->run()
 			? $this->find($database->insertId())
 			: false;
@@ -283,7 +291,7 @@ abstract class Model
 			$data[$this->datetimeColumns['update']] = $data[$this->datetimeColumns['update']]
 				?? $this->makeDatetime();
 		}
-		$this->getDatabase('write')
+		$this->getDatabaseForWrite()
 			->update()
 			->table($this->getTable())
 			->set($data)
@@ -313,7 +321,7 @@ abstract class Model
 			$data[$this->datetimeColumns['update']] = $data[$this->datetimeColumns['update']]
 				?? $datetime;
 		}
-		$this->getDatabase('write')
+		$this->getDatabaseForWrite()
 			->replace()
 			->into($this->getTable())
 			->set($data)
@@ -329,7 +337,7 @@ abstract class Model
 	public function delete($primary_key) : bool
 	{
 		$this->checkPrimaryKey($primary_key);
-		return $this->getDatabase('write')
+		return $this->getDatabaseForWrite()
 			->delete()
 			->from($this->getTable())
 			->whereEqual($this->primaryKey, $primary_key)
