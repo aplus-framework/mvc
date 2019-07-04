@@ -21,4 +21,11 @@ class EntityTest extends TestCase
 	{
 		$this->assertInstanceOf(Entity::class, $this->entity);
 	}
+
+	public function testMagicSetAndGet()
+	{
+		$this->assertEquals(10, $this->entity->id);
+		$this->entity->id = '20';
+		$this->assertEquals(20, $this->entity->id);
+	}
 }

@@ -29,6 +29,7 @@
 		"framework/cache": "dev-master",
 		"framework/cli": "dev-master",
 		"framework/database": "dev-master",
+		"framework/email": "dev-master",
 		"framework/http": "dev-master",
 		"framework/language": "dev-master",
 		"framework/pagination": "dev-master",

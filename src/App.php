@@ -6,6 +6,8 @@ use Framework\Cache\Cache;
 use Framework\CLI\Command;
 use Framework\CLI\Console;
 use Framework\Database\Database;
+use Framework\Email\Mailer;
+use Framework\Email\SMTP;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Language\Language;
@@ -128,6 +130,23 @@ class App
 				new Database(static::getConfig('database', $instance)),
 				$instance
 			);
+	}
+
+	public static function getMailer(string $instance = 'default') : Mailer
+	{
+		$service = static::getService('mailer', $instance);
+		if ($service) {
+			return $service;
+		}
+		$config = static::getConfig('mailer', $instance);
+		if (empty($config['class'])) {
+			$config['class'] = SMTP::class;
+		}
+		return static::setService(
+			'mailer',
+			new $config['class']($config),
+			$instance
+		);
 	}
 
 	public static function getLanguage() : Language

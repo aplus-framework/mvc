@@ -4,6 +4,7 @@ use Framework\Autoload\Autoloader;
 use Framework\Autoload\Locator;
 use Framework\CLI\Console;
 use Framework\Database\Database;
+use Framework\Email\Mailer;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Language\Language;
@@ -68,6 +69,7 @@ class AppTest extends TestCase
 		$this->assertInstanceOf(Database::class, App::getDatabase());
 		$this->assertInstanceOf(Language::class, App::getLanguage());
 		$this->assertInstanceOf(Locator::class, App::getLocator());
+		$this->assertInstanceOf(Mailer::class, App::getMailer());
 		//$this->assertInstanceOf(Request::class, App::getRequest());
 		//$this->assertInstanceOf(Response::class, App::getResponse());
 		$this->assertInstanceOf(Router::class, App::getRouter());
