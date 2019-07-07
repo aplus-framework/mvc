@@ -123,8 +123,7 @@ class ModelTest extends TestCase
 
 	public function testSave()
 	{
-		$this->model->allowedColumns = ['id', 'data'];
-		$this->model->protectPrimaryKey = false;
+		$this->model->allowedColumns = ['data'];
 		$row = $this->model->save(['id' => 1, 'data' => 'x']);
 		$this->assertEquals(1, $row->id);
 		$row = $this->model->save(['data' => 'x']);

@@ -228,11 +228,21 @@ abstract class Model
 	 *
 	 * @return array
 	 */
-	protected function prepareData($data) : array
+	protected function makeArray($data) : array
 	{
-		$data = $data instanceof Entity
+		return $data instanceof Entity
 			? $data->toArray()
 			: (array) $data;
+	}
+
+	/**
+	 * @param array|Entity|object $data
+	 *
+	 * @return array
+	 */
+	protected function prepareData($data) : array
+	{
+		$data = $this->makeArray($data);
 		return $this->filterAllowedColumns($data);
 	}
 
@@ -267,9 +277,11 @@ abstract class Model
 	 */
 	public function save($data)
 	{
-		$data = $this->prepareData($data);
-		if (isset($data[$this->primaryKey])) {
-			return $this->update($data[$this->primaryKey], $data);
+		$data = $this->makeArray($data);
+		$primary_key = $data[$this->primaryKey] ?? null;
+		$data = $this->filterAllowedColumns($data);
+		if ($primary_key !== null) {
+			return $this->update($primary_key, $data);
 		}
 		return $this->create($data);
 	}
