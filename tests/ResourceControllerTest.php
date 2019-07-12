@@ -11,7 +11,7 @@ class ResourceControllerTest extends TestCase
 	 */
 	protected $resourceController;
 
-	protected function setUp()
+	protected function setUp() : void
 	{
 		$this->resourceController = new ResourceControllerMock();
 	}

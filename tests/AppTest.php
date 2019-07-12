@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 
 class AppTest extends TestCase
 {
-	public function setup()
+	public function setup() : void
 	{
 		App::setConfig('database', [
 			'host' => \getenv('DB_HOST'),

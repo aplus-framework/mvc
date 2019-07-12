@@ -9,10 +9,16 @@ class ResourceControllerMock extends ResourceController
 	public function __construct()
 	{
 		$request = new class() extends Request {
-			public function __construct(string $host = null)
+			protected function filterInput(int $type) : array
 			{
-				$this->input['SERVER']['HTTP_HOST'] = 'localhost';
-				parent::__construct($host);
+				if ($type === \INPUT_SERVER) {
+					return [
+						'HTTP_HOST' => 'localhost',
+						'REQUEST_METHOD' => 'GET',
+						'SERVER_PROTOCOL' => 'HTTP/1.1',
+					];
+				}
+				return [];
 			}
 		};
 		parent::__construct($request, new Response($request));

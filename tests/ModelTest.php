@@ -11,7 +11,7 @@ class ModelTest extends TestCase
 	 */
 	protected $model;
 
-	protected function setUp()
+	protected function setUp() : void
 	{
 		App::setConfig('database', [
 			'host' => \getenv('DB_HOST'),
@@ -32,7 +32,7 @@ class ModelTest extends TestCase
 		$this->model = new ModelMock();
 	}
 
-	protected function tearDown()
+	protected function tearDown() : void
 	{
 		App::getDatabase()->dropTable()->ifExists()->table('ModelMock')->run();
 	}

@@ -10,7 +10,7 @@ class EntityTest extends TestCase
 	 */
 	protected $entity;
 
-	protected function setUp()
+	protected function setUp() : void
 	{
 		$this->entity = new EntityMock([
 			'id' => '10',

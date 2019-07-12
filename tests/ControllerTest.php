@@ -10,7 +10,7 @@ class ControllerTest extends TestCase
 	 */
 	protected $controller;
 
-	protected function setUp()
+	protected function setUp() : void
 	{
 		$this->controller = new ControllerMock();
 	}

@@ -12,7 +12,7 @@ class ViewTest extends TestCase
 	protected $view;
 	protected $basePath = __DIR__ . '/Views/';
 
-	protected function setUp()
+	protected function setUp() : void
 	{
 		$this->view = new View($this->basePath);
 	}
