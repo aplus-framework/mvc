@@ -1,4 +1,7 @@
-# Framework MVC Package
+# Framework MVC Library
 
-[![Build](https://gitlab.com/the-framework/packages/mvc/badges/master/build.svg)](https://gitlab.com/the-framework/packages/mvc/-/jobs)
-[![Coverage](https://gitlab.com/the-framework/packages/mvc/badges/master/coverage.svg?job=test:php7.3)](https://the-framework.gitlab.io/packages/mvc/coverage)
+- [Homepage](https://the-framework.gitlab.io/libraries/mvc.html)
+- [API Documentation](https://the-framework.gitlab.io/libraries/mvc/docs/)
+
+[![Build](https://gitlab.com/the-framework/libraries/mvc/badges/master/build.svg)](https://gitlab.com/the-framework/libraries/mvc/-/jobs)
+[![Coverage](https://gitlab.com/the-framework/libraries/mvc/badges/master/coverage.svg?job=test:php7.3)](https://the-framework.gitlab.io/libraries/mvc/coverage/)

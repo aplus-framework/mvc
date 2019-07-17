@@ -1,7 +1,7 @@
 {
 	"name": "framework/mvc",
 	"type": "library",
-	"description": "The MVC package",
+	"description": "The Framework MVC Library",
 	"keywords": [
 		"app",
 		"application",
@@ -15,7 +15,7 @@
 		"api",
 		"resource"
 	],
-	"homepage": "https://gitlab.com/the-framework/mvc",
+	"homepage": "https://the-framework.gitlab.io/libraries/mvc.html",
 	"license": "proprietary",
 	"authors": [
 		{
@@ -29,6 +29,7 @@
 		"framework/cache": "dev-master",
 		"framework/cli": "dev-master",
 		"framework/database": "dev-master",
+		"framework/date": "dev-master",
 		"framework/email": "dev-master",
 		"framework/http": "dev-master",
 		"framework/language": "dev-master",
@@ -73,9 +74,9 @@
 	},
 	"support": {
 		"email": "natanfelles@gmail.com",
-		"issues": "https://gitlab.com/the-framework/packages/mvc/issues",
-		"wiki": "https://gitlab.com/the-framework/packages/mvc",
-		"source": "https://gitlab.com/the-framework/packages/mvc",
-		"docs": "https://the-framework.gitlab.io/packages/mvc/docs"
+		"issues": "https://gitlab.com/the-framework/libraries/mvc/issues",
+		"wiki": "https://gitlab.com/the-framework/libraries/mvc/wikis/home",
+		"source": "https://gitlab.com/the-framework/libraries/mvc",
+		"docs": "https://the-framework.gitlab.io/libraries/mvc/docs/"
 	}
 }
