@@ -16,7 +16,7 @@
 		"resource"
 	],
 	"homepage": "https://the-framework.gitlab.io/libraries/mvc.html",
-	"license": "proprietary",
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Natan Felles",
