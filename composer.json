@@ -1,5 +1,5 @@
 {
-	"name": "framework/mvc",
+	"name": "natanfelles/mvc",
 	"type": "library",
 	"description": "The Framework MVC Library",
 	"keywords": [
@@ -25,23 +25,23 @@
 	],
 	"require": {
 		"php": ">=7.3",
-		"framework/autoload": "^1.0",
-		"framework/cache": "^1.0",
-		"framework/cli": "^1.0",
-		"framework/database": "^1.0",
-		"framework/date": "^1.0",
-		"framework/email": "dev-master",
-		"framework/http": "^1.0",
-		"framework/language": "^1.0",
-		"framework/pagination": "^1.0",
-		"framework/routing": "^1.0",
-		"framework/session": "^1.0",
-		"framework/validation": "^1.0"
+		"natanfelles/autoload": "^1.0",
+		"natanfelles/cache": "^1.0",
+		"natanfelles/cli": "^1.0",
+		"natanfelles/database": "^1.0",
+		"natanfelles/date": "^1.0",
+		"natanfelles/email": "dev-master",
+		"natanfelles/http": "^1.0",
+		"natanfelles/language": "^1.0",
+		"natanfelles/pagination": "^1.0",
+		"natanfelles/routing": "^1.0",
+		"natanfelles/session": "^1.0",
+		"natanfelles/validation": "^1.0"
 	},
 	"require-dev": {
 		"ext-xdebug": "*",
-		"framework/coding-standard": "^1.0",
 		"localheinz/composer-normalize": "^1.3",
+		"natanfelles/coding-standard": "^1.0",
 		"phpmd/phpmd": "^2.7",
 		"phpstan/phpstan": "^0.11",
 		"phpunit/phpunit": "^8.3"
