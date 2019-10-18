@@ -11,6 +11,7 @@ use Framework\Email\SMTP;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Language\Language;
+use Framework\Log\Logger;
 use Framework\Routing\Router;
 use Framework\Session\Session;
 use Framework\Validation\Validation;
@@ -37,6 +38,15 @@ class App
 		string $instance = 'default'
 	) : array {
 		return static::$configs[$name][$instance] = $config;
+	}
+
+	public static function setConfigs(array $configs)
+	{
+		foreach ($configs as $name) {
+			foreach ($name as $instance => $config) {
+				static::setConfig($name, $config, $instance);
+			}
+		}
 	}
 
 	public static function addConfig(
@@ -196,6 +206,19 @@ class App
 				'locator',
 				new Locator(static::getAutoloader())
 			);
+	}
+
+	public static function getLogger() : Logger
+	{
+		$service = static::getService('logger');
+		if ($service) {
+			return $service;
+		}
+		$config = static::getConfig('logger');
+		return static::setService(
+			'logger',
+			new Logger($config['directory'], $config['level'])
+		);
 	}
 
 	public static function getRouter() : Router

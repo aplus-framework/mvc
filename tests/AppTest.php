@@ -9,6 +9,7 @@ use Framework\Email\Mailer;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Language\Language;
+use Framework\Log\Logger;
 use Framework\MVC\App;
 use Framework\MVC\View;
 use Framework\Routing\Router;
@@ -74,6 +75,10 @@ class AppTest extends TestCase
 			'prefix' => null,
 			'serializer' => 'php',
 		]);
+		App::setConfig('logger', [
+			'directory' => '/tmp',
+			'level' => 0,
+		]);
 		$this->assertInstanceOf(Autoloader::class, App::getAutoloader());
 		$this->assertInstanceOf(Autoloader::class, App::getAutoloader());
 		$this->assertInstanceOf(Cache::class, App::getCache());
@@ -86,6 +91,8 @@ class AppTest extends TestCase
 		$this->assertInstanceOf(Language::class, App::getLanguage());
 		$this->assertInstanceOf(Locator::class, App::getLocator());
 		$this->assertInstanceOf(Locator::class, App::getLocator());
+		$this->assertInstanceOf(Logger::class, App::getLogger());
+		$this->assertInstanceOf(Logger::class, App::getLogger());
 		$this->assertInstanceOf(Mailer::class, App::getMailer());
 		$this->assertInstanceOf(Mailer::class, App::getMailer());
 		//$this->assertInstanceOf(Request::class, App::getRequest());
