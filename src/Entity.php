@@ -1,6 +1,8 @@
 <?php namespace Framework\MVC;
 
-abstract class Entity
+use Framework\Date\Date;
+
+abstract class Entity implements \JsonSerializable
 {
 	public function __construct(array $properties)
 	{
@@ -113,21 +115,24 @@ abstract class Entity
 	/**
 	 * Used in setters where the scalar conversion results in a datetime string.
 	 *
-	 * @param \DateTime|string|null $value
+	 * @param Date|string|null $value
 	 *
 	 * @see toScalar
 	 *
-	 * @return \DateTime|null
+	 * @return Date|null
 	 */
-	protected function fromDateTime($value) : ?\DateTime
+	protected function fromDateTime($value) : ?Date
 	{
 		if ($value === null) {
 			return null;
 		}
-		if ($value instanceof \DateTime) {
+		if ($value instanceof Date) {
 			return $value;
 		}
-		return new \DateTime($value, $this->timezone());
+		if ( ! \is_string($value)) {
+			throw new \InvalidArgumentException('Value type must be string or Framework\Date\Date');
+		}
+		return new Date($value, $this->timezone());
 	}
 
 	protected function timezone() : \DateTimeZone
@@ -139,16 +144,16 @@ abstract class Entity
 	/**
 	 * Converts the value to the string format Y-m-d H:i:s as UTC or custom timezone.
 	 *
-	 * @param \DateTime $value
+	 * @param Date $value
 	 *
 	 * @see timezone
 	 *
 	 * @return string
 	 */
-	protected function toScalarDateTime(\DateTime $value) : string
+	protected function toScalarDateTime(Date $value) : string
 	{
 		$value = clone $value;
-		return $value->setTimezone($this->timezone())->format('Y-m-d H:i:s');
+		return $value->setTimezone($this->timezone())->format(Date::ATOM);
 	}
 
 	/**
@@ -180,7 +185,7 @@ abstract class Entity
 		if ($this->{$property} instanceof \stdClass || \is_array($this->{$property})) {
 			return $this->toScalarJSON($this->{$property});
 		}
-		if ($this->{$property} instanceof \DateTime) {
+		if ($this->{$property} instanceof Date) {
 			return $this->toScalarDateTime($this->{$property});
 		}
 		throw new \RuntimeException(
@@ -200,5 +205,13 @@ abstract class Entity
 			$data[$property] = $this->toScalar($property);
 		}
 		return $data;
+	}
+
+	public function jsonSerialize()
+	{
+		// TODO: whitelist properties and filter it!!!
+		//https://www.electrictoolbox.com/php-reflection-public-properties-not-static/
+		//\get_class_vars(__CLASS__);
+		return $this->toArray();
 	}
 }

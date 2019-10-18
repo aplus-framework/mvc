@@ -1,5 +1,6 @@
 <?php namespace Tests\MVC;
 
+use Framework\Date\Date;
 use Framework\MVC\Entity;
 use PHPUnit\Framework\TestCase;
 
@@ -35,7 +36,7 @@ class EntityTest extends TestCase
 	public function testFromDateTime()
 	{
 		$this->assertNull($this->entity->datetime);
-		$datetime = new \DateTime();
+		$datetime = new Date();
 		$this->entity->datetime = $datetime;
 		$this->assertEquals($datetime, $this->entity->datetime);
 		$this->entity->datetime = '2018-12-24 10:00:00';
@@ -65,7 +66,7 @@ class EntityTest extends TestCase
 
 	public function testToArray()
 	{
-		$datetime = new \DateTime();
+		$datetime = new Date();
 		$this->entity->datetime = $datetime;
 		$settings = new class() extends \stdClass {
 			public $foo = 'foo';
@@ -73,7 +74,7 @@ class EntityTest extends TestCase
 		$this->entity->settings = $settings;
 		$this->assertEquals([
 			'id' => 10,
-			'datetime' => $datetime->format('Y-m-d H:i:s'),
+			'datetime' => $datetime->format(Date::ATOM),
 			'settings' => \json_encode($settings),
 			'data' => '',
 			'createdAt' => null,
@@ -113,5 +114,10 @@ class EntityTest extends TestCase
 	public function testToString()
 	{
 		$this->assertEquals(\json_encode($this->entity->toArray()), (string) $this->entity);
+	}
+
+	public function testJsonSerialize()
+	{
+		$this->assertEquals(\json_encode($this->entity->toArray()), \json_encode($this->entity));
 	}
 }
