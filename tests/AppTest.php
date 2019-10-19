@@ -21,28 +21,13 @@ class AppTest extends TestCase
 {
 	public function setup() : void
 	{
-		App::setConfig('database', [
-			'host' => \getenv('DB_HOST'),
-			'port' => \getenv('DB_PORT'),
-			'username' => \getenv('DB_USERNAME'),
-			'password' => \getenv('DB_PASSWORD'),
-			'schema' => \getenv('DB_SCHEMA'),
-		]);
+		$config = [];
+		require __DIR__ . '/../src/configs.php';
+		App::setConfigs($config);
 	}
 
 	public function testConfigs()
 	{
-		$this->assertEquals([
-			'database' => [
-				'default' => [
-					'host' => \getenv('DB_HOST'),
-					'port' => \getenv('DB_PORT'),
-					'username' => \getenv('DB_USERNAME'),
-					'password' => \getenv('DB_PASSWORD'),
-					'schema' => \getenv('DB_SCHEMA'),
-				],
-			],
-		], App::getConfigs());
 		$this->assertEquals([
 			'host' => \getenv('DB_HOST'),
 			'port' => \getenv('DB_PORT'),
@@ -66,19 +51,6 @@ class AppTest extends TestCase
 	 */
 	public function testServicesInstances()
 	{
-		App::setConfig('cache', [
-			'driver' => 'Files',
-			'configs' => [
-				'directory' => '/tmp',
-				'length' => 4096,
-			],
-			'prefix' => null,
-			'serializer' => 'php',
-		]);
-		App::setConfig('logger', [
-			'directory' => '/tmp',
-			'level' => 0,
-		]);
 		$this->assertInstanceOf(Autoloader::class, App::getAutoloader());
 		$this->assertInstanceOf(Autoloader::class, App::getAutoloader());
 		$this->assertInstanceOf(Cache::class, App::getCache());

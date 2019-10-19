@@ -42,8 +42,8 @@ class App
 
 	public static function setConfigs(array $configs)
 	{
-		foreach ($configs as $name) {
-			foreach ($name as $instance => $config) {
+		foreach ($configs as $name => $values) {
+			foreach ($values as $instance => $config) {
 				static::setConfig($name, $config, $instance);
 			}
 		}
