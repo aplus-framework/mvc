@@ -1,7 +1,18 @@
 <?php namespace Tests\MVC;
 
+use Framework\Date\Date;
 use Framework\MVC\Entity;
 
+/**
+ * Class EntityMock.
+ *
+ * @property int    $id
+ * @property string $data
+ * @property Date   $datetime
+ * @property Date   $createdAt
+ * @property Date   $updatedAt
+ * @property string $settings
+ */
 class EntityMock extends Entity
 {
 	protected $id;
