@@ -18,6 +18,7 @@ use Framework\Validation\Validation;
 
 class App
 {
+	public const ENV = 'production';
 	protected static $configs = [];
 	protected static $services = [];
 	protected static $isRunning = false;
@@ -290,6 +291,12 @@ class App
 		static::$isRunning = true;
 		\ob_start();
 		static::prepareConfigs();
+		new \Framework\Debug\Exceptions(
+			static::ENV,
+			true,
+			null,
+			static::getLanguage()
+		);
 		static::getAutoloader();
 		static::prepareRoutes();
 		if (static::isCLI()) {
