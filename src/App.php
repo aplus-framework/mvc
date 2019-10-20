@@ -6,6 +6,7 @@ use Framework\Cache\Cache;
 use Framework\CLI\Command;
 use Framework\CLI\Console;
 use Framework\Database\Database;
+use Framework\Debug\Exceptions;
 use Framework\Email\Mailer;
 use Framework\Email\SMTP;
 use Framework\HTTP\Request;
@@ -291,10 +292,10 @@ class App
 		static::$isRunning = true;
 		\ob_start();
 		static::prepareConfigs();
-		new \Framework\Debug\Exceptions(
+		new Exceptions(
 			static::ENV,
-			true,
-			null,
+			static::getConfig('exceptions')['clearBuffer'] ?? true,
+			static::getConfig('exceptions')['viewsDir'] ?? null,
 			static::getLanguage()
 		);
 		static::getAutoloader();
