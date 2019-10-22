@@ -292,12 +292,15 @@ class App
 		static::$isRunning = true;
 		\ob_start();
 		static::prepareConfigs();
-		new Exceptions(
-			static::ENV,
-			static::getConfig('exceptions')['clearBuffer'] ?? true,
-			static::getConfig('exceptions')['viewsDir'] ?? null,
-			static::getLanguage()
-		);
+		$exceptions = (new Exceptions(
+			static::getLogger(),
+			static::getLanguage(),
+			static::ENV
+		));
+		if (isset(static::getConfig('exceptions')['viewsDir'])) {
+			$exceptions->setViewsDir(static::getConfig('exceptions')['viewsDir']);
+		}
+		$exceptions->initialize(static::getConfig('exceptions')['clearBuffer']);
 		static::getAutoloader();
 		static::prepareRoutes();
 		if (static::isCLI()) {
