@@ -290,6 +290,7 @@ class App
 			throw new \LogicException('App already is running');
 		}
 		static::$isRunning = true;
+		require __DIR__ . '/helpers.php';
 		\ob_start();
 		static::prepareConfigs();
 		$exceptions = (new Exceptions(
