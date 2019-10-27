@@ -35,7 +35,7 @@
 		"natanfelles/http": "^1.0",
 		"natanfelles/language": "^1.0",
 		"natanfelles/log": "^1.0",
-		"natanfelles/pagination": "^1.0",
+		"natanfelles/pagination": "^1.1",
 		"natanfelles/routing": "^1.0",
 		"natanfelles/session": "^1.0",
 		"natanfelles/validation": "^1.0"
