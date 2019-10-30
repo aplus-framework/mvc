@@ -43,6 +43,9 @@ class EntityTest extends TestCase
 		$this->assertEquals('2018-12-24 10:00:00', $this->entity->datetime->format('Y-m-d H:i:s'));
 		$this->entity->datetime = null;
 		$this->assertNull($this->entity->datetime);
+		$this->expectException(\InvalidArgumentException::class);
+		$this->expectExceptionMessage('Value type must be string or Framework\Date\Date');
+		$this->entity->datetime = [];
 	}
 
 	public function testFromJSON()
