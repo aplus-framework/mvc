@@ -132,7 +132,9 @@ $config['session']['default'] = [
  * @see App::getValidation
  */
 $config['validation']['default'] = [
-	'validators' => null,
+	'validators' => [
+		\Framework\MVC\Validator::class,
+	],
 ];
 /**
  * View.
