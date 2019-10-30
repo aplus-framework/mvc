@@ -42,7 +42,7 @@ class AppTest extends TestCase
 		App::setConfig('foo', ['replaced']);
 		$this->assertEquals(['replaced'], App::getConfig('foo'));
 		App::addConfig('foo', ['added']);
-		$this->assertEquals(['replaced', 'added'], App::getConfig('foo'));
+		$this->assertEquals(['added'], App::getConfig('foo'));
 		App::addConfig('database', ['password' => 'foo'], 'other');
 		$this->assertEquals(['password' => 'foo'], App::getConfig('database', 'other'));
 	}
@@ -104,5 +104,21 @@ class AppTest extends TestCase
 	{
 		$this->assertStringEndsWith('src/routes.php', App::prepareRoutes()[0]);
 		$this->assertCount(1, App::getRouter()->getRoutes());
+	}
+
+	public function testMergeFileConfigs()
+	{
+		$this->assertEquals([
+			'enabled' => true,
+			'defaults' => true,
+		], App::getConfig('console'));
+		App::mergeFileConfigs(__DIR__ . '/Support/configs.php');
+		$this->assertEquals([
+			'enabled' => false,
+			'defaults' => true,
+		], App::getConfig('console'));
+		$this->expectException(\RuntimeException::class);
+		$this->expectExceptionMessage('Invalid config file path: /tmp/unknown');
+		App::mergeFileConfigs('/tmp/unknown');
 	}
 }

@@ -57,7 +57,7 @@ class App
 		string $instance = 'default'
 	) : array {
 		if (isset(static::$configs[$name][$instance])) {
-			return static::$configs[$name][$instance] = \array_merge_recursive(
+			return static::$configs[$name][$instance] = \array_replace_recursive(
 				static::$configs[$name][$instance],
 				$config
 			);
