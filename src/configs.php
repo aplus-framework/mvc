@@ -2,12 +2,16 @@
 /**
  * Configs.
  *
+ * Lis of files containing configs
+ *
  * @see App::prepareConfigs
  */
 $config['configs']['default'] = [
 ];
 /**
  * Routes.
+ *
+ * List of files containing routes
  *
  * @see App::prepareRoutes
  */

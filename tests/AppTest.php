@@ -10,12 +10,13 @@ use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Language\Language;
 use Framework\Log\Logger;
-use Framework\MVC\App;
+//use Framework\MVC\App;
 use Framework\MVC\View;
 use Framework\Routing\Router;
 use Framework\Session\Session;
 use Framework\Validation\Validation;
 use PHPUnit\Framework\TestCase;
+use Tests\MVC\AppMock as App;
 
 class AppTest extends TestCase
 {
@@ -67,8 +68,10 @@ class AppTest extends TestCase
 		$this->assertInstanceOf(Logger::class, App::getLogger());
 		$this->assertInstanceOf(Mailer::class, App::getMailer());
 		$this->assertInstanceOf(Mailer::class, App::getMailer());
-		//$this->assertInstanceOf(Request::class, App::getRequest());
-		//$this->assertInstanceOf(Response::class, App::getResponse());
+		$this->assertInstanceOf(Request::class, App::getRequest());
+		$this->assertInstanceOf(Request::class, App::getRequest());
+		$this->assertInstanceOf(Response::class, App::getResponse());
+		$this->assertInstanceOf(Response::class, App::getResponse());
 		$this->assertInstanceOf(Router::class, App::getRouter());
 		$this->assertInstanceOf(Router::class, App::getRouter());
 		$this->assertInstanceOf(Session::class, App::getSession());
@@ -95,5 +98,11 @@ class AppTest extends TestCase
 		$this->assertEquals([
 			__CLASS__ => __FILE__,
 		], App::getAutoloader()->getClasses());
+	}
+
+	public function testPrepareRoutes()
+	{
+		$this->assertStringEndsWith('src/routes.php', App::prepareRoutes()[0]);
+		$this->assertCount(1, App::getRouter()->getRoutes());
 	}
 }
