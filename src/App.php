@@ -19,7 +19,7 @@ use Framework\Validation\Validation;
 
 class App
 {
-	public const ENV = 'production';
+	public const DEBUG = false;
 	protected static $configs = [];
 	protected static $services = [];
 	protected static $isRunning = false;
@@ -296,7 +296,7 @@ class App
 		$exceptions = (new Exceptions(
 			static::getLogger(),
 			static::getLanguage(),
-			static::ENV
+			static::DEBUG ? Exceptions::ENV_DEV : Exceptions::ENV_PROD
 		));
 		if (isset(static::getConfig('exceptions')['viewsDir'])) {
 			$exceptions->setViewsDir(static::getConfig('exceptions')['viewsDir']);
