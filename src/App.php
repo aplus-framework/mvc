@@ -177,7 +177,7 @@ class App
 			&& ! static::isCLI()
 		) {
 			$service->setCurrentLocale(
-				static::getRequest()->negotiateLanguage(
+				static::request()->negotiateLanguage(
 					$service->getSupportedLocales()
 				)
 			);
@@ -238,7 +238,7 @@ class App
 	public static function response() : Response
 	{
 		return static::getService('response')
-			?? static::setService('response', new Response(static::getRequest()));
+			?? static::setService('response', new Response(static::request()));
 	}
 
 	public static function session() : Session
@@ -311,7 +311,7 @@ class App
 		$response = static::router()->match(
 			static::request()->getMethod(),
 			static::request()->getURL()
-		)->run(static::getRequest(), static::response());
+		)->run(static::request(), static::response());
 		$response = static::makeResponseBodyPart($response);
 		static::response()->appendBody($response)->send();
 	}
