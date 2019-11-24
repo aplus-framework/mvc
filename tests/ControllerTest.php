@@ -35,8 +35,7 @@ class ControllerTest extends TestCase
 	{
 		App::autoloader()->setNamespace('Tests\MVC', __DIR__);
 		$this->controller->theme->setTitle('Test');
-		$this->assertEquals(
-			'<!doctype html>
+		$content = '<!doctype html>
 <html lang="en">
 <head>
 			<title>Test</title>
@@ -49,13 +48,26 @@ Array
 )
 </body>
 </html>
-',
+';
+		$this->assertEquals(
+			$content,
 			$this->controller->renderPage(
-				'\Tests\MVC\Support/view',
+				'\Tests\MVC\Support/pages/view',
 				[
-				'foo' => 1,
-				'bar' => 2,
-			]
+					'foo' => 1,
+					'bar' => 2,
+				]
+			)
+		);
+		App::view()->setBasePath(__DIR__ . '/Support');
+		$this->assertEquals(
+			$content,
+			$this->controller->renderPage(
+				'view',
+				[
+					'foo' => 1,
+					'bar' => 2,
+				]
 			)
 		);
 	}

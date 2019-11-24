@@ -70,8 +70,8 @@ class AppTest extends TestCase
 		$this->assertInstanceOf(Mailer::class, App::mailer());
 		// $this->assertInstanceOf(Request::class, App::request());
 		// $this->assertInstanceOf(Request::class, App::request());
-		$this->assertInstanceOf(Response::class, App::response());
-		$this->assertInstanceOf(Response::class, App::response());
+		// $this->assertInstanceOf(Response::class, App::response());
+		// $this->assertInstanceOf(Response::class, App::response());
 		$this->assertInstanceOf(Router::class, App::router());
 		$this->assertInstanceOf(Router::class, App::router());
 		$this->assertInstanceOf(Session::class, App::session());

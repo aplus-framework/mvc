@@ -36,6 +36,9 @@ abstract class Controller extends RouteAction
 
 	protected function renderPage(string $view, array $data = []) : string
 	{
+		if ($view[0] !== '\\') {
+			$view = 'pages/' . $view;
+		}
 		App::autoloader()->setNamespace('Framework\MVC', __DIR__);
 		return App::view()->render('\Framework\MVC\View/layout', [
 			'content' => App::view()->render($view, $data),
