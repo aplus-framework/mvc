@@ -16,7 +16,7 @@ if ( ! function_exists('helpers')) {
 			}
 			return array_merge(...$files);
 		}
-		$files = App::getLocator()->findFiles("Helpers/{$helper}");
+		$files = App::locator()->findFiles("Helpers/{$helper}");
 		foreach ($files as $file) {
 			require_once $file;
 		}
@@ -69,32 +69,32 @@ if ( ! function_exists('view')) {
 	 */
 	function view(string $path, array $data = [], string $instance = 'default') : string
 	{
-		return App::getView($instance)->render($path, $data);
+		return App::view($instance)->render($path, $data);
 	}
 }
 if ( ! function_exists('current_url')) {
 	function current_url() : string
 	{
-		return App::getRequest()->getURL();
+		return App::request()->getURL();
 	}
 }
 if ( ! function_exists('current_route')) {
 	function current_route() : Framework\Routing\Route
 	{
-		return App::getRouter()->getMatchedRoute();
+		return App::router()->getMatchedRoute();
 	}
 }
 if ( ! function_exists('route_url')) {
 	function route_url(string $name, array $path_params = [], array $origin_params = []) : string
 	{
-		$route = App::getRouter()->getNamedRoute($name);
+		$route = App::router()->getNamedRoute($name);
 		if ($route === null) {
 			throw new OutOfBoundsException("Named route not found: {$name}");
 		}
 		if (empty($origin_params)
-			&& $route->getOrigin() === App::getRouter()->getMatchedRoute()->getOrigin()
+			&& $route->getOrigin() === App::router()->getMatchedRoute()->getOrigin()
 		) {
-			$origin_params = App::getRouter()->getMatchedOriginParams();
+			$origin_params = App::router()->getMatchedOriginParams();
 		}
 		return $route->getURL($origin_params, $path_params);
 	}
@@ -102,19 +102,19 @@ if ( ! function_exists('route_url')) {
 if ( ! function_exists('lang')) {
 	function lang(string $line, $args = [], string $locale = null) : ?string
 	{
-		return App::getLanguage()->lang($line, $args, $locale);
+		return App::language()->lang($line, $args, $locale);
 	}
 }
 if ( ! function_exists('cache')) {
 	function cache(string $instance = 'default') : Framework\Cache\Cache
 	{
-		return App::getCache($instance);
+		return App::cache($instance);
 	}
 }
 if ( ! function_exists('session')) {
 	function session() : Framework\Session\Session
 	{
-		return App::getSession();
+		return App::session();
 	}
 }
 if ( ! function_exists('old')) {
@@ -122,7 +122,7 @@ if ( ! function_exists('old')) {
 	{
 		session();
 		return $escape
-			? esc(App::getRequest()->getRedirectData($key))
-			: App::getRequest()->getRedirectData($key);
+			? esc(App::request()->getRedirectData($key))
+			: App::request()->getRedirectData($key);
 	}
 }

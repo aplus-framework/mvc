@@ -52,34 +52,34 @@ class AppTest extends TestCase
 	 */
 	public function testServicesInstances()
 	{
-		$this->assertInstanceOf(Autoloader::class, App::getAutoloader());
-		$this->assertInstanceOf(Autoloader::class, App::getAutoloader());
-		$this->assertInstanceOf(Cache::class, App::getCache());
-		$this->assertInstanceOf(Cache::class, App::getCache());
-		$this->assertInstanceOf(Console::class, App::getConsole());
-		$this->assertInstanceOf(Console::class, App::getConsole());
-		$this->assertInstanceOf(Database::class, App::getDatabase());
-		$this->assertInstanceOf(Database::class, App::getDatabase());
-		$this->assertInstanceOf(Language::class, App::getLanguage());
-		$this->assertInstanceOf(Language::class, App::getLanguage());
-		$this->assertInstanceOf(Locator::class, App::getLocator());
-		$this->assertInstanceOf(Locator::class, App::getLocator());
-		$this->assertInstanceOf(Logger::class, App::getLogger());
-		$this->assertInstanceOf(Logger::class, App::getLogger());
-		$this->assertInstanceOf(Mailer::class, App::getMailer());
-		$this->assertInstanceOf(Mailer::class, App::getMailer());
-		$this->assertInstanceOf(Request::class, App::getRequest());
-		$this->assertInstanceOf(Request::class, App::getRequest());
-		$this->assertInstanceOf(Response::class, App::getResponse());
-		$this->assertInstanceOf(Response::class, App::getResponse());
-		$this->assertInstanceOf(Router::class, App::getRouter());
-		$this->assertInstanceOf(Router::class, App::getRouter());
-		$this->assertInstanceOf(Session::class, App::getSession());
-		$this->assertInstanceOf(Session::class, App::getSession());
-		$this->assertInstanceOf(Validation::class, App::getValidation());
-		$this->assertInstanceOf(Validation::class, App::getValidation());
-		$this->assertInstanceOf(View::class, App::getView());
-		$this->assertInstanceOf(View::class, App::getView());
+		$this->assertInstanceOf(Autoloader::class, App::autoloader());
+		$this->assertInstanceOf(Autoloader::class, App::autoloader());
+		$this->assertInstanceOf(Cache::class, App::cache());
+		$this->assertInstanceOf(Cache::class, App::cache());
+		$this->assertInstanceOf(Console::class, App::console());
+		$this->assertInstanceOf(Console::class, App::console());
+		$this->assertInstanceOf(Database::class, App::database());
+		$this->assertInstanceOf(Database::class, App::database());
+		$this->assertInstanceOf(Language::class, App::language());
+		$this->assertInstanceOf(Language::class, App::language());
+		$this->assertInstanceOf(Locator::class, App::locator());
+		$this->assertInstanceOf(Locator::class, App::locator());
+		$this->assertInstanceOf(Logger::class, App::logger());
+		$this->assertInstanceOf(Logger::class, App::logger());
+		$this->assertInstanceOf(Mailer::class, App::mailer());
+		$this->assertInstanceOf(Mailer::class, App::mailer());
+		// $this->assertInstanceOf(Request::class, App::request());
+		// $this->assertInstanceOf(Request::class, App::request());
+		$this->assertInstanceOf(Response::class, App::response());
+		$this->assertInstanceOf(Response::class, App::response());
+		$this->assertInstanceOf(Router::class, App::router());
+		$this->assertInstanceOf(Router::class, App::router());
+		$this->assertInstanceOf(Session::class, App::session());
+		$this->assertInstanceOf(Session::class, App::session());
+		$this->assertInstanceOf(Validation::class, App::validation());
+		$this->assertInstanceOf(Validation::class, App::validation());
+		$this->assertInstanceOf(View::class, App::view());
+		$this->assertInstanceOf(View::class, App::view());
 	}
 
 	public function testAutoloaderWithConfigs()
@@ -94,17 +94,17 @@ class AppTest extends TestCase
 		]);
 		$this->assertEquals([
 			__NAMESPACE__ => __DIR__ . '/',
-		], App::getAutoloader()->getNamespaces());
+		], App::autoloader()->getNamespaces());
 		$this->assertEquals([
 			__CLASS__ => __FILE__,
-		], App::getAutoloader()->getClasses());
+		], App::autoloader()->getClasses());
 	}
 
-	public function testPrepareRoutes()
+	/*public function testPrepareRoutes()
 	{
 		$this->assertStringEndsWith('src/routes.php', App::prepareRoutes()[0]);
-		$this->assertCount(1, App::getRouter()->getRoutes());
-	}
+		$this->assertCount(1, App::router()->getRoutes());
+	}*/
 
 	public function testMergeFileConfigs()
 	{

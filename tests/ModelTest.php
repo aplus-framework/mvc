@@ -20,21 +20,21 @@ class ModelTest extends TestCase
 			'password' => \getenv('DB_PASSWORD'),
 			'schema' => \getenv('DB_SCHEMA'),
 		]);
-		App::getDatabase()->createTable()->table('ModelMock')
+		App::database()->createTable()->table('ModelMock')
 			->definition(static function (TableDefinition $definition) {
 				$definition->column('id')->int(11)->notNull()->autoIncrement()->primaryKey();
 				$definition->column('data')->varchar(255);
 				$definition->column('createdAt')->datetime();
 				$definition->column('updatedAt')->datetime();
 			})->run();
-		App::getDatabase()->insert()->into('ModelMock')->set(['data' => 'foo'])->run();
-		App::getDatabase()->insert()->into('ModelMock')->set(['data' => 'bar'])->run();
+		App::database()->insert()->into('ModelMock')->set(['data' => 'foo'])->run();
+		App::database()->insert()->into('ModelMock')->set(['data' => 'bar'])->run();
 		$this->model = new ModelMock();
 	}
 
 	protected function tearDown() : void
 	{
-		App::getDatabase()->dropTable()->ifExists()->table('ModelMock')->run();
+		App::database()->dropTable()->ifExists()->table('ModelMock')->run();
 	}
 
 	public function testFind()

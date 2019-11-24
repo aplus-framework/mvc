@@ -75,7 +75,7 @@ class App
 		return static::$services[$name][$instance] = $service;
 	}
 
-	public static function getAutoloader() : Autoloader
+	public static function autoloader() : Autoloader
 	{
 		$service = static::getService('autoloader');
 		if ($service) {
@@ -92,7 +92,7 @@ class App
 		return static::setService('autoloader', $service);
 	}
 
-	public static function getCache(string $instance = 'default') : Cache
+	public static function cache(string $instance = 'default') : Cache
 	{
 		$service = static::getService('cache', $instance);
 		if ($service) {
@@ -111,16 +111,16 @@ class App
 		return static::setService('cache', $service, $instance);
 	}
 
-	public static function getConsole() : Console
+	public static function console() : Console
 	{
 		$service = static::getService('console');
 		if ($service) {
 			return $service;
 		}
-		$service = new Console(static::getLanguage());
-		$files = static::getLocator()->getFiles('Commands');
+		$service = new Console(static::language());
+		$files = static::locator()->getFiles('Commands');
 		foreach ($files as $file) {
-			$className = static::getLocator()->getClassName($file);
+			$className = static::locator()->getClassName($file);
 			if ($className === false) {
 				continue;
 			}
@@ -134,7 +134,7 @@ class App
 		return static::setService('console', $service);
 	}
 
-	public static function getDatabase(string $instance = 'default') : Database
+	public static function database(string $instance = 'default') : Database
 	{
 		return static::getService('database', $instance)
 			?? static::setService(
@@ -144,7 +144,7 @@ class App
 			);
 	}
 
-	public static function getMailer(string $instance = 'default') : Mailer
+	public static function mailer(string $instance = 'default') : Mailer
 	{
 		$service = static::getService('mailer', $instance);
 		if ($service) {
@@ -161,7 +161,7 @@ class App
 		);
 	}
 
-	public static function getLanguage() : Language
+	public static function language() : Language
 	{
 		$service = static::getService('language');
 		if ($service) {
@@ -188,7 +188,7 @@ class App
 		if (isset($config['directories'])) {
 			$service->setDirectories($config['directories']);
 		} else {
-			foreach (static::getAutoloader()->getNamespaces() as $directory) {
+			foreach (static::autoloader()->getNamespaces() as $directory) {
 				$directory = "{$directory}Languages";
 				if (\is_dir($directory)) {
 					$directories[] = $directory;
@@ -201,16 +201,16 @@ class App
 		return static::setService('language', $service);
 	}
 
-	public static function getLocator() : Locator
+	public static function locator() : Locator
 	{
 		return static::getService('locator')
 			?? static::setService(
 				'locator',
-				new Locator(static::getAutoloader())
+				new Locator(static::autoloader())
 			);
 	}
 
-	public static function getLogger() : Logger
+	public static function logger() : Logger
 	{
 		$service = static::getService('logger');
 		if ($service) {
@@ -223,25 +223,25 @@ class App
 		);
 	}
 
-	public static function getRouter() : Router
+	public static function router() : Router
 	{
 		return static::getService('router')
 			?? static::setService('router', new Router());
 	}
 
-	public static function getRequest() : Request
+	public static function request() : Request
 	{
 		return static::getService('request')
 			?? static::setService('request', new Request());
 	}
 
-	public static function getResponse() : Response
+	public static function response() : Response
 	{
 		return static::getService('response')
 			?? static::setService('response', new Response(static::getRequest()));
 	}
 
-	public static function getSession() : Session
+	public static function session() : Session
 	{
 		$service = static::getService('session');
 		if ($service) {
@@ -253,7 +253,7 @@ class App
 		return static::setService('session', $service);
 	}
 
-	public static function getValidation(string $instance = 'default') : Validation
+	public static function validation(string $instance = 'default') : Validation
 	{
 		$service = static::getService('validation', $instance);
 		if ($service) {
@@ -262,12 +262,12 @@ class App
 		$config = static::getConfig('validation', $instance);
 		return static::setService(
 			'validation',
-			new Validation($config['validators'] ?? null, static::getLanguage()),
+			new Validation($config['validators'] ?? null, static::language()),
 			$instance
 		);
 	}
 
-	public static function getView(string $instance = 'default') : View
+	public static function view(string $instance = 'default') : View
 	{
 		$service = static::getService('view', $instance);
 		if ($service) {
@@ -294,26 +294,26 @@ class App
 		\ob_start();
 		static::prepareConfigs();
 		$exceptions = (new Exceptions(
-			static::getLogger(),
-			static::getLanguage(),
+			static::logger(),
+			static::language(),
 			static::DEBUG ? Exceptions::ENV_DEV : Exceptions::ENV_PROD
 		));
 		if (isset(static::getConfig('exceptions')['viewsDir'])) {
 			$exceptions->setViewsDir(static::getConfig('exceptions')['viewsDir']);
 		}
 		$exceptions->initialize(static::getConfig('exceptions')['clearBuffer']);
-		static::getAutoloader();
+		static::autoloader();
 		static::prepareRoutes();
 		if (static::isCLI()) {
-			static::getConsole()->run();
+			static::console()->run();
 			return;
 		}
-		$response = static::getRouter()->match(
-			static::getRequest()->getMethod(),
-			static::getRequest()->getURL()
-		)->run(static::getRequest(), static::getResponse());
+		$response = static::router()->match(
+			static::request()->getMethod(),
+			static::request()->getURL()
+		)->run(static::getRequest(), static::response());
 		$response = static::makeResponseBodyPart($response);
-		static::getResponse()->appendBody($response)->send();
+		static::response()->appendBody($response)->send();
 	}
 
 	protected static function isCLI() : bool
@@ -374,7 +374,6 @@ class App
 			return [];
 		}
 		$files = \array_unique($files);
-		$router = static::getRouter();
 		foreach ($files as $file) {
 			require $file;
 		}
@@ -403,7 +402,7 @@ class App
 		if ($type === 'object') {
 			$type = \get_class($response);
 		}
-		$action = static::getRouter()->getMatchedRoute()->getAction();
+		$action = static::router()->getMatchedRoute()->getAction();
 		if ($action instanceof \Closure) {
 			$action = '{closure}';
 		}

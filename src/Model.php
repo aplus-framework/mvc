@@ -125,7 +125,7 @@ abstract class Model
 	 */
 	protected function getDatabaseForRead() : Database
 	{
-		return App::getDatabase($this->connections['read']);
+		return App::database($this->connections['read']);
 	}
 
 	/**
@@ -135,7 +135,7 @@ abstract class Model
 	 */
 	protected function getDatabaseForWrite() : Database
 	{
-		return App::getDatabase($this->connections['write']);
+		return App::database($this->connections['write']);
 	}
 
 	public function count() : int
@@ -182,7 +182,7 @@ abstract class Model
 		foreach ($data as &$row) {
 			$row = $this->makeEntity($row);
 		}
-		return new Pager($page, $per_page, $this->count(), $data, App::getLanguage());
+		return new Pager($page, $per_page, $this->count(), $data, App::language());
 	}
 
 	/**
@@ -361,7 +361,7 @@ abstract class Model
 		if ($this->validation) {
 			return $this->validation;
 		}
-		return $this->validation = App::getValidation('Model:' . \get_class($this))
+		return $this->validation = App::validation('Model:' . \get_class($this))
 			->setLabels($this->validationLabels)
 			->setRules($this->validationRules);
 	}

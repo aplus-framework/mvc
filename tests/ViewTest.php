@@ -31,7 +31,7 @@ class ViewTest extends TestCase
 
 	public function testRenderNamespacedView()
 	{
-		App::getAutoloader()->setNamespace('Tests\MVC', __DIR__);
+		App::autoloader()->setNamespace('Tests\MVC', __DIR__);
 		$this->assertEquals(
 			"<h1>Block</h1>\n",
 			$this->view->render('\Tests\MVC\Views\include/block')

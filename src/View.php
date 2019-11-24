@@ -43,7 +43,7 @@ class View
 
 	private function getNamespacedFilepath(string $view) : string
 	{
-		$path = App::getLocator()->getNamespacedFilepath($view, $this->getExtension());
+		$path = App::locator()->getNamespacedFilepath($view, $this->getExtension());
 		if ($path) {
 			return $path;
 		}
