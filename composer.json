@@ -38,6 +38,7 @@
 		"natanfelles/pagination": "^1.1",
 		"natanfelles/routing": "^1.0",
 		"natanfelles/session": "^1.0",
+		"natanfelles/theme": "dev-master",
 		"natanfelles/validation": "^1.1"
 	},
 	"require-dev": {

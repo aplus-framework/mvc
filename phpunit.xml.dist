@@ -23,6 +23,9 @@
 			<exclude>
 				<file>src/routes.php</file>
 			</exclude>
+			<exclude>
+				<file>src/View/layout.php</file>
+			</exclude>
 		</whitelist>
 	</filter>
 
