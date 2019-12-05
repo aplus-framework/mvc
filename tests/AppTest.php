@@ -68,10 +68,10 @@ class AppTest extends TestCase
 		$this->assertInstanceOf(Logger::class, App::logger());
 		$this->assertInstanceOf(Mailer::class, App::mailer());
 		$this->assertInstanceOf(Mailer::class, App::mailer());
-		// $this->assertInstanceOf(Request::class, App::request());
-		// $this->assertInstanceOf(Request::class, App::request());
-		// $this->assertInstanceOf(Response::class, App::response());
-		// $this->assertInstanceOf(Response::class, App::response());
+		$this->assertInstanceOf(Request::class, App::request());
+		$this->assertInstanceOf(Request::class, App::request());
+		$this->assertInstanceOf(Response::class, App::response());
+		$this->assertInstanceOf(Response::class, App::response());
 		$this->assertInstanceOf(Router::class, App::router());
 		$this->assertInstanceOf(Router::class, App::router());
 		$this->assertInstanceOf(Session::class, App::session());
@@ -105,7 +105,6 @@ class AppTest extends TestCase
 		$this->assertStringEndsWith('src/routes.php', App::prepareRoutes()[0]);
 		$this->assertCount(1, App::router()->getRoutes());
 	}*/
-
 	public function testMergeFileConfigs()
 	{
 		$this->assertEquals([

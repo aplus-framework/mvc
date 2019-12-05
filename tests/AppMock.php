@@ -4,7 +4,7 @@ use Framework\HTTP\Request;
 
 class AppMock extends \Framework\MVC\App
 {
-	public static function getRequest() : Request
+	public static function request() : Request
 	{
 		return static::getService('request')
 			?? static::setService('request', new class() extends Request {
