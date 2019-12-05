@@ -9,17 +9,14 @@ class Validator extends \Framework\Validation\Validator
 		string $column = null,
 		string $connection = 'default'
 	) : bool {
-		$result = App::getDatabase($connection)
+		$result = App::database($connection)
 			->select()
 			->columns($column ?? $field)
 			->from($table)
-			->where($column ?? $field, static::getData($field, $data))
+			->whereEqual($column ?? $field, static::getData($field, $data))
 			->limit(1)
 			->run();
-		if ($result) {
-			return (bool) $result->numRows();
-		}
-		return false;
+		return (bool) $result->numRows();
 	}
 
 	public static function notInDatabase(
