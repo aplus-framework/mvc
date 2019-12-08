@@ -81,7 +81,7 @@ $config['exceptions']['default'] = [
  * @see App::getLanguage
  */
 $config['language']['default'] = [
-	'default' => 'es',
+	'default' => 'en',
 	'supported' => [
 		'en',
 		'es',
