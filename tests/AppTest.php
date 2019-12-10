@@ -145,7 +145,7 @@ class AppTest extends TestCase
 		$status = $validation->validate(['id' => 3]);
 		$this->assertFalse($status);
 		$this->assertStringContainsString(
-			'The id field is not in database.',
+			'The id field value does not exists.',
 			$validation->getError('id')
 		);
 		$validation->setRule('id', 'notInDatabase:Users,id,default');
