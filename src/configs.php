@@ -21,7 +21,7 @@ $config['routes']['default'] = [
 /**
  * Autoloader.
  *
- * @see App::getAutoloader
+ * @see App::autoloader
  */
 $config['autoloader']['default'] = [
 	'classes' => [],
@@ -30,7 +30,7 @@ $config['autoloader']['default'] = [
 /**
  * Database.
  *
- * @see App::getDatabase
+ * @see App::database
  * @see \Framework\Database\Database::makeConfig
  */
 $config['database']['default'] = [
@@ -43,7 +43,7 @@ $config['database']['default'] = [
 /**
  * Cache.
  *
- * @see  App::getCache
+ * @see  App::cache
  *
  * @todo Update configs[directory]
  */
@@ -60,7 +60,7 @@ $config['cache']['default'] = $config['cache']['files'];
 /**
  * Console.
  *
- * @see App::getConsole
+ * @see App::console
  */
 $config['console']['default'] = [
 	'enabled' => true,
@@ -69,7 +69,7 @@ $config['console']['default'] = [
 /**
  * Exceptions.
  *
- * @see App::run()
+ * @see App::run
  */
 $config['exceptions']['default'] = [
 	'clearBuffer' => true,
@@ -78,7 +78,7 @@ $config['exceptions']['default'] = [
 /**
  * Language.
  *
- * @see App::getLanguage
+ * @see App::language
  */
 $config['language']['default'] = [
 	'default' => 'en',
@@ -94,7 +94,7 @@ $config['language']['default'] = [
 /**
  * Logger.
  *
- * @see  App::getLogger
+ * @see  App::logger
  *
  * @todo Update directory
  */
@@ -105,7 +105,7 @@ $config['logger']['default'] = [
 /**
  * Mailer.
  *
- * @see App::getMailer
+ * @see App::mailer
  */
 $config['mailer']['default'] = [
 	'server' => 'localhost',
@@ -120,7 +120,7 @@ $config['mailer']['default'] = [
 /**
  * Session.
  *
- * @see App::getSession
+ * @see App::session
  */
 $config['session']['default'] = [
 	'options' => [],
@@ -129,7 +129,7 @@ $config['session']['default'] = [
 /**
  * Validation.
  *
- * @see App::getValidation
+ * @see App::validation
  */
 $config['validation']['default'] = [
 	'validators' => [
@@ -139,7 +139,7 @@ $config['validation']['default'] = [
 /**
  * View.
  *
- * @see  App::getView
+ * @see  App::view
  *
  * @todo Update base_path
  */
