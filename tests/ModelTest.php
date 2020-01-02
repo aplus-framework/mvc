@@ -148,6 +148,9 @@ class ModelTest extends TestCase
 		$this->assertEquals(2, $this->model->count());
 	}
 
+	/**
+	 * @covers \Framework\MVC\Model::paginate
+	 */
 	public function testPaginate()
 	{
 		$this->model->returnType = 'array';
