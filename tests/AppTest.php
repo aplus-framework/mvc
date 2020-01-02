@@ -19,6 +19,11 @@ use Framework\Validation\Validation;
 use PHPUnit\Framework\TestCase;
 use Tests\MVC\AppMock as App;
 
+/**
+ * Class AppTest.
+ *
+ * @runTestsInSeparateProcesses
+ */
 class AppTest extends TestCase
 {
 	public function setup() : void

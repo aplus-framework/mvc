@@ -4,6 +4,11 @@ use Framework\Date\Date;
 use Framework\MVC\Entity;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class EntityTest.
+ *
+ * @runTestsInSeparateProcesses
+ */
 class EntityTest extends TestCase
 {
 	/**

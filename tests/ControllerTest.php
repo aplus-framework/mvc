@@ -4,6 +4,11 @@ use Framework\MVC\App;
 use Framework\MVC\Controller;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ControllerTest.
+ *
+ * @runTestsInSeparateProcesses
+ */
 class ControllerTest extends TestCase
 {
 	/**

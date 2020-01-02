@@ -4,6 +4,11 @@ use Framework\MVC\App;
 use Framework\MVC\View;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ViewTest.
+ *
+ * @runTestsInSeparateProcesses
+ */
 class ViewTest extends TestCase
 {
 	/**

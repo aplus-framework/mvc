@@ -4,6 +4,11 @@ use Framework\Database\Definition\Table\TableDefinition;
 use Framework\MVC\App;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ModelTest.
+ *
+ * @runTestsInSeparateProcesses
+ */
 class ModelTest extends TestCase
 {
 	/**

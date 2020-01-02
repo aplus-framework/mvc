@@ -2,6 +2,11 @@
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class LanguagesTest.
+ *
+ * @runTestsInSeparateProcesses
+ */
 class LanguagesTest extends TestCase
 {
 	protected $langDir = __DIR__ . '/../src/Languages/';

@@ -4,6 +4,11 @@ use Framework\HTTP\Response;
 use Framework\MVC\ResourceController;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ResourceControllerTest.
+ *
+ * @runTestsInSeparateProcesses
+ */
 class ResourceControllerTest extends TestCase
 {
 	/**
