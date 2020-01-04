@@ -25,29 +25,29 @@
 	],
 	"require": {
 		"php": ">=7.3",
-		"natanfelles/autoload": "^1.0",
+		"natanfelles/autoload": "^1.1",
 		"natanfelles/cache": "^1.0",
-		"natanfelles/cli": "^1.0",
+		"natanfelles/cli": "^1.1",
 		"natanfelles/database": "^1.0",
 		"natanfelles/date": "^1.0",
 		"natanfelles/debug": "dev-master",
-		"natanfelles/email": "dev-master",
-		"natanfelles/http": "^1.0",
+		"natanfelles/email": "^1.0",
+		"natanfelles/http": "^1.1",
 		"natanfelles/language": "^1.0",
 		"natanfelles/log": "^1.0",
 		"natanfelles/pagination": "^1.1",
 		"natanfelles/routing": "^1.0",
 		"natanfelles/session": "^1.0",
 		"natanfelles/theme": "dev-master",
-		"natanfelles/validation": "^1.1"
+		"natanfelles/validation": "^1.2"
 	},
 	"require-dev": {
 		"ext-xdebug": "*",
-		"ergebnis/composer-normalize": "^2.0",
+		"ergebnis/composer-normalize": "^2.2",
 		"natanfelles/coding-standard": "^1.0",
-		"phpmd/phpmd": "^2.7",
-		"phpstan/phpstan": "^0.11",
-		"phpunit/phpunit": "^8.3"
+		"phpmd/phpmd": "^2.8",
+		"phpstan/phpstan": "^0.12",
+		"phpunit/phpunit": "^8.5"
 	},
 	"autoload": {
 		"psr-4": {
