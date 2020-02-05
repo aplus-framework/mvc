@@ -91,8 +91,9 @@ if ( ! function_exists('route_url')) {
 		if ($route === null) {
 			throw new OutOfBoundsException("Named route not found: {$name}");
 		}
+		$matched = App::router()->getMatchedRoute();
 		if (empty($origin_params)
-			&& $route->getOrigin() === App::router()->getMatchedRoute()->getOrigin()
+			&& $matched && $route->getOrigin() === $matched->getOrigin()
 		) {
 			$origin_params = App::router()->getMatchedOriginParams();
 		}
