@@ -27,6 +27,10 @@ abstract class Controller extends RouteAction
 		$this->theme = new Theme();
 	}
 
+	public function init()
+	{
+	}
+
 	protected function validate(array $rules, array $data) : array
 	{
 		return App::validation()->setRules($rules)->validate($data)
