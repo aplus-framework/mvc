@@ -2,10 +2,9 @@
 
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
-use Framework\Routing\RouteAction;
 use Framework\Theme\Theme;
 
-abstract class Controller extends RouteAction
+abstract class Controller
 {
 	/**
 	 * @var Request
