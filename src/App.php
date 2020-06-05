@@ -20,9 +20,9 @@ use Framework\Validation\Validation;
 class App
 {
 	public const DEBUG = false;
-	protected static $configs = [];
-	protected static $services = [];
-	protected static $isRunning = false;
+	protected static array $configs = [];
+	protected static array $services = [];
+	protected static bool $isRunning = false;
 
 	public static function getConfigs() : array
 	{
@@ -65,16 +65,38 @@ class App
 		return static::$configs[$name][$instance] = $config;
 	}
 
+	/**
+	 * Get a service.
+	 *
+	 * @param string $name
+	 * @param string $instance
+	 *
+	 * @return mixed|null
+	 */
 	public static function getService(string $name, string $instance = 'default')
 	{
 		return static::$services[$name][$instance] ?? null;
 	}
 
+	/**
+	 * Set a service.
+	 *
+	 * @param string $name
+	 * @param mixed  $service
+	 * @param string $instance
+	 *
+	 * @return mixed
+	 */
 	public static function setService(string $name, $service, string $instance = 'default')
 	{
 		return static::$services[$name][$instance] = $service;
 	}
 
+	/**
+	 * Get the Autoloader service.
+	 *
+	 * @return Autoloader
+	 */
 	public static function autoloader() : Autoloader
 	{
 		$service = static::getService('autoloader');
@@ -92,6 +114,13 @@ class App
 		return static::setService('autoloader', $service);
 	}
 
+	/**
+	 * Get a Cache service.
+	 *
+	 * @param string $instance
+	 *
+	 * @return Cache
+	 */
 	public static function cache(string $instance = 'default') : Cache
 	{
 		$service = static::getService('cache', $instance);
@@ -111,6 +140,13 @@ class App
 		return static::setService('cache', $service, $instance);
 	}
 
+	/**
+	 * Get the Console service.
+	 *
+	 * @throws \ReflectionException
+	 *
+	 * @return Console
+	 */
 	public static function console() : Console
 	{
 		$service = static::getService('console');
@@ -134,6 +170,13 @@ class App
 		return static::setService('console', $service);
 	}
 
+	/**
+	 * Get a Database service.
+	 *
+	 * @param string $instance
+	 *
+	 * @return Database
+	 */
 	public static function database(string $instance = 'default') : Database
 	{
 		return static::getService('database', $instance)
@@ -144,6 +187,13 @@ class App
 			);
 	}
 
+	/**
+	 * Get a Mailer service.
+	 *
+	 * @param string $instance
+	 *
+	 * @return Mailer
+	 */
 	public static function mailer(string $instance = 'default') : Mailer
 	{
 		$service = static::getService('mailer', $instance);
@@ -161,6 +211,11 @@ class App
 		);
 	}
 
+	/**
+	 * Get the Language service.
+	 *
+	 * @return Language
+	 */
 	public static function language() : Language
 	{
 		$service = static::getService('language');
@@ -201,6 +256,11 @@ class App
 		return static::setService('language', $service);
 	}
 
+	/**
+	 * Get the Locator service.
+	 *
+	 * @return Locator
+	 */
 	public static function locator() : Locator
 	{
 		return static::getService('locator')
@@ -210,6 +270,11 @@ class App
 			);
 	}
 
+	/**
+	 * Get the Logger service.
+	 *
+	 * @return Logger
+	 */
 	public static function logger() : Logger
 	{
 		$service = static::getService('logger');
@@ -223,24 +288,44 @@ class App
 		);
 	}
 
+	/**
+	 * Get the Router service.
+	 *
+	 * @return Router
+	 */
 	public static function router() : Router
 	{
 		return static::getService('router')
 			?? static::setService('router', new Router());
 	}
 
+	/**
+	 * Get the Request service.
+	 *
+	 * @return Request
+	 */
 	public static function request() : Request
 	{
 		return static::getService('request')
 			?? static::setService('request', new Request());
 	}
 
+	/**
+	 * Get the Response service.
+	 *
+	 * @return Response
+	 */
 	public static function response() : Response
 	{
 		return static::getService('response')
 			?? static::setService('response', new Response(static::request()));
 	}
 
+	/**
+	 * Get the Session service.
+	 *
+	 * @return Session
+	 */
 	public static function session() : Session
 	{
 		$service = static::getService('session');
@@ -253,6 +338,13 @@ class App
 		return static::setService('session', $service);
 	}
 
+	/**
+	 * Get a Validation service.
+	 *
+	 * @param string $instance
+	 *
+	 * @return Validation
+	 */
 	public static function validation(string $instance = 'default') : Validation
 	{
 		$service = static::getService('validation', $instance);
@@ -267,6 +359,13 @@ class App
 		);
 	}
 
+	/**
+	 * Get a View service.
+	 *
+	 * @param string $instance
+	 *
+	 * @return View
+	 */
 	public static function view(string $instance = 'default') : View
 	{
 		$service = static::getService('view', $instance);

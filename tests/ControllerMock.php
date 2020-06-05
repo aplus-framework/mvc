@@ -10,7 +10,7 @@ class ControllerMock extends Controller
 	/**
 	 * @var Theme
 	 */
-	public $theme;
+	public Theme $theme;
 
 	public function __construct()
 	{

@@ -6,18 +6,9 @@ use Framework\Theme\Theme;
 
 abstract class Controller
 {
-	/**
-	 * @var Request
-	 */
-	protected $request;
-	/**
-	 * @var Response
-	 */
-	protected $response;
-	/**
-	 * @var Theme
-	 */
-	protected $theme;
+	protected Request $request;
+	protected Response $response;
+	protected Theme $theme;
 
 	public function __construct(Request $request, Response $response)
 	{

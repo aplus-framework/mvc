@@ -21,7 +21,13 @@ abstract class Entity implements \JsonSerializable
 		}
 	}
 
-	public function __set($property, $value)
+	/**
+	 * @param string $property
+	 * @param mixed  $value
+	 *
+	 * @throws \OutOfBoundsException if property not defined
+	 */
+	public function __set(string $property, $value)
 	{
 		$method = $this->renderMethodName('set', $property);
 		if (\method_exists($this, $method)) {
@@ -35,7 +41,14 @@ abstract class Entity implements \JsonSerializable
 		throw new \OutOfBoundsException("Property not defined: {$property}");
 	}
 
-	public function __get($property)
+	/**
+	 * @param string $property
+	 *
+	 * @throws \OutOfBoundsException if property not defined
+	 *
+	 * @return mixed
+	 */
+	public function __get(string $property)
 	{
 		$method = $this->renderMethodName('get', $property);
 		if (\method_exists($this, $method)) {
@@ -52,6 +65,12 @@ abstract class Entity implements \JsonSerializable
 		return $this->toScalarJSON($this->toArray());
 	}
 
+	/**
+	 * @param string $type     get or set
+	 * @param string $property Property name
+	 *
+	 * @return string
+	 */
 	protected function renderMethodName(string $type, string $property) : string
 	{
 		static $properties;
@@ -119,6 +138,9 @@ abstract class Entity implements \JsonSerializable
 	 *
 	 * @see toScalar
 	 *
+	 * @throws \InvalidArgumentException if value is not a string or Date
+	 * @throws \Exception                Emits Exception in case of an error
+	 *
 	 * @return Date|null
 	 */
 	protected function fromDateTime($value) : ?Date
@@ -159,7 +181,7 @@ abstract class Entity implements \JsonSerializable
 	/**
 	 * Converts a property value into scalar type or null.
 	 *
-	 * If a settter/getter ending with AsScalar exists, (i.e. getConfigAsScalar), it will run to
+	 * If a setter/getter ending with AsScalar exists, (i.e. getConfigAsScalar), it will run to
 	 * render the proper value.
 	 *
 	 * stdClass or array types are converted to a JSON string.
@@ -167,6 +189,8 @@ abstract class Entity implements \JsonSerializable
 	 * DateTime instances are converted to a string in the format Y-m-d H:i:s
 	 *
 	 * @param string $property
+	 *
+	 * @throws \RuntimeException if property was not converted to scalar
 	 *
 	 * @return bool|float|int|string|null
 	 */
