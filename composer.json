@@ -25,6 +25,7 @@
 	],
 	"require": {
 		"php": ">=7.4",
+		"ext-json": "*",
 		"natanfelles/autoload": "^1.2",
 		"natanfelles/cache": "^1.2",
 		"natanfelles/cli": "^1.2",
