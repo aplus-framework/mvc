@@ -11,6 +11,7 @@ class ControllerMock extends Controller
 	 * @var Theme
 	 */
 	public Theme $theme;
+	protected string $modelClass = ModelMock::class;
 
 	public function __construct()
 	{

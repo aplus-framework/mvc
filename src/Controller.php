@@ -9,12 +9,17 @@ abstract class Controller
 	protected Request $request;
 	protected Response $response;
 	protected Theme $theme;
+	protected string $modelClass;
+	protected Model $model;
 
 	public function __construct(Request $request, Response $response)
 	{
 		$this->request = $request;
 		$this->response = $response;
 		$this->theme = new Theme();
+		if (isset($this->modelClass)) {
+			$this->model = new $this->modelClass();
+		}
 	}
 
 	public function init()
