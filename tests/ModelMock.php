@@ -8,7 +8,7 @@ class ModelMock extends Model
 {
 	public $returnType = 'object';
 	public $allowedColumns = ['data'];
-	public $useDatetime = false;
+	public $useDatetime = true;
 	public $validationRules = [];
 	public $protectPrimaryKey = true;
 

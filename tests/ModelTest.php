@@ -32,8 +32,16 @@ class ModelTest extends TestCase
 				$definition->column('createdAt')->datetime();
 				$definition->column('updatedAt')->datetime();
 			})->run();
-		App::database()->insert()->into('ModelMock')->set(['data' => 'foo'])->run();
-		App::database()->insert()->into('ModelMock')->set(['data' => 'bar'])->run();
+		App::database()->insert()->into('ModelMock')->set([
+			'data' => 'foo',
+			'createdAt' => \date('Y-m-d H:i:s'),
+			'updatedAt' => \date('Y-m-d H:i:s'),
+		])->run();
+		App::database()->insert()->into('ModelMock')->set([
+			'data' => 'bar',
+			'createdAt' => \date('Y-m-d H:i:s'),
+			'updatedAt' => \date('Y-m-d H:i:s'),
+		])->run();
 		$this->model = new ModelMock();
 	}
 
@@ -79,33 +87,21 @@ class ModelTest extends TestCase
 	{
 		$row = $this->model->create(new EntityMock(['data' => 'Value']));
 		$this->assertEquals(3, $row->id);
-		$this->assertNull($row->createdAt);
-		$this->assertNull($row->updatedAt);
 		$row = $this->model->create(['data' => 'Value']);
 		$this->assertEquals(4, $row->id);
-		$this->assertNull($row->createdAt);
-		$this->assertNull($row->updatedAt);
-		$this->model->useDatetime = true;
 		$row = $this->model->create(['data' => 'Value']);
 		$this->assertEquals(5, $row->id);
-		$this->assertNotNull($row->createdAt);
-		$this->assertNotNull($row->updatedAt);
 	}
 
 	public function testUpdate()
 	{
 		$row = $this->model->update(1, new EntityMock(['data' => 'x']));
 		$this->assertEquals('x', $row->data);
-		$this->assertNull($row->createdAt);
-		$this->assertNull($row->updatedAt);
 		$row = $this->model->update(1, ['data' => 'x']);
 		$this->assertEquals('x', $row->data);
-		$this->assertNull($row->createdAt);
-		$this->assertNull($row->updatedAt);
 		$this->model->useDatetime = true;
 		$row = $this->model->update(1, ['data' => 'y']);
 		$this->assertEquals('y', $row->data);
-		$this->assertNull($row->createdAt);
 		$this->assertNotNull($row->updatedAt);
 	}
 
@@ -113,17 +109,10 @@ class ModelTest extends TestCase
 	{
 		$row = $this->model->replace(1, new EntityMock(['data' => 'x']));
 		$this->assertEquals('x', $row->data);
-		$this->assertNull($row->createdAt);
-		$this->assertNull($row->updatedAt);
 		$row = $this->model->replace(1, ['data' => 'x']);
 		$this->assertEquals('x', $row->data);
-		$this->assertNull($row->createdAt);
-		$this->assertNull($row->updatedAt);
-		$this->model->useDatetime = true;
 		$row = $this->model->replace(1, ['data' => 'y']);
 		$this->assertEquals('y', $row->data);
-		$this->assertNotNull($row->createdAt);
-		$this->assertNotNull($row->updatedAt);
 	}
 
 	public function testSave()
@@ -158,24 +147,24 @@ class ModelTest extends TestCase
 			[
 				'id' => 1,
 				'data' => 'foo',
-				'createdAt' => null,
-				'updatedAt' => null,
+				'createdAt' => \date('Y-m-d H:i:s'),
+				'updatedAt' => \date('Y-m-d H:i:s'),
 			],
 		], $this->model->paginate(-1, 1)->getItems());
 		$this->assertEquals([
 			[
 				'id' => 1,
 				'data' => 'foo',
-				'createdAt' => null,
-				'updatedAt' => null,
+				'createdAt' => \date('Y-m-d H:i:s'),
+				'updatedAt' => \date('Y-m-d H:i:s'),
 			],
 		], $this->model->paginate(1, 1)->getItems());
 		$this->assertEquals([
 			[
 				'id' => 2,
 				'data' => 'bar',
-				'createdAt' => null,
-				'updatedAt' => null,
+				'createdAt' => \date('Y-m-d H:i:s'),
+				'updatedAt' => \date('Y-m-d H:i:s'),
 			],
 		], $this->model->paginate(2, 1)->getItems());
 		$this->assertEquals([], $this->model->paginate(3, 1)->getItems());
