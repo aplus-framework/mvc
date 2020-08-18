@@ -2,9 +2,10 @@
 
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
+use Framework\Routing\RouteAction;
 use Framework\Theme\Theme;
 
-abstract class Controller
+abstract class Controller extends RouteAction
 {
 	protected Request $request;
 	protected Response $response;
@@ -20,10 +21,6 @@ abstract class Controller
 		if (isset($this->modelClass)) {
 			$this->model = new $this->modelClass();
 		}
-	}
-
-	public function init()
-	{
 	}
 
 	protected function validate(array $rules, array $data) : array
