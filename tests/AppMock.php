@@ -8,7 +8,7 @@ class AppMock extends \Framework\MVC\App
 	{
 		return static::getService('request')
 			?? static::setService('request', new class() extends Request {
-				protected function prepareStatusLine()
+				protected function prepareStatusLine() : void
 				{
 					$this->setProtocol('HTTP/1.1');
 					$this->setMethod('GET');
