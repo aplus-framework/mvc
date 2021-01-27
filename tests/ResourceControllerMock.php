@@ -14,7 +14,7 @@ class ResourceControllerMock extends ResourceController
 				string $variable = null,
 				int $filter = null,
 				$options = null
-			) {
+			) : mixed {
 				$data = [];
 				if ($type === \INPUT_SERVER) {
 					$data = [

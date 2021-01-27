@@ -21,7 +21,7 @@ class ControllerMock extends Controller
 				string $variable = null,
 				int $filter = null,
 				$options = null
-			) {
+			) : mixed {
 				$data = [];
 				if ($type === \INPUT_SERVER) {
 					$data = [
