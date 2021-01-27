@@ -1,40 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         bootstrap="vendor/autoload.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         stopOnError="false"
-         stopOnFailure="false"
-         stopOnIncomplete="false"
-         stopOnSkipped="false">
-
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false"
+         bootstrap="vendor/autoload.php" colors="true" convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true" convertWarningsToExceptions="true" stopOnError="false"
+         stopOnFailure="false" stopOnIncomplete="false" stopOnSkipped="false"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+	<coverage processUncoveredFiles="true">
+		<include>
+			<directory suffix=".php">src</directory>
+		</include>
+		<exclude>
+			<file>src/configs.php</file>
+			<file>src/routes.php</file>
+			<file>src/View/layout.php</file>
+		</exclude>
+		<report>
+			<clover outputFile="build/coverage/clover.xml"/>
+			<html outputDirectory="build/coverage"/>
+			<text outputFile="php://stdout"/>
+		</report>
+	</coverage>
 	<testsuite name="Tests">
 		<directory suffix="Test.php">tests</directory>
 	</testsuite>
-
-	<filter>
-		<whitelist processUncoveredFilesFromWhitelist="true">
-			<directory suffix=".php">src</directory>
-			<exclude>
-				<file>src/configs.php</file>
-			</exclude>
-			<exclude>
-				<file>src/routes.php</file>
-			</exclude>
-			<exclude>
-				<file>src/View/layout.php</file>
-			</exclude>
-		</whitelist>
-	</filter>
-
-	<logging>
-		<log type="coverage-clover" target="build/coverage/clover.xml"/>
-		<log type="coverage-html" target="build/coverage"/>
-		<log type="coverage-text" target="php://stdout"/>
-	</logging>
-
+	<logging/>
 	<php>
 		<env name="DB_HOST" value="mariadb"/>
 		<env name="DB_PORT" value="3306"/>
@@ -44,5 +32,4 @@
 		<env name="MEMCACHED_HOST" value="memcached"/>
 		<env name="REDIS_HOST" value="redis"/>
 	</php>
-
 </phpunit>
