@@ -128,7 +128,7 @@ class App
 			return $service;
 		}
 		$config = static::getConfig('cache', $instance);
-		if (\strpos($config['driver'], '\\') === false) {
+		if ( ! \str_contains($config['driver'], '\\')) {
 			$config['driver'] = \ucfirst($config['driver']);
 			$config['driver'] = "Framework\\Cache\\{$config['driver']}";
 		}

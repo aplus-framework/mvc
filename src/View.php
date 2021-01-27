@@ -60,7 +60,7 @@ class View
 		if ( ! $real || ! \is_file($real)) {
 			throw new \InvalidArgumentException("View path does not match a file: {$view} ");
 		}
-		if ($this->getBasePath() && \strpos($real, $this->getBasePath()) !== 0) {
+		if ($this->getBasePath() && ! \str_starts_with($real, $this->getBasePath())) {
 			throw new \InvalidArgumentException("View path out of base path directory: {$real} ");
 		}
 		return $real;
