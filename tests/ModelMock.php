@@ -6,11 +6,11 @@ use Framework\Pagination\Pager;
 
 class ModelMock extends Model
 {
-	public $returnType = 'object';
-	public $allowedColumns = ['data'];
-	public $useDatetime = true;
-	public $validationRules = [];
-	public $protectPrimaryKey = true;
+	public string $returnType = 'object';
+	public array $allowedColumns = ['data'];
+	public bool $useDatetime = true;
+	public array $validationRules = [];
+	public bool $protectPrimaryKey = true;
 
 	public function paginate(int $page, int $per_page = 10) : Pager
 	{

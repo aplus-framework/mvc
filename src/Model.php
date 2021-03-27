@@ -11,73 +11,56 @@ abstract class Model
 {
 	/**
 	 * Database connection instance names.
-	 *
-	 * @var array
 	 */
-	protected $connections = [
+	protected array $connections = [
 		'read' => 'default',
 		'write' => 'default',
 	];
 	/**
 	 * Table name.
-	 *
-	 * @var string|null
 	 */
-	protected $table;
+	protected ?string $table = null;
 	/**
 	 * Table Primary Key.
-	 *
-	 * @var string
 	 */
-	protected $primaryKey = 'id';
+	protected string $primaryKey = 'id';
 	/**
 	 * Prevents Primary Key changes on INSERT and UPDATE.
-	 *
-	 * @var bool
 	 */
-	protected $protectPrimaryKey = true;
+	protected bool $protectPrimaryKey = true;
 	/**
 	 * Fetched item return type.
 	 *
 	 * @see Entity
-	 *
-	 * @var string array, object or the classname of an Entity instance
+	 * array, object or the classname of an Entity instance
 	 */
-	protected $returnType = 'object';
+	protected string $returnType = 'object';
 	/**
 	 * Allowed columns for INSERT and UPDATE.
-	 *
-	 * @var array
 	 */
-	protected $allowedColumns = [];
-	/**
-	 * @var bool
-	 */
-	protected $useDatetime = false;
+	protected array $allowedColumns = [];
+	protected bool $useDatetime = false;
 	/**
 	 * `created_at` datetime NULL DEFAULT NULL,
 	 * `updated_at` datetime NULL DEFAULT NULL,.
 	 *
-	 * @var array
+	 * @var array|string[]
 	 */
-	protected $datetimeColumns = [
+	protected array $datetimeColumns = [
 		'create' => 'createdAt',
 		'update' => 'updatedAt',
 	];
+	protected Validation $validation;
 	/**
-	 * @var Validation
+	 * @var array|string[]
 	 */
-	protected $validation;
-	/**
-	 * @var array
-	 */
-	protected $validationLabels = [];
+	protected array $validationLabels = [];
 	/**
 	 * @see Validation::setRules
 	 *
-	 * @var array
+	 * @var array|array[]
 	 */
-	protected $validationRules = [];
+	protected array $validationRules = [];
 
 	protected function getTable() : string
 	{
@@ -358,7 +341,7 @@ abstract class Model
 
 	protected function getValidation() : Validation
 	{
-		if ($this->validation) {
+		if (isset($this->validation)) {
 			return $this->validation;
 		}
 		return $this->validation = App::validation('Model:' . \get_class($this))

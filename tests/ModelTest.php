@@ -62,7 +62,7 @@ class ModelTest extends TestCase
 
 	public function testAllowedColumnsNotDefined()
 	{
-		$this->model->allowedColumns = null;
+		$this->model->allowedColumns = [];
 		$this->expectException(\LogicException::class);
 		$this->expectExceptionMessage('Allowed columns not defined for INSERT and UPDATE');
 		$this->model->create(['data' => 'Value']);
