@@ -68,13 +68,14 @@ abstract class Model
 			return $this->table;
 		}
 		$class = \get_class($this);
-		if ($pos = \strrpos($class, '\\')) {
+		$pos = \strrpos($class, '\\');
+		if ($pos) {
 			$class = \substr($class, $pos + 1);
 		}
 		return $this->table = $class;
 	}
 
-	protected function checkPrimaryKey($primary_key) : void
+	protected function checkPrimaryKey(int | string $primary_key) : void
 	{
 		if (empty($primary_key)) {
 			throw new \InvalidArgumentException(
@@ -83,6 +84,11 @@ abstract class Model
 		}
 	}
 
+	/**
+	 * @param array|string[] $columns
+	 *
+	 * @return array|string[]
+	 */
 	protected function filterAllowedColumns(array $columns) : array
 	{
 		if (empty($this->allowedColumns)) {
@@ -171,9 +177,9 @@ abstract class Model
 	/**
 	 * @param int|string $primary_key
 	 *
-	 * @return array|Entity|object|null
+	 * @return array|Entity|\stdClass|string[]|null
 	 */
-	public function find($primary_key)
+	public function find(int | string $primary_key)
 	{
 		$this->checkPrimaryKey($primary_key);
 		$data = $this->getDatabaseForRead()
@@ -186,6 +192,11 @@ abstract class Model
 		return $data ? $this->makeEntity($data) : null;
 	}
 
+	/**
+	 * @param array|string[] $data
+	 *
+	 * @return array|Entity|\stdClass
+	 */
 	protected function makeEntity(array $data)
 	{
 		if ($this->returnType === 'array') {
@@ -207,7 +218,7 @@ abstract class Model
 	}
 
 	/**
-	 * @param array|Entity|object $data
+	 * @param array|Entity|\stdClass $data
 	 *
 	 * @return array
 	 */
@@ -219,22 +230,22 @@ abstract class Model
 	}
 
 	/**
-	 * @param array|Entity|object $data
+	 * @param array|Entity|\stdClass $data
 	 *
 	 * @return array
 	 */
-	protected function prepareData($data) : array
+	protected function prepareData(array | Entity | \stdClass $data) : array
 	{
 		$data = $this->makeArray($data);
 		return $this->filterAllowedColumns($data);
 	}
 
 	/**
-	 * @param array|Entity|object $data
+	 * @param array|Entity|\stdClass|string[] $data
 	 *
-	 * @return array|Entity|false|object|null
+	 * @return array|Entity|false|\stdClass|string[]|null
 	 */
-	public function create($data)
+	public function create(array | Entity | \stdClass $data)
 	{
 		$data = $this->prepareData($data);
 		if ($this->getValidation()->validate($data) === false) {
@@ -254,11 +265,11 @@ abstract class Model
 	}
 
 	/**
-	 * @param array|Entity|object $data
+	 * @param array|Entity|\stdClass $data
 	 *
-	 * @return array|Entity|false|object|null
+	 * @return array|Entity|false|\stdClass|null
 	 */
-	public function save($data)
+	public function save(array | Entity | \stdClass $data)
 	{
 		$data = $this->makeArray($data);
 		$primary_key = $data[$this->primaryKey] ?? null;
@@ -270,12 +281,12 @@ abstract class Model
 	}
 
 	/**
-	 * @param int|string          $primary_key
-	 * @param array|Entity|object $data
+	 * @param int|string             $primary_key
+	 * @param array|Entity|\stdClass $data
 	 *
-	 * @return array|Entity|false|object|null
+	 * @return array|Entity|false|\stdClass|null
 	 */
-	public function update($primary_key, $data)
+	public function update(int | string $primary_key, array | Entity | \stdClass $data)
 	{
 		$this->checkPrimaryKey($primary_key);
 		$data = $this->prepareData($data);
@@ -296,12 +307,12 @@ abstract class Model
 	}
 
 	/**
-	 * @param int|string          $primary_key
-	 * @param array|Entity|object $data
+	 * @param int|string             $primary_key
+	 * @param array|Entity|\stdClass $data
 	 *
-	 * @return array|Entity|false|object|null
+	 * @return array|Entity|false|\stdClass|null
 	 */
-	public function replace($primary_key, $data)
+	public function replace(int | string $primary_key, array | Entity | \stdClass $data)
 	{
 		$this->checkPrimaryKey($primary_key);
 		$data = $this->prepareData($data);
@@ -329,7 +340,7 @@ abstract class Model
 	 *
 	 * @return bool
 	 */
-	public function delete($primary_key) : bool
+	public function delete(int | string $primary_key) : bool
 	{
 		$this->checkPrimaryKey($primary_key);
 		return $this->getDatabaseForWrite()
@@ -349,6 +360,9 @@ abstract class Model
 			->setRules($this->validationRules);
 	}
 
+	/**
+	 * @return array|string[]
+	 */
 	public function getErrors() : array
 	{
 		return $this->getValidation()->getErrors();
