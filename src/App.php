@@ -20,20 +20,39 @@ use Framework\Validation\Validation;
 class App
 {
 	public const DEBUG = false;
+	/**
+	 * @var array|array[]
+	 */
 	protected static array $configs = [];
 	protected static array $services = [];
 	protected static bool $isRunning = false;
 
+	/**
+	 * @return array|array[]
+	 */
 	public static function getConfigs() : array
 	{
 		return static::$configs;
 	}
 
+	/**
+	 * @param string $name
+	 * @param string $instance
+	 *
+	 * @return array|null
+	 */
 	public static function getConfig(string $name, string $instance = 'default') : ?array
 	{
 		return static::$configs[$name][$instance] ?? null;
 	}
 
+	/**
+	 * @param string $name
+	 * @param array  $config
+	 * @param string $instance
+	 *
+	 * @return array
+	 */
 	public static function setConfig(
 		string $name,
 		array $config,
@@ -42,7 +61,10 @@ class App
 		return static::$configs[$name][$instance] = $config;
 	}
 
-	public static function setConfigs(array $configs)
+	/**
+	 * @param array|array[] $configs
+	 */
+	public static function setConfigs(array $configs) : void
 	{
 		foreach ($configs as $name => $values) {
 			foreach ($values as $instance => $config) {
@@ -51,6 +73,13 @@ class App
 		}
 	}
 
+	/**
+	 * @param string $name
+	 * @param array  $config
+	 * @param string $instance
+	 *
+	 * @return array
+	 */
 	public static function addConfig(
 		string $name,
 		array $config,
@@ -243,13 +272,14 @@ class App
 		if (isset($config['directories'])) {
 			$service->setDirectories($config['directories']);
 		} else {
+			$directories = [];
 			foreach (static::autoloader()->getNamespaces() as $directory) {
 				$directory = "{$directory}Languages";
 				if (\is_dir($directory)) {
 					$directories[] = $directory;
 				}
 			}
-			if (isset($directories)) {
+			if ($directories) {
 				$service->setDirectories($directories);
 			}
 		}
@@ -421,6 +451,11 @@ class App
 		return $is_cli ?? $is_cli = (\PHP_SAPI === 'cli' || \defined('STDIN'));
 	}
 
+	/**
+	 * @param string $instance
+	 *
+	 * @return array|string[]
+	 */
 	protected static function prepareConfigs(string $instance = 'default') : array
 	{
 		$files = static::getConfig('configs', $instance);
@@ -434,6 +469,11 @@ class App
 		return $files;
 	}
 
+	/**
+	 * @param string $file
+	 *
+	 * @return array[]
+	 */
 	protected static function mergeFileConfigs(string $file) : array
 	{
 		if ( ! \is_file($file)) {
@@ -466,6 +506,11 @@ class App
 		return static::getConfigs();
 	}
 
+	/**
+	 * @param string $instance
+	 *
+	 * @return array|string[]
+	 */
 	protected static function prepareRoutes(string $instance = 'default') : array
 	{
 		$files = static::getConfig('routes', $instance);
