@@ -110,6 +110,20 @@ trait Resource
 	}
 
 	/**
+	 * Responds an HTTP 401 (Unauthorized) status code and data.
+	 *
+	 * @param mixed|null $data
+	 *
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+	 *
+	 * @return \Framework\HTTP\Response
+	 */
+	protected function respondUnauthorized(mixed $data = null) : Response
+	{
+		return $this->respond(401, $data);
+	}
+
+	/**
 	 * Responds an HTTP 403 (Forbidden) status code and data.
 	 *
 	 * @param mixed|null $data

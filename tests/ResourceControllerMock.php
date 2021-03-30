@@ -72,6 +72,11 @@ class ResourceControllerMock extends ResourceController
 		return parent::respondBadRequest($data);
 	}
 
+	public function respondUnauthorized($data = null) : Response
+	{
+		return parent::respondUnauthorized($data);
+	}
+
 	public function respondCreated($data = null) : Response
 	{
 		return parent::respondCreated($data);
