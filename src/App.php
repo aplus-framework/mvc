@@ -17,6 +17,7 @@ use Framework\Routing\Router;
 use Framework\Session\Session;
 use Framework\Validation\Validation;
 use LogicException;
+use RuntimeException;
 
 class App
 {
@@ -420,6 +421,7 @@ class App
 			throw new LogicException('App already is running');
 		}
 		static::$isRunning = true;
+		// TODO: require user helpers first
 		require __DIR__ . '/helpers.php';
 		\ob_start();
 		static::prepareConfigs();
@@ -454,31 +456,26 @@ class App
 
 	/**
 	 * @param string $instance
-	 *
-	 * @return array|string[]
 	 */
-	protected static function prepareConfigs(string $instance = 'default') : array
+	protected static function prepareConfigs(string $instance = 'default') : void
 	{
 		$files = static::getConfig('configs', $instance);
 		if ( ! $files) {
-			return [];
+			return;
 		}
 		$files = \array_unique($files);
 		foreach ($files as $file) {
 			static::mergeFileConfigs($file);
 		}
-		return $files;
 	}
 
 	/**
 	 * @param string $file
-	 *
-	 * @return array[]
 	 */
-	protected static function mergeFileConfigs(string $file) : array
+	protected static function mergeFileConfigs(string $file) : void
 	{
 		if ( ! \is_file($file)) {
-			throw new \RuntimeException(
+			throw new RuntimeException(
 				"Invalid config file path: {$file}"
 			);
 		}
@@ -504,7 +501,6 @@ class App
 				static::addConfig($service, $config, $instance);
 			}
 		}
-		return static::getConfigs();
 	}
 
 	/**
