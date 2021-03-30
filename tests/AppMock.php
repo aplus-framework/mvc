@@ -22,9 +22,9 @@ class AppMock extends \Framework\MVC\App
 			});
 	}
 
-	public static function prepareRoutes(string $instance = 'default') : array
+	public static function prepareRoutes(string $instance = 'default') : void
 	{
-		return parent::prepareRoutes($instance);
+		parent::prepareRoutes($instance);
 	}
 
 	public static function mergeFileConfigs(string $file) : array

@@ -16,6 +16,7 @@ use Framework\Log\Logger;
 use Framework\Routing\Router;
 use Framework\Session\Session;
 use Framework\Validation\Validation;
+use LogicException;
 
 class App
 {
@@ -416,7 +417,7 @@ class App
 	public static function run() : void
 	{
 		if (static::$isRunning) {
-			throw new \LogicException('App already is running');
+			throw new LogicException('App already is running');
 		}
 		static::$isRunning = true;
 		require __DIR__ . '/helpers.php';
@@ -484,19 +485,19 @@ class App
 		unset($config);
 		require $file;
 		if ( ! isset($config) || ! \is_array($config)) {
-			throw new \LogicException(
+			throw new LogicException(
 				"Configs file must have a config array variable: {$file}"
 			);
 		}
 		foreach ($config as $service => $instances) {
 			if ( ! \is_array($instances)) {
-				throw new \LogicException(
+				throw new LogicException(
 					"Config service name '{$service}' must be an array on file '{$file}'"
 				);
 			}
 			foreach ($instances as $instance => $config) {
 				if ( ! \is_array($config)) {
-					throw new \LogicException(
+					throw new LogicException(
 						"Config instance name '{$instance}' of service name '{$service}' must be an array on file '{$file}'"
 					);
 				}
@@ -508,20 +509,20 @@ class App
 
 	/**
 	 * @param string $instance
-	 *
-	 * @return array|string[]
 	 */
-	protected static function prepareRoutes(string $instance = 'default') : array
+	protected static function prepareRoutes(string $instance = 'default') : void
 	{
 		$files = static::getConfig('routes', $instance);
 		if ( ! $files) {
-			return [];
+			return;
 		}
 		$files = \array_unique($files);
 		foreach ($files as $file) {
+			if ( ! \is_file($file)) {
+				throw new LogicException('Invalid route file: ' . $file);
+			}
 			require $file;
 		}
-		return $files;
 	}
 
 	/**
@@ -550,6 +551,6 @@ class App
 		if ($action instanceof \Closure) {
 			$action = '{closure}';
 		}
-		throw new \LogicException("Invalid return type '{$type}' on matched route '{$action}'");
+		throw new LogicException("Invalid return type '{$type}' on matched route '{$action}'");
 	}
 }
