@@ -1,13 +1,16 @@
 <?php
+
+use Framework\MVC\App;
+
 if ( ! function_exists('helpers')) {
 	/**
 	 * Loads helper files.
 	 *
-	 * @param array|string $helper
+	 * @param array|string|string[] $helper
 	 *
-	 * @return array A list of all loaded files
+	 * @return array|string[] A list of all loaded files
 	 */
-	function helpers($helper) : array
+	function helpers(array | string $helper) : array
 	{
 		if (is_array($helper)) {
 			$files = [];
@@ -88,9 +91,6 @@ if ( ! function_exists('route_url')) {
 	function route_url(string $name, array $path_params = [], array $origin_params = []) : string
 	{
 		$route = App::router()->getNamedRoute($name);
-		if ($route === null) {
-			throw new OutOfBoundsException("Named route not found: {$name}");
-		}
 		$matched = App::router()->getMatchedRoute();
 		if (empty($origin_params)
 			&& $matched && $route->getOrigin() === $matched->getOrigin()
@@ -101,6 +101,13 @@ if ( ! function_exists('route_url')) {
 	}
 }
 if ( ! function_exists('lang')) {
+	/**
+	 * @param string         $line
+	 * @param array|string[] $args
+	 * @param string|null    $locale
+	 *
+	 * @return string|null
+	 */
 	function lang(string $line, $args = [], string $locale = null) : ?string
 	{
 		return App::language()->lang($line, $args, $locale);
