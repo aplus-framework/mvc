@@ -160,6 +160,14 @@ abstract class Model
 		];
 	}
 
+	/**
+	 * Paginate data.
+	 *
+	 * @param int $page     The current page
+	 * @param int $per_page
+	 *
+	 * @return \Framework\Pagination\Pager
+	 */
 	public function paginate(int $page, int $per_page = 10) : Pager
 	{
 		$data = $this->getDatabaseForRead()
@@ -230,9 +238,11 @@ abstract class Model
 	}
 
 	/**
+	 * Convert data to array and filter allowed columns.
+	 *
 	 * @param array|Entity|\stdClass $data
 	 *
-	 * @return array
+	 * @return array The allowed columns
 	 */
 	protected function prepareData(array | Entity | \stdClass $data) : array
 	{
@@ -241,6 +251,8 @@ abstract class Model
 	}
 
 	/**
+	 * Insert and get a new row.
+	 *
 	 * @param array|Entity|\stdClass|string[] $data
 	 *
 	 * @return array|Entity|false|\stdClass|string[]|null
@@ -265,9 +277,12 @@ abstract class Model
 	}
 
 	/**
+	 * Save a row. Update if the Primary Key is present, otherwise
+	 * insert a new row.
+	 *
 	 * @param array|Entity|\stdClass $data
 	 *
-	 * @return array|Entity|false|\stdClass|null
+	 * @return array|Entity|false|\stdClass|null The saved row
 	 */
 	public function save(array | Entity | \stdClass $data)
 	{
@@ -281,6 +296,8 @@ abstract class Model
 	}
 
 	/**
+	 * Update based on Primary Key and return the new row.
+	 *
 	 * @param int|string             $primary_key
 	 * @param array|Entity|\stdClass $data
 	 *
@@ -307,6 +324,8 @@ abstract class Model
 	}
 
 	/**
+	 * Replace based on Primary Key and return the new row.
+	 *
 	 * @param int|string             $primary_key
 	 * @param array|Entity|\stdClass $data
 	 *
@@ -336,6 +355,8 @@ abstract class Model
 	}
 
 	/**
+	 * Delete a row based on Primary Key.
+	 *
 	 * @param int|string $primary_key
 	 *
 	 * @return bool
@@ -361,6 +382,8 @@ abstract class Model
 	}
 
 	/**
+	 * Get Validation errors.
+	 *
 	 * @return array|string[]
 	 */
 	public function getErrors() : array
