@@ -1,6 +1,8 @@
 <?php namespace Framework\MVC;
 
 use Framework\Date\Date;
+use InvalidArgumentException;
+use OutOfBoundsException;
 
 abstract class Entity implements \JsonSerializable, \Stringable
 {
@@ -38,7 +40,7 @@ abstract class Entity implements \JsonSerializable, \Stringable
 			$this->{$property} = $value;
 			return;
 		}
-		throw new \OutOfBoundsException("Property not defined: {$property}");
+		throw new OutOfBoundsException("Property not defined: {$property}");
 	}
 
 	/**
@@ -57,7 +59,7 @@ abstract class Entity implements \JsonSerializable, \Stringable
 		if (\property_exists($this, $property)) {
 			return $this->{$property};
 		}
-		throw new \OutOfBoundsException("Property not defined: {$property}");
+		throw new OutOfBoundsException("Property not defined: {$property}");
 	}
 
 	public function __toString() : string
@@ -152,7 +154,7 @@ abstract class Entity implements \JsonSerializable, \Stringable
 			return $value;
 		}
 		if ( ! \is_string($value)) {
-			throw new \InvalidArgumentException('Value type must be string or Framework\Date\Date');
+			throw new InvalidArgumentException('Value type must be string or Framework\Date\Date');
 		}
 		return new Date($value, $this->timezone());
 	}
@@ -175,6 +177,7 @@ abstract class Entity implements \JsonSerializable, \Stringable
 	protected function toScalarDateTime(Date $value) : string
 	{
 		$value = clone $value;
+		// ATOM constant is present on DateTimeInterface. All right.
 		return $value->setTimezone($this->timezone())->format(Date::ATOM);
 	}
 
