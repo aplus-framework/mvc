@@ -2,7 +2,7 @@
 
 use Framework\Date\Date;
 
-abstract class Entity implements \JsonSerializable
+abstract class Entity implements \JsonSerializable, \Stringable
 {
 	public function __construct(array $properties)
 	{
@@ -60,7 +60,7 @@ abstract class Entity implements \JsonSerializable
 		throw new \OutOfBoundsException("Property not defined: {$property}");
 	}
 
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->toScalarJSON($this->toArray());
 	}
