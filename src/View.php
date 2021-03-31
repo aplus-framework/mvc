@@ -1,11 +1,13 @@
 <?php namespace Framework\MVC;
 
+use InvalidArgumentException;
+
 class View
 {
-	protected $path;
-	protected $data;
-	protected $basePath;
-	protected $extension;
+	protected ?string $path;
+	protected ?array $data;
+	protected ?string $basePath = null;
+	protected string $extension;
 
 	public function __construct(string $base_path = null, string $extension = '.php')
 	{
@@ -19,7 +21,7 @@ class View
 	{
 		$real = \realpath($base_path);
 		if ( ! $real || ! \is_dir($real)) {
-			throw new \InvalidArgumentException("View base path is not a directory: {$base_path} ");
+			throw new InvalidArgumentException("View base path is not a valid directory: {$base_path} ");
 		}
 		$this->basePath = \rtrim($real, \DIRECTORY_SEPARATOR) . \DIRECTORY_SEPARATOR;
 		return $this;
@@ -47,7 +49,7 @@ class View
 		if ($path) {
 			return $path;
 		}
-		throw new \InvalidArgumentException("Namespaced view path does not match a file: {$view} ");
+		throw new InvalidArgumentException("Namespaced view path does not match a file: {$view} ");
 	}
 
 	protected function makePath(string $view) : string
@@ -58,10 +60,10 @@ class View
 		$view = $this->getBasePath() . $view . $this->getExtension();
 		$real = \realpath($view);
 		if ( ! $real || ! \is_file($real)) {
-			throw new \InvalidArgumentException("View path does not match a file: {$view} ");
+			throw new InvalidArgumentException("View path does not match a file: {$view} ");
 		}
 		if ($this->getBasePath() && ! \str_starts_with($real, $this->getBasePath())) {
-			throw new \InvalidArgumentException("View path out of base path directory: {$real} ");
+			throw new InvalidArgumentException("View path out of base path directory: {$real} ");
 		}
 		return $real;
 	}

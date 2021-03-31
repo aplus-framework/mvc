@@ -11,11 +11,8 @@ use PHPUnit\Framework\TestCase;
  */
 class ViewTest extends TestCase
 {
-	/**
-	 * @var View
-	 */
-	protected $view;
-	protected $basePath = __DIR__ . '/Views/';
+	protected View $view;
+	protected string $basePath = __DIR__ . '/Views/';
 
 	protected function setUp() : void
 	{
@@ -70,7 +67,7 @@ class ViewTest extends TestCase
 	{
 		$this->expectException(\InvalidArgumentException::class);
 		$this->expectExceptionMessage(
-			'View base path is not a directory: ' . __FILE__
+			'View base path is not a valid directory: ' . __FILE__
 		);
 		$this->view->setBasePath(__FILE__);
 	}
