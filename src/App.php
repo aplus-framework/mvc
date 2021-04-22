@@ -6,7 +6,7 @@ use Framework\Cache\Cache;
 use Framework\CLI\Command;
 use Framework\CLI\Console;
 use Framework\Database\Database;
-use Framework\Debug\Exceptions;
+use Framework\Debug\ExceptionHandler;
 use Framework\Email\Mailer;
 use Framework\Email\SMTP;
 use Framework\HTTP\Request;
@@ -425,10 +425,10 @@ class App
 		require __DIR__ . '/helpers.php';
 		\ob_start();
 		static::prepareConfigs();
-		$exceptions = (new Exceptions(
+		$exceptions = (new ExceptionHandler(
+			static::DEBUG ? ExceptionHandler::ENV_DEV : ExceptionHandler::ENV_PROD,
 			static::logger(),
-			static::language(),
-			static::DEBUG ? Exceptions::ENV_DEV : Exceptions::ENV_PROD
+			static::language()
 		));
 		if (isset(static::getConfig('exceptions')['viewsDir'])) {
 			$exceptions->setViewsDir(static::getConfig('exceptions')['viewsDir']);
