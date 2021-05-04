@@ -28,13 +28,13 @@
 		"ext-json": "*",
 		"natanfelles/autoload": "^1.4",
 		"natanfelles/cache": "^1.3",
-		"natanfelles/cli": "^1.4",
+		"natanfelles/cli": "^1.6",
 		"natanfelles/database": "^2.2",
-		"natanfelles/database-extra": "^1.0.4",
+		"natanfelles/database-extra": "^1.0",
 		"natanfelles/date": "^1.0",
-		"natanfelles/debug": "dev-master",
+		"natanfelles/debug": "^1.1",
 		"natanfelles/email": "^1.3",
-		"natanfelles/http": "^2.2",
+		"natanfelles/http": "^2.4",
 		"natanfelles/http-client": "^2.1",
 		"natanfelles/image": "^1.2",
 		"natanfelles/language": "^1.2",
@@ -47,11 +47,11 @@
 	},
 	"require-dev": {
 		"ext-xdebug": "*",
-		"ergebnis/composer-normalize": "^2.2",
-		"natanfelles/coding-standard": "^1.0",
-		"phpmd/phpmd": "^2.9",
+		"ergebnis/composer-normalize": "^2.13",
+		"natanfelles/coding-standard": "^1.1",
+		"phpmd/phpmd": "^2.10",
 		"phpstan/phpstan": "^0.12",
-		"phpunit/phpunit": "^9.3"
+		"phpunit/phpunit": "^9.5"
 	},
 	"autoload": {
 		"psr-4": {
