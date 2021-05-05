@@ -97,7 +97,9 @@ class View
 	protected function renderLayout(string $layout) : string
 	{
 		$this->layout = null;
-		return $this->render($layout, $this->data);
+		$contents = $this->render($layout, $this->data);
+		\ob_end_clean();
+		return $contents;
 	}
 
 	public function startSection(string $name) : void
