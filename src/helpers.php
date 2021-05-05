@@ -37,10 +37,7 @@ if ( ! function_exists('esc')) {
 	 */
 	function esc(?string $text, string $encoding = 'UTF-8') : string
 	{
-		$text = (string) $text;
-		return empty($text)
-			? $text
-			: htmlspecialchars($text, \ENT_QUOTES | \ENT_HTML5, $encoding);
+		return App::view()->escape($text, $encoding);
 	}
 }
 if ( ! function_exists('normalize_whitespaces')) {
