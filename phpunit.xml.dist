@@ -31,5 +31,6 @@
 		<env name="DB_SCHEMA" value="framework-tests"/>
 		<env name="MEMCACHED_HOST" value="memcached"/>
 		<env name="REDIS_HOST" value="redis"/>
+		<env name="XDEBUG_MODE" value="coverage"/>
 	</php>
 </phpunit>
