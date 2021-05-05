@@ -1,13 +1,23 @@
 <?php namespace Framework\MVC;
 
 use InvalidArgumentException;
+use OutOfBoundsException;
 
 class View
 {
 	protected ?string $path;
-	protected ?array $data;
+	/**
+	 * @var array|mixed[]
+	 */
+	protected array $data;
 	protected ?string $basePath = null;
 	protected string $extension;
+	/**
+	 * @var array|string[]
+	 */
+	protected array $sections = [];
+	protected ?string $currentSection = null;
+	protected ?string $layout = null;
 
 	public function __construct(string $base_path = null, string $extension = '.php')
 	{
@@ -76,8 +86,42 @@ class View
 		\ob_start();
 		\extract($this->data, \EXTR_SKIP);
 		require $this->path;
+		if ($this->layout !== null) {
+			return $this->renderLayout($this->layout);
+		}
 		$this->path = null;
-		$this->data = null;
+		$this->data = [];
 		return \ob_get_clean();
+	}
+
+	protected function renderLayout(string $layout) : string
+	{
+		$this->layout = null;
+		return $this->render($layout, $this->data);
+	}
+
+	public function startSection(string $name) : void
+	{
+		$this->currentSection = $name;
+		\ob_start();
+	}
+
+	public function endSection() : void
+	{
+		$this->sections[$this->currentSection] = \ob_get_clean();
+		$this->currentSection = null;
+	}
+
+	public function renderSection(string $name) : string
+	{
+		if ( ! \array_key_exists($name, $this->sections)) {
+			throw new OutOfBoundsException("Section '{$name}' does not exist");
+		}
+		return $this->sections[$name];
+	}
+
+	public function extends(string $layout) : void
+	{
+		$this->layout = $layout;
 	}
 }

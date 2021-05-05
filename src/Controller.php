@@ -9,6 +9,11 @@ abstract class Controller extends RouteAction
 {
 	protected Request $request;
 	protected Response $response;
+	/**
+	 * @var \Framework\Theme\Theme
+	 *
+	 * @deprecated
+	 */
 	protected Theme $theme;
 	protected string $modelClass;
 	protected Model $model;
@@ -30,6 +35,14 @@ abstract class Controller extends RouteAction
 			: App::validation()->getErrors();
 	}
 
+	/**
+	 * @param string $view
+	 * @param array  $data
+	 *
+	 * @return string
+	 *
+	 * @deprecated
+	 */
 	protected function renderPage(string $view, array $data = []) : string
 	{
 		if ($view[0] !== '\\') {
