@@ -88,9 +88,7 @@ class ViewTest extends TestCase
 
 	public function testSectionNotFound()
 	{
-		$this->expectException(\OutOfBoundsException::class);
-		$this->expectExceptionMessage("Section 'foo' does not exist");
-		$this->view->renderSection('foo');
+		$this->assertEquals('', $this->view->renderSection('foo'));
 	}
 
 	public function testLayout()

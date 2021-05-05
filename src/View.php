@@ -1,7 +1,6 @@
 <?php namespace Framework\MVC;
 
 use InvalidArgumentException;
-use OutOfBoundsException;
 
 class View
 {
@@ -116,10 +115,7 @@ class View
 
 	public function renderSection(string $name) : string
 	{
-		if ( ! \array_key_exists($name, $this->sections)) {
-			throw new OutOfBoundsException("Section '{$name}' does not exist");
-		}
-		return $this->sections[$name];
+		return $this->sections[$name] ?? '';
 	}
 
 	public function extends(string $layout) : void
