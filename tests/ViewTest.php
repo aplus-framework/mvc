@@ -27,7 +27,7 @@ class ViewTest extends TestCase
 		);
 		$this->assertEquals(
 			"<div>xxx</div>\n",
-			$this->view->render('layout', ['contents' => 'xxx'])
+			$this->view->render('foo', ['contents' => 'xxx'])
 		);
 	}
 
@@ -40,7 +40,7 @@ class ViewTest extends TestCase
 		);
 		$this->assertEquals(
 			"<div>ns</div>\n",
-			$this->view->render('\Tests\MVC\Views\layout', ['contents' => 'ns'])
+			$this->view->render('\Tests\MVC\Views\foo', ['contents' => 'ns'])
 		);
 		$this->expectException(\InvalidArgumentException::class);
 		$this->expectExceptionMessage('Namespaced view path does not match a file: \\Foo\\bar');
@@ -70,5 +70,49 @@ class ViewTest extends TestCase
 			'View base path is not a valid directory: ' . __FILE__
 		);
 		$this->view->setBasePath(__FILE__);
+	}
+
+	public function testEscape()
+	{
+		$this->assertEquals('&gt;&apos;&quot;', $this->view->escape('>\'"'));
+		$this->assertEquals('', $this->view->escape(null));
+	}
+
+	public function testSection()
+	{
+		$this->view->startSection('foo');
+		echo 'bar';
+		$this->view->endSection();
+		$this->assertEquals('bar', $this->view->renderSection('foo'));
+	}
+
+	public function testSectionNotFound()
+	{
+		$this->expectException(\OutOfBoundsException::class);
+		$this->expectExceptionMessage("Section 'foo' does not exist");
+		$this->view->renderSection('foo');
+	}
+
+	public function testLayout()
+	{
+		$html = <<<EOL
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Layout & Sections</title>
+</head>
+<body>
+	<div>CONTENTS - Natan Felles &gt;&apos;&quot;</div>
+	<script>
+		console.log('Oi')
+	</script>
+</body>
+</html>
+
+EOL;
+		$this->assertEquals($html, $this->view->render('home', [
+			'name' => 'Natan Felles >\'"',
+			'title' => 'Layout & Sections',
+		]));
 	}
 }
