@@ -25,4 +25,9 @@ class ModelMock extends Model
 		}
 		return new PagerMock($page, $per_page, $this->count(), $data, App::language());
 	}
+
+	public function makePageLimitAndOffset(int $page, int $per_page = 10) : array
+	{
+		return parent::makePageLimitAndOffset($page, $per_page);
+	}
 }

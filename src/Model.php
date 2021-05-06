@@ -37,6 +37,8 @@ abstract class Model
 	protected string $returnType = 'object';
 	/**
 	 * Allowed columns for INSERT and UPDATE.
+	 *
+	 * @var array|string[]
 	 */
 	protected array $allowedColumns = [];
 	protected bool $useDatetime = false;

@@ -11,10 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ModelTest extends TestCase
 {
-	/**
-	 * @var ModelMock
-	 */
-	protected $model;
+	protected ModelMock $model;
 
 	protected function setUp() : void
 	{
@@ -168,6 +165,16 @@ class ModelTest extends TestCase
 			],
 		], $this->model->paginate(2, 1)->getItems());
 		$this->assertEquals([], $this->model->paginate(3, 1)->getItems());
+	}
+
+	public function testMakePageLimitAndOffset()
+	{
+		$this->assertEquals([10, null], $this->model->makePageLimitAndOffset(0));
+		$this->assertEquals([10, null], $this->model->makePageLimitAndOffset(1));
+		$this->assertEquals([10, 10], $this->model->makePageLimitAndOffset(2));
+		$this->assertEquals([20, null], $this->model->makePageLimitAndOffset(1, 20));
+		$this->assertEquals([20, 20], $this->model->makePageLimitAndOffset(2, 20));
+		$this->assertEquals([20, 40], $this->model->makePageLimitAndOffset('-3', '-20'));
 	}
 
 	public function testValidation()
