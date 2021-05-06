@@ -265,10 +265,8 @@ abstract class Model
 		}
 		if ($this->useDatetime === true) {
 			$datetime = $this->makeDatetime();
-			$data[$this->datetimeColumns['create']] = $data[$this->datetimeColumns['create']]
-				?? $datetime;
-			$data[$this->datetimeColumns['update']] = $data[$this->datetimeColumns['update']]
-				?? $datetime;
+			$data[$this->datetimeColumns['create']] ??= $datetime;
+			$data[$this->datetimeColumns['update']] ??= $datetime;
 		}
 		$database = $this->getDatabaseForWrite();
 		return $database->insert()->into($this->getTable())->set($data)->run()
@@ -311,8 +309,7 @@ abstract class Model
 			return false;
 		}
 		if ($this->useDatetime === true) {
-			$data[$this->datetimeColumns['update']] = $data[$this->datetimeColumns['update']]
-				?? $this->makeDatetime();
+			$data[$this->datetimeColumns['update']] ??= $this->makeDatetime();
 		}
 		$this->getDatabaseForWrite()
 			->update()
@@ -341,10 +338,8 @@ abstract class Model
 		}
 		if ($this->useDatetime === true) {
 			$datetime = $this->makeDatetime();
-			$data[$this->datetimeColumns['create']] = $data[$this->datetimeColumns['create']]
-				?? $datetime;
-			$data[$this->datetimeColumns['update']] = $data[$this->datetimeColumns['update']]
-				?? $datetime;
+			$data[$this->datetimeColumns['create']] ??= $datetime;
+			$data[$this->datetimeColumns['update']] ??= $datetime;
 		}
 		$this->getDatabaseForWrite()
 			->replace()
