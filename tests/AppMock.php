@@ -31,4 +31,9 @@ class AppMock extends \Framework\MVC\App
 	{
 		parent::mergeFileConfigs($file);
 	}
+
+	public static function loadHelpers() : void
+	{
+		parent::loadHelpers();
+	}
 }

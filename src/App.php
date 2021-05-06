@@ -415,14 +415,19 @@ class App
 		return static::setService('view', $service, $instance);
 	}
 
+	protected static function loadHelpers() : void
+	{
+		// TODO: require user helpers first
+		require __DIR__ . '/helpers.php';
+	}
+
 	public static function run() : void
 	{
 		if (static::$isRunning) {
 			throw new LogicException('App already is running');
 		}
 		static::$isRunning = true;
-		// TODO: require user helpers first
-		require __DIR__ . '/helpers.php';
+		static::loadHelpers();
 		\ob_start();
 		static::prepareConfigs();
 		$exceptions = (new ExceptionHandler(
