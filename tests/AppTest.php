@@ -53,6 +53,25 @@ class AppTest extends TestCase
 		$this->assertEquals(['password' => 'foo'], App::getConfig('database', 'other'));
 	}
 
+	public function testLoadConfigs()
+	{
+		$this->assertNull(App::getConfig('foo'));
+		App::setConfigsDir(__DIR__ . '/configs');
+		App::loadConfig('foo');
+		$this->assertEquals(['host' => 'localhost'], App::getConfig('foo'));
+		$this->assertEquals(['host' => 'foo'], App::getConfig('foo', 'other'));
+		$this->expectException(\LogicException::class);
+		$this->expectExceptionMessage('Config file not found: bar');
+		App::loadConfig('bar');
+	}
+
+	public function testSetConfigsDirException()
+	{
+		$this->expectException(\LogicException::class);
+		$this->expectExceptionMessage('Config directory not found: ' . __DIR__ . '/unknown');
+		App::setConfigsDir(__DIR__ . '/unknown');
+	}
+
 	/**
 	 * @runInSeparateProcess
 	 */

@@ -28,6 +28,7 @@ class App
 	protected static array $configs = [];
 	protected static array $services = [];
 	protected static bool $isRunning = false;
+	protected static string $configsDir;
 
 	/**
 	 * @return array|array[]
@@ -73,6 +74,26 @@ class App
 				static::setConfig($name, $config, $instance);
 			}
 		}
+	}
+
+	public static function loadConfig(string $name) : void
+	{
+		$filename = static::$configsDir . $name . '.config.php';
+		$filename = \realpath($filename);
+		if ($filename === false || ! \is_file($filename)) {
+			throw new LogicException('Config file not found: ' . $name);
+		}
+		$configs = require $filename;
+		static::setConfigs([$name => $configs]);
+	}
+
+	public static function setConfigsDir(string $directory) : void
+	{
+		$dir = \realpath($directory);
+		if ($dir === false || ! \is_dir($dir)) {
+			throw new LogicException('Config directory not found: ' . $directory);
+		}
+		static::$configsDir = $dir . \DIRECTORY_SEPARATOR;
 	}
 
 	/**
