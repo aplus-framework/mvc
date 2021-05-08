@@ -90,27 +90,6 @@ class AppTest extends TestCase
 		], App::autoloader()->getClasses());
 	}
 
-	/*public function testPrepareRoutes()
-	{
-		$this->assertStringEndsWith('src/routes.php', App::prepareRoutes()[0]);
-		$this->assertCount(1, App::router()->getRoutes());
-	}*/
-	public function testMergeFileConfigs()
-	{
-		$this->assertEquals([
-			'enabled' => true,
-			'defaults' => true,
-		], App::config()->get('console'));
-		App::mergeFileConfigs(__DIR__ . '/Support/configs.php');
-		$this->assertEquals([
-			'enabled' => false,
-			'defaults' => true,
-		], App::config()->get('console'));
-		$this->expectException(\RuntimeException::class);
-		$this->expectExceptionMessage('Invalid config file path: /tmp/unknown');
-		App::mergeFileConfigs('/tmp/unknown');
-	}
-
 	/**
 	 * @runInSeparateProcess
 	 */

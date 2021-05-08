@@ -27,11 +27,6 @@ class AppMock extends \Framework\MVC\App
 		parent::prepareRoutes($instance);
 	}
 
-	public static function mergeFileConfigs(string $file) : void
-	{
-		parent::mergeFileConfigs($file);
-	}
-
 	public static function loadHelpers() : void
 	{
 		parent::loadHelpers();

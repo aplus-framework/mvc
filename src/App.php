@@ -17,7 +17,6 @@ use Framework\Routing\Router;
 use Framework\Session\Session;
 use Framework\Validation\Validation;
 use LogicException;
-use RuntimeException;
 
 class App
 {
@@ -369,7 +368,6 @@ class App
 		static::$isRunning = true;
 		static::loadHelpers();
 		\ob_start();
-		static::prepareConfigs();
 		$exceptions = (new ExceptionHandler(
 			static::DEBUG ? ExceptionHandler::ENV_DEV : ExceptionHandler::ENV_PROD,
 			static::logger(),
@@ -397,55 +395,6 @@ class App
 	{
 		static $is_cli;
 		return $is_cli ?? $is_cli = (\PHP_SAPI === 'cli' || \defined('STDIN'));
-	}
-
-	/**
-	 * @param string $instance
-	 */
-	protected static function prepareConfigs(string $instance = 'default') : void
-	{
-		$files = static::config()->get('configs', $instance);
-		if ( ! $files) {
-			return;
-		}
-		$files = \array_unique($files);
-		foreach ($files as $file) {
-			static::mergeFileConfigs($file);
-		}
-	}
-
-	/**
-	 * @param string $file
-	 */
-	protected static function mergeFileConfigs(string $file) : void
-	{
-		if ( ! \is_file($file)) {
-			throw new RuntimeException(
-				"Invalid config file path: {$file}"
-			);
-		}
-		unset($config);
-		require $file;
-		if ( ! isset($config) || ! \is_array($config)) {
-			throw new LogicException(
-				"Configs file must have a config array variable: {$file}"
-			);
-		}
-		foreach ($config as $service => $instances) {
-			if ( ! \is_array($instances)) {
-				throw new LogicException(
-					"Config service name '{$service}' must be an array on file '{$file}'"
-				);
-			}
-			foreach ($instances as $instance => $config) {
-				if ( ! \is_array($config)) {
-					throw new LogicException(
-						"Config instance name '{$instance}' of service name '{$service}' must be an array on file '{$file}'"
-					);
-				}
-				static::config()->add($service, $config, $instance);
-			}
-		}
 	}
 
 	/**
