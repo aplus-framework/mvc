@@ -2,6 +2,7 @@
 
 use Framework\MVC\Config;
 use Framework\MVC\Controller;
+use Framework\MVC\Model;
 use PHPUnit\Framework\TestCase;
 use Tests\MVC\AppMock as App;
 
@@ -23,6 +24,11 @@ class ControllerTest extends TestCase
 	public function testConstruct()
 	{
 		$this->assertInstanceOf(Controller::class, $this->controller);
+	}
+
+	public function testModelInstance()
+	{
+		$this->assertInstanceOf(Model::class, $this->controller->model);
 	}
 
 	public function testValidate()
