@@ -14,6 +14,7 @@ use Framework\Log\Logger;
 //use Framework\MVC\App;
 use Framework\MVC\Config;
 use Framework\MVC\View;
+use Framework\Routing\Route;
 use Framework\Routing\Router;
 use Framework\Session\Session;
 use Framework\Validation\Validation;
@@ -120,5 +121,27 @@ class AppTest extends TestCase
 		$status = $validation->validate(['id' => 1]);
 		$this->assertFalse($status);
 		App::database()->dropTable()->table('Users')->run();
+	}
+
+	public function testPrepareRoutes()
+	{
+		App::prepareRoutes();
+		$this->assertInstanceOf(Route::class, App::router()->getNamedRoute('home'));
+		App::config()->setMany([
+			'routes' => [
+				'default' => [],
+			],
+		]);
+		App::prepareRoutes();
+		App::config()->setMany([
+			'routes' => [
+				'default' => [
+					'file-not-found',
+				],
+			],
+		]);
+		$this->expectException(\LogicException::class);
+		$this->expectExceptionMessage('Invalid route file: file-not-found');
+		App::prepareRoutes();
 	}
 }
