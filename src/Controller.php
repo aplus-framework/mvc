@@ -3,18 +3,11 @@
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Routing\RouteAction;
-use Framework\Theme\Theme;
 
 abstract class Controller extends RouteAction
 {
 	protected Request $request;
 	protected Response $response;
-	/**
-	 * @var \Framework\Theme\Theme
-	 *
-	 * @deprecated
-	 */
-	protected Theme $theme;
 	protected string $modelClass;
 	protected Model $model;
 
@@ -22,7 +15,6 @@ abstract class Controller extends RouteAction
 	{
 		$this->request = $request;
 		$this->response = $response;
-		$this->theme = new Theme();
 		if (isset($this->modelClass)) {
 			$this->model = new $this->modelClass();
 		}
@@ -33,26 +25,5 @@ abstract class Controller extends RouteAction
 		return App::validation()->setRules($rules)->validate($data)
 			? []
 			: App::validation()->getErrors();
-	}
-
-	/**
-	 * @param string $view
-	 * @param array  $data
-	 *
-	 * @return string
-	 *
-	 * @deprecated
-	 */
-	protected function renderPage(string $view, array $data = []) : string
-	{
-		if ($view[0] !== '\\') {
-			$view = 'pages/' . $view;
-		}
-		App::autoloader()->setNamespace('Framework\MVC', __DIR__);
-		return App::view()->render('\Framework\MVC\View/layout', [
-			'content' => App::view()->render($view, $data),
-			'data' => $data,
-			'theme' => $this->theme,
-		]);
 	}
 }

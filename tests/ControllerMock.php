@@ -3,14 +3,9 @@
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\MVC\Controller;
-use Framework\Theme\Theme;
 
 class ControllerMock extends Controller
 {
-	/**
-	 * @var Theme
-	 */
-	public Theme $theme;
 	protected string $modelClass = ModelMock::class;
 
 	public function __construct()
@@ -44,10 +39,5 @@ class ControllerMock extends Controller
 	public function validate(array $rules, array $data) : array
 	{
 		return parent::validate($rules, $data);
-	}
-
-	public function renderPage(string $view, array $data = []) : string
-	{
-		return parent::renderPage($view, $data);
 	}
 }
