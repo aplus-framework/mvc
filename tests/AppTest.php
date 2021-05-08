@@ -12,6 +12,7 @@ use Framework\HTTP\Response;
 use Framework\Language\Language;
 use Framework\Log\Logger;
 //use Framework\MVC\App;
+use Framework\MVC\Config;
 use Framework\MVC\View;
 use Framework\Routing\Router;
 use Framework\Session\Session;
@@ -70,6 +71,12 @@ class AppTest extends TestCase
 		$this->expectException(\LogicException::class);
 		$this->expectExceptionMessage('Config directory not found: ' . __DIR__ . '/unknown');
 		App::setConfigsDir(__DIR__ . '/unknown');
+	}
+
+	public function testInitConfig()
+	{
+		App::init(new Config(__DIR__ . '/configs'));
+		$this->assertInstanceOf(Config::class, App::config());
 	}
 
 	/**

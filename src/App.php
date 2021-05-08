@@ -29,9 +29,22 @@ class App
 	protected static array $services = [];
 	protected static bool $isRunning = false;
 	protected static string $configsDir;
+	protected static Config $config;
+
+	public static function init(Config $config) : void
+	{
+		static::$config = $config;
+	}
+
+	public static function config() : Config
+	{
+		return static::$config;
+	}
 
 	/**
 	 * @return array|array[]
+	 *
+	 * @deprecated
 	 */
 	public static function getConfigs() : array
 	{
@@ -43,6 +56,8 @@ class App
 	 * @param string $instance
 	 *
 	 * @return array|null
+	 *
+	 * @deprecated
 	 */
 	public static function getConfig(string $name, string $instance = 'default') : ?array
 	{
@@ -55,6 +70,8 @@ class App
 	 * @param string $instance
 	 *
 	 * @return array
+	 *
+	 * @deprecated
 	 */
 	public static function setConfig(
 		string $name,
@@ -66,6 +83,8 @@ class App
 
 	/**
 	 * @param array|array[] $configs
+	 *
+	 * @deprecated
 	 */
 	public static function setConfigs(array $configs) : void
 	{
@@ -76,6 +95,11 @@ class App
 		}
 	}
 
+	/**
+	 * @param string $name
+	 *
+	 * @deprecated
+	 */
 	public static function loadConfig(string $name) : void
 	{
 		$filename = static::$configsDir . $name . '.config.php';
@@ -87,6 +111,11 @@ class App
 		static::setConfigs([$name => $configs]);
 	}
 
+	/**
+	 * @param string $directory
+	 *
+	 * @deprecated
+	 */
 	public static function setConfigsDir(string $directory) : void
 	{
 		$dir = \realpath($directory);
@@ -102,6 +131,8 @@ class App
 	 * @param string $instance
 	 *
 	 * @return array
+	 *
+	 * @deprecated
 	 */
 	public static function addConfig(
 		string $name,
