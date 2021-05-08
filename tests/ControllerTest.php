@@ -1,8 +1,9 @@
 <?php namespace Tests\MVC;
 
-use Framework\MVC\App;
+use Framework\MVC\Config;
 use Framework\MVC\Controller;
 use PHPUnit\Framework\TestCase;
+use Tests\MVC\AppMock as App;
 
 /**
  * Class ControllerTest.
@@ -18,6 +19,7 @@ class ControllerTest extends TestCase
 
 	protected function setUp() : void
 	{
+		App::init(new Config(__DIR__ . '/configs'));
 		$this->controller = new ControllerMock();
 	}
 

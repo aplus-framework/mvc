@@ -22,13 +22,8 @@ use RuntimeException;
 class App
 {
 	public const DEBUG = false;
-	/**
-	 * @var array|array[]
-	 */
-	protected static array $configs = [];
 	protected static array $services = [];
 	protected static bool $isRunning = false;
-	protected static string $configsDir;
 	protected static Config $config;
 
 	public static function init(Config $config) : void
@@ -39,113 +34,6 @@ class App
 	public static function config() : Config
 	{
 		return static::$config;
-	}
-
-	/**
-	 * @return array|array[]
-	 *
-	 * @deprecated
-	 */
-	public static function getConfigs() : array
-	{
-		return static::$configs;
-	}
-
-	/**
-	 * @param string $name
-	 * @param string $instance
-	 *
-	 * @return array|null
-	 *
-	 * @deprecated
-	 */
-	public static function getConfig(string $name, string $instance = 'default') : ?array
-	{
-		return static::$configs[$name][$instance] ?? null;
-	}
-
-	/**
-	 * @param string $name
-	 * @param array  $config
-	 * @param string $instance
-	 *
-	 * @return array
-	 *
-	 * @deprecated
-	 */
-	public static function setConfig(
-		string $name,
-		array $config,
-		string $instance = 'default'
-	) : array {
-		return static::$configs[$name][$instance] = $config;
-	}
-
-	/**
-	 * @param array|array[] $configs
-	 *
-	 * @deprecated
-	 */
-	public static function setConfigs(array $configs) : void
-	{
-		foreach ($configs as $name => $values) {
-			foreach ($values as $instance => $config) {
-				static::setConfig($name, $config, $instance);
-			}
-		}
-	}
-
-	/**
-	 * @param string $name
-	 *
-	 * @deprecated
-	 */
-	public static function loadConfig(string $name) : void
-	{
-		$filename = static::$configsDir . $name . '.config.php';
-		$filename = \realpath($filename);
-		if ($filename === false || ! \is_file($filename)) {
-			throw new LogicException('Config file not found: ' . $name);
-		}
-		$configs = require $filename;
-		static::setConfigs([$name => $configs]);
-	}
-
-	/**
-	 * @param string $directory
-	 *
-	 * @deprecated
-	 */
-	public static function setConfigsDir(string $directory) : void
-	{
-		$dir = \realpath($directory);
-		if ($dir === false || ! \is_dir($dir)) {
-			throw new LogicException('Config directory not found: ' . $directory);
-		}
-		static::$configsDir = $dir . \DIRECTORY_SEPARATOR;
-	}
-
-	/**
-	 * @param string $name
-	 * @param array  $config
-	 * @param string $instance
-	 *
-	 * @return array
-	 *
-	 * @deprecated
-	 */
-	public static function addConfig(
-		string $name,
-		array $config,
-		string $instance = 'default'
-	) : array {
-		if (isset(static::$configs[$name][$instance])) {
-			return static::$configs[$name][$instance] = \array_replace_recursive(
-				static::$configs[$name][$instance],
-				$config
-			);
-		}
-		return static::$configs[$name][$instance] = $config;
 	}
 
 	/**
@@ -187,7 +75,7 @@ class App
 			return $service;
 		}
 		$service = new Autoloader();
-		$config = static::getConfig('autoloader');
+		$config = static::config()->get('autoloader');
 		if (isset($config['namespaces'])) {
 			$service->setNamespaces($config['namespaces']);
 		}
@@ -210,7 +98,7 @@ class App
 		if ($service) {
 			return $service;
 		}
-		$config = static::getConfig('cache', $instance);
+		$config = static::config()->get('cache', $instance);
 		if ( ! \str_contains($config['driver'], '\\')) {
 			$config['driver'] = \ucfirst($config['driver']);
 			$config['driver'] = "Framework\\Cache\\{$config['driver']}";
@@ -265,7 +153,7 @@ class App
 		return static::getService('database', $instance)
 			?? static::setService(
 				'database',
-				new Database(static::getConfig('database', $instance)),
+				new Database(static::config()->get('database', $instance)),
 				$instance
 			);
 	}
@@ -283,7 +171,7 @@ class App
 		if ($service) {
 			return $service;
 		}
-		$config = static::getConfig('mailer', $instance);
+		$config = static::config()->get('mailer', $instance);
 		if (empty($config['class'])) {
 			$config['class'] = SMTP::class;
 		}
@@ -305,7 +193,7 @@ class App
 		if ($service) {
 			return $service;
 		}
-		$config = static::getConfig('language');
+		$config = static::config()->get('language');
 		$service = new Language($config['default'] ?? 'en');
 		if (isset($config['supported'])) {
 			$service->setSupportedLocales($config['supported']);
@@ -365,7 +253,7 @@ class App
 		if ($service) {
 			return $service;
 		}
-		$config = static::getConfig('logger');
+		$config = static::config()->get('logger');
 		return static::setService(
 			'logger',
 			new Logger($config['directory'], $config['level'])
@@ -416,7 +304,7 @@ class App
 		if ($service) {
 			return $service;
 		}
-		$config = static::getConfig('session');
+		$config = static::config()->get('session');
 		$service = new Session($config['options'] ?? [], $config['save_handler'] ?? null);
 		$service->start();
 		return static::setService('session', $service);
@@ -435,7 +323,7 @@ class App
 		if ($service) {
 			return $service;
 		}
-		$config = static::getConfig('validation', $instance);
+		$config = static::config()->get('validation', $instance);
 		return static::setService(
 			'validation',
 			new Validation($config['validators'] ?? null, static::language()),
@@ -457,7 +345,7 @@ class App
 			return $service;
 		}
 		$service = new View();
-		$config = static::getConfig('view', $instance);
+		$config = static::config()->get('view', $instance);
 		if (isset($config['base_path'])) {
 			$service->setBasePath($config['base_path']);
 		}
@@ -487,10 +375,10 @@ class App
 			static::logger(),
 			static::language()
 		));
-		if (isset(static::getConfig('exceptions')['viewsDir'])) {
-			$exceptions->setViewsDir(static::getConfig('exceptions')['viewsDir']);
+		if (isset(static::config()->get('exceptions')['viewsDir'])) {
+			$exceptions->setViewsDir(static::config()->get('exceptions')['viewsDir']);
 		}
-		$exceptions->initialize(static::getConfig('exceptions')['clearBuffer']);
+		$exceptions->initialize(static::config()->get('exceptions')['clearBuffer']);
 		static::autoloader();
 		static::prepareRoutes();
 		if (static::isCLI()) {
@@ -516,7 +404,7 @@ class App
 	 */
 	protected static function prepareConfigs(string $instance = 'default') : void
 	{
-		$files = static::getConfig('configs', $instance);
+		$files = static::config()->get('configs', $instance);
 		if ( ! $files) {
 			return;
 		}
@@ -555,7 +443,7 @@ class App
 						"Config instance name '{$instance}' of service name '{$service}' must be an array on file '{$file}'"
 					);
 				}
-				static::addConfig($service, $config, $instance);
+				static::config()->add($service, $config, $instance);
 			}
 		}
 	}
@@ -565,7 +453,7 @@ class App
 	 */
 	protected static function prepareRoutes(string $instance = 'default') : void
 	{
-		$files = static::getConfig('routes', $instance);
+		$files = static::config()->get('routes', $instance);
 		if ( ! $files) {
 			return;
 		}

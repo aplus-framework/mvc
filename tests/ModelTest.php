@@ -2,6 +2,7 @@
 
 use Framework\Database\Definition\Table\TableDefinition;
 use Framework\MVC\App;
+use Framework\MVC\Config;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,13 +16,7 @@ class ModelTest extends TestCase
 
 	protected function setUp() : void
 	{
-		App::setConfig('database', [
-			'host' => \getenv('DB_HOST'),
-			'port' => \getenv('DB_PORT'),
-			'username' => \getenv('DB_USERNAME'),
-			'password' => \getenv('DB_PASSWORD'),
-			'schema' => \getenv('DB_SCHEMA'),
-		]);
+		App::init(new Config(__DIR__ . '/configs'));
 		App::database()->createTable()->table('ModelMock')
 			->definition(static function (TableDefinition $definition) {
 				$definition->column('id')->int(11)->notNull()->autoIncrement()->primaryKey();

@@ -27,55 +27,13 @@ use Tests\MVC\AppMock as App;
  */
 class AppTest extends TestCase
 {
-	public function setup() : void
-	{
-		$config = [];
-		require __DIR__ . '/../src/configs.php';
-		App::setConfigs($config);
-	}
-
-	public function testConfigs()
-	{
-		$this->assertEquals([
-			'host' => \getenv('DB_HOST'),
-			'port' => \getenv('DB_PORT'),
-			'username' => \getenv('DB_USERNAME'),
-			'password' => \getenv('DB_PASSWORD'),
-			'schema' => \getenv('DB_SCHEMA'),
-		], App::getConfig('database'));
-		$this->assertNull(App::getConfig('database', 'other'));
-		App::setConfig('foo', ['bar', 'baz']);
-		$this->assertEquals(['bar', 'baz'], App::getConfig('foo'));
-		App::setConfig('foo', ['replaced']);
-		$this->assertEquals(['replaced'], App::getConfig('foo'));
-		App::addConfig('foo', ['added']);
-		$this->assertEquals(['added'], App::getConfig('foo'));
-		App::addConfig('database', ['password' => 'foo'], 'other');
-		$this->assertEquals(['password' => 'foo'], App::getConfig('database', 'other'));
-	}
-
-	public function testLoadConfigs()
-	{
-		$this->assertNull(App::getConfig('foo'));
-		App::setConfigsDir(__DIR__ . '/configs');
-		App::loadConfig('foo');
-		$this->assertEquals(['host' => 'localhost'], App::getConfig('foo'));
-		$this->assertEquals(['host' => 'foo'], App::getConfig('foo', 'other'));
-		$this->expectException(\LogicException::class);
-		$this->expectExceptionMessage('Config file not found: bar');
-		App::loadConfig('bar');
-	}
-
-	public function testSetConfigsDirException()
-	{
-		$this->expectException(\LogicException::class);
-		$this->expectExceptionMessage('Config directory not found: ' . __DIR__ . '/unknown');
-		App::setConfigsDir(__DIR__ . '/unknown');
-	}
-
-	public function testInitConfig()
+	protected function setUp() : void
 	{
 		App::init(new Config(__DIR__ . '/configs'));
+	}
+
+	public function testConfigInstance()
+	{
 		$this->assertInstanceOf(Config::class, App::config());
 	}
 
@@ -116,7 +74,7 @@ class AppTest extends TestCase
 
 	public function testAutoloaderWithConfigs()
 	{
-		App::setConfig('autoloader', [
+		App::config()->set('autoloader', [
 			'namespaces' => [
 				__NAMESPACE__ => __DIR__,
 			],
@@ -142,12 +100,12 @@ class AppTest extends TestCase
 		$this->assertEquals([
 			'enabled' => true,
 			'defaults' => true,
-		], App::getConfig('console'));
+		], App::config()->get('console'));
 		App::mergeFileConfigs(__DIR__ . '/Support/configs.php');
 		$this->assertEquals([
 			'enabled' => false,
 			'defaults' => true,
-		], App::getConfig('console'));
+		], App::config()->get('console'));
 		$this->expectException(\RuntimeException::class);
 		$this->expectExceptionMessage('Invalid config file path: /tmp/unknown');
 		App::mergeFileConfigs('/tmp/unknown');

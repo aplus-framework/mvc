@@ -1,6 +1,7 @@
 <?php namespace Tests\MVC;
 
 use Framework\Cache\Cache;
+use Framework\MVC\Config;
 use Framework\Session\Session;
 use PHPUnit\Framework\TestCase;
 use Tests\MVC\AppMock as App;
@@ -9,9 +10,7 @@ class HelpersTest extends TestCase
 {
 	protected function setUp() : void
 	{
-		$config = [];
-		require __DIR__ . '/../src/configs.php';
-		App::setConfigs($config);
+		App::init(new Config(__DIR__ . '/configs'));
 		App::loadHelpers();
 	}
 

@@ -22,6 +22,9 @@ class Config
 
 	public function get(string $name, string $instance = 'default') : ?array
 	{
+		if (empty($this->configs[$name])) {
+			$this->load($name);
+		}
 		return $this->configs[$name][$instance] ?? null;
 	}
 

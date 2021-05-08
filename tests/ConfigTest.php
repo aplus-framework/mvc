@@ -12,12 +12,8 @@ class ConfigTest extends TestCase
 		$this->config = new Config(__DIR__ . '/configs');
 	}
 
-	public function testLoad()
+	public function testLoadException()
 	{
-		$this->assertNull($this->config->get('foo'));
-		$this->config->load('foo');
-		$this->assertEquals(['host' => 'localhost'], $this->config->get('foo'));
-		$this->assertEquals(['host' => 'foo'], $this->config->get('foo', 'other'));
 		$this->expectException(\LogicException::class);
 		$this->expectExceptionMessage('Config file not found: bar');
 		$this->config->load('bar');
@@ -33,17 +29,27 @@ class ConfigTest extends TestCase
 	public function testGetAll()
 	{
 		$this->assertEquals([], $this->config->getAll());
-		$this->config->load('foo');
+		$this->config->load('console');
 		$this->assertEquals([
-			'foo' => [
+			'console' => [
 				'default' => [
-					'host' => 'localhost',
+					'enabled' => true,
+					'defaults' => true,
 				],
-				'custom' => [
-					'host' => 'mysql.domain.tld',
+			],
+		], $this->config->getAll());
+		$this->config->load('exceptions');
+		$this->assertEquals([
+			'console' => [
+				'default' => [
+					'enabled' => true,
+					'defaults' => true,
 				],
-				'other' => [
-					'host' => 'foo',
+			],
+			'exceptions' => [
+				'default' => [
+					'clearBuffer' => true,
+					'viewsDir' => null,
 				],
 			],
 		], $this->config->getAll());
@@ -51,7 +57,6 @@ class ConfigTest extends TestCase
 
 	public function testAdd()
 	{
-		$this->assertNull($this->config->get('foo'));
 		$this->config->add('foo', ['baz']);
 		$this->assertEquals(['baz'], $this->config->get('foo'));
 		$this->config->set('foo', ['bar']);

@@ -1,8 +1,9 @@
 <?php namespace Tests\MVC;
 
-use Framework\MVC\App;
+use Framework\MVC\Config;
 use Framework\MVC\View;
 use PHPUnit\Framework\TestCase;
+use Tests\MVC\AppMock as App;
 
 /**
  * Class ViewTest.
@@ -33,6 +34,7 @@ class ViewTest extends TestCase
 
 	public function testRenderNamespacedView()
 	{
+		App::init(new Config(__DIR__ . '/configs'));
 		App::autoloader()->setNamespace('Tests\MVC', __DIR__);
 		$this->assertEquals(
 			"<h1>Block</h1>\n",
