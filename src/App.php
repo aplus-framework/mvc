@@ -436,6 +436,10 @@ class App
 		if (\is_object($response) && \method_exists($response, '__toString')) {
 			return $response;
 		}
+		if (\is_array($response) || $response instanceof \JsonSerializable) {
+			static::response()->setJSON($response);
+			return '';
+		}
 		$type = \get_debug_type($response);
 		throw new LogicException("Invalid return type '{$type}' on matched route");
 	}

@@ -191,8 +191,14 @@ class AppTest extends TestCase
 			}
 		};
 		$this->assertEquals('foo', App::makeResponseBodyPart($stringableObject));
+		$this->assertNull(App::response()->getHeader('content-type'));
+		$this->assertEquals('', App::makeResponseBodyPart(['id' => 1]));
+		$this->assertEquals(
+			'application/json; charset=UTF-8',
+			App::response()->getHeader('content-type')
+		);
 		$this->expectException(\LogicException::class);
-		$this->expectExceptionMessage("Invalid return type 'stdClass' on matched route");
-		App::makeResponseBodyPart(new \stdClass());
+		$this->expectExceptionMessage("Invalid return type 'Tests\\MVC\\AppMock' on matched route");
+		App::makeResponseBodyPart(new App());
 	}
 }
