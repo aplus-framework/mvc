@@ -385,6 +385,9 @@ class App
 		static::autoloader();
 		static::prepareRoutes();
 		if (static::isCLI()) {
+			if (empty(static::config()->get('console')['enabled'])) {
+				return;
+			}
 			static::console()->run();
 			return;
 		}

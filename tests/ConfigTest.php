@@ -34,7 +34,6 @@ class ConfigTest extends TestCase
 			'console' => [
 				'default' => [
 					'enabled' => true,
-					'defaults' => true,
 				],
 			],
 		], $this->config->getAll());
@@ -43,7 +42,6 @@ class ConfigTest extends TestCase
 			'console' => [
 				'default' => [
 					'enabled' => true,
-					'defaults' => true,
 				],
 			],
 			'exceptions' => [
