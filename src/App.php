@@ -360,6 +360,19 @@ class App
 		require __DIR__ . '/helpers.php';
 	}
 
+	protected static function prepareExceptionHandler() : void
+	{
+		$exceptions = new ExceptionHandler(
+			static::DEBUG ? ExceptionHandler::ENV_DEV : ExceptionHandler::ENV_PROD,
+			static::logger(),
+			static::language()
+		);
+		if (isset(static::config()->get('exceptions')['viewsDir'])) {
+			$exceptions->setViewsDir(static::config()->get('exceptions')['viewsDir']);
+		}
+		$exceptions->initialize(static::config()->get('exceptions')['clearBuffer']);
+	}
+
 	public static function run() : void
 	{
 		if (static::$isRunning) {
@@ -368,15 +381,7 @@ class App
 		static::$isRunning = true;
 		static::loadHelpers();
 		\ob_start();
-		$exceptions = (new ExceptionHandler(
-			static::DEBUG ? ExceptionHandler::ENV_DEV : ExceptionHandler::ENV_PROD,
-			static::logger(),
-			static::language()
-		));
-		if (isset(static::config()->get('exceptions')['viewsDir'])) {
-			$exceptions->setViewsDir(static::config()->get('exceptions')['viewsDir']);
-		}
-		$exceptions->initialize(static::config()->get('exceptions')['clearBuffer']);
+		static::prepareExceptionHandler();
 		static::autoloader();
 		static::prepareRoutes();
 		if (static::isCLI()) {
