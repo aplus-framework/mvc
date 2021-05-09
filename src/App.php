@@ -375,6 +375,9 @@ class App
 
 	public static function run() : void
 	{
+		if (empty(static::$config)) {
+			throw new LogicException('App Config not initialized');
+		}
 		if (static::$isRunning) {
 			throw new LogicException('App already is running');
 		}
