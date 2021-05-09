@@ -147,13 +147,17 @@ class AppTest extends TestCase
 
 	public function testRunEmptyConsole()
 	{
-		$this->assertNull(App::run());
+		Stream::init();
+		App::run();
+		$this->assertStringNotContainsString('Commands', Stream::$output);
 	}
 
 	public function testRunConsole()
 	{
 		App::config()->set('console', ['enabled' => true]);
-		$this->assertNull(App::run());
+		Stream::init();
+		App::run();
+		$this->assertStringContainsString('Commands', Stream::$output);
 	}
 
 	public function testRunResponse()
