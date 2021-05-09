@@ -30,11 +30,6 @@ class AppMock extends \Framework\MVC\App
 		parent::prepareRoutes($instance);
 	}
 
-	public static function loadHelpers() : void
-	{
-		parent::loadHelpers();
-	}
-
 	protected static function isCLI() : bool
 	{
 		return ! static::$notIsCLI && parent::isCLI();

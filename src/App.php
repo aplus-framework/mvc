@@ -354,11 +354,6 @@ class App
 		return static::setService('view', $service, $instance);
 	}
 
-	protected static function loadHelpers() : void
-	{
-		require __DIR__ . '/helpers.php';
-	}
-
 	protected static function prepareExceptionHandler() : void
 	{
 		$exceptions = new ExceptionHandler(
@@ -381,8 +376,6 @@ class App
 			throw new LogicException('App already is running');
 		}
 		static::$isRunning = true;
-		//static::loadHelpers();
-		//\ob_start();
 		static::prepareExceptionHandler();
 		static::autoloader();
 		static::prepareRoutes();

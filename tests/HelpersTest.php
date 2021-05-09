@@ -11,7 +11,6 @@ class HelpersTest extends TestCase
 	protected function setUp() : void
 	{
 		App::init(new Config(__DIR__ . '/configs'));
-		App::loadHelpers();
 	}
 
 	public function testCache()
