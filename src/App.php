@@ -381,7 +381,7 @@ class App
 			throw new LogicException('App already is running');
 		}
 		static::$isRunning = true;
-		static::loadHelpers();
+		//static::loadHelpers();
 		//\ob_start();
 		static::prepareExceptionHandler();
 		static::autoloader();
