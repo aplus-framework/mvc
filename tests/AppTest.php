@@ -144,4 +144,30 @@ class AppTest extends TestCase
 		$this->expectExceptionMessage('Invalid route file: file-not-found');
 		App::prepareRoutes();
 	}
+
+	public function testRunEmptyConsole()
+	{
+		$this->assertNull(App::run());
+	}
+
+	public function testRunConsole()
+	{
+		App::config()->set('console', ['enabled' => true]);
+		$this->assertNull(App::run());
+	}
+
+	public function testRunResponse()
+	{
+		App::$notIsCLI = true;
+		App::run();
+		$this->assertTrue(App::response()->isSent());
+	}
+
+	public function testAppAlreadyIsRunning()
+	{
+		App::run();
+		$this->expectException(\LogicException::class);
+		$this->expectExceptionMessage('App already is running');
+		App::run();
+	}
 }

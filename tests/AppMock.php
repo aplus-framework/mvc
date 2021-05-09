@@ -4,6 +4,8 @@ use Framework\HTTP\Request;
 
 class AppMock extends \Framework\MVC\App
 {
+	public static bool $notIsCLI = false;
+
 	public static function request() : Request
 	{
 		return static::getService('request')
@@ -30,5 +32,10 @@ class AppMock extends \Framework\MVC\App
 	public static function loadHelpers() : void
 	{
 		parent::loadHelpers();
+	}
+
+	protected static function isCLI() : bool
+	{
+		return ! static::$notIsCLI && parent::isCLI();
 	}
 }

@@ -33,7 +33,7 @@ class ConfigTest extends TestCase
 		$this->assertEquals([
 			'console' => [
 				'default' => [
-					'enabled' => true,
+					'enabled' => false,
 				],
 			],
 		], $this->config->getAll());
@@ -41,7 +41,7 @@ class ConfigTest extends TestCase
 		$this->assertEquals([
 			'console' => [
 				'default' => [
-					'enabled' => true,
+					'enabled' => false,
 				],
 			],
 			'exceptions' => [

@@ -356,7 +356,6 @@ class App
 
 	protected static function loadHelpers() : void
 	{
-		// TODO: require user helpers first
 		require __DIR__ . '/helpers.php';
 	}
 
@@ -383,7 +382,7 @@ class App
 		}
 		static::$isRunning = true;
 		static::loadHelpers();
-		\ob_start();
+		//\ob_start();
 		static::prepareExceptionHandler();
 		static::autoloader();
 		static::prepareRoutes();
