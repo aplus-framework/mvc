@@ -1,6 +1,7 @@
 <?php namespace Tests\MVC;
 
 use Framework\HTTP\Request;
+use Framework\MVC\Config;
 
 class AppMock extends \Framework\MVC\App
 {
@@ -37,5 +38,15 @@ class AppMock extends \Framework\MVC\App
 	protected static function isCLI() : bool
 	{
 		return ! static::$notIsCLI && parent::isCLI();
+	}
+
+	public static function makeResponseBodyPart($response) : string
+	{
+		return parent::makeResponseBodyPart($response);
+	}
+
+	public static function setConfigProperty(?Config $config) : void
+	{
+		static::$config = $config;
 	}
 }

@@ -163,11 +163,36 @@ class AppTest extends TestCase
 		$this->assertTrue(App::response()->isSent());
 	}
 
+	public function testAppIsNotInitilized()
+	{
+		App::setConfigProperty(null);
+		$this->expectException(\LogicException::class);
+		$this->expectExceptionMessage('App Config not initialized');
+		App::run();
+	}
+
 	public function testAppAlreadyIsRunning()
 	{
 		App::run();
 		$this->expectException(\LogicException::class);
 		$this->expectExceptionMessage('App already is running');
 		App::run();
+	}
+
+	public function testMakeResponseBodyPart()
+	{
+		$this->assertEquals('', App::makeResponseBodyPart(null));
+		$this->assertEquals('', App::makeResponseBodyPart(App::response()));
+		$this->assertEquals('1.2', App::makeResponseBodyPart(1.2));
+		$stringableObject = new class() {
+			public function __toString() : string
+			{
+				return 'foo';
+			}
+		};
+		$this->assertEquals('foo', App::makeResponseBodyPart($stringableObject));
+		$this->expectException(\LogicException::class);
+		$this->expectExceptionMessage("Invalid return type 'stdClass' on matched route");
+		App::makeResponseBodyPart(new \stdClass());
 	}
 }

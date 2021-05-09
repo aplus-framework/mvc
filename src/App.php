@@ -23,7 +23,7 @@ class App
 	public const DEBUG = false;
 	protected static array $services = [];
 	protected static bool $isRunning = false;
-	protected static Config $config;
+	protected static ?Config $config;
 
 	public static function init(Config $config) : void
 	{
@@ -443,14 +443,7 @@ class App
 		if (\is_object($response) && \method_exists($response, '__toString')) {
 			return $response;
 		}
-		$type = \gettype($response);
-		if ($type === 'object') {
-			$type = \get_class($response);
-		}
-		$action = static::router()->getMatchedRoute()->getAction();
-		if ($action instanceof \Closure) {
-			$action = '{closure}';
-		}
-		throw new LogicException("Invalid return type '{$type}' on matched route '{$action}'");
+		$type = \get_debug_type($response);
+		throw new LogicException("Invalid return type '{$type}' on matched route");
 	}
 }
