@@ -28,7 +28,7 @@
 		"ext-json": "*",
 		"natanfelles/autoload": "^1.4",
 		"natanfelles/cache": "^1.3",
-		"natanfelles/cli": "^1.6",
+		"natanfelles/cli": "^1.7",
 		"natanfelles/database": "^2.2",
 		"natanfelles/database-extra": "^1.0",
 		"natanfelles/date": "^1.0",

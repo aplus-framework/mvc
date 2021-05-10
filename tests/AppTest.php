@@ -4,6 +4,7 @@ use Framework\Autoload\Autoloader;
 use Framework\Autoload\Locator;
 use Framework\Cache\Cache;
 use Framework\CLI\Console;
+use Framework\CLI\Stream;
 use Framework\Database\Database;
 use Framework\Database\Definition\Table\TableDefinition;
 use Framework\Email\Mailer;
@@ -11,7 +12,6 @@ use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Language\Language;
 use Framework\Log\Logger;
-//use Framework\MVC\App;
 use Framework\MVC\Config;
 use Framework\MVC\View;
 use Framework\Routing\Route;
@@ -149,7 +149,7 @@ class AppTest extends TestCase
 	{
 		Stream::init();
 		App::run();
-		$this->assertStringNotContainsString('Commands', Stream::$output);
+		$this->assertEquals('', Stream::getOutput());
 	}
 
 	public function testRunConsole()
@@ -157,7 +157,7 @@ class AppTest extends TestCase
 		App::config()->set('console', ['enabled' => true]);
 		Stream::init();
 		App::run();
-		$this->assertStringContainsString('Commands', Stream::$output);
+		$this->assertStringContainsString('Commands', Stream::getOutput());
 	}
 
 	public function testRunResponse()
