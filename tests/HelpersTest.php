@@ -44,6 +44,31 @@ class HelpersTest extends TestCase
 		$this->assertEquals('http://localhost:8080/contact', current_url());
 	}
 
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testCurrentRoute()
+	{
+		App::setIsCLI(false);
+		App::run();
+		$this->assertEquals('contact', current_route()->getName());
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testRouteUrl()
+	{
+		App::setIsCLI(false);
+		App::run();
+		$this->assertEquals('http://localhost:8080/users', route_url('users'));
+		$this->assertEquals('http://localhost:8080/users/25', route_url('users.show', [25]));
+		$this->assertEquals(
+			'http://blog-1.domain.tld/posts/hello-world',
+			route_url('sub.posts', ['hello-world'], ['blog-1'])
+		);
+	}
+
 	public function testIsCli()
 	{
 		$this->assertTrue(is_cli());
