@@ -8,6 +8,7 @@ use Framework\CLI\Stream;
 use Framework\Database\Database;
 use Framework\Database\Definition\Table\TableDefinition;
 use Framework\Email\Mailer;
+use Framework\HTTP\CSRF;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Language\Language;
@@ -48,6 +49,9 @@ class AppTest extends TestCase
 		$this->assertInstanceOf(Cache::class, App::cache());
 		$this->assertInstanceOf(Cache::class, App::cache());
 		$this->assertInstanceOf(Console::class, App::console());
+		$this->assertInstanceOf(Console::class, App::console());
+		$this->assertInstanceOf(CSRF::class, App::csrf());
+		$this->assertInstanceOf(CSRF::class, App::csrf());
 		$this->assertInstanceOf(Console::class, App::console());
 		$this->assertInstanceOf(Database::class, App::database());
 		$this->assertInstanceOf(Database::class, App::database());

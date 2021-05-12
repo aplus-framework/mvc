@@ -1,28 +1,18 @@
 <?php namespace Tests\MVC;
 
-use Framework\HTTP\Request;
 use Framework\MVC\Config;
 
 class AppMock extends \Framework\MVC\App
 {
 	public static bool $notIsCLI = false;
 
-	public static function request() : Request
+	public static function init(Config $config) : void
 	{
-		return static::getService('request')
-			?? static::setService('request', new class() extends Request {
-				protected function prepareStatusLine() : void
-				{
-					$this->setProtocol('HTTP/1.1');
-					$this->setMethod('GET');
-					$url = $this->isSecure() ? 'https' : 'http';
-					$url .= '://' . 'localhost';
-					//$url .= ':' . $this->getPort();
-					$url .= '/';
-					$this->setURL($url);
-					$this->setHost($this->getURL()->getHost());
-				}
-			});
+		$_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		$_SERVER['HTTP_HOST'] = 'localhost:8080';
+		$_SERVER['REQUEST_URI'] = '/contact';
+		parent::init($config);
 	}
 
 	public static function prepareRoutes(string $instance = 'default') : void

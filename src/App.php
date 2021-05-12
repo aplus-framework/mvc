@@ -9,6 +9,7 @@ use Framework\Database\Database;
 use Framework\Debug\ExceptionHandler;
 use Framework\Email\Mailer;
 use Framework\Email\SMTP;
+use Framework\HTTP\CSRF;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Language\Language;
@@ -138,6 +139,21 @@ class App
 			unset($class);
 		}
 		return static::setService('console', $service);
+	}
+
+	/**
+	 * Get the CSRF service.
+	 *
+	 * @return CSRF
+	 */
+	public static function csrf() : CSRF
+	{
+		$service = static::getService('csrf');
+		if ($service) {
+			return $service;
+		}
+		static::session();
+		return static::setService('csrf', new CSRF(static::request()));
 	}
 
 	/**
