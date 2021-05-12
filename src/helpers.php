@@ -131,3 +131,9 @@ if ( ! function_exists('old')) {
 			: App::request()->getRedirectData($key);
 	}
 }
+if ( ! function_exists('csrf_input')) {
+	function csrf_input() : string
+	{
+		return App::csrf()->input();
+	}
+}

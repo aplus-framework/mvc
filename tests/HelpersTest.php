@@ -39,6 +39,11 @@ class HelpersTest extends TestCase
 		$this->assertEquals("<div>bar</div>\n", view('foo', ['contents' => 'bar']));
 	}
 
+	public function testCurrentUrl()
+	{
+		$this->assertEquals('http://localhost:8080/contact', current_url());
+	}
+
 	public function testIsCli()
 	{
 		$this->assertTrue(is_cli());
@@ -61,5 +66,24 @@ class HelpersTest extends TestCase
 		App::autoloader()->setNamespace('Tests\MVC', __DIR__);
 		$this->assertEquals([__DIR__ . '/Helpers/foo.php'], helpers(['foo']));
 		$this->assertTrue(\function_exists('foo'));
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testOld()
+	{
+		App::session();
+		App::response()->redirect('http://localhost', ['foo' => ['bar']]);
+		$this->assertEquals('bar', old('foo[0]'));
+		$this->assertEquals(['bar'], old('foo', false));
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testCsrfInput()
+	{
+		$this->assertStringStartsWith('<input type="hidden" name="', csrf_input());
 	}
 }
