@@ -181,7 +181,14 @@ abstract class Model
 		foreach ($data as &$row) {
 			$row = $this->makeEntity($row);
 		}
-		return new Pager($page, $per_page, $this->count(), $data, App::language());
+		return new Pager(
+			$page,
+			$per_page,
+			$this->count(),
+			$data,
+			App::language(),
+			App::request()->getURL()
+		);
 	}
 
 	/**

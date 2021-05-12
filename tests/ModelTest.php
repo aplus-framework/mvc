@@ -129,10 +129,7 @@ class ModelTest extends TestCase
 		$this->assertEquals(2, $this->model->count());
 	}
 
-	/**
-	 * @covers \Framework\MVC\Model::paginate
-	 */
-	public function testPaginate()
+	public function testPaginatedItems()
 	{
 		$this->model->returnType = 'array';
 		$this->assertEquals([
@@ -160,6 +157,18 @@ class ModelTest extends TestCase
 			],
 		], $this->model->paginate(2, 1)->getItems());
 		$this->assertEquals([], $this->model->paginate(3, 1)->getItems());
+	}
+
+	public function testPaginatedUrl()
+	{
+		$this->assertEquals(
+			'http://localhost:8080/contact?page=5',
+			$this->model->paginate(5)->getCurrentPageURL()
+		);
+		$this->assertEquals(
+			'http://localhost:8080/contact?page=10',
+			$this->model->paginate(10, 25)->getCurrentPageURL()
+		);
 	}
 
 	public function testMakePageLimitAndOffset()
