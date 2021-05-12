@@ -129,7 +129,7 @@ class App
 		$files = static::locator()->getFiles('Commands');
 		foreach ($files as $file) {
 			$className = static::locator()->getClassName($file);
-			if ($className === false) {
+			if (empty($className)) {
 				continue;
 			}
 			$class = new \ReflectionClass($className);

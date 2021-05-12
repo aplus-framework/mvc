@@ -2,6 +2,8 @@
 return [
 	'default' => [
 		'classes' => [],
-		'namespaces' => [],
+		'namespaces' => [
+			'Tests\\MVC' => dirname(__DIR__),
+		],
 	],
 ];

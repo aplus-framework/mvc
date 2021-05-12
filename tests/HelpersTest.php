@@ -88,9 +88,7 @@ class HelpersTest extends TestCase
 
 	public function testHelpers()
 	{
-		$this->assertEquals([], helpers(['foo']));
 		$this->assertFalse(\function_exists('foo'));
-		App::autoloader()->setNamespace('Tests\MVC', __DIR__);
 		$this->assertEquals([__DIR__ . '/Helpers/foo.php'], helpers(['foo']));
 		$this->assertTrue(\function_exists('foo'));
 	}
