@@ -47,6 +47,8 @@ class HelpersTest extends TestCase
 	public function testIsCli()
 	{
 		$this->assertTrue(is_cli());
+		App::setIsCLI(false);
+		$this->assertFalse(is_cli());
 	}
 
 	public function testEsc()

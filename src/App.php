@@ -25,6 +25,7 @@ class App
 	protected static array $services = [];
 	protected static bool $isRunning = false;
 	protected static ?Config $config;
+	protected static ?bool $isCLI = null;
 
 	public static function init(Config $config) : void
 	{
@@ -410,10 +411,22 @@ class App
 		static::response()->appendBody($response)->send();
 	}
 
-	protected static function isCLI() : bool
+	public static function isCLI() : bool
 	{
-		static $is_cli;
-		return $is_cli ?? $is_cli = (\PHP_SAPI === 'cli' || \defined('STDIN'));
+		if (static::$isCLI === null) {
+			static::$isCLI = \PHP_SAPI === 'cli' || \defined('STDIN');
+		}
+		return static::$isCLI;
+	}
+
+	/**
+	 * Set if is a CLI request. Used for tests.
+	 *
+	 * @param bool $is
+	 */
+	public static function setIsCLI(bool $is) : void
+	{
+		static::$isCLI = $is;
 	}
 
 	/**

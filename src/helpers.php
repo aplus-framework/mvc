@@ -54,7 +54,7 @@ if ( ! function_exists('is_cli')) {
 	 */
 	function is_cli() : bool
 	{
-		return \PHP_SAPI === 'cli' || defined('STDIN');
+		return App::isCLI();
 	}
 }
 if ( ! function_exists('view')) {

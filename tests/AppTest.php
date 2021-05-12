@@ -166,7 +166,7 @@ class AppTest extends TestCase
 
 	public function testRunResponse()
 	{
-		App::$notIsCLI = true;
+		App::setIsCLI(false);
 		App::run();
 		$this->assertTrue(App::response()->isSent());
 	}
@@ -208,5 +208,12 @@ class AppTest extends TestCase
 		$this->expectException(\LogicException::class);
 		$this->expectExceptionMessage("Invalid return type 'Tests\\MVC\\AppMock' on matched route");
 		App::makeResponseBodyPart(new App());
+	}
+
+	public function testIsCli()
+	{
+		$this->assertTrue(App::isCLI());
+		App::setIsCLI(false);
+		$this->assertFalse(App::isCLI());
 	}
 }

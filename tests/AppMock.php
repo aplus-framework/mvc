@@ -4,8 +4,6 @@ use Framework\MVC\Config;
 
 class AppMock extends \Framework\MVC\App
 {
-	public static bool $notIsCLI = false;
-
 	public static function init(Config $config) : void
 	{
 		$_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
@@ -18,11 +16,6 @@ class AppMock extends \Framework\MVC\App
 	public static function prepareRoutes(string $instance = 'default') : void
 	{
 		parent::prepareRoutes($instance);
-	}
-
-	protected static function isCLI() : bool
-	{
-		return ! static::$notIsCLI && parent::isCLI();
 	}
 
 	public static function makeResponseBodyPart($response) : string
