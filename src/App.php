@@ -42,9 +42,9 @@ class App
 	 * @param string $name
 	 * @param string $instance
 	 *
-	 * @return mixed|null
+	 * @return mixed The service instance or null
 	 */
-	public static function getService(string $name, string $instance = 'default')
+	public static function getService(string $name, string $instance = 'default') : mixed
 	{
 		return static::$services[$name][$instance] ?? null;
 	}
@@ -58,7 +58,7 @@ class App
 	 *
 	 * @return mixed
 	 */
-	public static function setService(string $name, $service, string $instance = 'default')
+	public static function setService(string $name, $service, string $instance = 'default') : mixed
 	{
 		return static::$services[$name][$instance] = $service;
 	}
