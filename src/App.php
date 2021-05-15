@@ -19,6 +19,9 @@ use Framework\Session\Session;
 use Framework\Validation\Validation;
 use LogicException;
 
+/**
+ * Class App.
+ */
 class App
 {
 	protected static array $services = [];
@@ -26,11 +29,21 @@ class App
 	protected static ?Config $config;
 	protected static ?bool $isCLI = null;
 
+	/**
+	 * Initialize the App.
+	 *
+	 * @param Config $config
+	 */
 	public static function init(Config $config) : void
 	{
 		static::$config = $config;
 	}
 
+	/**
+	 * Get the Config instance.
+	 *
+	 * @return Config
+	 */
 	public static function config() : Config
 	{
 		return static::$config;
@@ -427,6 +440,11 @@ class App
 		static::response()->appendBody($response)->send();
 	}
 
+	/**
+	 * Tell if is a command-line request.
+	 *
+	 * @return bool
+	 */
 	public static function isCLI() : bool
 	{
 		if (static::$isCLI === null) {
@@ -446,6 +464,8 @@ class App
 	}
 
 	/**
+	 * Load files to set routes.
+	 *
 	 * @param string $instance
 	 */
 	protected static function prepareRoutes(string $instance = 'default') : void
