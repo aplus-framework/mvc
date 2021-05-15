@@ -45,6 +45,7 @@
 		"natanfelles/validation": "^1.4"
 	},
 	"require-dev": {
+		"ext-mysqli": "*",
 		"ext-xdebug": "*",
 		"ergebnis/composer-normalize": "^2.13",
 		"natanfelles/coding-standard": "^1.1",

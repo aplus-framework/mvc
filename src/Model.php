@@ -260,13 +260,13 @@ abstract class Model
 	}
 
 	/**
-	 * Insert and get a new row.
+	 * Insert a new row.
 	 *
 	 * @param array|Entity|\stdClass|string[] $data
 	 *
-	 * @return array|Entity|false|\stdClass|string[]|null
+	 * @return false|int The LAST_INSERT_ID() on success or false validation fail
 	 */
-	public function create(array | Entity | \stdClass $data)
+	public function create(array | Entity | \stdClass $data) : false | int
 	{
 		$data = $this->prepareData($data);
 		if ($this->getValidation()->validate($data) === false) {
@@ -279,7 +279,7 @@ abstract class Model
 		}
 		$database = $this->getDatabaseForWrite();
 		return $database->insert()->into($this->getTable())->set($data)->run()
-			? $this->find($database->insertId())
+			? $database->insertId()
 			: false;
 	}
 
@@ -289,9 +289,11 @@ abstract class Model
 	 *
 	 * @param array|Entity|\stdClass $data
 	 *
-	 * @return array|Entity|false|\stdClass|null The saved row
+	 * @return false|int The number of affected rows on updates as int,
+	 *                   the LAST_INSERT_ID() as int on inserts or false if
+	 *                   validation fails
 	 */
-	public function save(array | Entity | \stdClass $data)
+	public function save(array | Entity | \stdClass $data) : false | int
 	{
 		$data = $this->makeArray($data);
 		$primary_key = $data[$this->primaryKey] ?? null;
@@ -303,14 +305,14 @@ abstract class Model
 	}
 
 	/**
-	 * Update based on Primary Key and return the new row.
+	 * Update based on Primary Key and return the number of affected rows.
 	 *
 	 * @param int|string             $primary_key
 	 * @param array|Entity|\stdClass $data
 	 *
-	 * @return array|Entity|false|\stdClass|null
+	 * @return false|int The number of affected rows as int or false if validation fails
 	 */
-	public function update(int | string $primary_key, array | Entity | \stdClass $data)
+	public function update(int | string $primary_key, array | Entity | \stdClass $data) : false | int
 	{
 		$this->checkPrimaryKey($primary_key);
 		$data = $this->prepareData($data);
@@ -320,22 +322,21 @@ abstract class Model
 		if ($this->useDatetime === true) {
 			$data[$this->datetimeColumns['update']] ??= $this->makeDatetime();
 		}
-		$this->getDatabaseForWrite()
+		return $this->getDatabaseForWrite()
 			->update()
 			->table($this->getTable())
 			->set($data)
 			->whereEqual($this->primaryKey, $primary_key)
 			->run();
-		return $this->find($primary_key);
 	}
 
 	/**
-	 * Replace based on Primary Key and return the new row.
+	 * Replace based on Primary Key and return the number of affected rows.
 	 *
 	 * @param int|string             $primary_key
 	 * @param array|Entity|\stdClass $data
 	 *
-	 * @return array|Entity|false|\stdClass|null
+	 * @return false|int The number of affected rows as int or false if validation fails
 	 */
 	public function replace(int | string $primary_key, array | Entity | \stdClass $data)
 	{
@@ -350,22 +351,21 @@ abstract class Model
 			$data[$this->datetimeColumns['create']] ??= $datetime;
 			$data[$this->datetimeColumns['update']] ??= $datetime;
 		}
-		$this->getDatabaseForWrite()
+		return $this->getDatabaseForWrite()
 			->replace()
 			->into($this->getTable())
 			->set($data)
 			->run();
-		return $this->find($primary_key);
 	}
 
 	/**
-	 * Delete a row based on Primary Key.
+	 * Delete based on Primary Key.
 	 *
 	 * @param int|string $primary_key
 	 *
-	 * @return bool
+	 * @return int The number of affected rows
 	 */
-	public function delete(int | string $primary_key) : bool
+	public function delete(int | string $primary_key) : int
 	{
 		$this->checkPrimaryKey($primary_key);
 		return $this->getDatabaseForWrite()

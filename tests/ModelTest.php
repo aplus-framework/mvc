@@ -77,51 +77,86 @@ class ModelTest extends TestCase
 
 	public function testCreate()
 	{
-		$row = $this->model->create(new EntityMock(['data' => 'Value']));
-		$this->assertEquals(3, $row->id);
-		$row = $this->model->create(['data' => 'Value']);
-		$this->assertEquals(4, $row->id);
-		$row = $this->model->create(['data' => 'Value']);
-		$this->assertEquals(5, $row->id);
+		$insert_id = $this->model->create(new EntityMock(['data' => 'Value']));
+		$this->assertEquals(3, $insert_id);
+		$insert_id = $this->model->create(['data' => 'Value']);
+		$this->assertEquals(4, $insert_id);
+		$insert_id = $this->model->create(['data' => 'Value']);
+		$this->assertEquals(5, $insert_id);
+	}
+
+	public function testCreateExceptionDefaultValue()
+	{
+		$this->expectException(\mysqli_sql_exception::class);
+		$this->expectExceptionMessage("Field 'data' doesn't have a default value");
+		$this->model->create([]);
+	}
+
+	public function testCreateExceptionUnknownColumn()
+	{
+		$this->model->allowedColumns[] = 'not-exists';
+		$this->expectException(\mysqli_sql_exception::class);
+		$this->expectExceptionMessage("Unknown column 'not-exists' in 'field list'");
+		$this->model->create(['not-exists' => 'Value']);
 	}
 
 	public function testUpdate()
 	{
-		$row = $this->model->update(1, new EntityMock(['data' => 'x']));
-		$this->assertEquals('x', $row->data);
-		$row = $this->model->update(1, ['data' => 'x']);
-		$this->assertEquals('x', $row->data);
-		$this->model->useDatetime = true;
-		$row = $this->model->update(1, ['data' => 'y']);
-		$this->assertEquals('y', $row->data);
-		$this->assertNotNull($row->updatedAt);
+		$affected_rows = $this->model->update(1, new EntityMock(['data' => 'x']));
+		$this->assertEquals(1, $affected_rows);
+		$affected_rows = $this->model->update(1, ['data' => 'x']);
+		$this->assertEquals(0, $affected_rows); // same data
+		\sleep(1); // change updatedAt value
+		$affected_rows = $this->model->update(1, ['data' => 'x']);
+		$this->assertEquals(1, $affected_rows);
+		$affected_rows = $this->model->update(25, ['data' => 'foo']);
+		$this->assertEquals(0, $affected_rows);
+	}
+
+	public function testUpdateExceptionUnknownColumn()
+	{
+		$this->model->allowedColumns[] = 'not-exists';
+		$this->expectException(\mysqli_sql_exception::class);
+		$this->expectExceptionMessage("Unknown column 'not-exists' in 'field list'");
+		$this->model->update(1, ['not-exists' => 'Value']);
 	}
 
 	public function testReplace()
 	{
-		$row = $this->model->replace(1, new EntityMock(['data' => 'x']));
-		$this->assertEquals('x', $row->data);
-		$row = $this->model->replace(1, ['data' => 'x']);
-		$this->assertEquals('x', $row->data);
-		$row = $this->model->replace(1, ['data' => 'y']);
-		$this->assertEquals('y', $row->data);
+		$affected_rows = $this->model->replace(1, new EntityMock(['data' => 'x']));
+		$this->assertEquals(2, $affected_rows);
+		$affected_rows = $this->model->replace(1, ['data' => 'x']);
+		$this->assertEquals(1, $affected_rows);
+		$affected_rows = $this->model->replace(25, ['data' => 'x']);
+		$this->assertEquals(1, $affected_rows);
+	}
+
+	public function testReplaceExceptionUnknownColumn()
+	{
+		$this->model->allowedColumns[] = 'not-exists';
+		$this->expectException(\mysqli_sql_exception::class);
+		$this->expectExceptionMessage("Unknown column 'not-exists' in 'field list'");
+		$this->model->replace(1, ['not-exists' => 'Value']);
 	}
 
 	public function testSave()
 	{
 		$this->model->allowedColumns = ['data'];
-		$row = $this->model->save(['id' => 1, 'data' => 'x']);
-		$this->assertEquals(1, $row->id);
-		$row = $this->model->save(['data' => 'x']);
-		$this->assertEquals(3, $row->id);
-		$row = $this->model->save(new EntityMock(['id' => 3, 'data' => 'x']));
-		$this->assertEquals(3, $row->id);
+		$affected_rows = $this->model->save(['id' => 1, 'data' => 'x']);
+		$this->assertEquals(1, $affected_rows);
+		$insert_id = $this->model->save(['data' => 'x']);
+		$this->assertEquals(3, $insert_id);
+		$affected_rows = $this->model->save(new EntityMock(['id' => 3, 'data' => 'x']));
+		$this->assertEquals(0, $affected_rows); // same data exists
+		$affected_rows = $this->model->save(new EntityMock(['id' => 25, 'data' => 'foo']));
+		$this->assertEquals(0, $affected_rows);
 	}
 
 	public function testDelete()
 	{
-		$this->assertTrue($this->model->delete(1));
-		$this->assertFalse($this->model->delete(1));
+		$this->assertEquals(1, $this->model->delete(1));
+		$this->assertEquals(0, $this->model->delete(1));
+		$this->assertEquals(0, $this->model->delete(25));
 	}
 
 	public function testCount()
