@@ -11,6 +11,8 @@ abstract class Model
 {
 	/**
 	 * Database connection instance names.
+	 *
+	 * @var array|string[]
 	 */
 	protected array $connections = [
 		'read' => 'default',
@@ -19,7 +21,7 @@ abstract class Model
 	/**
 	 * Table name.
 	 */
-	protected ?string $table = null;
+	protected string $table;
 	/**
 	 * Table Primary Key.
 	 */
@@ -31,8 +33,9 @@ abstract class Model
 	/**
 	 * Fetched item return type.
 	 *
+	 * Array, object or the classname of an Entity instance.
+	 *
 	 * @see Entity
-	 * array, object or the classname of an Entity instance
 	 */
 	protected string $returnType = 'object';
 	/**
@@ -41,10 +44,17 @@ abstract class Model
 	 * @var array|string[]
 	 */
 	protected array $allowedColumns = [];
+	/**
+	 * Use datetime columns.
+	 */
 	protected bool $useDatetime = false;
 	/**
+	 * Datetime column names.
+	 *
+	 * ```
 	 * `created_at` datetime NULL DEFAULT NULL,
-	 * `updated_at` datetime NULL DEFAULT NULL,.
+	 * `updated_at` datetime NULL DEFAULT NULL
+	 * ```
 	 *
 	 * @var array|string[]
 	 */
@@ -52,21 +62,28 @@ abstract class Model
 		'create' => 'createdAt',
 		'update' => 'updatedAt',
 	];
+	/**
+	 * The Model Validation instance.
+	 */
 	protected Validation $validation;
 	/**
+	 * Validation field labels.
+	 *
 	 * @var array|string[]
 	 */
 	protected array $validationLabels = [];
 	/**
+	 * Validation rules.
+	 *
 	 * @see Validation::setRules
 	 *
-	 * @var array|array[]
+	 * @var array|array[]|string[]
 	 */
 	protected array $validationRules = [];
 
 	protected function getTable() : string
 	{
-		if ($this->table) {
+		if (isset($this->table)) {
 			return $this->table;
 		}
 		$class = \get_class($this);
@@ -129,6 +146,11 @@ abstract class Model
 		return App::database($this->connections['write']);
 	}
 
+	/**
+	 * A basic function to count all rows in the table.
+	 *
+	 * @return int
+	 */
 	public function count() : int
 	{
 		return $this->getDatabaseForRead()
@@ -163,12 +185,12 @@ abstract class Model
 	}
 
 	/**
-	 * Paginate data.
+	 * A basic function to paginate all rows of the table.
 	 *
 	 * @param int $page     The current page
 	 * @param int $per_page
 	 *
-	 * @return \Framework\Pagination\Pager
+	 * @return Pager
 	 */
 	public function paginate(int $page, int $per_page = 10) : Pager
 	{
