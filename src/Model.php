@@ -229,15 +229,6 @@ abstract class Model
 		return new $this->returnType($data);
 	}
 
-	protected function makeDatetime() : string
-	{
-		static $timezone;
-		if ( ! $timezone) {
-			$timezone = new \DateTimeZone('UTC');
-		}
-		return (new \DateTime('now', $timezone))->format('Y-m-d H:i:s');
-	}
-
 	/**
 	 * @param array|Entity|\stdClass $data
 	 *
@@ -268,7 +259,7 @@ abstract class Model
 	 *
 	 * @param array|Entity|\stdClass|string[] $data
 	 *
-	 * @return false|int The LAST_INSERT_ID() on success or false validation fail
+	 * @return false|int The LAST_INSERT_ID() on success or false if validation fail
 	 */
 	public function create(array | Entity | \stdClass $data) : false | int
 	{
@@ -277,7 +268,7 @@ abstract class Model
 			return false;
 		}
 		if ($this->useDatetime === true) {
-			$datetime = $this->makeDatetime();
+			$datetime = \gmdate('Y-m-d H:i:s');
 			$data[$this->datetimeColumns['create']] ??= $datetime;
 			$data[$this->datetimeColumns['update']] ??= $datetime;
 		}
@@ -324,7 +315,7 @@ abstract class Model
 			return false;
 		}
 		if ($this->useDatetime === true) {
-			$data[$this->datetimeColumns['update']] ??= $this->makeDatetime();
+			$data[$this->datetimeColumns['update']] ??= \gmdate('Y-m-d H:i:s');
 		}
 		return $this->getDatabaseForWrite()
 			->update()
