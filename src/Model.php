@@ -335,34 +335,6 @@ abstract class Model
 	}
 
 	/**
-	 * Replace based on Primary Key and return the number of affected rows.
-	 *
-	 * @param int|string             $primary_key
-	 * @param array|Entity|\stdClass $data
-	 *
-	 * @return false|int The number of affected rows as int or false if validation fails
-	 */
-	public function replace(int | string $primary_key, array | Entity | \stdClass $data)
-	{
-		$this->checkPrimaryKey($primary_key);
-		$data = $this->prepareData($data);
-		$data[$this->primaryKey] = $primary_key;
-		if ($this->getValidation()->validate($data) === false) {
-			return false;
-		}
-		if ($this->useDatetime === true) {
-			$datetime = $this->makeDatetime();
-			$data[$this->datetimeColumns['create']] ??= $datetime;
-			$data[$this->datetimeColumns['update']] ??= $datetime;
-		}
-		return $this->getDatabaseForWrite()
-			->replace()
-			->into($this->getTable())
-			->set($data)
-			->run();
-	}
-
-	/**
 	 * Delete based on Primary Key.
 	 *
 	 * @param int|string $primary_key
