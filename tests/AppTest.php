@@ -39,6 +39,22 @@ class AppTest extends TestCase
 		$this->assertInstanceOf(Config::class, App::config());
 	}
 
+	public function testServices()
+	{
+		$this->assertNull(App::getService('foo'));
+		App::setService('foo', new \stdClass());
+		$this->assertInstanceOf(\stdClass::class, App::getService('foo'));
+		App::removeService('foo', 'default');
+		$this->assertNull(App::getService('foo'));
+		App::setService('foo', new \stdClass());
+		App::setService('foo', new \stdClass(), 'other');
+		$this->assertInstanceOf(\stdClass::class, App::getService('foo'));
+		$this->assertInstanceOf(\stdClass::class, App::getService('foo', 'other'));
+		App::removeService('foo', null);
+		$this->assertNull(App::getService('foo'));
+		$this->assertNull(App::getService('foo', 'other'));
+	}
+
 	/**
 	 * @runInSeparateProcess
 	 */

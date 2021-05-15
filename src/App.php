@@ -64,6 +64,21 @@ class App
 	}
 
 	/**
+	 * Remove a service.
+	 *
+	 * @param string      $name
+	 * @param string|null $instance Instance name or null to remove all
+	 */
+	public static function removeService(string $name, ?string $instance) : void
+	{
+		if ($instance === null) {
+			unset(static::$services[$name]);
+			return;
+		}
+		unset(static::$services[$name][$instance]);
+	}
+
+	/**
 	 * Get the Autoloader service.
 	 *
 	 * @return Autoloader
