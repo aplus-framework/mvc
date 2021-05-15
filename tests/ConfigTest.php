@@ -1,5 +1,6 @@
 <?php namespace Tests\MVC;
 
+use Framework\Debug\ExceptionHandler;
 use Framework\MVC\Config;
 use PHPUnit\Framework\TestCase;
 
@@ -46,6 +47,7 @@ class ConfigTest extends TestCase
 			],
 			'exceptions' => [
 				'default' => [
+					'environment' => ExceptionHandler::ENV_PROD,
 					'clearBuffer' => true,
 					'viewsDir' => null,
 				],

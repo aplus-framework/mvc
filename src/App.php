@@ -21,7 +21,6 @@ use LogicException;
 
 class App
 {
-	public const DEBUG = false;
 	protected static array $services = [];
 	protected static bool $isRunning = false;
 	protected static ?Config $config;
@@ -373,8 +372,10 @@ class App
 
 	protected static function prepareExceptionHandler() : void
 	{
+		$environment = static::config()->get('exceptions')['environment']
+			?? ExceptionHandler::ENV_PROD;
 		$exceptions = new ExceptionHandler(
-			static::DEBUG ? ExceptionHandler::ENV_DEV : ExceptionHandler::ENV_PROD,
+			$environment,
 			static::logger(),
 			static::language()
 		);
