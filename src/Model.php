@@ -81,6 +81,11 @@ abstract class Model
 	 */
 	protected array $validationRules = [];
 
+	public function __destruct()
+	{
+		App::removeService('validation', $this->getModelIdentifier());
+	}
+
 	protected function getTable() : string
 	{
 		if (isset($this->table)) {
@@ -369,7 +374,7 @@ abstract class Model
 		if (isset($this->validation)) {
 			return $this->validation;
 		}
-		return $this->validation = App::validation('Model:' . \get_class($this))
+		return $this->validation = App::validation($this->getModelIdentifier())
 			->setLabels($this->validationLabels)
 			->setRules($this->validationRules);
 	}
@@ -382,5 +387,10 @@ abstract class Model
 	public function getErrors() : array
 	{
 		return $this->getValidation()->getErrors();
+	}
+
+	protected function getModelIdentifier() : string
+	{
+		return 'Model:' . \spl_object_hash($this);
 	}
 }

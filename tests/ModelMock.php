@@ -1,6 +1,7 @@
 <?php namespace Tests\MVC;
 
 use Framework\MVC\Model;
+use Framework\Validation\Validation;
 
 class ModelMock extends Model
 {
@@ -13,5 +14,10 @@ class ModelMock extends Model
 	public function makePageLimitAndOffset(int $page, int $per_page = 10) : array
 	{
 		return parent::makePageLimitAndOffset($page, $per_page);
+	}
+
+	public function getValidation() : Validation
+	{
+		return parent::getValidation();
 	}
 }

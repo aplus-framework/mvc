@@ -3,6 +3,7 @@
 use Framework\Database\Definition\Table\TableDefinition;
 use Framework\MVC\App;
 use Framework\MVC\Config;
+use Framework\Validation\Validation;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ModelTest extends TestCase
 {
-	protected ModelMock $model;
+	protected ?ModelMock $model;
 
 	protected function setUp() : void
 	{
@@ -207,5 +208,15 @@ class ModelTest extends TestCase
 		$row = $this->model->update(1, ['data' => 'Value']);
 		$this->assertFalse($row);
 		$this->assertArrayHasKey('data', $this->model->getErrors());
+	}
+
+	public function testValidationUnset()
+	{
+		$id = 'Model:' . \spl_object_hash($this->model);
+		$this->assertNull(App::getService('validation', $id));
+		$this->model->getValidation();
+		$this->assertInstanceOf(Validation::class, App::getService('validation', $id));
+		$this->model = null;
+		$this->assertNull(App::getService('validation', $id));
 	}
 }
