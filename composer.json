@@ -40,7 +40,7 @@
 		"natanfelles/language": "^1.2",
 		"natanfelles/log": "^1.1",
 		"natanfelles/pagination": "^1.6",
-		"natanfelles/routing": "^1.8",
+		"natanfelles/routing": "^1.9",
 		"natanfelles/session": "^1.4",
 		"natanfelles/validation": "^1.4"
 	},
