@@ -1,5 +1,6 @@
 <?php
 
+use Framework\HTTP\Response;
 use Framework\MVC\App;
 
 if ( ! function_exists('helpers')) {
@@ -135,5 +136,41 @@ if ( ! function_exists('csrf_input')) {
 	function csrf_input() : string
 	{
 		return App::csrf()->input();
+	}
+}
+if ( ! function_exists('not_found')) {
+	/**
+	 * Set Response status line as "404 Not Found" and auto set body as
+	 * JSON or HTML page based on Request Content-Type header.
+	 *
+	 * @return \Framework\HTTP\Response
+	 */
+	function not_found() : Response
+	{
+		App::response()->setStatusLine(404);
+		if (App::request()->isJSON()) {
+			return App::response()->setJSON([
+				'error' => [
+					'code' => 404,
+					'reason' => 'Not Found',
+				],
+			]);
+		}
+		return App::response()->setBody(
+			<<<EOL
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Error 404</title>
+</head>
+<body>
+<h1>Error 404</h1>
+<p>Page not found</p>
+</body>
+</html>
+
+EOL
+		);
 	}
 }

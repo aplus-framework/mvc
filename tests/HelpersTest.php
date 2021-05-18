@@ -111,4 +111,25 @@ class HelpersTest extends TestCase
 	{
 		$this->assertStringStartsWith('<input type="hidden" name="', csrf_input());
 	}
+
+	public function testNotFoundAsHTML()
+	{
+		$response = not_found();
+		$this->assertStringContainsString('<h1>Error 404</h1>', $response->getBody());
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testNotFoundAsJSON()
+	{
+		$_SERVER['HTTP_CONTENT_TYPE'] = 'application/json';
+		$response = not_found();
+		$this->assertEquals([
+			'error' => [
+				'code' => 404,
+				'reason' => 'Not Found',
+			],
+		], \json_decode($response->getBody(), true));
+	}
 }
