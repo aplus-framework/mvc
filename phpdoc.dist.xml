@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <phpdocumentor>
-    <title>Framework MVC Library</title>
+    <title>The Framework MVC Library</title>
     <parser>
         <target>build/docs-cache</target>
         <markers>
