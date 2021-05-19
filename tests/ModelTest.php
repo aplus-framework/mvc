@@ -122,6 +122,24 @@ class ModelTest extends TestCase
 		$this->model->update(1, ['not-exists' => 'Value']);
 	}
 
+	public function testReplace()
+	{
+		$affected_rows = $this->model->replace(1, new EntityMock(['data' => 'foo']));
+		$this->assertEquals(2, $affected_rows); // Deleted and inserted
+		$affected_rows = $this->model->replace(1, ['data' => 'bar']);
+		$this->assertEquals(2, $affected_rows); // Deleted and inserted
+		$affected_rows = $this->model->replace(25, ['data' => 'baz']);
+		$this->assertEquals(1, $affected_rows); // Inserted
+	}
+
+	public function testReplaceExceptionUnknownColumn()
+	{
+		$this->model->allowedColumns[] = 'not-exists';
+		$this->expectException(\mysqli_sql_exception::class);
+		$this->expectExceptionMessage("Unknown column 'not-exists' in 'field list'");
+		$this->model->replace(1, ['not-exists' => 'Value']);
+	}
+
 	public function testSave()
 	{
 		$this->model->allowedColumns = ['data'];
