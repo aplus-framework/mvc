@@ -9,7 +9,6 @@ class Validator extends \Framework\Validation\Validator
 		string $column = null,
 		string $connection = 'default'
 	) : bool {
-		App::language()->addDirectory(__DIR__ . '/Languages');
 		$result = App::database($connection)
 			->select()
 			->columns($column ?? $field)
