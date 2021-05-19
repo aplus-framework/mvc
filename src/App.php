@@ -268,6 +268,7 @@ class App
 				$service->setDirectories($directories);
 			}
 		}
+		$service->addDirectory(__DIR__ . '/Languages');
 		return static::setService('language', $service);
 	}
 
