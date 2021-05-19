@@ -21,14 +21,32 @@ class LanguagesTest extends TestCase
 		return $codes;
 	}
 
-	public function testKeys()
+	/**
+	 * @dataProvider languageProvider
+	 */
+	public function testKeys(array $rules, string $file)
 	{
-		$rules = ['inDatabase', 'notInDatabase'];
 		foreach ($this->getCodes() as $code) {
-			$lines = require $this->langDir . $code . '/validation.php';
+			$lines = require $this->langDir . $code . '/' . $file . '.php';
 			$lines = \array_keys($lines);
 			\sort($lines);
-			$this->assertEquals($rules, $lines, 'Language: ' . $code);
+			$this->assertEquals($rules, $lines, 'File: ' . $file . '. Language: ' . $code);
 		}
+	}
+
+	public function languageProvider() : array
+	{
+		$files = [
+			'errors',
+			'validation',
+		];
+		$data = [];
+		foreach ($files as $file) {
+			$data[$file] = [
+				\array_keys(require $this->langDir . 'en/' . $file . '.php'),
+				$file,
+			];
+		}
+		return $data;
 	}
 }
