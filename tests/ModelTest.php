@@ -43,14 +43,14 @@ class ModelTest extends TestCase
 		App::database()->dropTable()->ifExists()->table('ModelMock')->run();
 	}
 
-	public function testRead()
+	public function testFind()
 	{
-		$this->assertIsObject($this->model->read(1));
+		$this->assertIsObject($this->model->find(1));
 		$this->model->returnType = 'array';
-		$this->assertIsArray($this->model->read(1));
+		$this->assertIsArray($this->model->find(1));
 		$this->model->returnType = EntityMock::class;
-		$this->assertInstanceOf(EntityMock::class, $this->model->read(1));
-		$this->assertNull($this->model->read(100));
+		$this->assertInstanceOf(EntityMock::class, $this->model->find(1));
+		$this->assertNull($this->model->find(100));
 	}
 
 	public function testAllowedColumnsNotDefined()

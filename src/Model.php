@@ -219,7 +219,7 @@ abstract class Model
 	}
 
 	/**
-	 * Read a row based on Primary Key.
+	 * Find a row based on Primary Key.
 	 *
 	 * @param int|string $primary_key
 	 *
@@ -227,7 +227,7 @@ abstract class Model
 	 *                                              on $returnType or null if row
 	 *                                              was not found
 	 */
-	public function read(int | string $primary_key) : \stdClass | Entity | array | null
+	public function find(int | string $primary_key) : \stdClass | Entity | array | null
 	{
 		$this->checkPrimaryKey($primary_key);
 		$data = $this->getDatabaseForRead()
