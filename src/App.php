@@ -413,6 +413,11 @@ class App
 		$exceptions->initialize(static::config()->get('exceptions')['clearBuffer']);
 	}
 
+	protected static function loadHelpers() : void
+	{
+		require __DIR__ . '/helpers.php';
+	}
+
 	public static function run() : void
 	{
 		if (empty(static::$config)) {
@@ -422,6 +427,7 @@ class App
 			throw new LogicException('App already is running');
 		}
 		static::$isRunning = true;
+		static::loadHelpers();
 		static::prepareExceptionHandler();
 		static::autoloader();
 		static::prepareRoutes();

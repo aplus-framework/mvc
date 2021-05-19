@@ -27,4 +27,9 @@ class AppMock extends \Framework\MVC\App
 	{
 		static::$config = $config;
 	}
+
+	public static function loadHelpers() : void
+	{
+		parent::loadHelpers();
+	}
 }
