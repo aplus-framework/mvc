@@ -143,12 +143,11 @@ if ( ! function_exists('not_found')) {
 	 * Set Response status line as "404 Not Found" and auto set body as
 	 * JSON or HTML page based on Request Content-Type header.
 	 *
-	 * @param string|null $title
-	 * @param string|null $message
+	 * @param array $data
 	 *
 	 * @return \Framework\HTTP\Response
 	 */
-	function not_found(string $title = null, string $message = null) : Response
+	function not_found(array $data = []) : Response
 	{
 		App::response()->setStatusLine(404);
 		if (App::request()->isJSON()) {
@@ -160,19 +159,19 @@ if ( ! function_exists('not_found')) {
 			]);
 		}
 		$lang = App::language()->getCurrentLocale();
-		$title ??= lang('errors.notFoundTitle');
-		$message ??= lang('errors.notFoundMessage');
+		$data['title'] ??= lang('errors.notFoundTitle');
+		$data['message'] ??= lang('errors.notFoundMessage');
 		return App::response()->setBody(
 			<<<EOL
 <!doctype html>
 <html lang="{$lang}">
 <head>
 	<meta charset="utf-8">
-	<title>{$title}</title>
+	<title>{$data['title']}</title>
 </head>
 <body>
-<h1>{$title}</h1>
-<p>{$message}</p>
+<h1>{$data['title']}</h1>
+<p>{$data['message']}</p>
 </body>
 </html>
 

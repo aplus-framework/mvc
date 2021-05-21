@@ -130,6 +130,16 @@ class HelpersTest extends TestCase
 		$this->assertStringContainsString('<html lang="pt-br">', $response->getBody());
 	}
 
+	public function testNotFoundAsHTMLWithCustomData()
+	{
+		$response = not_found([
+			'title' => 'Foo',
+			'message' => 'Bar',
+		]);
+		$this->assertStringContainsString('<h1>Foo</h1>', $response->getBody());
+		$this->assertStringContainsString('<p>Bar</p>', $response->getBody());
+	}
+
 	/**
 	 * @runInSeparateProcess
 	 */
