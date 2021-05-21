@@ -282,6 +282,21 @@ abstract class Model
 	}
 
 	/**
+	 * Used to set the datetime columns.
+	 *
+	 * By default it returns the datetime in UTC.
+	 *
+	 * Use this method to transform the datetime with a custom timezone,
+	 * if necessary.
+	 *
+	 * @return string The datetime in the following format: Y-m-d H:i:s
+	 */
+	protected function getDatetime() : string
+	{
+		return \gmdate('Y-m-d H:i:s');
+	}
+
+	/**
 	 * Insert a new row.
 	 *
 	 * @param array|Entity|\stdClass|string[] $data
@@ -295,7 +310,7 @@ abstract class Model
 			return false;
 		}
 		if ($this->useDatetime === true) {
-			$datetime = \gmdate('Y-m-d H:i:s');
+			$datetime = $this->getDatetime();
 			$data[$this->datetimeColumns['create']] ??= $datetime;
 			$data[$this->datetimeColumns['update']] ??= $datetime;
 		}
@@ -342,7 +357,7 @@ abstract class Model
 			return false;
 		}
 		if ($this->useDatetime === true) {
-			$data[$this->datetimeColumns['update']] ??= \gmdate('Y-m-d H:i:s');
+			$data[$this->datetimeColumns['update']] ??= $this->getDatetime();
 		}
 		return $this->getDatabaseForWrite()
 			->update()
@@ -371,7 +386,7 @@ abstract class Model
 			return false;
 		}
 		if ($this->useDatetime === true) {
-			$datetime = \gmdate('Y-m-d H:i:s');
+			$datetime = $this->getDatetime();
 			$data[$this->datetimeColumns['create']] ??= $datetime;
 			$data[$this->datetimeColumns['update']] ??= $datetime;
 		}
