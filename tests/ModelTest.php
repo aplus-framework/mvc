@@ -124,7 +124,7 @@ class ModelTest extends TestCase
 
 	public function testReplace()
 	{
-		$affected_rows = $this->model->replace(1, new EntityMock(['data' => 'foo']));
+		$affected_rows = $this->model->replace(1, new EntityMock(['data' => 'xii']));
 		$this->assertEquals(2, $affected_rows); // Deleted and inserted
 		$affected_rows = $this->model->replace(1, ['data' => 'bar']);
 		$this->assertEquals(2, $affected_rows); // Deleted and inserted
