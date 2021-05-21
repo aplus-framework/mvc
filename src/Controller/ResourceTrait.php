@@ -1,13 +1,13 @@
-<?php namespace Framework\MVC\Controller\Traits;
+<?php namespace Framework\MVC\Controller;
 
 use Framework\HTTP\Response;
 
 /**
- * Trait Resource.
+ * Trait ResourceTrait.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
  */
-trait Resource
+trait ResourceTrait
 {
 	/**
 	 * Respond a custom HTTP status code and data.

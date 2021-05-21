@@ -7,7 +7,7 @@ use Framework\HTTP\Response;
  */
 abstract class ResourceController extends Controller
 {
-	use Controller\Traits\Resource;
+	use Controller\ResourceTrait;
 
 	/**
 	 * Handles a GET request for /.
