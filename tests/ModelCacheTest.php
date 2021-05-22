@@ -28,6 +28,12 @@ class ModelCacheTest extends ModelTestCase
 		$this->assertIsObject($this->model->find(1));
 	}
 
+	public function testFindNotFound()
+	{
+		$this->assertNull($this->model->find(3));
+		$this->assertNull($this->model->find(3));
+	}
+
 	public function testCreate()
 	{
 		$this->assertNull($this->model->find(3));

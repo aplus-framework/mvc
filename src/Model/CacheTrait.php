@@ -35,6 +35,9 @@ trait CacheTrait
 	{
 		$this->checkPrimaryKey($primary_key);
 		$data = $this->getCache()->get($this->getCacheKey($primary_key));
+		if ($data === 'not-found') {
+			return null;
+		}
 		if ($data !== null) {
 			return $this->makeEntity($data);
 		}
@@ -45,8 +48,11 @@ trait CacheTrait
 			->limit(1)
 			->run()
 			->fetchArray();
+		if ($data === null) {
+			$data = 'not-found';
+		}
 		$this->getCache()->set($this->getCacheKey($primary_key), $data, $this->getCacheTTL());
-		return $data ? $this->makeEntity($data) : null;
+		return \is_array($data) ? $this->makeEntity($data) : null;
 	}
 
 	public function create(array | Entity | \stdClass $data) : false | int
