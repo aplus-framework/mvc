@@ -38,7 +38,7 @@ trait CacheTrait
 		if ($data === 'not-found') {
 			return null;
 		}
-		if ($data !== null) {
+		if (\is_array($data)) {
 			return $this->makeEntity($data);
 		}
 		$data = $this->getDatabaseForRead()
