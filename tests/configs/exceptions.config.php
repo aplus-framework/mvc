@@ -7,5 +7,6 @@ return [
 		'environment' => ExceptionHandler::ENV_PROD,
 		'clearBuffer' => true,
 		'viewsDir' => null,
+		'log' => true,
 	],
 ];

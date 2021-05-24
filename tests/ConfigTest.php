@@ -50,6 +50,7 @@ class ConfigTest extends TestCase
 					'environment' => ExceptionHandler::ENV_PROD,
 					'clearBuffer' => true,
 					'viewsDir' => null,
+					'log' => true,
 				],
 			],
 		], $this->config->getAll());

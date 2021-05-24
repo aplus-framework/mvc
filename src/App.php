@@ -403,9 +403,10 @@ class App
 	{
 		$environment = static::config()->get('exceptions')['environment']
 			?? ExceptionHandler::ENV_PROD;
+		$logger = static::config()->get('exceptions')['log'] ? static::logger() : null;
 		$exceptions = new ExceptionHandler(
 			$environment,
-			static::logger(),
+			$logger,
 			static::language()
 		);
 		if (isset(static::config()->get('exceptions')['viewsDir'])) {
