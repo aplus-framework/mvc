@@ -80,6 +80,7 @@ class HelpersTest extends TestCase
 	public function testEsc()
 	{
 		$this->assertEquals('&gt;&apos;&quot;', esc('>\'"'));
+		$this->assertEquals('', esc(null));
 	}
 
 	public function testNormalizeWhitespaces()
