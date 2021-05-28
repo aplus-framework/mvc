@@ -134,12 +134,18 @@ if ( ! function_exists('session')) {
 }
 if ( ! function_exists('old')) {
 	#[Pure]
-	function old(string $key = null, bool $escape = true) : mixed
+	function old(?string $key, bool $escape = true) : mixed
 	{
 		session();
-		return $escape
-			? esc(App::request()->getRedirectData($key))
-			: App::request()->getRedirectData($key);
+		$data = App::request()->getRedirectData($key);
+		if ($escape) {
+			if (is_scalar($data) || (is_object($data) && method_exists($data, '__toString'))) {
+				$data = esc((string) $data);
+			} else {
+				$data = '';
+			}
+		}
+		return $data;
 	}
 }
 if ( ! function_exists('csrf_input')) {

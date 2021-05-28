@@ -100,9 +100,24 @@ class HelpersTest extends TestCase
 	public function testOld()
 	{
 		App::session();
-		App::response()->redirect('http://localhost', ['foo' => ['bar']]);
+		$data = [
+			'foo' => ['bar'],
+			'baz' => new class() {
+				public function __toString()
+				{
+					return 'bazz';
+				}
+			},
+		];
+		App::response()->redirect('http://localhost', $data);
+		$this->assertEquals('', old(null));
+		$this->assertEquals($data, old(null, false));
 		$this->assertEquals('bar', old('foo[0]'));
+		$this->assertEquals('bar', old('foo[0]', false));
+		$this->assertEquals('', old('foo'));
 		$this->assertEquals(['bar'], old('foo', false));
+		$this->assertEquals('bazz', old('baz'));
+		$this->assertEquals($data['baz'], old('baz', false));
 	}
 
 	/**
