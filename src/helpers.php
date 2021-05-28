@@ -40,7 +40,10 @@ if ( ! function_exists('esc')) {
 	#[Pure]
 	function esc(?string $text, string $encoding = 'UTF-8') : string
 	{
-		return App::view()->escape($text, $encoding);
+		$text = (string) $text;
+		return empty($text)
+			? $text
+			: htmlspecialchars($text, \ENT_QUOTES | \ENT_HTML5, $encoding);
 	}
 }
 if ( ! function_exists('normalize_whitespaces')) {
@@ -56,7 +59,6 @@ if ( ! function_exists('is_cli')) {
 	 *
 	 * @return bool TRUE if is a CLI request, otherwise FALSE
 	 */
-	#[Pure]
 	function is_cli() : bool
 	{
 		return App::isCLI();
@@ -72,28 +74,24 @@ if ( ! function_exists('view')) {
 	 *
 	 * @return string The rendered view contents
 	 */
-	#[Pure]
 	function view(string $path, array $data = [], string $instance = 'default') : string
 	{
 		return App::view($instance)->render($path, $data);
 	}
 }
 if ( ! function_exists('current_url')) {
-	#[Pure]
 	function current_url() : string
 	{
 		return App::request()->getURL();
 	}
 }
 if ( ! function_exists('current_route')) {
-	#[Pure]
 	function current_route() : Framework\Routing\Route
 	{
 		return App::router()->getMatchedRoute();
 	}
 }
 if ( ! function_exists('route_url')) {
-	#[Pure]
 	function route_url(string $name, array $path_params = [], array $origin_params = []) : string
 	{
 		$route = App::router()->getNamedRoute($name);
@@ -114,7 +112,6 @@ if ( ! function_exists('lang')) {
 	 *
 	 * @return string|null
 	 */
-	#[Pure]
 	function lang(string $line, array $args = [], string $locale = null) : ?string
 	{
 		return App::language()->lang($line, $args, $locale);
@@ -133,7 +130,6 @@ if ( ! function_exists('session')) {
 	}
 }
 if ( ! function_exists('old')) {
-	#[Pure]
 	function old(?string $key, bool $escape = true) : mixed
 	{
 		session();
@@ -149,7 +145,6 @@ if ( ! function_exists('old')) {
 	}
 }
 if ( ! function_exists('csrf_input')) {
-	#[Pure]
 	function csrf_input() : string
 	{
 		return App::csrf()->input();
