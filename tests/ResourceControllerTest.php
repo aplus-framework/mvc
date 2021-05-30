@@ -11,10 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ResourceControllerTest extends TestCase
 {
-	/**
-	 * @var ResourceControllerMock
-	 */
-	protected $resourceController;
+	protected ResourceControllerMock $resourceController;
 
 	protected function setUp() : void
 	{
