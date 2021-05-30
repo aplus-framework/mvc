@@ -34,7 +34,7 @@ class ViewTest extends TestCase
 
 	public function testRenderNamespacedView()
 	{
-		App::init(new Config(__DIR__ . '/configs'));
+		(new App(new Config(__DIR__ . '/configs')));
 		App::autoloader()->setNamespace('Tests\MVC', __DIR__);
 		$this->assertEquals(
 			"<h1>Block</h1>\n",

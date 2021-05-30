@@ -4,32 +4,32 @@ use Framework\MVC\Config;
 
 class AppMock extends \Framework\MVC\App
 {
-	public static function init(Config $config) : void
+	public function __construct(Config $config)
 	{
 		$_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 		$_SERVER['HTTP_HOST'] = 'localhost:8080';
 		$_SERVER['REQUEST_URI'] = '/contact';
-		parent::init($config);
+		parent::__construct($config);
 	}
 
-	public static function prepareRoutes(string $instance = 'default') : void
+	public function prepareRoutes(string $instance = 'default') : void
 	{
 		parent::prepareRoutes($instance);
 	}
 
-	public static function makeResponseBodyPart($response) : string
+	public function makeResponseBodyPart($response) : string
 	{
 		return parent::makeResponseBodyPart($response);
+	}
+
+	public function loadHelpers() : void
+	{
+		parent::loadHelpers();
 	}
 
 	public static function setConfigProperty(?Config $config) : void
 	{
 		static::$config = $config;
-	}
-
-	public static function loadHelpers() : void
-	{
-		parent::loadHelpers();
 	}
 }

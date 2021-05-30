@@ -6,12 +6,19 @@ use Framework\Session\Session;
 use PHPUnit\Framework\TestCase;
 use Tests\MVC\AppMock as App;
 
+/**
+ * Class HelpersTest.
+ *
+ * @runTestsInSeparateProcesses
+ */
 class HelpersTest extends TestCase
 {
+	protected AppMock $app;
+
 	protected function setUp() : void
 	{
-		App::init(new Config(__DIR__ . '/configs'));
-		App::loadHelpers();
+		$this->app = new App(new Config(__DIR__ . '/configs'));
+		$this->app->loadHelpers();
 	}
 
 	public function testCache()
@@ -51,7 +58,7 @@ class HelpersTest extends TestCase
 	public function testCurrentRoute()
 	{
 		App::setIsCLI(false);
-		App::run();
+		$this->app->run();
 		$this->assertEquals('contact', current_route()->getName());
 	}
 
@@ -61,7 +68,7 @@ class HelpersTest extends TestCase
 	public function testRouteUrl()
 	{
 		App::setIsCLI(false);
-		App::run();
+		$this->app->run();
 		$this->assertEquals('http://localhost:8080/users', route_url('users'));
 		$this->assertEquals('http://localhost:8080/users/25', route_url('users.show', [25]));
 		$this->assertEquals(

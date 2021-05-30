@@ -9,7 +9,7 @@ class ValidatorTest extends TestCase
 {
 	protected function setUp() : void
 	{
-		App::init(new Config(__DIR__ . '/configs'));
+		(new App(new Config(__DIR__ . '/configs')));
 		App::database()->dropTable()->table('Users')->ifExists()->run();
 		App::database()->createTable()
 			->table('Users')

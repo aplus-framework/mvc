@@ -17,7 +17,7 @@ class ControllerTest extends TestCase
 
 	protected function setUp() : void
 	{
-		App::init(new Config(__DIR__ . '/configs'));
+		(new App(new Config(__DIR__ . '/configs')));
 		$this->controller = new ControllerMock();
 	}
 

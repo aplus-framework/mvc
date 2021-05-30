@@ -34,9 +34,104 @@ class App
 	 *
 	 * @param Config $config
 	 */
-	public static function init(Config $config) : void
+	public function __construct(Config $config)
 	{
+		if (isset(static::$config)) {
+			throw new LogicException('App already initialized');
+		}
 		static::$config = $config;
+	}
+
+	protected function prepareExceptionHandler() : void
+	{
+		$environment = static::config()->get('exceptions')['environment']
+			?? ExceptionHandler::ENV_PROD;
+		$logger = static::config()->get('exceptions')['log'] ? static::logger() : null;
+		$exceptions = new ExceptionHandler(
+			$environment,
+			$logger,
+			static::language()
+		);
+		if (isset(static::config()->get('exceptions')['viewsDir'])) {
+			$exceptions->setViewsDir(static::config()->get('exceptions')['viewsDir']);
+		}
+		$exceptions->initialize(static::config()->get('exceptions')['clearBuffer']);
+	}
+
+	protected function loadHelpers() : void
+	{
+		require __DIR__ . '/helpers.php';
+	}
+
+	public function run() : void
+	{
+		if (static::$isRunning) {
+			throw new LogicException('App already is running');
+		}
+		static::$isRunning = true;
+		$this->loadHelpers();
+		$this->prepareExceptionHandler();
+		static::autoloader();
+		$this->prepareRoutes();
+		if (static::isCLI()) {
+			if (empty(static::config()->get('console')['enabled'])) {
+				return;
+			}
+			static::console()->run();
+			return;
+		}
+		$response = static::router()->match(
+			static::request()->getMethod(),
+			static::request()->getURL()
+		)->run(static::request(), static::response());
+		$response = $this->makeResponseBodyPart($response);
+		static::response()->appendBody($response)->send();
+	}
+
+	/**
+	 * Load files to set routes.
+	 *
+	 * @param string $instance
+	 */
+	protected function prepareRoutes(string $instance = 'default') : void
+	{
+		$files = static::config()->get('routes', $instance);
+		if ( ! $files) {
+			return;
+		}
+		$files = \array_unique($files);
+		foreach ($files as $file) {
+			if ( ! \is_file($file)) {
+				throw new LogicException('Invalid route file: ' . $file);
+			}
+			require $file;
+		}
+	}
+
+	/**
+	 * @param mixed $response Scalar or null data returned in a matched route
+	 *
+	 * @see \Framework\Routing\Route::run
+	 *
+	 * @return string
+	 */
+	protected function makeResponseBodyPart(mixed $response) : string
+	{
+		if ($response === null || $response instanceof Response) {
+			return '';
+		}
+		if (\is_scalar($response)) {
+			return $response;
+		}
+		if (\is_object($response) && \method_exists($response, '__toString')) {
+			return $response;
+		}
+		if (\is_array($response) || $response instanceof \JsonSerializable) {
+			static::response()->setJSON($response);
+			return '';
+		}
+		$type = \get_debug_type($response);
+		throw new LogicException("Invalid return type '{$type}' on matched route");
 	}
 
 	/**
@@ -399,55 +494,6 @@ class App
 		return static::setService('view', $service, $instance);
 	}
 
-	protected static function prepareExceptionHandler() : void
-	{
-		$environment = static::config()->get('exceptions')['environment']
-			?? ExceptionHandler::ENV_PROD;
-		$logger = static::config()->get('exceptions')['log'] ? static::logger() : null;
-		$exceptions = new ExceptionHandler(
-			$environment,
-			$logger,
-			static::language()
-		);
-		if (isset(static::config()->get('exceptions')['viewsDir'])) {
-			$exceptions->setViewsDir(static::config()->get('exceptions')['viewsDir']);
-		}
-		$exceptions->initialize(static::config()->get('exceptions')['clearBuffer']);
-	}
-
-	protected static function loadHelpers() : void
-	{
-		require __DIR__ . '/helpers.php';
-	}
-
-	public static function run() : void
-	{
-		if (empty(static::$config)) {
-			throw new LogicException('App Config not initialized');
-		}
-		if (static::$isRunning) {
-			throw new LogicException('App already is running');
-		}
-		static::$isRunning = true;
-		static::loadHelpers();
-		static::prepareExceptionHandler();
-		static::autoloader();
-		static::prepareRoutes();
-		if (static::isCLI()) {
-			if (empty(static::config()->get('console')['enabled'])) {
-				return;
-			}
-			static::console()->run();
-			return;
-		}
-		$response = static::router()->match(
-			static::request()->getMethod(),
-			static::request()->getURL()
-		)->run(static::request(), static::response());
-		$response = static::makeResponseBodyPart($response);
-		static::response()->appendBody($response)->send();
-	}
-
 	/**
 	 * Tell if is a command-line request.
 	 *
@@ -469,51 +515,5 @@ class App
 	public static function setIsCLI(bool $is) : void
 	{
 		static::$isCLI = $is;
-	}
-
-	/**
-	 * Load files to set routes.
-	 *
-	 * @param string $instance
-	 */
-	protected static function prepareRoutes(string $instance = 'default') : void
-	{
-		$files = static::config()->get('routes', $instance);
-		if ( ! $files) {
-			return;
-		}
-		$files = \array_unique($files);
-		foreach ($files as $file) {
-			if ( ! \is_file($file)) {
-				throw new LogicException('Invalid route file: ' . $file);
-			}
-			require $file;
-		}
-	}
-
-	/**
-	 * @param mixed $response Scalar or null data returned in a matched route
-	 *
-	 * @see \Framework\Routing\Route::run()
-	 *
-	 * @return string
-	 */
-	protected static function makeResponseBodyPart($response) : string
-	{
-		if ($response === null || $response instanceof Response) {
-			return '';
-		}
-		if (\is_scalar($response)) {
-			return $response;
-		}
-		if (\is_object($response) && \method_exists($response, '__toString')) {
-			return $response;
-		}
-		if (\is_array($response) || $response instanceof \JsonSerializable) {
-			static::response()->setJSON($response);
-			return '';
-		}
-		$type = \get_debug_type($response);
-		throw new LogicException("Invalid return type '{$type}' on matched route");
 	}
 }

@@ -28,9 +28,11 @@ use Tests\MVC\AppMock as App;
  */
 class AppTest extends TestCase
 {
+	protected AppMock $app;
+
 	protected function setUp() : void
 	{
-		App::init(new Config(__DIR__ . '/configs'));
+		$this->app = new App(new Config(__DIR__ . '/configs'));
 	}
 
 	public function testConfigInstance()
@@ -112,14 +114,14 @@ class AppTest extends TestCase
 
 	public function testPrepareRoutes()
 	{
-		App::prepareRoutes();
+		$this->app->prepareRoutes();
 		$this->assertInstanceOf(Route::class, App::router()->getNamedRoute('home'));
 		App::config()->setMany([
 			'routes' => [
 				'default' => [],
 			],
 		]);
-		App::prepareRoutes();
+		$this->app->prepareRoutes();
 		App::config()->setMany([
 			'routes' => [
 				'default' => [
@@ -129,13 +131,13 @@ class AppTest extends TestCase
 		]);
 		$this->expectException(\LogicException::class);
 		$this->expectExceptionMessage('Invalid route file: file-not-found');
-		App::prepareRoutes();
+		$this->app->prepareRoutes();
 	}
 
 	public function testRunEmptyConsole()
 	{
 		Stream::init();
-		App::run();
+		$this->app->run();
 		$this->assertEquals('', Stream::getOutput());
 	}
 
@@ -143,54 +145,53 @@ class AppTest extends TestCase
 	{
 		App::config()->set('console', ['enabled' => true]);
 		Stream::init();
-		App::run();
+		$this->app->run();
 		$this->assertStringContainsString('Commands', Stream::getOutput());
 	}
 
 	public function testRunResponse()
 	{
 		App::setIsCLI(false);
-		App::run();
+		$this->app->run();
 		$this->assertTrue(App::response()->isSent());
 	}
 
-	public function testAppIsNotInitilized()
+	public function testAppIsAlreadyInitilized()
 	{
-		App::setConfigProperty(null);
 		$this->expectException(\LogicException::class);
-		$this->expectExceptionMessage('App Config not initialized');
-		App::run();
+		$this->expectExceptionMessage('App already initialized');
+		(new App(new Config(__DIR__ . '/configs')));
 	}
 
 	public function testAppAlreadyIsRunning()
 	{
-		App::run();
+		$this->app->run();
 		$this->expectException(\LogicException::class);
 		$this->expectExceptionMessage('App already is running');
-		App::run();
+		$this->app->run();
 	}
 
 	public function testMakeResponseBodyPart()
 	{
-		$this->assertEquals('', App::makeResponseBodyPart(null));
-		$this->assertEquals('', App::makeResponseBodyPart(App::response()));
-		$this->assertEquals('1.2', App::makeResponseBodyPart(1.2));
+		$this->assertEquals('', $this->app->makeResponseBodyPart(null));
+		$this->assertEquals('', $this->app->makeResponseBodyPart(App::response()));
+		$this->assertEquals('1.2', $this->app->makeResponseBodyPart(1.2));
 		$stringableObject = new class() {
 			public function __toString() : string
 			{
 				return 'foo';
 			}
 		};
-		$this->assertEquals('foo', App::makeResponseBodyPart($stringableObject));
+		$this->assertEquals('foo', $this->app->makeResponseBodyPart($stringableObject));
 		$this->assertNull(App::response()->getHeader('content-type'));
-		$this->assertEquals('', App::makeResponseBodyPart(['id' => 1]));
+		$this->assertEquals('', $this->app->makeResponseBodyPart(['id' => 1]));
 		$this->assertEquals(
 			'application/json; charset=UTF-8',
 			App::response()->getHeader('content-type')
 		);
 		$this->expectException(\LogicException::class);
 		$this->expectExceptionMessage("Invalid return type 'Tests\\MVC\\AppMock' on matched route");
-		App::makeResponseBodyPart(new App());
+		$this->app->makeResponseBodyPart($this->app);
 	}
 
 	public function testIsCli()
