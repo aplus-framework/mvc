@@ -53,7 +53,6 @@ if ( ! function_exists('normalize_whitespaces')) {
 	 *
 	 * @return string
 	 */
-	#[Pure]
 	function normalize_whitespaces(string $string) : string
 	{
 		return trim(preg_replace('/\s+/', ' ', $string));
