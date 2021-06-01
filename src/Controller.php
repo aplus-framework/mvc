@@ -20,9 +20,9 @@ abstract class Controller extends RouteAction
 		}
 	}
 
-	protected function validate(array $rules, array $data) : array
+	protected function validate(array $rules, array $data, array $labels = []) : array
 	{
-		return App::validation()->setRules($rules)->validate($data)
+		return App::validation()->setRules($rules)->setLabels($labels)->validate($data)
 			? []
 			: App::validation()->getErrors();
 	}
