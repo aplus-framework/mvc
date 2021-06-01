@@ -52,10 +52,10 @@ class App
 			$logger,
 			static::language()
 		);
-		if (isset(static::config()->get('exceptions')['viewsDir'])) {
-			$exceptions->setViewsDir(static::config()->get('exceptions')['viewsDir']);
+		if (isset(static::config()->get('exceptions')['views_dir'])) {
+			$exceptions->setViewsDir(static::config()->get('exceptions')['views_dir']);
 		}
-		$exceptions->initialize(static::config()->get('exceptions')['clearBuffer']);
+		$exceptions->initialize();
 	}
 
 	protected function loadHelpers() : void
