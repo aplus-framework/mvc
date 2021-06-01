@@ -222,11 +222,7 @@ class App
 			return $service;
 		}
 		$config = static::config()->get('cache', $instance);
-		if ( ! \str_contains($config['driver'], '\\')) {
-			$config['driver'] = \ucfirst($config['driver']);
-			$config['driver'] = "Framework\\Cache\\{$config['driver']}";
-		}
-		$service = new $config['driver'](
+		$service = new $config['class'](
 			$config['configs'],
 			$config['prefix'],
 			$config['serializer']

@@ -1,12 +1,15 @@
 <?php
+
+use Framework\Cache\Cache;
+use Framework\Cache\Files;
+
 return [
 	'default' => [
-		'driver' => 'Files',
+		'class' => Files::class,
 		'configs' => [
-			'directory' => '/tmp',
-			'length' => 4096,
+			'directory' => sys_get_temp_dir(),
 		],
 		'prefix' => null,
-		'serializer' => 'php',
+		'serializer' => Cache::SERIALIZER_PHP,
 	],
 ];
