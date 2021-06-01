@@ -134,6 +134,8 @@ class HelpersTest extends TestCase
 	public function testCsrfInput()
 	{
 		$this->assertStringStartsWith('<input type="hidden" name="', csrf_input());
+		App::config()->add('csrf', ['enabled' => false]);
+		$this->assertEquals('', csrf_input());
 	}
 
 	public function testNotFoundAsHTML()
