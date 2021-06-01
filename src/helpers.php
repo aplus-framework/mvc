@@ -37,8 +37,10 @@ if ( ! function_exists('esc')) {
 	 * @return string The escaped text
 	 */
 	#[Pure]
-	function esc(?string $text, string $encoding = 'UTF-8') : string
-	{
+	function esc(
+		?string $text,
+		string $encoding = 'UTF-8'
+	) : string {
 		$text = (string) $text;
 		return empty($text)
 			? $text
@@ -178,6 +180,7 @@ if ( ! function_exists('old')) {
 	 *
 	 * @see \Framework\HTTP\Request::getRedirectData
 	 * @see \Framework\HTTP\Response::redirect
+	 * @see \redirect()
 	 *
 	 * @return mixed The old value. If $escape is true and the value is not
 	 *               stringable, an empty string will return
@@ -245,5 +248,31 @@ if ( ! function_exists('not_found')) {
 
 EOL
 		);
+	}
+}
+if ( ! function_exists('redirect')) {
+	/**
+	 * Sets the HTTP Redirect Response with data accessible in the next HTTP Request.
+	 *
+	 * @param string        $location Location Header value
+	 * @param array|mixed[] $data     Session data available on next Request
+	 * @param int|null      $code     HTTP Redirect status code. Leave null to determine based on
+	 *                                the current HTTP method.
+	 *
+	 * @see  http://en.wikipedia.org/wiki/Post/Redirect/Get
+	 * @see  Request::getRedirectData
+	 * @see  \old()
+	 *
+	 * @throws InvalidArgumentException for invalid Redirection code
+	 *
+	 * @return Framework\HTTP\Response
+	 */
+	function redirect(
+		string $location,
+		array $data = [],
+		int $code = null
+	) : Framework\HTTP\Response {
+		session();
+		return App::response()->redirect($location, $data, $code);
 	}
 }

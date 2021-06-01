@@ -1,6 +1,7 @@
 <?php namespace Tests\MVC;
 
 use Framework\Cache\Cache;
+use Framework\HTTP\Response;
 use Framework\MVC\Config;
 use Framework\Session\Session;
 use PHPUnit\Framework\TestCase;
@@ -178,5 +179,17 @@ class HelpersTest extends TestCase
 				'reason' => 'Not Found',
 			],
 		], \json_decode($response->getBody(), true));
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testRedirect()
+	{
+		$this->assertEquals(200, App::response()->getStatusCode());
+		$this->assertNull(App::response()->getHeader('Location'));
+		$this->assertInstanceOf(Response::class, redirect('http://localhost'));
+		$this->assertEquals(307, App::response()->getStatusCode());
+		$this->assertEquals('http://localhost', App::response()->getHeader('Location'));
 	}
 }
