@@ -1,7 +1,10 @@
 <?php
+
+use Framework\Log\Logger;
+
 return [
 	'default' => [
-		'directory' => '/tmp',
-		'level' => \Framework\Log\Logger::DEBUG,
+		'directory' => sys_get_temp_dir(),
+		'level' => Logger::DEBUG,
 	],
 ];
