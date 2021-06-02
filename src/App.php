@@ -166,8 +166,11 @@ class App
 	 *
 	 * @return mixed
 	 */
-	public static function setService(string $name, mixed $service, string $instance = 'default') : mixed
-	{
+	public static function setService(
+		string $name,
+		mixed $service,
+		string $instance = 'default'
+	) : mixed {
 		return static::$services[$name][$instance] = $service;
 	}
 
@@ -271,8 +274,11 @@ class App
 		if ($service) {
 			return $service;
 		}
+		$config = static::config()->get('csrf');
 		static::session();
-		return static::setService('csrf', new CSRF(static::request()));
+		$service = new CSRF(static::request());
+		$service->setTokenName($config['token_name']);
+		return static::setService('csrf', $service);
 	}
 
 	/**
