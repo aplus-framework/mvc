@@ -6,6 +6,7 @@ use Framework\Cache\Cache;
 use Framework\CLI\Console;
 use Framework\CLI\Stream;
 use Framework\Database\Database;
+use Framework\Database\Definition\Table\TableDefinition;
 use Framework\Email\Mailer;
 use Framework\HTTP\CSRF;
 use Framework\HTTP\Request;
@@ -199,5 +200,61 @@ class AppTest extends TestCase
 		$this->assertTrue(App::isCLI());
 		App::setIsCLI(false);
 		$this->assertFalse(App::isCLI());
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testSessionWithCacheHandler()
+	{
+		App::config()->add('session', [
+			'save_handler' => [
+				'class' => \Framework\Session\SaveHandlers\Cache::class,
+				'config' => 'default',
+			],
+		]);
+		$this->assertInstanceOf(Session::class, App::session());
+		App::session()->foo = 'Foo';
+		$this->assertEquals('Foo', App::session()->foo);
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testSessionWithDatabaseHandler()
+	{
+		App::database()->dropTable('Sessions')->ifExists()->run();
+		App::database()->createTable('Sessions')
+			->definition(static function (TableDefinition $definition) {
+				$definition->column('id')->varchar(128)->primaryKey();
+				$definition->column('ip')->varchar(45)->null();
+				$definition->column('ua')->varchar(255)->null();
+				$definition->column('timestamp')->int(10)->unsigned();
+				$definition->column('data')->blob();
+				$definition->index('ip')->key('ip');
+				$definition->index('ua')->key('ua');
+				$definition->index('timestamp')->key('timestamp');
+			})->run();
+		App::config()->add('session', [
+			'save_handler' => [
+				'class' => \Framework\Session\SaveHandlers\Database::class,
+				'config' => 'default',
+			],
+		]);
+		$this->assertInstanceOf(Session::class, App::session());
+		App::session()->foo = 'Foo';
+		$this->assertEquals('Foo', App::session()->foo);
+		App::session()->stop();
+		$this->assertEquals(
+			\time(),
+			App::database()
+				->select()
+				->from('Sessions')
+				->whereEqual('id', \session_id())
+				->limit(1)
+				->run()
+				->fetch()
+				->timestamp
+		);
 	}
 }
