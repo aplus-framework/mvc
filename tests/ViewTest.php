@@ -1,6 +1,6 @@
 <?php namespace Tests\MVC;
 
-use Framework\MVC\Config;
+use Framework\Config\Config;
 use Framework\MVC\View;
 use PHPUnit\Framework\TestCase;
 use Tests\MVC\AppMock as App;

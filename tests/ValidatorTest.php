@@ -1,7 +1,7 @@
 <?php namespace Tests\MVC;
 
+use Framework\Config\Config;
 use Framework\Database\Definition\Table\TableDefinition;
-use Framework\MVC\Config;
 use PHPUnit\Framework\TestCase;
 use Tests\MVC\AppMock as App;
 

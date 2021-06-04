@@ -1,8 +1,8 @@
 <?php namespace Tests\MVC;
 
 use Framework\Cache\Cache;
+use Framework\Config\Config;
 use Framework\HTTP\Response;
-use Framework\MVC\Config;
 use Framework\Session\Session;
 use PHPUnit\Framework\TestCase;
 use Tests\MVC\AppMock as App;

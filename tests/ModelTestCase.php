@@ -1,8 +1,8 @@
 <?php namespace Tests\MVC;
 
+use Framework\Config\Config;
 use Framework\Database\Definition\Table\TableDefinition;
 use Framework\MVC\App;
-use Framework\MVC\Config;
 use PHPUnit\Framework\TestCase;
 
 class ModelTestCase extends TestCase

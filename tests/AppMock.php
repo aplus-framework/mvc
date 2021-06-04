@@ -1,6 +1,6 @@
 <?php namespace Tests\MVC;
 
-use Framework\MVC\Config;
+use Framework\Config\Config;
 
 class AppMock extends \Framework\MVC\App
 {

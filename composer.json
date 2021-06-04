@@ -29,6 +29,7 @@
 		"natanfelles/autoload": "^1.4",
 		"natanfelles/cache": "^1.3",
 		"natanfelles/cli": "^1.8",
+		"natanfelles/config": "^1.0",
 		"natanfelles/database": "^2.2",
 		"natanfelles/database-extra": "^1.0",
 		"natanfelles/date": "^1.0",

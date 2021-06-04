@@ -5,6 +5,7 @@ use Framework\Autoload\Locator;
 use Framework\Cache\Cache;
 use Framework\CLI\Command;
 use Framework\CLI\Console;
+use Framework\Config\Config;
 use Framework\Database\Database;
 use Framework\Debug\ExceptionHandler;
 use Framework\Email\Mailer;

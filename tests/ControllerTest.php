@@ -1,6 +1,6 @@
 <?php namespace Tests\MVC;
 
-use Framework\MVC\Config;
+use Framework\Config\Config;
 use Framework\MVC\Controller;
 use Framework\MVC\Model;
 use PHPUnit\Framework\TestCase;
