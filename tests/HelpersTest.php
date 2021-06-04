@@ -134,9 +134,21 @@ class HelpersTest extends TestCase
 	 */
 	public function testCsrfInput()
 	{
+		$_SERVER['REQUEST_METHOD'] = 'POST';
 		$this->assertStringStartsWith('<input type="hidden" name="', csrf_input());
+		$this->assertFalse(App::csrf()->verify());
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testCsrfInputDisabled()
+	{
+		$_SERVER['REQUEST_METHOD'] = 'POST';
+		App::config()->load('csrf');
 		App::config()->add('csrf', ['enabled' => false]);
 		$this->assertEquals('', csrf_input());
+		$this->assertTrue(App::csrf()->verify());
 	}
 
 	public function testNotFoundAsHTML()

@@ -278,6 +278,7 @@ class App
 		static::session();
 		$service = new CSRF(static::request());
 		$service->setTokenName($config['token_name']);
+		$config['enabled'] ? $service->enable() : $service->disable();
 		return static::setService('csrf', $service);
 	}
 

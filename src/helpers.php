@@ -202,10 +202,6 @@ if ( ! function_exists('old')) {
 if ( ! function_exists('csrf_input')) {
 	function csrf_input() : string
 	{
-		$config = App::config()->get('csrf');
-		if (empty($config['enabled'])) {
-			return '';
-		}
 		return App::csrf()->input();
 	}
 }
