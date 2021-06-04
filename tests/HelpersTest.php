@@ -153,7 +153,6 @@ class HelpersTest extends TestCase
 
 	public function testNotFoundAsHTML()
 	{
-		App::language()->addDirectory(__DIR__ . '/../src/Languages');
 		$response = not_found();
 		$this->assertStringContainsString('<p>Page not found</p>', $response->getBody());
 		$this->assertStringContainsString('<html lang="en">', $response->getBody());
@@ -161,7 +160,6 @@ class HelpersTest extends TestCase
 
 	public function testNotFoundAsHTMLWithCustomLanguage()
 	{
-		App::language()->addDirectory(__DIR__ . '/../src/Languages');
 		App::language()->setCurrentLocale('pt-br');
 		$response = not_found();
 		$this->assertStringContainsString('<p>Página não encontrada</p>', $response->getBody());
