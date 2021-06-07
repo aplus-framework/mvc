@@ -193,23 +193,25 @@ class App
 	/**
 	 * Get the Autoloader service.
 	 *
+	 * @param string $instance
+	 *
 	 * @return Autoloader
 	 */
-	public static function autoloader() : Autoloader
+	public static function autoloader(string $instance = 'default') : Autoloader
 	{
-		$service = static::getService('autoloader');
+		$service = static::getService('autoloader', $instance);
 		if ($service) {
 			return $service;
 		}
 		$service = new Autoloader();
-		$config = static::config()->get('autoloader');
+		$config = static::config()->get('autoloader', $instance);
 		if (isset($config['namespaces'])) {
 			$service->setNamespaces($config['namespaces']);
 		}
 		if (isset($config['classes'])) {
 			$service->setClasses($config['classes']);
 		}
-		return static::setService('autoloader', $service);
+		return static::setService('autoloader', $service, $instance);
 	}
 
 	/**
@@ -237,13 +239,15 @@ class App
 	/**
 	 * Get the Console service.
 	 *
+	 * @param string $instance
+	 *
 	 * @throws \ReflectionException
 	 *
 	 * @return Console
 	 */
-	public static function console() : Console
+	public static function console(string $instance = 'default') : Console
 	{
-		$service = static::getService('console');
+		$service = static::getService('console', $instance);
 		if ($service) {
 			return $service;
 		}
@@ -261,26 +265,28 @@ class App
 			$service->addCommand(new $className($service));
 			unset($class);
 		}
-		return static::setService('console', $service);
+		return static::setService('console', $service, $instance);
 	}
 
 	/**
 	 * Get the CSRF service.
 	 *
+	 * @param string $instance
+	 *
 	 * @return CSRF
 	 */
-	public static function csrf() : CSRF
+	public static function csrf(string $instance = 'default') : CSRF
 	{
-		$service = static::getService('csrf');
+		$service = static::getService('csrf', $instance);
 		if ($service) {
 			return $service;
 		}
-		$config = static::config()->get('csrf');
-		static::session();
-		$service = new CSRF(static::request());
+		$config = static::config()->get('csrf', $instance);
+		static::session($config['session_instance'] ?? 'default');
+		$service = new CSRF(static::request($config['request_instance'] ?? 'default'));
 		$service->setTokenName($config['token_name']);
 		$config['enabled'] ? $service->enable() : $service->disable();
-		return static::setService('csrf', $service);
+		return static::setService('csrf', $service, $instance);
 	}
 
 	/**
@@ -327,15 +333,17 @@ class App
 	/**
 	 * Get the Language service.
 	 *
+	 * @param string $instance
+	 *
 	 * @return Language
 	 */
-	public static function language() : Language
+	public static function language(string $instance = 'default') : Language
 	{
-		$service = static::getService('language');
+		$service = static::getService('language', $instance);
 		if ($service) {
 			return $service;
 		}
-		$config = static::config()->get('language');
+		$config = static::config()->get('language', $instance);
 		$service = new Language($config['default'] ?? 'en');
 		if (isset($config['supported'])) {
 			$service->setSupportedLocales($config['supported']);
@@ -345,9 +353,10 @@ class App
 			&& ! static::isCLI()
 		) {
 			$service->setCurrentLocale(
-				static::request()->negotiateLanguage(
-					$service->getSupportedLocales()
-				)
+				static::request($config['request_instance'] ?? 'default')
+					->negotiateLanguage(
+						$service->getSupportedLocales()
+					)
 			);
 		}
 		if (isset($config['fallback_level'])) {
@@ -357,7 +366,8 @@ class App
 			$service->setDirectories($config['directories']);
 		} else {
 			$directories = [];
-			foreach (static::autoloader()->getNamespaces() as $directory) {
+			foreach (static::autoloader($config['autoloader_instance'] ?? 'default')
+				->getNamespaces() as $directory) {
 				$directory = "{$directory}Languages";
 				if (\is_dir($directory)) {
 					$directories[] = $directory;
@@ -368,86 +378,100 @@ class App
 			}
 		}
 		$service->addDirectory(__DIR__ . '/Languages');
-		return static::setService('language', $service);
+		return static::setService('language', $service, $instance);
 	}
 
 	/**
 	 * Get the Locator service.
 	 *
+	 * @param string $instance
+	 *
 	 * @return Locator
 	 */
-	public static function locator() : Locator
+	public static function locator(string $instance = 'default') : Locator
 	{
-		return static::getService('locator')
+		return static::getService('locator', $instance)
 			?? static::setService(
 				'locator',
-				new Locator(static::autoloader())
+				new Locator(static::autoloader()),
+				$instance
 			);
 	}
 
 	/**
 	 * Get the Logger service.
 	 *
+	 * @param string $instance
+	 *
 	 * @return Logger
 	 */
-	public static function logger() : Logger
+	public static function logger(string $instance = 'default') : Logger
 	{
-		$service = static::getService('logger');
+		$service = static::getService('logger', $instance);
 		if ($service) {
 			return $service;
 		}
-		$config = static::config()->get('logger');
+		$config = static::config()->get('logger', $instance);
 		return static::setService(
 			'logger',
-			new Logger($config['directory'], $config['level'])
+			new Logger($config['directory'], $config['level']),
+			$instance
 		);
 	}
 
 	/**
 	 * Get the Router service.
 	 *
+	 * @param string $instance
+	 *
 	 * @return Router
 	 */
-	public static function router() : Router
+	public static function router(string $instance = 'default') : Router
 	{
-		return static::getService('router')
-			?? static::setService('router', new Router());
+		return static::getService('router', $instance)
+			?? static::setService('router', new Router(), $instance);
 	}
 
 	/**
 	 * Get the Request service.
 	 *
+	 * @param string $instance
+	 *
 	 * @return Request
 	 */
-	public static function request() : Request
+	public static function request(string $instance = 'default') : Request
 	{
-		return static::getService('request')
-			?? static::setService('request', new Request());
+		return static::getService('request', $instance)
+			?? static::setService('request', new Request(), $instance);
 	}
 
 	/**
 	 * Get the Response service.
 	 *
+	 * @param string $instance
+	 *
 	 * @return Response
 	 */
-	public static function response() : Response
+	public static function response(string $instance = 'default') : Response
 	{
-		return static::getService('response')
-			?? static::setService('response', new Response(static::request()));
+		return static::getService('response', $instance)
+			?? static::setService('response', new Response(static::request()), $instance);
 	}
 
 	/**
 	 * Get the Session service.
 	 *
+	 * @param string $instance
+	 *
 	 * @return Session
 	 */
-	public static function session() : Session
+	public static function session(string $instance = 'default') : Session
 	{
-		$service = static::getService('session');
+		$service = static::getService('session', $instance);
 		if ($service) {
 			return $service;
 		}
-		$config = static::config()->get('session');
+		$config = static::config()->get('session', $instance);
 		if (isset($config['save_handler']['class'])) {
 			if ($config['save_handler']['class'] === \Framework\Session\SaveHandlers\Cache::class) {
 				$config['save_handler']['config'] = static::cache($config['save_handler']['config']);
@@ -469,7 +493,7 @@ class App
 		}
 		$service = new Session($config['options'] ?? [], $save_handler ?? null);
 		$service->start();
-		return static::setService('session', $service);
+		return static::setService('session', $service, $instance);
 	}
 
 	/**
