@@ -16,7 +16,7 @@ abstract class Entity implements \JsonSerializable, \Stringable
 		return isset($this->{$property});
 	}
 
-	public function __unset($property)
+	public function __unset($property) : void
 	{
 		if (\property_exists($this, $property)) {
 			$this->{$property} = null;
@@ -29,7 +29,7 @@ abstract class Entity implements \JsonSerializable, \Stringable
 	 *
 	 * @throws \OutOfBoundsException if property not defined
 	 */
-	public function __set(string $property, $value)
+	public function __set(string $property, $value) : void
 	{
 		$method = $this->renderMethodName('set', $property);
 		if (\method_exists($this, $method)) {

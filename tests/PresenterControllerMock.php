@@ -16,15 +16,15 @@ class PresenterControllerMock extends PresenterController
 		parent::__construct($request, new Response($request));
 	}
 
-	public function index()
+	public function index() : void
 	{
 	}
 
-	public function new()
+	public function new() : void
 	{
 	}
 
-	public function create()
+	public function create() : void
 	{
 	}
 

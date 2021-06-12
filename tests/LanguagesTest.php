@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @runTestsInSeparateProcesses
  */
-class LanguagesTest extends TestCase
+final class LanguagesTest extends TestCase
 {
 	protected $langDir = __DIR__ . '/../src/Languages/';
 
@@ -24,13 +24,13 @@ class LanguagesTest extends TestCase
 	/**
 	 * @dataProvider languageProvider
 	 */
-	public function testKeys(array $rules, string $file)
+	public function testKeys(array $rules, string $file) : void
 	{
 		foreach ($this->getCodes() as $code) {
 			$lines = require $this->langDir . $code . '/' . $file . '.php';
 			$lines = \array_keys($lines);
 			\sort($lines);
-			$this->assertEquals($rules, $lines, 'File: ' . $file . '. Language: ' . $code);
+			self::assertSame($rules, $lines, 'File: ' . $file . '. Language: ' . $code);
 		}
 	}
 

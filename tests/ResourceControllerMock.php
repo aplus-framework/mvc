@@ -16,11 +16,11 @@ class ResourceControllerMock extends ResourceController
 		parent::__construct($request, new Response($request));
 	}
 
-	public function index()
+	public function index() : void
 	{
 	}
 
-	public function create()
+	public function create() : void
 	{
 	}
 

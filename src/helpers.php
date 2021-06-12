@@ -230,19 +230,19 @@ if ( ! function_exists('not_found')) {
 		$data['message'] ??= lang('errors.notFoundMessage');
 		return App::response()->setBody(
 			<<<EOL
-<!doctype html>
-<html lang="{$lang}">
-<head>
-	<meta charset="utf-8">
-	<title>{$data['title']}</title>
-</head>
-<body>
-<h1>{$data['title']}</h1>
-<p>{$data['message']}</p>
-</body>
-</html>
+				<!doctype html>
+				<html lang="{$lang}">
+				<head>
+					<meta charset="utf-8">
+					<title>{$data['title']}</title>
+				</head>
+				<body>
+				<h1>{$data['title']}</h1>
+				<p>{$data['message']}</p>
+				</body>
+				</html>
 
-EOL
+				EOL
 		);
 	}
 }

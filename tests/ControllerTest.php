@@ -11,7 +11,7 @@ use Tests\MVC\AppMock as App;
  *
  * @runTestsInSeparateProcesses
  */
-class ControllerTest extends TestCase
+final class ControllerTest extends TestCase
 {
 	protected ControllerMock $controller;
 
@@ -21,27 +21,27 @@ class ControllerTest extends TestCase
 		$this->controller = new ControllerMock();
 	}
 
-	public function testConstruct()
+	public function testConstruct() : void
 	{
-		$this->assertInstanceOf(Controller::class, $this->controller);
+		self::assertInstanceOf(Controller::class, $this->controller);
 	}
 
-	public function testModelInstance()
+	public function testModelInstance() : void
 	{
-		$this->assertInstanceOf(Model::class, $this->controller->model);
+		self::assertInstanceOf(Model::class, $this->controller->model);
 	}
 
-	public function testValidate()
+	public function testValidate() : void
 	{
 		$rules = [
 			'foo' => 'minLength:5',
 		];
-		$this->assertArrayHasKey('foo', $this->controller->validate($rules, []));
-		$this->assertEquals([
+		self::assertArrayHasKey('foo', $this->controller->validate($rules, []));
+		self::assertSame([
 			'foo' => 'The foo field requires 5 or more characters in length.',
 		], $this->controller->validate($rules, ['foo' => '1234']));
-		$this->assertEquals([], $this->controller->validate($rules, ['foo' => '12345']));
-		$this->assertEquals([
+		self::assertSame([], $this->controller->validate($rules, ['foo' => '12345']));
+		self::assertSame([
 			'foo' => 'The Foo field requires 5 or more characters in length.',
 		], $this->controller->validate($rules, [], ['foo' => 'Foo']));
 	}

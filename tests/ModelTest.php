@@ -8,7 +8,7 @@ use Framework\Validation\Validation;
  *
  * @runTestsInSeparateProcesses
  */
-class ModelTest extends ModelTestCase
+final class ModelTest extends ModelTestCase
 {
 	protected ?ModelMock $model;
 
@@ -18,17 +18,17 @@ class ModelTest extends ModelTestCase
 		$this->model = new ModelMock();
 	}
 
-	public function testFind()
+	public function testFind() : void
 	{
-		$this->assertIsObject($this->model->find(1));
+		self::assertIsObject($this->model->find(1));
 		$this->model->returnType = 'array';
-		$this->assertIsArray($this->model->find(1));
+		self::assertIsArray($this->model->find(1));
 		$this->model->returnType = EntityMock::class;
-		$this->assertInstanceOf(EntityMock::class, $this->model->find(1));
-		$this->assertNull($this->model->find(100));
+		self::assertInstanceOf(EntityMock::class, $this->model->find(1));
+		self::assertNull($this->model->find(100));
 	}
 
-	public function testAllowedColumnsNotDefined()
+	public function testAllowedColumnsNotDefined() : void
 	{
 		$this->model->allowedColumns = [];
 		$this->expectException(\LogicException::class);
@@ -36,7 +36,7 @@ class ModelTest extends ModelTestCase
 		$this->model->create(['data' => 'Value']);
 	}
 
-	public function testProtectedPrimaryKeyCanNotBeSet()
+	public function testProtectedPrimaryKeyCanNotBeSet() : void
 	{
 		$this->model->allowedColumns = ['id', 'data'];
 		$this->expectException(\LogicException::class);
@@ -44,31 +44,31 @@ class ModelTest extends ModelTestCase
 		$this->model->create(['id' => 1, 'data' => 'x']);
 	}
 
-	public function testEmptyPrimaryKey()
+	public function testEmptyPrimaryKey() : void
 	{
 		$this->expectException(\InvalidArgumentException::class);
 		$this->expectExceptionMessage('Primary Key can not be empty');
 		$this->model->update(0, ['data' => 'x']);
 	}
 
-	public function testCreate()
+	public function testCreate() : void
 	{
 		$insert_id = $this->model->create(new EntityMock(['data' => 'Value']));
-		$this->assertEquals(3, $insert_id);
+		self::assertSame(3, $insert_id);
 		$insert_id = $this->model->create(['data' => 'Value']);
-		$this->assertEquals(4, $insert_id);
+		self::assertSame(4, $insert_id);
 		$insert_id = $this->model->create(['data' => 'Value']);
-		$this->assertEquals(5, $insert_id);
+		self::assertSame(5, $insert_id);
 	}
 
-	public function testCreateExceptionDefaultValue()
+	public function testCreateExceptionDefaultValue() : void
 	{
 		$this->expectException(\mysqli_sql_exception::class);
 		$this->expectExceptionMessage("Field 'data' doesn't have a default value");
 		$this->model->create([]);
 	}
 
-	public function testCreateExceptionUnknownColumn()
+	public function testCreateExceptionUnknownColumn() : void
 	{
 		$this->model->allowedColumns[] = 'not-exists';
 		$this->expectException(\mysqli_sql_exception::class);
@@ -76,20 +76,20 @@ class ModelTest extends ModelTestCase
 		$this->model->create(['not-exists' => 'Value']);
 	}
 
-	public function testUpdate()
+	public function testUpdate() : void
 	{
 		$affected_rows = $this->model->update(1, new EntityMock(['data' => 'x']));
-		$this->assertEquals(1, $affected_rows);
+		self::assertSame(1, $affected_rows);
 		$affected_rows = $this->model->update(1, ['data' => 'x']);
-		$this->assertEquals(0, $affected_rows); // same data
+		self::assertSame(0, $affected_rows); // same data
 		\sleep(1); // change updatedAt value
 		$affected_rows = $this->model->update(1, ['data' => 'x']);
-		$this->assertEquals(1, $affected_rows);
+		self::assertSame(1, $affected_rows);
 		$affected_rows = $this->model->update(25, ['data' => 'foo']);
-		$this->assertEquals(0, $affected_rows);
+		self::assertSame(0, $affected_rows);
 	}
 
-	public function testUpdateExceptionUnknownColumn()
+	public function testUpdateExceptionUnknownColumn() : void
 	{
 		$this->model->allowedColumns[] = 'not-exists';
 		$this->expectException(\mysqli_sql_exception::class);
@@ -97,17 +97,17 @@ class ModelTest extends ModelTestCase
 		$this->model->update(1, ['not-exists' => 'Value']);
 	}
 
-	public function testReplace()
+	public function testReplace() : void
 	{
 		$affected_rows = $this->model->replace(1, new EntityMock(['data' => 'xii']));
-		$this->assertEquals(2, $affected_rows); // Deleted and inserted
+		self::assertSame(2, $affected_rows); // Deleted and inserted
 		$affected_rows = $this->model->replace(1, ['data' => 'bar']);
-		$this->assertEquals(2, $affected_rows); // Deleted and inserted
+		self::assertSame(2, $affected_rows); // Deleted and inserted
 		$affected_rows = $this->model->replace(25, ['data' => 'baz']);
-		$this->assertEquals(1, $affected_rows); // Inserted
+		self::assertSame(1, $affected_rows); // Inserted
 	}
 
-	public function testReplaceExceptionUnknownColumn()
+	public function testReplaceExceptionUnknownColumn() : void
 	{
 		$this->model->allowedColumns[] = 'not-exists';
 		$this->expectException(\mysqli_sql_exception::class);
@@ -115,35 +115,35 @@ class ModelTest extends ModelTestCase
 		$this->model->replace(1, ['not-exists' => 'Value']);
 	}
 
-	public function testSave()
+	public function testSave() : void
 	{
 		$this->model->allowedColumns = ['data'];
 		$affected_rows = $this->model->save(['id' => 1, 'data' => 'x']);
-		$this->assertEquals(1, $affected_rows);
+		self::assertSame(1, $affected_rows);
 		$insert_id = $this->model->save(['data' => 'x']);
-		$this->assertEquals(3, $insert_id);
+		self::assertSame(3, $insert_id);
 		$affected_rows = $this->model->save(new EntityMock(['id' => 3, 'data' => 'x']));
-		$this->assertEquals(0, $affected_rows); // same data exists
+		self::assertSame(0, $affected_rows); // same data exists
 		$affected_rows = $this->model->save(new EntityMock(['id' => 25, 'data' => 'foo']));
-		$this->assertEquals(0, $affected_rows);
+		self::assertSame(0, $affected_rows);
 	}
 
-	public function testDelete()
+	public function testDelete() : void
 	{
-		$this->assertEquals(1, $this->model->delete(1));
-		$this->assertEquals(0, $this->model->delete(1));
-		$this->assertEquals(0, $this->model->delete(25));
+		self::assertSame(1, $this->model->delete(1));
+		self::assertSame(0, $this->model->delete(1));
+		self::assertSame(0, $this->model->delete(25));
 	}
 
-	public function testCount()
+	public function testCount() : void
 	{
-		$this->assertEquals(2, $this->model->count());
+		self::assertSame(2, $this->model->count());
 	}
 
-	public function testPaginatedItems()
+	public function testPaginatedItems() : void
 	{
 		$this->model->returnType = 'array';
-		$this->assertEquals([
+		self::assertSame([
 			[
 				'id' => 1,
 				'data' => 'foo',
@@ -151,7 +151,7 @@ class ModelTest extends ModelTestCase
 				'updatedAt' => \date('Y-m-d H:i:s'),
 			],
 		], $this->model->paginate(-1, 1)->getItems());
-		$this->assertEquals([
+		self::assertSame([
 			[
 				'id' => 1,
 				'data' => 'foo',
@@ -159,7 +159,7 @@ class ModelTest extends ModelTestCase
 				'updatedAt' => \date('Y-m-d H:i:s'),
 			],
 		], $this->model->paginate(1, 1)->getItems());
-		$this->assertEquals([
+		self::assertSame([
 			[
 				'id' => 2,
 				'data' => 'bar',
@@ -167,49 +167,49 @@ class ModelTest extends ModelTestCase
 				'updatedAt' => \date('Y-m-d H:i:s'),
 			],
 		], $this->model->paginate(2, 1)->getItems());
-		$this->assertEquals([], $this->model->paginate(3, 1)->getItems());
+		self::assertSame([], $this->model->paginate(3, 1)->getItems());
 	}
 
-	public function testPaginatedUrl()
+	public function testPaginatedUrl() : void
 	{
-		$this->assertEquals(
+		self::assertSame(
 			'http://localhost:8080/contact?page=5',
 			$this->model->paginate(5)->getCurrentPageURL()
 		);
-		$this->assertEquals(
+		self::assertSame(
 			'http://localhost:8080/contact?page=10',
 			$this->model->paginate(10, 25)->getCurrentPageURL()
 		);
 	}
 
-	public function testMakePageLimitAndOffset()
+	public function testMakePageLimitAndOffset() : void
 	{
-		$this->assertEquals([10, null], $this->model->makePageLimitAndOffset(0));
-		$this->assertEquals([10, null], $this->model->makePageLimitAndOffset(1));
-		$this->assertEquals([10, 10], $this->model->makePageLimitAndOffset(2));
-		$this->assertEquals([20, null], $this->model->makePageLimitAndOffset(1, 20));
-		$this->assertEquals([20, 20], $this->model->makePageLimitAndOffset(2, 20));
-		$this->assertEquals([20, 40], $this->model->makePageLimitAndOffset('-3', '-20'));
+		self::assertSame([10, null], $this->model->makePageLimitAndOffset(0));
+		self::assertSame([10, null], $this->model->makePageLimitAndOffset(1));
+		self::assertSame([10, 10], $this->model->makePageLimitAndOffset(2));
+		self::assertSame([20, null], $this->model->makePageLimitAndOffset(1, 20));
+		self::assertSame([20, 20], $this->model->makePageLimitAndOffset(2, 20));
+		self::assertSame([20, 40], $this->model->makePageLimitAndOffset('-3', '-20'));
 	}
 
-	public function testValidation()
+	public function testValidation() : void
 	{
 		$this->model->validationRules = ['data' => 'minLength:200'];
 		$row = $this->model->create(['data' => 'Value']);
-		$this->assertFalse($row);
-		$this->assertArrayHasKey('data', $this->model->getErrors());
+		self::assertFalse($row);
+		self::assertArrayHasKey('data', $this->model->getErrors());
 		$row = $this->model->update(1, ['data' => 'Value']);
-		$this->assertFalse($row);
-		$this->assertArrayHasKey('data', $this->model->getErrors());
+		self::assertFalse($row);
+		self::assertArrayHasKey('data', $this->model->getErrors());
 	}
 
-	public function testValidationUnset()
+	public function testValidationUnset() : void
 	{
 		$id = 'Model:' . \spl_object_hash($this->model);
-		$this->assertNull(App::getService('validation', $id));
+		self::assertNull(App::getService('validation', $id));
 		$this->model->getValidation();
-		$this->assertInstanceOf(Validation::class, App::getService('validation', $id));
+		self::assertInstanceOf(Validation::class, App::getService('validation', $id));
 		$this->model = null;
-		$this->assertNull(App::getService('validation', $id));
+		self::assertNull(App::getService('validation', $id));
 	}
 }

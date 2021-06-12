@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @runTestsInSeparateProcesses
  */
-class ResourceControllerTest extends TestCase
+final class ResourceControllerTest extends TestCase
 {
 	protected ResourceControllerMock $resourceController;
 
@@ -18,30 +18,30 @@ class ResourceControllerTest extends TestCase
 		$this->resourceController = new ResourceControllerMock();
 	}
 
-	public function testConstruct()
+	public function testConstruct() : void
 	{
-		$this->assertInstanceOf(ResourceController::class, $this->resourceController);
+		self::assertInstanceOf(ResourceController::class, $this->resourceController);
 	}
 
-	public function testArgumentsCast()
+	public function testArgumentsCast() : void
 	{
-		$this->assertIsInt($this->resourceController->show(25));
-		$this->assertIsInt($this->resourceController->show('25'));
-		$this->assertIsInt($this->resourceController->replace(25));
-		$this->assertIsString($this->resourceController->replace('25'));
+		self::assertIsInt($this->resourceController->show(25));
+		self::assertIsInt($this->resourceController->show('25'));
+		self::assertIsInt($this->resourceController->replace(25));
+		self::assertIsString($this->resourceController->replace('25'));
 	}
 
-	public function testResourceMethods()
+	public function testResourceMethods() : void
 	{
-		$this->assertInstanceOf(Response::class, $this->resourceController->respondOK([]));
-		$this->assertInstanceOf(Response::class, $this->resourceController->respondOK());
-		$this->assertInstanceOf(Response::class, $this->resourceController->respondNotModified());
-		$this->assertInstanceOf(Response::class, $this->resourceController->respondNotFound());
-		$this->assertInstanceOf(Response::class, $this->resourceController->respondNoContent());
-		$this->assertInstanceOf(Response::class, $this->resourceController->respondForbidden());
-		$this->assertInstanceOf(Response::class, $this->resourceController->respondCreated());
-		$this->assertInstanceOf(Response::class, $this->resourceController->respondBadRequest());
-		$this->assertInstanceOf(Response::class, $this->resourceController->respondUnauthorized());
-		$this->assertInstanceOf(Response::class, $this->resourceController->respondAccepted());
+		self::assertInstanceOf(Response::class, $this->resourceController->respondOK([]));
+		self::assertInstanceOf(Response::class, $this->resourceController->respondOK());
+		self::assertInstanceOf(Response::class, $this->resourceController->respondNotModified());
+		self::assertInstanceOf(Response::class, $this->resourceController->respondNotFound());
+		self::assertInstanceOf(Response::class, $this->resourceController->respondNoContent());
+		self::assertInstanceOf(Response::class, $this->resourceController->respondForbidden());
+		self::assertInstanceOf(Response::class, $this->resourceController->respondCreated());
+		self::assertInstanceOf(Response::class, $this->resourceController->respondBadRequest());
+		self::assertInstanceOf(Response::class, $this->resourceController->respondUnauthorized());
+		self::assertInstanceOf(Response::class, $this->resourceController->respondAccepted());
 	}
 }
