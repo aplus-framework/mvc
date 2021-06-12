@@ -5,7 +5,7 @@ use Framework\Database\Definition\Table\TableDefinition;
 use PHPUnit\Framework\TestCase;
 use Tests\MVC\AppMock as App;
 
-class ValidatorTest extends TestCase
+final class ValidatorTest extends TestCase
 {
 	protected function setUp() : void
 	{
@@ -13,7 +13,7 @@ class ValidatorTest extends TestCase
 		App::database()->dropTable()->table('Users')->ifExists()->run();
 		App::database()->createTable()
 			->table('Users')
-			->definition(static function (TableDefinition $definition) {
+			->definition(static function (TableDefinition $definition) : void {
 				$definition->column('id')->int()->primaryKey();
 				$definition->column('username')->varchar(255);
 			})->run();
@@ -24,24 +24,24 @@ class ValidatorTest extends TestCase
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testValidator()
+	public function testValidator() : void
 	{
 		$validation = App::validation();
 		$validation->setRule('id', 'inDatabase:Users,id,default');
 		$status = $validation->validate(['id' => 1]);
-		$this->assertTrue($status);
+		self::assertTrue($status);
 		$status = $validation->validate(['id' => 2]);
-		$this->assertTrue($status);
+		self::assertTrue($status);
 		$status = $validation->validate(['id' => 3]);
-		$this->assertFalse($status);
-		$this->assertEquals(
+		self::assertFalse($status);
+		self::assertSame(
 			'The id field value does not exists.',
 			$validation->getError('id')
 		);
 		$validation->setRule('id', 'notInDatabase:Users,id,default');
 		$status = $validation->validate(['id' => 1]);
-		$this->assertFalse($status);
-		$this->assertEquals(
+		self::assertFalse($status);
+		self::assertSame(
 			'The id field value already exists.',
 			$validation->getError('id')
 		);

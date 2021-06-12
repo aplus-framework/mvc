@@ -12,7 +12,7 @@ use Tests\MVC\AppMock as App;
  *
  * @runTestsInSeparateProcesses
  */
-class HelpersTest extends TestCase
+final class HelpersTest extends TestCase
 {
 	protected AppMock $app;
 
@@ -22,91 +22,91 @@ class HelpersTest extends TestCase
 		$this->app->loadHelpers();
 	}
 
-	public function testCache()
+	public function testCache() : void
 	{
-		$this->assertInstanceOf(Cache::class, cache());
+		self::assertInstanceOf(Cache::class, cache());
 	}
 
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testSession()
+	public function testSession() : void
 	{
-		$this->assertInstanceOf(Session::class, session());
+		self::assertInstanceOf(Session::class, session());
 	}
 
-	public function testLang()
+	public function testLang() : void
 	{
-		$this->assertEquals('foo.bar', lang('foo.bar'));
+		self::assertSame('foo.bar', lang('foo.bar'));
 		App::language()->addLines('en', 'foo', ['bar' => 'Hello!']);
-		$this->assertEquals('Hello!', lang('foo.bar'));
+		self::assertSame('Hello!', lang('foo.bar'));
 	}
 
-	public function testView()
+	public function testView() : void
 	{
 		App::view()->setBasePath(__DIR__ . '/Views');
-		$this->assertEquals("<div>bar</div>\n", view('foo', ['contents' => 'bar']));
+		self::assertSame("<div>bar</div>\n", view('foo', ['contents' => 'bar']));
 	}
 
-	public function testCurrentUrl()
+	public function testCurrentUrl() : void
 	{
-		$this->assertEquals('http://localhost:8080/contact', current_url());
-	}
-
-	/**
-	 * @runInSeparateProcess
-	 */
-	public function testCurrentRoute()
-	{
-		App::setIsCLI(false);
-		$this->app->run();
-		$this->assertEquals('contact', current_route()->getName());
+		self::assertSame('http://localhost:8080/contact', current_url());
 	}
 
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testRouteUrl()
+	public function testCurrentRoute() : void
 	{
 		App::setIsCLI(false);
 		$this->app->run();
-		$this->assertEquals('http://localhost:8080/users', route_url('users'));
-		$this->assertEquals('http://localhost:8080/users/25', route_url('users.show', [25]));
-		$this->assertEquals(
+		self::assertSame('contact', current_route()->getName());
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testRouteUrl() : void
+	{
+		App::setIsCLI(false);
+		$this->app->run();
+		self::assertSame('http://localhost:8080/users', route_url('users'));
+		self::assertSame('http://localhost:8080/users/25', route_url('users.show', [25]));
+		self::assertSame(
 			'http://blog-1.domain.tld/posts/hello-world',
 			route_url('sub.posts', ['hello-world'], ['blog-1'])
 		);
 	}
 
-	public function testIsCli()
+	public function testIsCli() : void
 	{
-		$this->assertTrue(is_cli());
+		self::assertTrue(is_cli());
 		App::setIsCLI(false);
-		$this->assertFalse(is_cli());
+		self::assertFalse(is_cli());
 	}
 
-	public function testEsc()
+	public function testEsc() : void
 	{
-		$this->assertEquals('&gt;&apos;&quot;', esc('>\'"'));
-		$this->assertEquals('', esc(null));
+		self::assertSame('&gt;&apos;&quot;', esc('>\'"'));
+		self::assertSame('', esc(null));
 	}
 
-	public function testNormalizeWhitespaces()
+	public function testNormalizeWhitespaces() : void
 	{
-		$this->assertEquals('foo bar', normalize_whitespaces(' foo    bar '));
+		self::assertSame('foo bar', normalize_whitespaces(' foo    bar '));
 	}
 
-	public function testHelpers()
+	public function testHelpers() : void
 	{
-		$this->assertFalse(\function_exists('foo'));
-		$this->assertEquals([__DIR__ . '/Helpers/foo.php'], helpers(['foo']));
-		$this->assertTrue(\function_exists('foo'));
+		self::assertFalse(\function_exists('foo'));
+		self::assertSame([__DIR__ . '/Helpers/foo.php'], helpers(['foo']));
+		self::assertTrue(\function_exists('foo'));
 	}
 
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testOld()
+	public function testOld() : void
 	{
 		App::session();
 		$data = [
@@ -119,71 +119,71 @@ class HelpersTest extends TestCase
 			},
 		];
 		App::response()->redirect('http://localhost', $data);
-		$this->assertEquals('', old(null));
-		$this->assertEquals($data, old(null, false));
-		$this->assertEquals('bar', old('foo[0]'));
-		$this->assertEquals('bar', old('foo[0]', false));
-		$this->assertEquals('', old('foo'));
-		$this->assertEquals(['bar'], old('foo', false));
-		$this->assertEquals('bazz', old('baz'));
-		$this->assertEquals($data['baz'], old('baz', false));
+		self::assertSame('', old(null));
+		self::assertSame($data, old(null, false));
+		self::assertSame('bar', old('foo[0]'));
+		self::assertSame('bar', old('foo[0]', false));
+		self::assertSame('', old('foo'));
+		self::assertSame(['bar'], old('foo', false));
+		self::assertSame('bazz', old('baz'));
+		self::assertSame($data['baz'], old('baz', false));
 	}
 
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testCsrfInput()
+	public function testCsrfInput() : void
 	{
 		$_SERVER['REQUEST_METHOD'] = 'POST';
-		$this->assertStringStartsWith('<input type="hidden" name="', csrf_input());
-		$this->assertFalse(App::csrf()->verify());
+		self::assertStringStartsWith('<input type="hidden" name="', csrf_input());
+		self::assertFalse(App::csrf()->verify());
 	}
 
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testCsrfInputDisabled()
+	public function testCsrfInputDisabled() : void
 	{
 		$_SERVER['REQUEST_METHOD'] = 'POST';
 		App::config()->load('csrf');
 		App::config()->add('csrf', ['enabled' => false]);
-		$this->assertEquals('', csrf_input());
-		$this->assertTrue(App::csrf()->verify());
+		self::assertSame('', csrf_input());
+		self::assertTrue(App::csrf()->verify());
 	}
 
-	public function testNotFoundAsHTML()
+	public function testNotFoundAsHTML() : void
 	{
 		$response = not_found();
-		$this->assertStringContainsString('<p>Page not found</p>', $response->getBody());
-		$this->assertStringContainsString('<html lang="en">', $response->getBody());
+		self::assertStringContainsString('<p>Page not found</p>', $response->getBody());
+		self::assertStringContainsString('<html lang="en">', $response->getBody());
 	}
 
-	public function testNotFoundAsHTMLWithCustomLanguage()
+	public function testNotFoundAsHTMLWithCustomLanguage() : void
 	{
 		App::language()->setCurrentLocale('pt-br');
 		$response = not_found();
-		$this->assertStringContainsString('<p>Página não encontrada</p>', $response->getBody());
-		$this->assertStringContainsString('<html lang="pt-br">', $response->getBody());
+		self::assertStringContainsString('<p>Página não encontrada</p>', $response->getBody());
+		self::assertStringContainsString('<html lang="pt-br">', $response->getBody());
 	}
 
-	public function testNotFoundAsHTMLWithCustomData()
+	public function testNotFoundAsHTMLWithCustomData() : void
 	{
 		$response = not_found([
 			'title' => 'Foo',
 			'message' => 'Bar',
 		]);
-		$this->assertStringContainsString('<h1>Foo</h1>', $response->getBody());
-		$this->assertStringContainsString('<p>Bar</p>', $response->getBody());
+		self::assertStringContainsString('<h1>Foo</h1>', $response->getBody());
+		self::assertStringContainsString('<p>Bar</p>', $response->getBody());
 	}
 
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testNotFoundAsJSON()
+	public function testNotFoundAsJSON() : void
 	{
 		$_SERVER['HTTP_CONTENT_TYPE'] = 'application/json';
 		$response = not_found();
-		$this->assertEquals([
+		self::assertSame([
 			'error' => [
 				'code' => 404,
 				'reason' => 'Not Found',
@@ -194,12 +194,12 @@ class HelpersTest extends TestCase
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testRedirect()
+	public function testRedirect() : void
 	{
-		$this->assertEquals(200, App::response()->getStatusCode());
-		$this->assertNull(App::response()->getHeader('Location'));
-		$this->assertInstanceOf(Response::class, redirect('http://localhost'));
-		$this->assertEquals(307, App::response()->getStatusCode());
-		$this->assertEquals('http://localhost', App::response()->getHeader('Location'));
+		self::assertSame(200, App::response()->getStatusCode());
+		self::assertNull(App::response()->getHeader('Location'));
+		self::assertInstanceOf(Response::class, redirect('http://localhost'));
+		self::assertSame(307, App::response()->getStatusCode());
+		self::assertSame('http://localhost', App::response()->getHeader('Location'));
 	}
 }

@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @runTestsInSeparateProcesses
  */
-class EntityTest extends TestCase
+final class EntityTest extends TestCase
 {
 	/**
 	 * @var EntityMock
@@ -23,56 +23,56 @@ class EntityTest extends TestCase
 		]);
 	}
 
-	public function testConstruct()
+	public function testConstruct() : void
 	{
-		$this->assertInstanceOf(Entity::class, $this->entity);
+		self::assertInstanceOf(Entity::class, $this->entity);
 	}
 
-	public function testMagicSetAndGet()
+	public function testMagicSetAndGet() : void
 	{
-		$this->assertEquals(10, $this->entity->id);
+		self::assertSame(10, $this->entity->id);
 		$this->entity->id = '20';
-		$this->assertEquals(20, $this->entity->id);
-		$this->assertEquals('', $this->entity->data);
+		self::assertSame(20, $this->entity->id);
+		self::assertSame('', $this->entity->data);
 		$this->entity->data = 25;
-		$this->assertEquals('25', $this->entity->data);
+		self::assertSame('25', $this->entity->data);
 	}
 
-	public function testFromDateTime()
+	public function testFromDateTime() : void
 	{
-		$this->assertNull($this->entity->datetime);
+		self::assertNull($this->entity->datetime);
 		$datetime = new Date();
 		$this->entity->datetime = $datetime;
-		$this->assertEquals($datetime, $this->entity->datetime);
+		self::assertSame($datetime, $this->entity->datetime);
 		$this->entity->datetime = '2018-12-24 10:00:00';
-		$this->assertEquals('2018-12-24 10:00:00', $this->entity->datetime->format('Y-m-d H:i:s'));
+		self::assertSame('2018-12-24 10:00:00', $this->entity->datetime->format('Y-m-d H:i:s'));
 		$this->entity->datetime = null;
-		$this->assertNull($this->entity->datetime);
+		self::assertNull($this->entity->datetime);
 		$this->expectException(\InvalidArgumentException::class);
 		$this->expectExceptionMessage('Value type must be string or Framework\Date\Date');
 		$this->entity->datetime = [];
 	}
 
-	public function testFromJSON()
+	public function testFromJSON() : void
 	{
-		$this->assertNull($this->entity->settings);
+		self::assertNull($this->entity->settings);
 		$settings = new class() extends \stdClass {
 			public $foo = 'foo';
 		};
 		$this->entity->settings = $settings;
-		$this->assertEquals('foo', $this->entity->settings->foo);
+		self::assertSame('foo', $this->entity->settings->foo);
 		$settings = [
 			'foo' => 'bar',
 		];
 		$this->entity->settings = $settings;
-		$this->assertEquals('bar', $this->entity->settings->foo);
+		self::assertSame('bar', $this->entity->settings->foo);
 		$this->entity->settings = '{"foo":"baz"}';
-		$this->assertEquals('baz', $this->entity->settings->foo);
+		self::assertSame('baz', $this->entity->settings->foo);
 		$this->entity->settings = null;
-		$this->assertNull($this->entity->settings);
+		self::assertNull($this->entity->settings);
 	}
 
-	public function testToArray()
+	public function testToArray() : void
 	{
 		$datetime = new Date();
 		$this->entity->datetime = $datetime;
@@ -80,17 +80,17 @@ class EntityTest extends TestCase
 			public $foo = 'foo';
 		};
 		$this->entity->settings = $settings;
-		$this->assertEquals([
+		self::assertSame([
 			'id' => 10,
-			'datetime' => $datetime->format(Date::ATOM),
-			'settings' => \json_encode($settings),
 			'data' => '',
+			'datetime' => $datetime->format(Date::ATOM),
 			'createdAt' => null,
 			'updatedAt' => null,
+			'settings' => \json_encode($settings),
 		], $this->entity->toArray());
 	}
 
-	public function testUnknowTypeToScalar()
+	public function testUnknowTypeToScalar() : void
 	{
 		$this->expectException(\RuntimeException::class);
 		$this->expectExceptionMessage('Property was not converted to scalar: createdAt');
@@ -98,34 +98,34 @@ class EntityTest extends TestCase
 		$this->entity->toArray();
 	}
 
-	public function testTryGetUndefinedProperty()
+	public function testTryGetUndefinedProperty() : void
 	{
 		$this->expectException(\OutOfBoundsException::class);
 		$this->expectExceptionMessage('Property not defined: foo');
 		$this->entity->foo;
 	}
 
-	public function testTrySetUndefinedProperty()
+	public function testTrySetUndefinedProperty() : void
 	{
 		$this->expectException(\OutOfBoundsException::class);
 		$this->expectExceptionMessage('Property not defined: foo');
 		$this->entity->foo = 'bar';
 	}
 
-	public function testIssetAndUnset()
+	public function testIssetAndUnset() : void
 	{
-		$this->assertTrue(isset($this->entity->id));
+		self::assertTrue(isset($this->entity->id));
 		unset($this->entity->id);
-		$this->assertFalse(isset($this->entity->id));
+		self::assertFalse(isset($this->entity->id));
 	}
 
-	public function testToString()
+	public function testToString() : void
 	{
-		$this->assertEquals(\json_encode($this->entity->toArray()), (string) $this->entity);
+		self::assertSame(\json_encode($this->entity->toArray()), (string) $this->entity);
 	}
 
-	public function testJsonSerialize()
+	public function testJsonSerialize() : void
 	{
-		$this->assertEquals(\json_encode($this->entity->toArray()), \json_encode($this->entity));
+		self::assertSame(\json_encode($this->entity->toArray()), \json_encode($this->entity));
 	}
 }

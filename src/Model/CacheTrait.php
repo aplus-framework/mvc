@@ -65,7 +65,7 @@ trait CacheTrait
 		return $created;
 	}
 
-	protected function updateCachedRow(int | string $primary_key)
+	protected function updateCachedRow(int | string $primary_key) : void
 	{
 		$data = $this->getDatabaseForRead()
 			->select()

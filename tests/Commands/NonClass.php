@@ -1,5 +1,5 @@
 <?php namespace Tests\MVC\Commands;
 
-function foo()
+function foo() : void
 {
 }

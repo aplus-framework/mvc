@@ -7,7 +7,7 @@ use Framework\MVC\App;
  *
  * @runTestsInSeparateProcesses
  */
-class ModelCacheTest extends ModelTestCase
+final class ModelCacheTest extends ModelTestCase
 {
 	protected ?ModelCacheMock $model;
 
@@ -22,76 +22,76 @@ class ModelCacheTest extends ModelTestCase
 		App::cache()->flush();
 	}
 
-	public function testFind()
+	public function testFind() : void
 	{
-		$this->assertIsObject($this->model->find(1));
-		$this->assertIsObject($this->model->find(1));
+		self::assertIsObject($this->model->find(1));
+		self::assertIsObject($this->model->find(1));
 	}
 
-	public function testFindNotFound()
+	public function testFindNotFound() : void
 	{
-		$this->assertNull($this->model->find(3));
-		$this->assertNull($this->model->find(3));
+		self::assertNull($this->model->find(3));
+		self::assertNull($this->model->find(3));
 	}
 
-	public function testCreate()
+	public function testCreate() : void
 	{
-		$this->assertNull($this->model->find(3));
-		$this->assertEquals(3, $this->model->create([
+		self::assertNull($this->model->find(3));
+		self::assertSame(3, $this->model->create([
 			'data' => 'foo',
 		]));
-		$this->assertIsObject($this->model->find(3));
+		self::assertIsObject($this->model->find(3));
 	}
 
-	public function testCreateValidationFail()
+	public function testCreateValidationFail() : void
 	{
-		$this->assertNull($this->model->find(3));
-		$this->assertFalse($this->model->create([
+		self::assertNull($this->model->find(3));
+		self::assertFalse($this->model->create([
 			'data' => 'x',
 		]));
-		$this->assertNull($this->model->find(3));
+		self::assertNull($this->model->find(3));
 	}
 
-	public function testUpdate()
+	public function testUpdate() : void
 	{
-		$this->assertEquals('foo', $this->model->find(1)->data);
-		$this->assertEquals(1, $this->model->update(1, [
+		self::assertSame('foo', $this->model->find(1)->data);
+		self::assertSame(1, $this->model->update(1, [
 			'data' => 'bar',
 		]));
-		$this->assertEquals('bar', $this->model->find(1)->data);
+		self::assertSame('bar', $this->model->find(1)->data);
 	}
 
-	public function testUpdateValidationFail()
+	public function testUpdateValidationFail() : void
 	{
-		$this->assertEquals('foo', $this->model->find(1)->data);
-		$this->assertFalse($this->model->update(1, [
+		self::assertSame('foo', $this->model->find(1)->data);
+		self::assertFalse($this->model->update(1, [
 			'data' => 'x',
 		]));
-		$this->assertEquals('foo', $this->model->find(1)->data);
+		self::assertSame('foo', $this->model->find(1)->data);
 	}
 
-	public function testReplace()
+	public function testReplace() : void
 	{
-		$this->assertEquals('foo', $this->model->find(1)->data);
-		$this->assertEquals(2, $this->model->replace(1, [ // Deleted and inserted
+		self::assertSame('foo', $this->model->find(1)->data);
+		self::assertSame(2, $this->model->replace(1, [ // Deleted and inserted
 			'data' => 'baz',
 		]));
-		$this->assertEquals('baz', $this->model->find(1)->data);
+		self::assertSame('baz', $this->model->find(1)->data);
 	}
 
-	public function testReplaceValidationFail()
+	public function testReplaceValidationFail() : void
 	{
-		$this->assertEquals('foo', $this->model->find(1)->data);
-		$this->assertFalse($this->model->replace(1, [
+		self::assertSame('foo', $this->model->find(1)->data);
+		self::assertFalse($this->model->replace(1, [
 			'data' => 'x',
 		]));
-		$this->assertEquals('foo', $this->model->find(1)->data);
+		self::assertSame('foo', $this->model->find(1)->data);
 	}
 
-	public function testDelete()
+	public function testDelete() : void
 	{
-		$this->assertIsObject($this->model->find(1));
-		$this->assertEquals(1, $this->model->delete(1));
-		$this->assertNull($this->model->find(1));
+		self::assertIsObject($this->model->find(1));
+		self::assertSame(1, $this->model->delete(1));
+		self::assertNull($this->model->find(1));
 	}
 }

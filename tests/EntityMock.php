@@ -22,7 +22,7 @@ class EntityMock extends Entity
 	protected $updatedAt;
 	protected $settings;
 
-	public function setId($id)
+	public function setId($id) : void
 	{
 		$this->id = (int) $id;
 	}
@@ -32,12 +32,12 @@ class EntityMock extends Entity
 		return (string) $this->data;
 	}
 
-	public function setDatetime($datetime)
+	public function setDatetime($datetime) : void
 	{
 		$this->datetime = $this->fromDateTime($datetime);
 	}
 
-	public function setSettings($settings)
+	public function setSettings($settings) : void
 	{
 		$this->settings = $this->fromJSON($settings);
 	}

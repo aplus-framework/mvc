@@ -27,7 +27,7 @@ use Tests\MVC\AppMock as App;
  *
  * @runTestsInSeparateProcesses
  */
-class AppTest extends TestCase
+final class AppTest extends TestCase
 {
 	protected AppMock $app;
 
@@ -36,66 +36,66 @@ class AppTest extends TestCase
 		$this->app = new App(new Config(__DIR__ . '/configs'));
 	}
 
-	public function testConfigInstance()
+	public function testConfigInstance() : void
 	{
-		$this->assertInstanceOf(Config::class, App::config());
+		self::assertInstanceOf(Config::class, App::config());
 	}
 
-	public function testServices()
+	public function testServices() : void
 	{
-		$this->assertNull(App::getService('foo'));
+		self::assertNull(App::getService('foo'));
 		App::setService('foo', new \stdClass());
-		$this->assertInstanceOf(\stdClass::class, App::getService('foo'));
+		self::assertInstanceOf(\stdClass::class, App::getService('foo'));
 		App::removeService('foo', 'default');
-		$this->assertNull(App::getService('foo'));
+		self::assertNull(App::getService('foo'));
 		App::setService('foo', new \stdClass());
 		App::setService('foo', new \stdClass(), 'other');
-		$this->assertInstanceOf(\stdClass::class, App::getService('foo'));
-		$this->assertInstanceOf(\stdClass::class, App::getService('foo', 'other'));
+		self::assertInstanceOf(\stdClass::class, App::getService('foo'));
+		self::assertInstanceOf(\stdClass::class, App::getService('foo', 'other'));
 		App::removeService('foo', null);
-		$this->assertNull(App::getService('foo'));
-		$this->assertNull(App::getService('foo', 'other'));
+		self::assertNull(App::getService('foo'));
+		self::assertNull(App::getService('foo', 'other'));
 	}
 
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testServicesInstances()
+	public function testServicesInstances() : void
 	{
-		$this->assertInstanceOf(Autoloader::class, App::autoloader());
-		$this->assertInstanceOf(Autoloader::class, App::autoloader());
-		$this->assertInstanceOf(Cache::class, App::cache());
-		$this->assertInstanceOf(Cache::class, App::cache());
-		$this->assertInstanceOf(Console::class, App::console());
-		$this->assertInstanceOf(Console::class, App::console());
-		$this->assertInstanceOf(CSRF::class, App::csrf());
-		$this->assertInstanceOf(CSRF::class, App::csrf());
-		$this->assertInstanceOf(Console::class, App::console());
-		$this->assertInstanceOf(Database::class, App::database());
-		$this->assertInstanceOf(Database::class, App::database());
-		$this->assertInstanceOf(Language::class, App::language());
-		$this->assertInstanceOf(Language::class, App::language());
-		$this->assertInstanceOf(Locator::class, App::locator());
-		$this->assertInstanceOf(Locator::class, App::locator());
-		$this->assertInstanceOf(Logger::class, App::logger());
-		$this->assertInstanceOf(Logger::class, App::logger());
-		$this->assertInstanceOf(Mailer::class, App::mailer());
-		$this->assertInstanceOf(Mailer::class, App::mailer());
-		$this->assertInstanceOf(Request::class, App::request());
-		$this->assertInstanceOf(Request::class, App::request());
-		$this->assertInstanceOf(Response::class, App::response());
-		$this->assertInstanceOf(Response::class, App::response());
-		$this->assertInstanceOf(Router::class, App::router());
-		$this->assertInstanceOf(Router::class, App::router());
-		$this->assertInstanceOf(Session::class, App::session());
-		$this->assertInstanceOf(Session::class, App::session());
-		$this->assertInstanceOf(Validation::class, App::validation());
-		$this->assertInstanceOf(Validation::class, App::validation());
-		$this->assertInstanceOf(View::class, App::view());
-		$this->assertInstanceOf(View::class, App::view());
+		self::assertInstanceOf(Autoloader::class, App::autoloader());
+		self::assertInstanceOf(Autoloader::class, App::autoloader());
+		self::assertInstanceOf(Cache::class, App::cache());
+		self::assertInstanceOf(Cache::class, App::cache());
+		self::assertInstanceOf(Console::class, App::console());
+		self::assertInstanceOf(Console::class, App::console());
+		self::assertInstanceOf(CSRF::class, App::csrf());
+		self::assertInstanceOf(CSRF::class, App::csrf());
+		self::assertInstanceOf(Console::class, App::console());
+		self::assertInstanceOf(Database::class, App::database());
+		self::assertInstanceOf(Database::class, App::database());
+		self::assertInstanceOf(Language::class, App::language());
+		self::assertInstanceOf(Language::class, App::language());
+		self::assertInstanceOf(Locator::class, App::locator());
+		self::assertInstanceOf(Locator::class, App::locator());
+		self::assertInstanceOf(Logger::class, App::logger());
+		self::assertInstanceOf(Logger::class, App::logger());
+		self::assertInstanceOf(Mailer::class, App::mailer());
+		self::assertInstanceOf(Mailer::class, App::mailer());
+		self::assertInstanceOf(Request::class, App::request());
+		self::assertInstanceOf(Request::class, App::request());
+		self::assertInstanceOf(Response::class, App::response());
+		self::assertInstanceOf(Response::class, App::response());
+		self::assertInstanceOf(Router::class, App::router());
+		self::assertInstanceOf(Router::class, App::router());
+		self::assertInstanceOf(Session::class, App::session());
+		self::assertInstanceOf(Session::class, App::session());
+		self::assertInstanceOf(Validation::class, App::validation());
+		self::assertInstanceOf(Validation::class, App::validation());
+		self::assertInstanceOf(View::class, App::view());
+		self::assertInstanceOf(View::class, App::view());
 	}
 
-	public function testAutoloaderWithConfigs()
+	public function testAutoloaderWithConfigs() : void
 	{
 		App::config()->set('autoloader', [
 			'namespaces' => [
@@ -105,18 +105,18 @@ class AppTest extends TestCase
 				__CLASS__ => __FILE__,
 			],
 		]);
-		$this->assertEquals([
+		self::assertSame([
 			__NAMESPACE__ => __DIR__ . '/',
 		], App::autoloader()->getNamespaces());
-		$this->assertEquals([
+		self::assertSame([
 			__CLASS__ => __FILE__,
 		], App::autoloader()->getClasses());
 	}
 
-	public function testPrepareRoutes()
+	public function testPrepareRoutes() : void
 	{
 		$this->app->prepareRoutes();
-		$this->assertInstanceOf(Route::class, App::router()->getNamedRoute('home'));
+		self::assertInstanceOf(Route::class, App::router()->getNamedRoute('home'));
 		App::config()->setMany([
 			'routes' => [
 				'default' => [],
@@ -135,36 +135,36 @@ class AppTest extends TestCase
 		$this->app->prepareRoutes();
 	}
 
-	public function testRunEmptyConsole()
+	public function testRunEmptyConsole() : void
 	{
 		Stream::init();
 		$this->app->run();
-		$this->assertEquals('', Stream::getOutput());
+		self::assertSame('', Stream::getOutput());
 	}
 
-	public function testRunConsole()
+	public function testRunConsole() : void
 	{
 		App::config()->set('console', ['enabled' => true]);
 		Stream::init();
 		$this->app->run();
-		$this->assertStringContainsString('Commands', Stream::getOutput());
+		self::assertStringContainsString('Commands', Stream::getOutput());
 	}
 
-	public function testRunResponse()
+	public function testRunResponse() : void
 	{
 		App::setIsCLI(false);
 		$this->app->run();
-		$this->assertTrue(App::response()->isSent());
+		self::assertTrue(App::response()->isSent());
 	}
 
-	public function testAppIsAlreadyInitilized()
+	public function testAppIsAlreadyInitilized() : void
 	{
 		$this->expectException(\LogicException::class);
 		$this->expectExceptionMessage('App already initialized');
 		(new App(new Config(__DIR__ . '/configs')));
 	}
 
-	public function testAppAlreadyIsRunning()
+	public function testAppAlreadyIsRunning() : void
 	{
 		$this->app->run();
 		$this->expectException(\LogicException::class);
@@ -172,21 +172,21 @@ class AppTest extends TestCase
 		$this->app->run();
 	}
 
-	public function testMakeResponseBodyPart()
+	public function testMakeResponseBodyPart() : void
 	{
-		$this->assertEquals('', $this->app->makeResponseBodyPart(null));
-		$this->assertEquals('', $this->app->makeResponseBodyPart(App::response()));
-		$this->assertEquals('1.2', $this->app->makeResponseBodyPart(1.2));
+		self::assertSame('', $this->app->makeResponseBodyPart(null));
+		self::assertSame('', $this->app->makeResponseBodyPart(App::response()));
+		self::assertSame('1.2', $this->app->makeResponseBodyPart(1.2));
 		$stringableObject = new class() {
 			public function __toString() : string
 			{
 				return 'foo';
 			}
 		};
-		$this->assertEquals('foo', $this->app->makeResponseBodyPart($stringableObject));
-		$this->assertNull(App::response()->getHeader('content-type'));
-		$this->assertEquals('', $this->app->makeResponseBodyPart(['id' => 1]));
-		$this->assertEquals(
+		self::assertSame('foo', $this->app->makeResponseBodyPart($stringableObject));
+		self::assertNull(App::response()->getHeader('content-type'));
+		self::assertSame('', $this->app->makeResponseBodyPart(['id' => 1]));
+		self::assertSame(
 			'application/json; charset=UTF-8',
 			App::response()->getHeader('content-type')
 		);
@@ -195,17 +195,17 @@ class AppTest extends TestCase
 		$this->app->makeResponseBodyPart($this->app);
 	}
 
-	public function testIsCli()
+	public function testIsCli() : void
 	{
-		$this->assertTrue(App::isCLI());
+		self::assertTrue(App::isCLI());
 		App::setIsCLI(false);
-		$this->assertFalse(App::isCLI());
+		self::assertFalse(App::isCLI());
 	}
 
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testSessionWithCacheHandler()
+	public function testSessionWithCacheHandler() : void
 	{
 		App::config()->add('session', [
 			'save_handler' => [
@@ -213,19 +213,19 @@ class AppTest extends TestCase
 				'config' => 'default',
 			],
 		]);
-		$this->assertInstanceOf(Session::class, App::session());
+		self::assertInstanceOf(Session::class, App::session());
 		App::session()->foo = 'Foo';
-		$this->assertEquals('Foo', App::session()->foo);
+		self::assertSame('Foo', App::session()->foo);
 	}
 
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testSessionWithDatabaseHandler()
+	public function testSessionWithDatabaseHandler() : void
 	{
 		App::database()->dropTable('Sessions')->ifExists()->run();
 		App::database()->createTable('Sessions')
-			->definition(static function (TableDefinition $definition) {
+			->definition(static function (TableDefinition $definition) : void {
 				$definition->column('id')->varchar(128)->primaryKey();
 				$definition->column('ip')->varchar(45)->null();
 				$definition->column('ua')->varchar(255)->null();
@@ -241,11 +241,11 @@ class AppTest extends TestCase
 				'config' => 'default',
 			],
 		]);
-		$this->assertInstanceOf(Session::class, App::session());
+		self::assertInstanceOf(Session::class, App::session());
 		App::session()->foo = 'Foo';
-		$this->assertEquals('Foo', App::session()->foo);
+		self::assertSame('Foo', App::session()->foo);
 		App::session()->stop();
-		$this->assertEquals(
+		self::assertSame(
 			\time(),
 			App::database()
 				->select()

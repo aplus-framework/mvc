@@ -2,18 +2,18 @@
 
 use PHPUnit\Framework\TestCase;
 
-class PresenterControllerTest extends TestCase
+final class PresenterControllerTest extends TestCase
 {
-	public function testMethods()
+	public function testMethods() : void
 	{
 		$controller = new PresenterControllerMock();
-		$this->assertNull($controller->index());
-		$this->assertNull($controller->new());
-		$this->assertNull($controller->create());
-		$this->assertEquals(5, $controller->show(5));
-		$this->assertEquals(5, $controller->edit(5));
-		$this->assertEquals(5, $controller->update(5));
-		$this->assertEquals(5, $controller->remove(5));
-		$this->assertEquals(5, $controller->delete(5));
+		self::assertNull($controller->index());
+		self::assertNull($controller->new());
+		self::assertNull($controller->create());
+		self::assertSame(5, $controller->show(5));
+		self::assertSame(5, $controller->edit(5));
+		self::assertSame(5, $controller->update(5));
+		self::assertSame(5, $controller->remove(5));
+		self::assertSame(5, $controller->delete(5));
 	}
 }
