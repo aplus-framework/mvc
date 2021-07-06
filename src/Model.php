@@ -9,6 +9,7 @@
  */
 namespace Framework\MVC;
 
+use Exception;
 use Framework\Database\Database;
 use Framework\Pagination\Pager;
 use Framework\Validation\Validation;
@@ -86,6 +87,12 @@ abstract class Model
 		'create' => 'createdAt',
 		'update' => 'updatedAt',
 	];
+	/**
+	 * The datetime format used on database write operations.
+	 *
+	 * @var string
+	 */
+	protected string $datetimeFormat = 'Y-m-d H:i:s';
 	/**
 	 * The Model Validation instance.
 	 */
@@ -329,17 +336,20 @@ abstract class Model
 	/**
 	 * Used to set the datetime columns.
 	 *
-	 * By default it returns the datetime in UTC.
+	 * By default, get the timezone from database write connection config. As
+	 * fallback, uses the UTC timezone.
 	 *
-	 * Use this method to transform the datetime with a custom timezone,
-	 * if necessary.
+	 * @throws Exception if database config has a bad timezone or a DateTime
+	 * error occur
 	 *
-	 * @return string The datetime in the following format: Y-m-d H:i:s
+	 * @return string The datetime in the $datetimeFormat property format
 	 */
-	#[Pure]
 	protected function getDatetime() : string
 	{
-		return \gmdate('Y-m-d H:i:s');
+		$timezone = $this->getDatabaseForWrite()->getConfig()['timezone'] ?? '+00:00';
+		$timezone = new \DateTimeZone($timezone);
+		$datetime = new \DateTime('now', $timezone);
+		return $datetime->format($this->datetimeFormat);
 	}
 
 	/**
