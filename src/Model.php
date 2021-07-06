@@ -66,7 +66,7 @@ abstract class Model
 	 *
 	 * @var array<int,string>
 	 */
-	protected array $allowedColumns = [];
+	protected array $allowedFields = [];
 	/**
 	 * Use datetime columns.
 	 *
@@ -156,19 +156,19 @@ abstract class Model
 	 *
 	 * @return array<int,string>
 	 */
-	protected function filterAllowedColumns(array $columns) : array
+	protected function filterAllowedFields(array $columns) : array
 	{
-		if (empty($this->allowedColumns)) {
+		if (empty($this->allowedFields)) {
 			throw new LogicException(
-				'Allowed columns not defined for database writes'
+				'Allowed fields not defined for database writes'
 			);
 		}
-		$columns = \array_intersect_key($columns, \array_flip($this->allowedColumns));
+		$columns = \array_intersect_key($columns, \array_flip($this->allowedFields));
 		if ($this->protectPrimaryKey !== false
 			&& \array_key_exists($this->primaryKey, $columns)
 		) {
 			throw new LogicException(
-				'Protected Primary Key column can not be SET'
+				'Protected Primary Key field can not be SET'
 			);
 		}
 		return $columns;
@@ -328,7 +328,7 @@ abstract class Model
 	protected function prepareData(array | Entity | stdClass $data) : array
 	{
 		$data = $this->makeArray($data);
-		return $this->filterAllowedColumns($data);
+		return $this->filterAllowedFields($data);
 	}
 
 	/**
@@ -387,7 +387,7 @@ abstract class Model
 	{
 		$data = $this->makeArray($data);
 		$primaryKey = $data[$this->primaryKey] ?? null;
-		$data = $this->filterAllowedColumns($data);
+		$data = $this->filterAllowedFields($data);
 		if ($primaryKey !== null) {
 			return $this->update($primaryKey, $data);
 		}
