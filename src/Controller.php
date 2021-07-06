@@ -11,9 +11,9 @@ namespace Framework\MVC;
 
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
-use Framework\Routing\RouteAction;
+use Framework\Routing\RouteActions;
 
-abstract class Controller extends RouteAction
+abstract class Controller extends RouteActions
 {
 	protected Request $request;
 	protected Response $response;
