@@ -136,12 +136,4 @@ class View
 	{
 		$this->layout = $layout;
 	}
-
-	public function escape(?string $text, string $encoding = 'UTF-8') : string
-	{
-		$text = (string) $text;
-		return empty($text)
-			? $text
-			: \htmlspecialchars($text, \ENT_QUOTES | \ENT_HTML5, $encoding);
-	}
 }
