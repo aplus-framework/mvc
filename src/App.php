@@ -70,7 +70,7 @@ class App
 
 	protected function loadHelpers() : void
 	{
-		require __DIR__ . '/helpers.php';
+		require_isolated(__DIR__ . '/helpers.php');
 	}
 
 	public function run() : void
