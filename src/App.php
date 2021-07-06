@@ -54,16 +54,19 @@ class App
 
 	protected function prepareExceptionHandler() : void
 	{
-		$environment = static::config()->get('exceptions')['environment']
-			?? ExceptionHandler::PRODUCTION;
-		$logger = static::config()->get('exceptions')['log'] ? static::logger() : null;
+		$config = static::config()->get('exceptions');
+		$environment = $config['environment'] ?? ExceptionHandler::PRODUCTION;
+		$logger = null;
+		if (isset($config['log']) && $config['log'] === true) {
+			$logger = static::logger();
+		}
 		$exceptions = new ExceptionHandler(
 			$environment,
 			$logger,
 			static::language()
 		);
-		if (isset(static::config()->get('exceptions')['views_dir'])) {
-			$exceptions->setViewsDir(static::config()->get('exceptions')['views_dir']);
+		if (isset($config['views_dir'])) {
+			$exceptions->setViewsDir($config['views_dir']);
 		}
 		$exceptions->initialize();
 	}
@@ -143,7 +146,7 @@ class App
 	 * Set a service.
 	 *
 	 * @param string $name
-	 * @param mixed  $service
+	 * @param mixed $service
 	 * @param string $instance
 	 *
 	 * @return mixed
@@ -159,7 +162,7 @@ class App
 	/**
 	 * Remove a service.
 	 *
-	 * @param string      $name
+	 * @param string $name
 	 * @param string|null $instance Instance name or null to remove all
 	 */
 	public static function removeService(string $name, ?string $instance) : void
