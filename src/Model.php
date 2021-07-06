@@ -13,6 +13,8 @@ use Framework\Database\Database;
 use Framework\Pagination\Pager;
 use Framework\Validation\Validation;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\ArrayShape;
+use JetBrains\PhpStorm\Pure;
 use LogicException;
 use stdClass;
 
@@ -118,6 +120,7 @@ abstract class Model
 		App::removeService('validation', $this->getModelIdentifier());
 	}
 
+	#[Pure]
 	protected function getTable() : string
 	{
 		if (isset($this->table)) {
@@ -213,6 +216,8 @@ abstract class Model
 	 *
 	 * @return array
 	 */
+	#[ArrayShape([0 => 'int', 1 => 'int|null'])]
+	#[Pure]
 	protected function makePageLimitAndOffset(int $page, int $perPage = 10) : array
 	{
 		$page = (int) \abs($page);
@@ -331,6 +336,7 @@ abstract class Model
 	 *
 	 * @return string The datetime in the following format: Y-m-d H:i:s
 	 */
+	#[Pure]
 	protected function getDatetime() : string
 	{
 		return \gmdate('Y-m-d H:i:s');
@@ -473,6 +479,7 @@ abstract class Model
 		return $this->getValidation()->getErrors();
 	}
 
+	#[Pure]
 	protected function getModelIdentifier() : string
 	{
 		return 'Model:' . \spl_object_hash($this);
