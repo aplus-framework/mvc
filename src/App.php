@@ -112,7 +112,7 @@ class App
 			if ( ! \is_file($file)) {
 				throw new LogicException('Invalid route file: ' . $file);
 			}
-			require $file;
+			require_isolated($file);
 		}
 	}
 
