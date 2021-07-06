@@ -252,6 +252,8 @@ abstract class Entity implements \JsonSerializable, \Stringable
 		}
 		$allowed = \array_flip(static::$jsonVars);
 		$filtered = \array_intersect_key(\get_object_vars($this), $allowed);
-		return $filtered;
+		$allowed = \array_intersect_key($allowed, $filtered);
+		$ordered = \array_replace($allowed, $filtered);
+		return $ordered;
 	}
 }
