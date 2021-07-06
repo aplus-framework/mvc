@@ -39,11 +39,16 @@ trait CacheTrait
 		return $this->cacheTTL ?? 60;
 	}
 
+	protected function getCacheDataNotFound() : int | string
+	{
+		return $this->cacheDataNotFound ?? 0;
+	}
+
 	public function find(int | string $primaryKey) : array | Entity | stdClass | null
 	{
 		$this->checkPrimaryKey($primaryKey);
 		$data = $this->getCache()->get($this->getCacheKey($primaryKey));
-		if ($data === 'not-found') {
+		if ($data === $this->getCacheDataNotFound()) {
 			return null;
 		}
 		if (\is_array($data)) {
@@ -57,7 +62,7 @@ trait CacheTrait
 			->run()
 			->fetchArray();
 		if ($data === null) {
-			$data = 'not-found';
+			$data = $this->getCacheDataNotFound();
 		}
 		$this->getCache()->set($this->getCacheKey($primaryKey), $data, $this->getCacheTTL());
 		return \is_array($data) ? $this->makeEntity($data) : null;
@@ -83,7 +88,7 @@ trait CacheTrait
 			->run()
 			->fetchArray();
 		if ($data === null) {
-			$data = 'not-found';
+			$data = $this->getCacheDataNotFound();
 		}
 		$this->getCache()->set($this->getCacheKey($primaryKey), $data, $this->getCacheTTL());
 	}
