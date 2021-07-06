@@ -12,6 +12,9 @@ namespace Framework\MVC;
 use Framework\Database\Database;
 use Framework\Pagination\Pager;
 use Framework\Validation\Validation;
+use InvalidArgumentException;
+use LogicException;
+use stdClass;
 
 /**
  * Class Model.
@@ -21,7 +24,7 @@ abstract class Model
 	/**
 	 * Database connection instance names.
 	 *
-	 * @var array|string[]
+	 * @var array<string,string>
 	 */
 	protected array $connections = [
 		'read' => 'default',
@@ -46,7 +49,7 @@ abstract class Model
 	 *
 	 * @see Entity
 	 */
-	protected string $returnType = 'object';
+	protected string $returnType = 'stdClass';
 	/**
 	 * Allowed columns for INSERT and UPDATE.
 	 *
@@ -78,7 +81,7 @@ abstract class Model
 	/**
 	 * Validation field labels.
 	 *
-	 * @var array|string[]
+	 * @var array<string,string>
 	 */
 	protected array $validationLabels = [];
 	/**
@@ -86,7 +89,7 @@ abstract class Model
 	 *
 	 * @see Validation::setRules
 	 *
-	 * @var array|array[]|string[]
+	 * @var array<string,array|string>
 	 */
 	protected array $validationRules = [];
 
@@ -108,24 +111,24 @@ abstract class Model
 		return $this->table = $class;
 	}
 
-	protected function checkPrimaryKey(int | string $primary_key) : void
+	protected function checkPrimaryKey(int | string $primaryKey) : void
 	{
-		if (empty($primary_key)) {
-			throw new \InvalidArgumentException(
+		if (empty($primaryKey)) {
+			throw new InvalidArgumentException(
 				'Primary Key can not be empty'
 			);
 		}
 	}
 
 	/**
-	 * @param array|string[] $columns
+	 * @param array<int,string> $columns
 	 *
-	 * @return array|string[]
+	 * @return array<int,string>
 	 */
 	protected function filterAllowedColumns(array $columns) : array
 	{
 		if (empty($this->allowedColumns)) {
-			throw new \LogicException(
+			throw new LogicException(
 				'Allowed columns not defined for INSERT and UPDATE'
 			);
 		}
@@ -133,7 +136,7 @@ abstract class Model
 		if ($this->protectPrimaryKey !== false
 			&& \array_key_exists($this->primaryKey, $columns)
 		) {
-			throw new \LogicException(
+			throw new LogicException(
 				'Protected Primary Key column can not be SET'
 			);
 		}
@@ -170,7 +173,7 @@ abstract class Model
 		return $this->getDatabaseForRead()
 			->select()
 			->expressions([
-				'count' => static function () {
+				'count' => static function () : string {
 					return 'COUNT(*)';
 				},
 			])
@@ -181,19 +184,19 @@ abstract class Model
 
 	/**
 	 * @param int $page
-	 * @param int $per_page
+	 * @param int $perPage
 	 *
 	 * @see Model::paginate
 	 *
 	 * @return array
 	 */
-	protected function makePageLimitAndOffset(int $page, int $per_page = 10) : array
+	protected function makePageLimitAndOffset(int $page, int $perPage = 10) : array
 	{
-		$page = \abs($page);
-		$per_page = \abs($per_page);
-		$page = $page <= 1 ? null : $page * $per_page - $per_page;
+		$page = (int) \abs($page);
+		$perPage = (int) \abs($perPage);
+		$page = $page <= 1 ? null : $page * $perPage - $perPage;
 		return [
-			$per_page,
+			$perPage,
 			$page,
 		];
 	}
@@ -201,17 +204,17 @@ abstract class Model
 	/**
 	 * A basic function to paginate all rows of the table.
 	 *
-	 * @param int $page     The current page
-	 * @param int $per_page
+	 * @param int $page The current page
+	 * @param int $perPage Items per page
 	 *
 	 * @return Pager
 	 */
-	public function paginate(int $page, int $per_page = 10) : Pager
+	public function paginate(int $page, int $perPage = 10) : Pager
 	{
 		$data = $this->getDatabaseForRead()
 			->select()
 			->from($this->getTable())
-			->limit(...$this->makePageLimitAndOffset($page, $per_page))
+			->limit(...$this->makePageLimitAndOffset($page, $perPage))
 			->run()
 			->fetchArrayAll();
 		foreach ($data as &$row) {
@@ -219,7 +222,7 @@ abstract class Model
 		}
 		return new Pager(
 			$page,
-			$per_page,
+			$perPage,
 			$this->count(),
 			$data,
 			App::language(),
@@ -230,19 +233,19 @@ abstract class Model
 	/**
 	 * Find a row based on Primary Key.
 	 *
-	 * @param int|string $primary_key
+	 * @param int|string $primaryKey
 	 *
-	 * @return array|Entity|\stdClass|string[]|null The selected row as configured
-	 *                                              on $returnType or null if row
-	 *                                              was not found
+	 * @return array<string,float|int|string|null>|Entity|stdClass|null The
+	 * selected row as configured on $returnType property or null if row was
+	 * not found
 	 */
-	public function find(int | string $primary_key) : \stdClass | Entity | array | null
+	public function find(int | string $primaryKey) : array | Entity | stdClass | null
 	{
-		$this->checkPrimaryKey($primary_key);
+		$this->checkPrimaryKey($primaryKey);
 		$data = $this->getDatabaseForRead()
 			->select()
 			->from($this->getTable())
-			->whereEqual($this->primaryKey, $primary_key)
+			->whereEqual($this->primaryKey, $primaryKey)
 			->limit(1)
 			->run()
 			->fetchArray();
@@ -250,27 +253,27 @@ abstract class Model
 	}
 
 	/**
-	 * @param array|string[] $data
+	 * @param array<string,float|int|string|null> $data
 	 *
-	 * @return array|Entity|\stdClass
+	 * @return array<string,float|int|string|null>|Entity|stdClass
 	 */
-	protected function makeEntity(array $data)
+	protected function makeEntity(array $data) : array | Entity | stdClass
 	{
 		if ($this->returnType === 'array') {
 			return $data;
 		}
-		if ($this->returnType === 'object') {
+		if ($this->returnType === 'object' || $this->returnType === 'stdClass') {
 			return (object) $data;
 		}
 		return new $this->returnType($data);
 	}
 
 	/**
-	 * @param array|Entity|\stdClass $data
+	 * @param array<string,mixed>|Entity|stdClass $data
 	 *
-	 * @return array
+	 * @return array<string,mixed>
 	 */
-	protected function makeArray($data) : array
+	protected function makeArray(array | Entity | stdClass $data) : array
 	{
 		return $data instanceof Entity
 			? $data->toArray()
@@ -280,11 +283,11 @@ abstract class Model
 	/**
 	 * Convert data to array and filter allowed columns.
 	 *
-	 * @param array|Entity|\stdClass $data
+	 * @param array<string,mixed>|Entity|stdClass $data
 	 *
-	 * @return array The allowed columns
+	 * @return array<string,mixed> The allowed columns
 	 */
-	protected function prepareData(array | Entity | \stdClass $data) : array
+	protected function prepareData(array | Entity | stdClass $data) : array
 	{
 		$data = $this->makeArray($data);
 		return $this->filterAllowedColumns($data);
@@ -308,11 +311,11 @@ abstract class Model
 	/**
 	 * Insert a new row.
 	 *
-	 * @param array|Entity|\stdClass|string[] $data
+	 * @param array<string,float|int|string|null>|Entity|stdClass $data
 	 *
 	 * @return false|int The LAST_INSERT_ID() on success or false if validation fail
 	 */
-	public function create(array | Entity | \stdClass $data) : false | int
+	public function create(array | Entity | stdClass $data) : false | int
 	{
 		$data = $this->prepareData($data);
 		if ($this->getValidation()->validate($data) === false) {
@@ -333,19 +336,18 @@ abstract class Model
 	 * Save a row. Update if the Primary Key is present, otherwise
 	 * insert a new row.
 	 *
-	 * @param array|Entity|\stdClass $data
+	 * @param array<string,float|int|string|null>|Entity|stdClass $data
 	 *
-	 * @return false|int The number of affected rows on updates as int,
-	 *                   the LAST_INSERT_ID() as int on inserts or false if
-	 *                   validation fails
+	 * @return false|int The number of affected rows on updates as int, the
+	 * LAST_INSERT_ID() as int on inserts or false if validation fails
 	 */
-	public function save(array | Entity | \stdClass $data) : false | int
+	public function save(array | Entity | stdClass $data) : false | int
 	{
 		$data = $this->makeArray($data);
-		$primary_key = $data[$this->primaryKey] ?? null;
+		$primaryKey = $data[$this->primaryKey] ?? null;
 		$data = $this->filterAllowedColumns($data);
-		if ($primary_key !== null) {
-			return $this->update($primary_key, $data);
+		if ($primaryKey !== null) {
+			return $this->update($primaryKey, $data);
 		}
 		return $this->create($data);
 	}
@@ -353,14 +355,15 @@ abstract class Model
 	/**
 	 * Update based on Primary Key and return the number of affected rows.
 	 *
-	 * @param int|string             $primary_key
-	 * @param array|Entity|\stdClass $data
+	 * @param int|string $primaryKey
+	 * @param array<string,float|int|string|null>|Entity|stdClass $data
 	 *
-	 * @return false|int The number of affected rows as int or false if validation fails
+	 * @return false|int The number of affected rows as int or false if
+	 * validation fails
 	 */
-	public function update(int | string $primary_key, array | Entity | \stdClass $data) : false | int
+	public function update(int | string $primaryKey, array | Entity | stdClass $data) : false | int
 	{
-		$this->checkPrimaryKey($primary_key);
+		$this->checkPrimaryKey($primaryKey);
 		$data = $this->prepareData($data);
 		if ($this->getValidation()->validateOnly($data) === false) {
 			return false;
@@ -372,7 +375,7 @@ abstract class Model
 			->update()
 			->table($this->getTable())
 			->set($data)
-			->whereEqual($this->primaryKey, $primary_key)
+			->whereEqual($this->primaryKey, $primaryKey)
 			->run();
 	}
 
@@ -381,16 +384,17 @@ abstract class Model
 	 *
 	 * Most used with HTTP PUT method.
 	 *
-	 * @param int|string             $primary_key
-	 * @param array|Entity|\stdClass $data
+	 * @param int|string $primaryKey
+	 * @param array<string,float|int|string|null>|Entity|stdClass $data
 	 *
-	 * @return false|int The number of affected rows as int or false if validation fails
+	 * @return false|int The number of affected rows as int or false if
+	 * validation fails
 	 */
-	public function replace(int | string $primary_key, array | Entity | \stdClass $data)
+	public function replace(int | string $primaryKey, array | Entity | stdClass $data) : false | int
 	{
-		$this->checkPrimaryKey($primary_key);
+		$this->checkPrimaryKey($primaryKey);
 		$data = $this->prepareData($data);
-		$data[$this->primaryKey] = $primary_key;
+		$data[$this->primaryKey] = $primaryKey;
 		if ($this->getValidation()->validate($data) === false) {
 			return false;
 		}
@@ -409,34 +413,32 @@ abstract class Model
 	/**
 	 * Delete based on Primary Key.
 	 *
-	 * @param int|string $primary_key
+	 * @param int|string $primaryKey
 	 *
 	 * @return int The number of affected rows
 	 */
-	public function delete(int | string $primary_key) : int
+	public function delete(int | string $primaryKey) : int
 	{
-		$this->checkPrimaryKey($primary_key);
+		$this->checkPrimaryKey($primaryKey);
 		return $this->getDatabaseForWrite()
 			->delete()
 			->from($this->getTable())
-			->whereEqual($this->primaryKey, $primary_key)
+			->whereEqual($this->primaryKey, $primaryKey)
 			->run();
 	}
 
 	protected function getValidation() : Validation
 	{
-		if (isset($this->validation)) {
-			return $this->validation;
-		}
-		return $this->validation = App::validation($this->getModelIdentifier())
-			->setLabels($this->validationLabels)
-			->setRules($this->validationRules);
+		return $this->validation
+			?? ($this->validation = App::validation($this->getModelIdentifier())
+				->setLabels($this->validationLabels)
+				->setRules($this->validationRules));
 	}
 
 	/**
 	 * Get Validation errors.
 	 *
-	 * @return array|string[]
+	 * @return array<string,string>
 	 */
 	public function getErrors() : array
 	{
