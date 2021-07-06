@@ -79,18 +79,17 @@ class App
 	public function run() : void
 	{
 		if (static::$isRunning) {
-			throw new LogicException('App already is running');
+			throw new LogicException('App is already running');
 		}
 		static::$isRunning = true;
-		$this->loadHelpers();
 		$this->prepareExceptionHandler();
 		static::autoloader();
+		$this->loadHelpers();
 		$this->prepareRoutes();
 		if (static::isCLI()) {
-			if (empty(static::config()->get('console')['enabled'])) {
-				return;
+			if ( ! empty(static::config()->get('console')['enabled'])) {
+				static::console()->run();
 			}
-			static::console()->run();
 			return;
 		}
 		static::router()
