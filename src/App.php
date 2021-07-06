@@ -55,7 +55,7 @@ class App
 	protected function prepareExceptionHandler() : void
 	{
 		$environment = static::config()->get('exceptions')['environment']
-			?? ExceptionHandler::ENV_PROD;
+			?? ExceptionHandler::PRODUCTION;
 		$logger = static::config()->get('exceptions')['log'] ? static::logger() : null;
 		$exceptions = new ExceptionHandler(
 			$environment,
