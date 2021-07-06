@@ -120,6 +120,9 @@ class View
 
 	public function endBlock() : void
 	{
+		if ($this->currentBlock === null) {
+			throw new \LogicException('Trying to end a view block when no one is open');
+		}
 		$this->blocks[$this->currentBlock] = \ob_get_clean();
 		$this->currentBlock = null;
 	}
