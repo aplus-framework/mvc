@@ -74,19 +74,17 @@ abstract class Model
 	 */
 	protected bool $useDatetime = false;
 	/**
-	 * Datetime column names.
+	 * The datetime field for 'created at' time when $useDatetime is true.
 	 *
-	 * ```
-	 * `created_at` datetime NULL DEFAULT NULL,
-	 * `updated_at` datetime NULL DEFAULT NULL
-	 * ```
-	 *
-	 * @var array<string,string>
+	 * @var string
 	 */
-	protected array $datetimeColumns = [
-		'create' => 'createdAt',
-		'update' => 'updatedAt',
-	];
+	protected string $datetimeFieldCreate = 'createdAt';
+	/**
+	 * The datetime field for 'updated at' time when $useDatetime is true.
+	 *
+	 * @var string
+	 */
+	protected string $datetimeFieldUpdate = 'updatedAt';
 	/**
 	 * The datetime format used on database write operations.
 	 *
@@ -365,10 +363,10 @@ abstract class Model
 		if ($this->getValidation()->validate($data) === false) {
 			return false;
 		}
-		if ($this->useDatetime === true) {
+		if ($this->useDatetime) {
 			$datetime = $this->getDatetime();
-			$data[$this->datetimeColumns['create']] ??= $datetime;
-			$data[$this->datetimeColumns['update']] ??= $datetime;
+			$data[$this->datetimeFieldCreate] ??= $datetime;
+			$data[$this->datetimeFieldUpdate] ??= $datetime;
 		}
 		$database = $this->getDatabaseForWrite();
 		return $database->insert()->into($this->getTable())->set($data)->run()
@@ -412,8 +410,8 @@ abstract class Model
 		if ($this->getValidation()->validateOnly($data) === false) {
 			return false;
 		}
-		if ($this->useDatetime === true) {
-			$data[$this->datetimeColumns['update']] ??= $this->getDatetime();
+		if ($this->useDatetime) {
+			$data[$this->datetimeFieldUpdate] ??= $this->getDatetime();
 		}
 		return $this->getDatabaseForWrite()
 			->update()
@@ -442,10 +440,10 @@ abstract class Model
 		if ($this->getValidation()->validate($data) === false) {
 			return false;
 		}
-		if ($this->useDatetime === true) {
+		if ($this->useDatetime) {
 			$datetime = $this->getDatetime();
-			$data[$this->datetimeColumns['create']] ??= $datetime;
-			$data[$this->datetimeColumns['update']] ??= $datetime;
+			$data[$this->datetimeFieldCreate] ??= $datetime;
+			$data[$this->datetimeFieldUpdate] ??= $datetime;
 		}
 		return $this->getDatabaseForWrite()
 			->replace()
