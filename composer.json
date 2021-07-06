@@ -31,7 +31,7 @@
 		"natanfelles/cache": "^2.1",
 		"natanfelles/cli": "^1.13",
 		"natanfelles/config": "^1.3",
-		"natanfelles/database": "^2.6",
+		"natanfelles/database": "^2.7",
 		"natanfelles/database-extra": "^2.1",
 		"natanfelles/date": "^1.3",
 		"natanfelles/debug": "^2.1",
