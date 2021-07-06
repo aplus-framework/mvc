@@ -410,7 +410,10 @@ class App
 	public static function router(string $instance = 'default') : Router
 	{
 		return static::getService('router', $instance)
-			?? static::setService('router', new Router(), $instance);
+			?? static::setService('router', new Router(
+				static::response(),
+				static::language()
+			), $instance);
 	}
 
 	/**
