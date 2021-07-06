@@ -92,6 +92,16 @@ abstract class Model
 	 * @var array<string,array|string>
 	 */
 	protected array $validationRules = [];
+	/**
+	 * The Pager instance.
+	 *
+	 * Instantiated when calling the paginate method.
+	 *
+	 * @see Model::paginate
+	 *
+	 * @var Pager
+	 */
+	protected Pager $pager;
 
 	public function __destruct()
 	{
@@ -207,9 +217,9 @@ abstract class Model
 	 * @param int $page The current page
 	 * @param int $perPage Items per page
 	 *
-	 * @return Pager
+	 * @return array<int,array|Entity|stdClass>
 	 */
-	public function paginate(int $page, int $perPage = 10) : Pager
+	public function paginate(int $page, int $perPage = 10) : array
 	{
 		$data = $this->getDatabaseForRead()
 			->select()
@@ -220,14 +230,19 @@ abstract class Model
 		foreach ($data as &$row) {
 			$row = $this->makeEntity($row);
 		}
-		return new Pager(
-			$page,
-			$perPage,
-			$this->count(),
-			$data,
-			App::language(),
-			App::request()->getURL()
-		);
+		unset($row);
+		$this->pager = new Pager($page, $perPage, $this->count(), App::language());
+		return $data;
+	}
+
+	/**
+	 * Allowed only after call the paginate method.
+	 *
+	 * @return Pager
+	 */
+	public function getPager() : Pager
+	{
+		return $this->pager;
 	}
 
 	/**
