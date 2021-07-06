@@ -9,67 +9,48 @@
  */
 namespace Framework\MVC;
 
-use Framework\HTTP\Response;
+use Framework\Routing\ResourceInterface;
 
 /**
  * Class ResourceController.
+ *
+ * By default, all class methods return the HTTP status 405 (Method Not Allowed),
+ * because the server does recognize the REQUEST_METHOD, but intentionally does
+ * not support it.
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/501
  */
-abstract class ResourceController extends Controller
+abstract class ResourceController extends Controller implements ResourceInterface
 {
 	use Controller\ResourceTrait;
 
-	/**
-	 * Handles a GET request for /.
-	 *
-	 * @return Response|string|null
-	 */
-	abstract protected function index();
+	public function index() : mixed
+	{
+		return $this->respondMethodNotAllowed();
+	}
 
-	/**
-	 * Handles a POST request for /.
-	 *
-	 * @return Response|string|null
-	 */
-	abstract protected function create();
+	public function create() : mixed
+	{
+		return $this->respondMethodNotAllowed();
+	}
 
-	/**
-	 * Handles a GET request for /$id.
-	 *
-	 * @see https://wiki.php.net/rfc/parameter_type_casting_hints
-	 * @see https://wiki.php.net/rfc/parameter-no-type-variance
-	 *
-	 * @var int|string $id To use $id as string, just remove the int type hint
-	 *
-	 * @return Response|string|null
-	 */
-	abstract protected function show(int $id);
+	public function show(string $id) : mixed
+	{
+		return $this->respondMethodNotAllowed();
+	}
 
-	/**
-	 * Handles a PATCH request for /$id
-	 * and/or a POST request for /$id/update on Web Resource.
-	 *
-	 * @var int|string $id
-	 *
-	 * @return Response|string|null
-	 */
-	abstract protected function update(int $id);
+	public function update(string $id) : mixed
+	{
+		return $this->respondMethodNotAllowed();
+	}
 
-	/**
-	 * Handles a PUT request for /$id.
-	 *
-	 * @var int|string $id
-	 *
-	 * @return Response|string|null
-	 */
-	abstract protected function replace(int $id);
+	public function replace(string $id) : mixed
+	{
+		return $this->respondMethodNotAllowed();
+	}
 
-	/**
-	 * Handles a DELETE request for /$id
-	 * and/or a POST request for /$id/delete on Web Resource.
-	 *
-	 * @var int|string $id
-	 *
-	 * @return Response|string|null
-	 */
-	abstract protected function delete(int $id);
+	public function delete(string $id) : mixed
+	{
+		return $this->respondMethodNotAllowed();
+	}
 }
