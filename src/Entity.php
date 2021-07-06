@@ -15,6 +15,8 @@ use OutOfBoundsException;
 
 abstract class Entity implements \JsonSerializable, \Stringable
 {
+	protected static array $jsonVars = [];
+
 	public function __construct(array $properties)
 	{
 		$this->populate($properties);
@@ -243,11 +245,13 @@ abstract class Entity implements \JsonSerializable, \Stringable
 		return $data;
 	}
 
-	public function jsonSerialize()
+	public function jsonSerialize() : array
 	{
-		// TODO: whitelist properties and filter it!!!
-		//https://www.electrictoolbox.com/php-reflection-public-properties-not-static/
-		//\get_class_vars(__CLASS__);
-		return $this->toArray();
+		if (empty(static::$jsonVars)) {
+			return [];
+		}
+		$allowed = \array_flip(static::$jsonVars);
+		$filtered = \array_intersect_key(\get_object_vars($this), $allowed);
+		return $filtered;
 	}
 }
