@@ -32,14 +32,20 @@ abstract class Model
 	];
 	/**
 	 * Table name.
+	 *
+	 * @var string
 	 */
 	protected string $table;
 	/**
 	 * Table Primary Key.
+	 *
+	 * @var string
 	 */
 	protected string $primaryKey = 'id';
 	/**
 	 * Prevents Primary Key changes on INSERT and UPDATE.
+	 *
+	 * @var bool
 	 */
 	protected bool $protectPrimaryKey = true;
 	/**
@@ -48,16 +54,20 @@ abstract class Model
 	 * Array, object or the classname of an Entity instance.
 	 *
 	 * @see Entity
+	 *
+	 * @var string
 	 */
 	protected string $returnType = 'stdClass';
 	/**
 	 * Allowed columns for INSERT and UPDATE.
 	 *
-	 * @var array|string[]
+	 * @var array<int,string>
 	 */
 	protected array $allowedColumns = [];
 	/**
 	 * Use datetime columns.
+	 *
+	 * @var bool
 	 */
 	protected bool $useDatetime = false;
 	/**
@@ -68,7 +78,7 @@ abstract class Model
 	 * `updated_at` datetime NULL DEFAULT NULL
 	 * ```
 	 *
-	 * @var array|string[]
+	 * @var array<string,string>
 	 */
 	protected array $datetimeColumns = [
 		'create' => 'createdAt',
@@ -142,7 +152,7 @@ abstract class Model
 	{
 		if (empty($this->allowedColumns)) {
 			throw new LogicException(
-				'Allowed columns not defined for INSERT and UPDATE'
+				'Allowed columns not defined for database writes'
 			);
 		}
 		$columns = \array_intersect_key($columns, \array_flip($this->allowedColumns));
