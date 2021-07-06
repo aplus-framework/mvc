@@ -82,6 +82,9 @@ trait CacheTrait
 			->limit(1)
 			->run()
 			->fetchArray();
+		if ($data === null) {
+			$data = 'not-found';
+		}
 		$this->getCache()->set($this->getCacheKey($primaryKey), $data, $this->getCacheTTL());
 	}
 
