@@ -13,11 +13,6 @@ use InvalidArgumentException;
 
 class View
 {
-	protected ?string $path;
-	/**
-	 * @var array|mixed[]
-	 */
-	protected array $data;
 	protected ?string $basePath = null;
 	protected string $extension;
 	/**
@@ -90,24 +85,19 @@ class View
 
 	public function render(string $view, array $data = []) : string
 	{
-		$this->path = $this->makePath($view);
-		$this->data = $data;
-		unset($view, $data);
+		$view = $this->makePath($view);
 		\ob_start();
-		\extract($this->data, \EXTR_SKIP);
-		require $this->path;
+		require_isolated($view, $data);
 		if ($this->layout !== null) {
-			return $this->renderLayout($this->layout);
+			return $this->renderLayout($this->layout, $data);
 		}
-		$this->path = null;
-		$this->data = [];
 		return \ob_get_clean();
 	}
 
-	protected function renderLayout(string $layout) : string
+	protected function renderLayout(string $view, array $data) : string
 	{
 		$this->layout = null;
-		$contents = $this->render($layout, $this->data);
+		$contents = $this->render($view, $data);
 		\ob_end_clean();
 		return $contents;
 	}
