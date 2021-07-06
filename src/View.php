@@ -21,10 +21,12 @@ class View
 	protected ?string $basePath = null;
 	protected string $extension;
 	/**
-	 * @var array|string[]
+	 * The blocks with names as keys and output buffer contents as values.
+	 *
+	 * @var array<string,string>
 	 */
-	protected array $sections = [];
-	protected ?string $currentSection = null;
+	protected array $blocks = [];
+	protected ?string $currentBlock = null;
 	protected ?string $layout = null;
 
 	public function __construct(string $base_path = null, string $extension = '.php')
@@ -110,21 +112,21 @@ class View
 		return $contents;
 	}
 
-	public function startSection(string $name) : void
+	public function block(string $name) : void
 	{
-		$this->currentSection = $name;
+		$this->currentBlock = $name;
 		\ob_start();
 	}
 
-	public function endSection() : void
+	public function endBlock() : void
 	{
-		$this->sections[$this->currentSection] = \ob_get_clean();
-		$this->currentSection = null;
+		$this->blocks[$this->currentBlock] = \ob_get_clean();
+		$this->currentBlock = null;
 	}
 
-	public function renderSection(string $name) : string
+	public function renderBlock(string $name) : string
 	{
-		return $this->sections[$name] ?? '';
+		return $this->blocks[$name] ?? '';
 	}
 
 	public function extends(string $layout) : void
