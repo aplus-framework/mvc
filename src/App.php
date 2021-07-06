@@ -90,12 +90,10 @@ class App
 			static::console()->run();
 			return;
 		}
-		$response = static::router()->match(
-			static::request()->getMethod(),
-			static::request()->getURL()
-		)->run(static::request(), static::response());
-		$response = $this->makeResponseBodyPart($response);
-		static::response()->appendBody($response)->send();
+		static::router()
+			->match()
+			->run(static::request(), static::response())
+			->send();
 	}
 
 	/**
@@ -116,32 +114,6 @@ class App
 			}
 			require $file;
 		}
-	}
-
-	/**
-	 * @param mixed $response Scalar or null data returned in a matched route
-	 *
-	 * @see \Framework\Routing\Route::run
-	 *
-	 * @return string
-	 */
-	protected function makeResponseBodyPart(mixed $response) : string
-	{
-		if ($response === null || $response instanceof Response) {
-			return '';
-		}
-		if (\is_scalar($response)) {
-			return $response;
-		}
-		if (\is_object($response) && \method_exists($response, '__toString')) {
-			return $response;
-		}
-		if (\is_array($response) || $response instanceof \JsonSerializable) {
-			static::response()->setJSON($response);
-			return '';
-		}
-		$type = \get_debug_type($response);
-		throw new LogicException("Invalid return type '{$type}' on matched route");
 	}
 
 	/**
