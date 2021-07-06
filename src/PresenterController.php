@@ -9,21 +9,47 @@
  */
 namespace Framework\MVC;
 
-abstract class PresenterController extends Controller
+use Framework\Routing\PresenterInterface;
+
+abstract class PresenterController extends Controller implements PresenterInterface
 {
-	abstract protected function index();
+	public function index() : mixed
+	{
+		return __METHOD__;
+	}
 
-	abstract protected function new();
+	public function new() : mixed
+	{
+		return __METHOD__;
+	}
 
-	abstract protected function create();
+	public function create() : mixed
+	{
+		return __METHOD__;
+	}
 
-	abstract protected function show(int $id);
+	public function show(string $id) : mixed
+	{
+		return __METHOD__ . '/' . $id;
+	}
 
-	abstract protected function edit(int $id);
+	public function edit(string $id) : mixed
+	{
+		return __METHOD__ . '/' . $id;
+	}
 
-	abstract protected function update(int $id);
+	public function update(string $id) : mixed
+	{
+		return __METHOD__ . '/' . $id;
+	}
 
-	abstract protected function remove(int $id);
+	public function remove(string $id) : mixed
+	{
+		return __METHOD__ . '/' . $id;
+	}
 
-	abstract protected function delete(int $id);
+	public function delete(string $id) : mixed
+	{
+		return __METHOD__ . '/' . $id;
+	}
 }
