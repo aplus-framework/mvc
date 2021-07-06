@@ -113,10 +113,13 @@ abstract class Model
 		if (isset($this->table)) {
 			return $this->table;
 		}
-		$class = \get_class($this);
+		$class = static::class;
 		$pos = \strrpos($class, '\\');
 		if ($pos) {
 			$class = \substr($class, $pos + 1);
+		}
+		if (\str_ends_with($class, 'Model')) {
+			$class = \substr($class, 0, -5);
 		}
 		return $this->table = $class;
 	}
