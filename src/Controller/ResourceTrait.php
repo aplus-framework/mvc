@@ -45,7 +45,7 @@ trait ResourceTrait
 	 */
 	protected function respondOK(mixed $data = null) : Response
 	{
-		return $this->respond(200, $data);
+		return $this->respond(Response::CODE_OK, $data);
 	}
 
 	/**
@@ -59,7 +59,7 @@ trait ResourceTrait
 	 */
 	protected function respondCreated(mixed $data = null) : Response
 	{
-		return $this->respond(201, $data);
+		return $this->respond(Response::CODE_CREATED, $data);
 	}
 
 	/**
@@ -73,7 +73,7 @@ trait ResourceTrait
 	 */
 	protected function respondAccepted(mixed $data = null) : Response
 	{
-		return $this->respond(202, $data);
+		return $this->respond(Response::CODE_ACCEPTED, $data);
 	}
 
 	/**
@@ -87,7 +87,7 @@ trait ResourceTrait
 	 */
 	protected function respondNoContent(mixed $data = null) : Response
 	{
-		return $this->respond(204, $data);
+		return $this->respond(Response::CODE_NO_CONTENT, $data);
 	}
 
 	/**
@@ -101,7 +101,7 @@ trait ResourceTrait
 	 */
 	protected function respondNotModified(mixed $data = null) : Response
 	{
-		return $this->respond(304, $data);
+		return $this->respond(Response::CODE_NOT_MODIFIED, $data);
 	}
 
 	/**
@@ -115,7 +115,7 @@ trait ResourceTrait
 	 */
 	protected function respondBadRequest(mixed $data = null) : Response
 	{
-		return $this->respond(400, $data);
+		return $this->respond(Response::CODE_BAD_REQUEST, $data);
 	}
 
 	/**
@@ -129,7 +129,7 @@ trait ResourceTrait
 	 */
 	protected function respondUnauthorized(mixed $data = null) : Response
 	{
-		return $this->respond(401, $data);
+		return $this->respond(Response::CODE_UNAUTHORIZED, $data);
 	}
 
 	/**
@@ -143,7 +143,7 @@ trait ResourceTrait
 	 */
 	protected function respondForbidden(mixed $data = null) : Response
 	{
-		return $this->respond(403, $data);
+		return $this->respond(Response::CODE_FORBIDDEN, $data);
 	}
 
 	/**
@@ -157,7 +157,7 @@ trait ResourceTrait
 	 */
 	protected function respondNotFound(mixed $data = null) : Response
 	{
-		return $this->respond(404, $data);
+		return $this->respond(Response::CODE_NOT_FOUND, $data);
 	}
 
 	/**
@@ -171,6 +171,6 @@ trait ResourceTrait
 	 */
 	protected function respondMethodNotAllowed(mixed $data = null) : Response
 	{
-		return $this->respond(405, $data);
+		return $this->respond(Response::CODE_METHOD_NOT_ALLOWED, $data);
 	}
 }
