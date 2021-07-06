@@ -86,6 +86,7 @@ class View
 	public function render(string $view, array $data = []) : string
 	{
 		$view = $this->makePath($view);
+		$data['view'] = $this;
 		\ob_start();
 		require_isolated($view, $data);
 		if ($this->layout !== null) {
