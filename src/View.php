@@ -21,6 +21,10 @@ class View
 	 * @var array<string,string>
 	 */
 	protected array $blocks = [];
+	/**
+	 * @var array<int,string>
+	 */
+	protected array $openBlocks = [];
 	protected ?string $currentBlock = null;
 	protected ?string $layout = null;
 
@@ -105,17 +109,17 @@ class View
 
 	public function block(string $name) : void
 	{
-		$this->currentBlock = $name;
+		$this->openBlocks[] = $name;
 		\ob_start();
 	}
 
 	public function endBlock() : void
 	{
-		if ($this->currentBlock === null) {
-			throw new \LogicException('Trying to end a view block when no one is open');
+		if (empty($this->openBlocks)) {
+			throw new \LogicException('Trying to end a view block when none is open');
 		}
-		$this->blocks[$this->currentBlock] = \ob_get_clean();
-		$this->currentBlock = null;
+		$endedBlock = \array_pop($this->openBlocks);
+		$this->blocks[$endedBlock] = \ob_get_clean();
 	}
 
 	public function renderBlock(string $name) : string
