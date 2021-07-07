@@ -143,6 +143,12 @@ class View
 		unset($this->blocks[$name]);
 	}
 
+	public function inBlock(string $name) : bool
+	{
+		return ! empty($this->openBlocks)
+			&& \in_array($name, $this->openBlocks, true);
+	}
+
 	public function extends(string $layout) : void
 	{
 		$this->layout = $layout;
