@@ -157,4 +157,9 @@ class View
 	{
 		return $this->layout === $layout;
 	}
+
+	public function include(string $view, array $data = []) : void
+	{
+		echo $this->render($view, $data);
+	}
 }
