@@ -123,6 +123,11 @@ class View
 		return $this->blocks[$name] ?? '';
 	}
 
+	public function hasBlock(string $name) : bool
+	{
+		return isset($this->blocks[$name]);
+	}
+
 	public function extends(string $layout) : void
 	{
 		$this->layout = $layout;
