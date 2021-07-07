@@ -50,7 +50,7 @@ class View
 		return $this->baseDir;
 	}
 
-	public function setExtension(string $extension)
+	public function setExtension(string $extension) : static
 	{
 		$this->extension = '.' . \ltrim($extension, '.');
 		return $this;
@@ -61,7 +61,7 @@ class View
 		return $this->extension;
 	}
 
-	private function getNamespacedFilepath(string $view) : string
+	protected function getNamespacedFilepath(string $view) : string
 	{
 		$path = App::locator()->getNamespacedFilepath($view, $this->getExtension());
 		if ($path) {
