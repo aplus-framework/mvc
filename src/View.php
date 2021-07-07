@@ -153,4 +153,9 @@ class View
 	{
 		$this->layout = $layout;
 	}
+
+	public function isExtending(string $layout) : bool
+	{
+		return $this->layout === $layout;
+	}
 }
