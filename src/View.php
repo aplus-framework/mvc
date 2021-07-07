@@ -25,7 +25,6 @@ class View
 	 * @var array<int,string>
 	 */
 	protected array $openBlocks = [];
-	protected ?string $currentBlock = null;
 	protected ?string $layout = null;
 
 	public function __construct(string $base_path = null, string $extension = '.php')
