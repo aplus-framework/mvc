@@ -13,7 +13,7 @@ use InvalidArgumentException;
 
 class View
 {
-	protected ?string $basePath = null;
+	protected ?string $baseDir = null;
 	protected string $extension;
 	/**
 	 * The blocks with names as keys and output buffer contents as values.
@@ -27,27 +27,27 @@ class View
 	protected array $openBlocks = [];
 	protected ?string $layout = null;
 
-	public function __construct(string $base_path = null, string $extension = '.php')
+	public function __construct(string $baseDir = null, string $extension = '.php')
 	{
-		if ($base_path !== null) {
-			$this->setBasePath($base_path);
+		if ($baseDir !== null) {
+			$this->setBaseDir($baseDir);
 		}
 		$this->setExtension($extension);
 	}
 
-	public function setBasePath(string $base_path)
+	public function setBaseDir(string $baseDir) : static
 	{
-		$real = \realpath($base_path);
+		$real = \realpath($baseDir);
 		if ( ! $real || ! \is_dir($real)) {
-			throw new InvalidArgumentException("View base path is not a valid directory: {$base_path} ");
+			throw new InvalidArgumentException("View base dir is not a valid directory: {$baseDir} ");
 		}
-		$this->basePath = \rtrim($real, \DIRECTORY_SEPARATOR) . \DIRECTORY_SEPARATOR;
+		$this->baseDir = \rtrim($real, \DIRECTORY_SEPARATOR) . \DIRECTORY_SEPARATOR;
 		return $this;
 	}
 
-	public function getBasePath() : ?string
+	public function getBaseDir() : ?string
 	{
-		return $this->basePath;
+		return $this->baseDir;
 	}
 
 	public function setExtension(string $extension)
@@ -75,13 +75,13 @@ class View
 		if (isset($view[0]) && $view[0] === '\\') {
 			return $this->getNamespacedFilepath($view);
 		}
-		$view = $this->getBasePath() . $view . $this->getExtension();
+		$view = $this->getBaseDir() . $view . $this->getExtension();
 		$real = \realpath($view);
 		if ( ! $real || ! \is_file($real)) {
 			throw new InvalidArgumentException("View path does not match a file: {$view} ");
 		}
-		if ($this->getBasePath() && ! \str_starts_with($real, $this->getBasePath())) {
-			throw new InvalidArgumentException("View path out of base path directory: {$real} ");
+		if ($this->getBaseDir() && ! \str_starts_with($real, $this->getBaseDir())) {
+			throw new InvalidArgumentException("View path out of base directory: {$real} ");
 		}
 		return $real;
 	}
