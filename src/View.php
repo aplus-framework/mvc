@@ -132,6 +132,11 @@ class View
 		return isset($this->blocks[$name]);
 	}
 
+	public function removeBlock(string $name) : void
+	{
+		unset($this->blocks[$name]);
+	}
+
 	public function extends(string $layout) : void
 	{
 		$this->layout = $layout;
