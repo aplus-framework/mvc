@@ -35,6 +35,18 @@ class View
 		$this->setExtension($extension);
 	}
 
+	public function __destruct()
+	{
+		if ($this->openBlocks) {
+			throw new \LogicException(
+				'Trying to destruct a View instance while the following blocks stayed open: '
+				. \implode(', ', \array_map(static function ($name) {
+					return "'{$name}'";
+				}, $this->openBlocks))
+			);
+		}
+	}
+
 	public function setBaseDir(string $baseDir) : static
 	{
 		$real = \realpath($baseDir);
