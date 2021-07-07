@@ -70,7 +70,7 @@ class View
 		throw new InvalidArgumentException("Namespaced view path does not match a file: {$view} ");
 	}
 
-	protected function makePath(string $view) : string
+	protected function getFilepath(string $view) : string
 	{
 		if (isset($view[0]) && $view[0] === '\\') {
 			return $this->getNamespacedFilepath($view);
@@ -88,7 +88,7 @@ class View
 
 	public function render(string $view, array $data = []) : string
 	{
-		$view = $this->makePath($view);
+		$view = $this->getFilepath($view);
 		$data['view'] = $this;
 		\ob_start();
 		require_isolated($view, $data);
