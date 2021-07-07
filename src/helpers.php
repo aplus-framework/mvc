@@ -14,9 +14,9 @@ if ( ! function_exists('helpers')) {
 	/**
 	 * Loads helper files.
 	 *
-	 * @param array|string|string[] $helper
+	 * @param array<int,string>|string $helper
 	 *
-	 * @return array|string[] A list of all loaded files
+	 * @return array<int,string> A list of all loaded files
 	 */
 	function helpers(array | string $helper) : array
 	{
@@ -38,8 +38,8 @@ if ( ! function_exists('esc')) {
 	/**
 	 * Escape special characters to HTML entities.
 	 *
-	 * @param string|null $text     The text to be escaped
-	 * @param string      $encoding
+	 * @param string|null $text The text to be escaped
+	 * @param string $encoding
 	 *
 	 * @return string The escaped text
 	 */
@@ -82,8 +82,8 @@ if ( ! function_exists('view')) {
 	/**
 	 * Renders a view.
 	 *
-	 * @param string $path     View path
-	 * @param array  $data     Data passed to the view
+	 * @param string $path View path
+	 * @param array<string,mixed> $data Data passed to the view
 	 * @param string $instance
 	 *
 	 * @return string The rendered view contents
@@ -108,7 +108,7 @@ if ( ! function_exists('current_route')) {
 	/**
 	 * Get the current Route.
 	 *
-	 * @return \Framework\Routing\Route
+	 * @return Framework\Routing\Route
 	 */
 	function current_route() : Framework\Routing\Route
 	{
@@ -119,9 +119,9 @@ if ( ! function_exists('route_url')) {
 	/**
 	 * Get an URL based in a Route name.
 	 *
-	 * @param string $name          Route name
-	 * @param array  $path_params   Route path parameters
-	 * @param array  $origin_params Route origin parameters
+	 * @param string $name Route name
+	 * @param array<int,string> $path_params Route path parameters
+	 * @param array<int,string> $origin_params Route origin parameters
 	 *
 	 * @return string The URL
 	 */
@@ -141,11 +141,11 @@ if ( ! function_exists('lang')) {
 	/**
 	 * Renders a language file line with dot notation format.
 	 *
-	 * e.g. home.hello matches home for file and hello for line.
+	 * e.g. home.hello matches 'home' for file and 'hello' for line.
 	 *
-	 * @param string         $line   The dot notation file line
-	 * @param array|string[] $args   The arguments to be used in the formatted text
-	 * @param string|null    $locale A custom locale or null to use the current
+	 * @param string $line The dot notation file line
+	 * @param array<int|string,string> $args The arguments to be used in the formatted text
+	 * @param string|null $locale A custom locale or null to use the current
 	 *
 	 * @return string|null The rendered text or null if not found
 	 */
@@ -160,7 +160,7 @@ if ( ! function_exists('cache')) {
 	 *
 	 * @param string $instance
 	 *
-	 * @return \Framework\Cache\Cache
+	 * @return Framework\Cache\Cache
 	 */
 	function cache(string $instance = 'default') : Framework\Cache\Cache
 	{
@@ -171,7 +171,7 @@ if ( ! function_exists('session')) {
 	/**
 	 * Get the Session instance.
 	 *
-	 * @return \Framework\Session\Session
+	 * @return Framework\Session\Session
 	 */
 	function session() : Framework\Session\Session
 	{
@@ -182,15 +182,15 @@ if ( ! function_exists('old')) {
 	/**
 	 * Get data from old redirect.
 	 *
-	 * @param string|null $key    Set null to return all data
-	 * @param bool        $escape
+	 * @param string|null $key Set null to return all data
+	 * @param bool $escape
 	 *
-	 * @see \Framework\HTTP\Request::getRedirectData
-	 * @see \Framework\HTTP\Response::redirect
-	 * @see \redirect()
+	 * @see Framework\HTTP\Request::getRedirectData
+	 * @see Framework\HTTP\Response::redirect
+	 * @see redirect()
 	 *
 	 * @return mixed The old value. If $escape is true and the value is not
-	 *               stringable, an empty string will return
+	 * stringable, an empty string will return
 	 */
 	function old(?string $key, bool $escape = true) : mixed
 	{
@@ -217,9 +217,9 @@ if ( ! function_exists('not_found')) {
 	 * Set Response status line as "404 Not Found" and auto set body as
 	 * JSON or HTML page based on Request Content-Type header.
 	 *
-	 * @param array $data
+	 * @param array<string,mixed> $data
 	 *
-	 * @return \Framework\HTTP\Response
+	 * @return Framework\HTTP\Response
 	 */
 	function not_found(array $data = []) : Framework\HTTP\Response
 	{
@@ -255,16 +255,18 @@ if ( ! function_exists('not_found')) {
 }
 if ( ! function_exists('redirect')) {
 	/**
-	 * Sets the HTTP Redirect Response with data accessible in the next HTTP Request.
+	 * Sets the HTTP Redirect Response with data accessible in the next HTTP
+	 * Request.
 	 *
-	 * @param string        $location Location Header value
-	 * @param array|mixed[] $data     Session data available on next Request
-	 * @param int|null      $code     HTTP Redirect status code. Leave null to determine based on
-	 *                                the current HTTP method.
+	 * @param string $location Location Header value
+	 * @param array<int|string,mixed> $data Session data available on next
+	 * Request
+	 * @param int|null $code HTTP Redirect status code. Leave null to determine
+	 * based on the current HTTP method.
 	 *
-	 * @see  http://en.wikipedia.org/wiki/Post/Redirect/Get
-	 * @see  Request::getRedirectData
-	 * @see  \old()
+	 * @see http://en.wikipedia.org/wiki/Post/Redirect/Get
+	 * @see Request::getRedirectData
+	 * @see old()
 	 *
 	 * @throws InvalidArgumentException for invalid Redirection code
 	 *
