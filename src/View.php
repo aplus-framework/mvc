@@ -86,22 +86,34 @@ class View
 		return $real;
 	}
 
-	public function render(string $view, array $data = []) : string
+	/**
+	 * @param string $view
+	 * @param array<string,mixed> $variables
+	 *
+	 * @return string
+	 */
+	public function render(string $view, array $variables = []) : string
 	{
 		$view = $this->getFilepath($view);
-		$data['view'] = $this;
+		$variables['view'] = $this;
 		\ob_start();
-		require_isolated($view, $data);
+		require_isolated($view, $variables);
 		if ($this->layout !== null) {
-			return $this->renderLayout($this->layout, $data);
+			return $this->renderLayout($this->layout, $variables);
 		}
 		return \ob_get_clean();
 	}
 
-	protected function renderLayout(string $view, array $data) : string
+	/**
+	 * @param string $view
+	 * @param array<string,mixed> $variables
+	 *
+	 * @return string
+	 */
+	protected function renderLayout(string $view, array $variables) : string
 	{
 		$this->layout = null;
-		$contents = $this->render($view, $data);
+		$contents = $this->render($view, $variables);
 		\ob_end_clean();
 		return $contents;
 	}
@@ -158,8 +170,12 @@ class View
 		return $this->layout === $layout;
 	}
 
-	public function include(string $view, array $data = []) : void
+	/**
+	 * @param string $view
+	 * @param array<string,mixed> $variables
+	 */
+	public function include(string $view, array $variables = []) : void
 	{
-		echo $this->render($view, $data);
+		echo $this->render($view, $variables);
 	}
 }
