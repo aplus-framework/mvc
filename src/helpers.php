@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /*
  * This file is part of The Framework MVC Library.
  *
@@ -7,7 +8,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+use Framework\Cache\Cache;
+use Framework\HTTP\Response;
 use Framework\MVC\App;
+use Framework\Session\Session;
 use JetBrains\PhpStorm\Pure;
 
 if ( ! function_exists('helpers')) {
@@ -160,9 +164,9 @@ if ( ! function_exists('cache')) {
 	 *
 	 * @param string $instance
 	 *
-	 * @return Framework\Cache\Cache
+	 * @return Cache
 	 */
-	function cache(string $instance = 'default') : Framework\Cache\Cache
+	function cache(string $instance = 'default') : Cache
 	{
 		return App::cache($instance);
 	}
@@ -171,9 +175,9 @@ if ( ! function_exists('session')) {
 	/**
 	 * Get the Session instance.
 	 *
-	 * @return Framework\Session\Session
+	 * @return Session
 	 */
-	function session() : Framework\Session\Session
+	function session() : Session
 	{
 		return App::session();
 	}
@@ -185,8 +189,8 @@ if ( ! function_exists('old')) {
 	 * @param string|null $key Set null to return all data
 	 * @param bool $escape
 	 *
-	 * @see Framework\HTTP\Request::getRedirectData
-	 * @see Framework\HTTP\Response::redirect
+	 * @see Request::getRedirectData
+	 * @see Response::redirect
 	 * @see redirect()
 	 *
 	 * @return mixed The old value. If $escape is true and the value is not
@@ -219,9 +223,9 @@ if ( ! function_exists('not_found')) {
 	 *
 	 * @param array<string,mixed> $data
 	 *
-	 * @return Framework\HTTP\Response
+	 * @return Response
 	 */
-	function not_found(array $data = []) : Framework\HTTP\Response
+	function not_found(array $data = []) : Response
 	{
 		App::response()->setStatusLine(404);
 		if (App::request()->isJSON()) {
@@ -270,13 +274,13 @@ if ( ! function_exists('redirect')) {
 	 *
 	 * @throws InvalidArgumentException for invalid Redirection code
 	 *
-	 * @return Framework\HTTP\Response
+	 * @return Response
 	 */
 	function redirect(
 		string $location,
 		array $data = [],
 		int $code = null
-	) : Framework\HTTP\Response {
+	) : Response {
 		session();
 		return App::response()->redirect($location, $data, $code);
 	}
