@@ -11,6 +11,7 @@
 use Framework\Cache\Cache;
 use Framework\HTTP\Response;
 use Framework\MVC\App;
+use Framework\Routing\Route;
 use Framework\Session\Session;
 use JetBrains\PhpStorm\Pure;
 
@@ -18,7 +19,8 @@ if ( ! function_exists('helpers')) {
 	/**
 	 * Loads helper files.
 	 *
-	 * @param array<int,string>|string $helper
+	 * @param array<int,string>|string $helper A list of helper names as array
+	 * or a helper name as string
 	 *
 	 * @return array<int,string> A list of all loaded files
 	 */
@@ -43,7 +45,7 @@ if ( ! function_exists('esc')) {
 	 * Escape special characters to HTML entities.
 	 *
 	 * @param string|null $text The text to be escaped
-	 * @param string $encoding
+	 * @param string $encoding The escaped text encoding
 	 *
 	 * @return string The escaped text
 	 */
@@ -87,14 +89,14 @@ if ( ! function_exists('view')) {
 	 * Renders a view.
 	 *
 	 * @param string $path View path
-	 * @param array<string,mixed> $data Data passed to the view
-	 * @param string $instance
+	 * @param array<string,mixed> $variables Variables passed to the view
+	 * @param string $instance The View instance name
 	 *
 	 * @return string The rendered view contents
 	 */
-	function view(string $path, array $data = [], string $instance = 'default') : string
+	function view(string $path, array $variables = [], string $instance = 'default') : string
 	{
-		return App::view($instance)->render($path, $data);
+		return App::view($instance)->render($path, $variables);
 	}
 }
 if ( ! function_exists('current_url')) {
@@ -105,16 +107,16 @@ if ( ! function_exists('current_url')) {
 	 */
 	function current_url() : string
 	{
-		return App::request()->getURL();
+		return App::request()->getURL()->getAsString();
 	}
 }
 if ( ! function_exists('current_route')) {
 	/**
 	 * Get the current Route.
 	 *
-	 * @return Framework\Routing\Route
+	 * @return Route
 	 */
-	function current_route() : Framework\Routing\Route
+	function current_route() : Route
 	{
 		return App::router()->getMatchedRoute();
 	}
@@ -124,21 +126,21 @@ if ( ! function_exists('route_url')) {
 	 * Get an URL based in a Route name.
 	 *
 	 * @param string $name Route name
-	 * @param array<int,string> $path_params Route path parameters
-	 * @param array<int,string> $origin_params Route origin parameters
+	 * @param array<int,string> $pathArgs Route path arguments
+	 * @param array<int,string> $originArgs Route origin arguments
 	 *
-	 * @return string The URL
+	 * @return string The Route URL
 	 */
-	function route_url(string $name, array $path_params = [], array $origin_params = []) : string
+	function route_url(string $name, array $pathArgs = [], array $originArgs = []) : string
 	{
 		$route = App::router()->getNamedRoute($name);
 		$matched = App::router()->getMatchedRoute();
-		if (empty($origin_params)
+		if (empty($originArgs)
 			&& $matched && $route->getOrigin() === $matched->getOrigin()
 		) {
-			$origin_params = App::router()->getMatchedOriginParams();
+			$originArgs = App::router()->getMatchedOriginArguments();
 		}
-		return $route->getURL($origin_params, $path_params);
+		return $route->getURL($originArgs, $pathArgs);
 	}
 }
 if ( ! function_exists('lang')) {
@@ -148,7 +150,8 @@ if ( ! function_exists('lang')) {
 	 * e.g. home.hello matches 'home' for file and 'hello' for line.
 	 *
 	 * @param string $line The dot notation file line
-	 * @param array<int|string,string> $args The arguments to be used in the formatted text
+	 * @param array<int|string,string> $args The arguments to be used in the
+	 * formatted text
 	 * @param string|null $locale A custom locale or null to use the current
 	 *
 	 * @return string|null The rendered text or null if not found
@@ -201,11 +204,9 @@ if ( ! function_exists('old')) {
 		session();
 		$data = App::request()->getRedirectData($key);
 		if ($escape) {
-			if (is_scalar($data) || (is_object($data) && method_exists($data, '__toString'))) {
-				$data = esc((string) $data);
-			} else {
-				$data = '';
-			}
+			$data = is_scalar($data) || (is_object($data) && method_exists($data, '__toString'))
+				? esc((string) $data)
+				: '';
 		}
 		return $data;
 	}
@@ -227,19 +228,22 @@ if ( ! function_exists('not_found')) {
 	 */
 	function not_found(array $data = []) : Response
 	{
-		App::response()->setStatusLine(404);
+		$response = App::response();
+		$response->setStatusLine($response::CODE_NOT_FOUND);
 		if (App::request()->isJSON()) {
 			return App::response()->setJSON([
 				'error' => [
-					'code' => 404,
-					'reason' => 'Not Found',
+					'code' => $response::CODE_NOT_FOUND,
+					'reason' => $response::getResponseReason(
+						$response::CODE_NOT_FOUND
+					),
 				],
 			]);
 		}
 		$lang = App::language()->getCurrentLocale();
 		$data['title'] ??= lang('errors.notFoundTitle');
 		$data['message'] ??= lang('errors.notFoundMessage');
-		return App::response()->setBody(
+		return $response->setBody(
 			<<<EOL
 				<!doctype html>
 				<html lang="{$lang}">
