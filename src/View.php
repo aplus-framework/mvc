@@ -134,6 +134,12 @@ class View
 
 	public function removeBlock(string $name) : void
 	{
+		if ( ! $this->hasBlock($name)) {
+			\trigger_error(
+				'Trying to remove a block that is not set: ' . $name,
+				\E_USER_WARNING
+			);
+		}
 		unset($this->blocks[$name]);
 	}
 
