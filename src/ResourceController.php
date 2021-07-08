@@ -29,7 +29,7 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 
 	public function index() : mixed
 	{
-		$page = $this->request->getQuery('page');
+		$page = $this->request->getQuery('page') ?? 1;
 		$page = Pager::sanitizePageNumber($page);
 		$entities = $this->model->paginate($page);
 		$data = [
