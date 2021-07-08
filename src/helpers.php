@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /*
  * This file is part of The Framework MVC Library.
  *
@@ -287,5 +286,29 @@ if ( ! function_exists('redirect')) {
 	) : Response {
 		session();
 		return App::response()->redirect($location, $data, $code);
+	}
+}
+if ( ! function_exists('config')) {
+	/**
+	 * Get configs from a service.
+	 *
+	 * @param string $name The service name
+	 * @param string $key The instance name and, optionally, with keys in the
+	 * ArraySimple keys format
+	 *
+	 * @return mixed The key value
+	 */
+	function config(string $name, string $key = 'default') : mixed
+	{
+		[$instance, $keys] = array_pad(explode('[', $key, 2), 2, null);
+		$config = App::config()->get($name, $instance);
+		if ($keys === null) {
+			return $config;
+		}
+		$pos = strpos($keys, ']');
+		$parent = substr($keys, 0, $pos);
+		$keys = substr($keys, $pos + 1);
+		$key = $parent . $keys;
+		return ArraySimple::value($key, $config);
 	}
 }

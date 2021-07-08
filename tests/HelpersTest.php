@@ -211,4 +211,33 @@ final class HelpersTest extends TestCase
 		self::assertSame(307, App::response()->getStatusCode());
 		self::assertSame('http://localhost', App::response()->getHeader('Location'));
 	}
+
+	public function testConfig() : void
+	{
+		$default = [
+			'default' => 'en',
+			'supported' => [
+				'en',
+				'es',
+				'pt-br',
+			],
+			'fallback_level' => 2,
+			'directories' => null,
+			'negotiate' => true,
+		];
+		self::assertSame($default, App::config()->get('language'));
+		self::assertSame($default, config('language'));
+		self::assertSame($default['supported'], App::config()->get('language')['supported']);
+		self::assertSame($default['supported'], config('language', 'default[supported]'));
+		self::assertSame(
+			$default['supported'][1],
+			App::config()->get('language')['supported'][1]
+		);
+		self::assertSame(
+			$default['supported'][1],
+			config('language', 'default[supported][1]')
+		);
+		self::assertNull(App::config()->get('language')['unknown'] ?? null);
+		self::assertNull(config('language', 'default[unknown]'));
+	}
 }
