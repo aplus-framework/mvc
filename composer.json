@@ -41,7 +41,7 @@
 		"natanfelles/image": "^2",
 		"natanfelles/language": "^1.4",
 		"natanfelles/log": "^2.1",
-		"natanfelles/pagination": "^2",
+		"natanfelles/pagination": "^2.2",
 		"natanfelles/routing": "^2",
 		"natanfelles/session": "^2.3",
 		"natanfelles/validation": "^1.6"
