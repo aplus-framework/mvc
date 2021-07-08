@@ -9,7 +9,7 @@
  */
 return [
 	'default' => [
-		'base_path' => '/tmp',
+		'base_dir' => '/tmp',
 		'extension' => '.php',
 	],
 ];

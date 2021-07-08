@@ -27,7 +27,7 @@ final class HelpersTest extends TestCase
 
 	protected function setUp() : void
 	{
-		$this->app = new App(new Config(__DIR__ . '/configs'));
+		$this->app = new App(new Config(__DIR__ . '/configs', [], '.config.php'));
 		$this->app->loadHelpers();
 	}
 
@@ -53,7 +53,7 @@ final class HelpersTest extends TestCase
 
 	public function testView() : void
 	{
-		App::view()->setBasePath(__DIR__ . '/Views');
+		App::view()->setBaseDir(__DIR__ . '/Views');
 		self::assertSame("<div>bar</div>\n", view('foo', ['contents' => 'bar']));
 	}
 

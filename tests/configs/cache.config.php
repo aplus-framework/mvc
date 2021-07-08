@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 use Framework\Cache\Cache;
-use Framework\Cache\Files;
+use Framework\Cache\FilesCache;
 
 return [
 	'default' => [
-		'class' => Files::class,
+		'class' => FilesCache::class,
 		'configs' => [
 			'directory' => sys_get_temp_dir(),
 		],

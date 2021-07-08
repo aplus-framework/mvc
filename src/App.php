@@ -518,8 +518,8 @@ class App
 		}
 		$service = new View();
 		$config = static::config()->get('view', $instance);
-		if (isset($config['base_path'])) {
-			$service->setBasePath($config['base_path']);
+		if (isset($config['base_dir'])) {
+			$service->setBaseDir($config['base_dir']);
 		}
 		if (isset($config['extension'])) {
 			$service->setExtension($config['extension']);

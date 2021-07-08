@@ -11,7 +11,7 @@ use Framework\Debug\ExceptionHandler;
 
 return [
 	'default' => [
-		'environment' => ExceptionHandler::ENV_PROD,
+		'environment' => ExceptionHandler::PRODUCTION,
 		'views_dir' => null,
 		'log' => true,
 	],

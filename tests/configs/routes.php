@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 use Framework\MVC\App;
-use Framework\Routing\Collection;
+use Framework\Routing\RouteCollection;
 
-App::router()->serve('http://localhost:8080', static function (Collection $routes) : void {
+App::router()->serve('http://localhost:8080', static function (RouteCollection $routes) : void {
 	$routes->get('/', static function () : void {
 		echo __METHOD__;
 	}, 'home');
@@ -25,8 +25,9 @@ App::router()->serve('http://localhost:8080', static function (Collection $route
 	}, 'users.show');
 });
 
-App::router()->serve('http://{subdomain}.domain.tld', static function (Collection $routes) : void {
-	$routes->get('/posts/{title}', static function () : void {
-		echo __METHOD__;
-	}, 'sub.posts');
-});
+App::router()
+	->serve('http://{subdomain}.domain.tld', static function (RouteCollection $routes) : void {
+		$routes->get('/posts/{title}', static function () : void {
+			echo __METHOD__;
+		}, 'sub.posts');
+	});
