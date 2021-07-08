@@ -46,8 +46,10 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 
 	public function create() : mixed
 	{
-		$post = $this->request->getPOST();
-		$id = $this->model->create($post);
+		$input = $this->request->isJSON()
+			? $this->request->getJSON()
+			: $this->request->getPOST();
+		$id = $this->model->create($input);
 		if ($id === false) {
 			$data = [
 				'status' => $this->getStatus($this->response::CODE_BAD_REQUEST),
@@ -96,8 +98,10 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 			];
 			return $this->respondNotFound($data);
 		}
-		$patch = $this->request->getParsedBody();
-		$affectedRows = $this->model->update($id, $patch);
+		$input = $this->request->isJSON()
+			? $this->request->getJSON()
+			: $this->request->getParsedBody();
+		$affectedRows = $this->model->update($id, $input);
 		if ($affectedRows === false) {
 			$data = [
 				'status' => $this->getStatus($this->response::CODE_BAD_REQUEST),
