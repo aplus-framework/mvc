@@ -51,6 +51,15 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 			];
 			return $this->respondBadRequest($data);
 		}
+		$routeName = current_route()->getName();
+		if (isset($routeName) && \str_ends_with($routeName, '.create')) {
+			$routeName = \substr($routeName, -6);
+			$routeName .= 'show';
+			$this->response->setHeader(
+				$this->response::HEADER_LOCATION,
+				route_url($routeName, [$id])
+			);
+		}
 		$entity = $this->model->find($id);
 		$data = [
 			'status' => $this->getStatus($this->response::CODE_CREATED),
