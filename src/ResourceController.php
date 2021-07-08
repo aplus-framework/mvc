@@ -9,7 +9,10 @@
  */
 namespace Framework\MVC;
 
+use Framework\Pagination\Pager;
 use Framework\Routing\ResourceInterface;
+use JetBrains\PhpStorm\ArrayShape;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Class ResourceController.
@@ -26,31 +29,117 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 
 	public function index() : mixed
 	{
-		return $this->respondMethodNotAllowed();
+		$page = $this->request->getQuery('page');
+		$page = Pager::sanitizePageNumber($page);
+		$entities = $this->model->paginate($page);
+		$data = [
+			'status' => $this->getStatus($this->response::CODE_OK),
+			'data' => $entities,
+			'links' => $this->model->getPager(),
+		];
+		return $this->respondOK($data);
 	}
 
 	public function create() : mixed
 	{
-		return $this->respondMethodNotAllowed();
+		$post = $this->request->getPOST();
+		$id = $this->model->create($post);
+		if ($id === false) {
+			$data = [
+				'status' => $this->getStatus($this->response::CODE_BAD_REQUEST),
+				'errors' => $this->model->getErrors(),
+			];
+			return $this->respondBadRequest($data);
+		}
+		$entity = $this->model->find($id);
+		$data = [
+			'status' => $this->getStatus($this->response::CODE_CREATED),
+			'data' => $entity,
+		];
+		return $this->respondCreated($data);
 	}
 
 	public function show(string $id) : mixed
 	{
-		return $this->respondMethodNotAllowed();
+		$entity = $this->model->find($id);
+		if ($entity === null) {
+			return $this->respondNotFound([
+				'status' => $this->getStatus($this->response::CODE_NOT_FOUND),
+			]);
+		}
+		$data = [
+			'status' => $this->getStatus($this->response::CODE_OK),
+			'data' => $entity,
+		];
+		return $this->respondOK($data);
 	}
 
 	public function update(string $id) : mixed
 	{
-		return $this->respondMethodNotAllowed();
+		$entity = $this->model->find($id);
+		if ($entity === null) {
+			$data = [
+				'status' => $this->getStatus($this->response::CODE_NOT_FOUND),
+			];
+			return $this->respondNotFound($data);
+		}
+		$patch = $this->request->getParsedBody();
+		$affectedRows = $this->model->update($id, $patch);
+		if ($affectedRows === false) {
+			$data = [
+				'status' => $this->getStatus($this->response::CODE_BAD_REQUEST),
+				'errors' => $this->model->getErrors(),
+			];
+			return $this->respondBadRequest($data);
+		}
+		$data = [
+			'status' => $this->getStatus($this->response::CODE_OK),
+			'data' => $this->model->find($id),
+		];
+		return $this->respondOK($data);
 	}
 
 	public function replace(string $id) : mixed
 	{
-		return $this->respondMethodNotAllowed();
+		$this->response->setHeader(
+			$this->response::HEADER_ALLOW,
+			'DELETE, GET, HEAD, PATCH'
+		);
+		$data = [
+			'status' => $this->getStatus($this->response::CODE_METHOD_NOT_ALLOWED),
+		];
+		return $this->respondMethodNotAllowed($data);
 	}
 
 	public function delete(string $id) : mixed
 	{
-		return $this->respondMethodNotAllowed();
+		$entity = $this->model->find($id);
+		if ($entity === null) {
+			$data = [
+				'status' => $this->getStatus($this->response::CODE_NOT_FOUND),
+			];
+			return $this->respondNotFound($data);
+		}
+		$this->model->delete($id);
+		$data = [
+			'status' => $this->getStatus($this->response::CODE_OK),
+		];
+		return $this->respondOK($data);
+	}
+
+	/**
+	 * @param int $code
+	 *
+	 * @return array<string,int|string|null>
+	 */
+	#[ArrayShape(['code' => 'int', 'reason' => 'string|null'])]
+	#[Pure]
+	protected function getStatus(
+		int $code
+	) : array {
+		return [
+			'code' => $code,
+			'reason' => $this->response::getResponseReason($code),
+		];
 	}
 }
