@@ -36,7 +36,7 @@
 		"natanfelles/date": "^1.3",
 		"natanfelles/debug": "^2.1",
 		"natanfelles/email": "^2.1",
-		"natanfelles/http": "^3.9",
+		"natanfelles/http": "^3.10",
 		"natanfelles/http-client": "^2.3",
 		"natanfelles/image": "^2",
 		"natanfelles/language": "^1.4",
