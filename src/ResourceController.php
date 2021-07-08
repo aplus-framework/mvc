@@ -37,10 +37,10 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 			'data' => $entities,
 			'links' => $this->model->getPager(),
 		];
-		$this->response->setHeader(
-			$this->response::HEADER_LINK,
-			$this->model->getPager()->render('header')
-		);
+		$link = $this->model->getPager()->render('header');
+		if ($link) {
+			$this->response->setHeader($this->response::HEADER_LINK, $link);
+		}
 		return $this->respondOK($data);
 	}
 
