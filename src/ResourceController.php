@@ -13,6 +13,7 @@ use Framework\Pagination\Pager;
 use Framework\Routing\ResourceInterface;
 use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
+use stdClass;
 
 /**
  * Class ResourceController.
@@ -31,10 +32,14 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 	{
 		$page = $this->request->getQuery('page') ?? 1;
 		$page = Pager::sanitizePageNumber($page);
-		$entities = $this->model->paginate($page);
+		$items = $this->model->paginate($page);
+		foreach ($items as &$item) {
+			$this->indexTransformData($item);
+		}
+		unset($item);
 		$data = [
 			'status' => $this->getStatus($this->response::CODE_OK),
-			'data' => $entities,
+			'data' => $items,
 			'links' => $this->model->getPager(),
 		];
 		$link = $this->model->getPager()->render('header');
@@ -42,6 +47,13 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 			$this->response->setHeader($this->response::HEADER_LINK, $link);
 		}
 		return $this->respondOK($data);
+	}
+
+	/**
+	 * @param array<string,scalar>|Entity|stdClass $item
+	 */
+	protected function indexTransformData(array | Entity | stdClass &$item) : void
+	{
 	}
 
 	public function create() : mixed
@@ -66,27 +78,43 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 				route_url($routeName, [$id])
 			);
 		}
-		$entity = $this->model->find($id);
+		$item = $this->model->find($id);
+		$this->createTransformData($item);
 		$data = [
 			'status' => $this->getStatus($this->response::CODE_CREATED),
-			'data' => $entity,
+			'data' => $item,
 		];
 		return $this->respondCreated($data);
 	}
 
+	/**
+	 * @param array<string,scalar>|Entity|stdClass $item
+	 */
+	protected function createTransformData(array | Entity | stdClass &$item) : void
+	{
+	}
+
 	public function show(string $id) : mixed
 	{
-		$entity = $this->model->find($id);
-		if ($entity === null) {
+		$item = $this->model->find($id);
+		if ($item === null) {
 			return $this->respondNotFound([
 				'status' => $this->getStatus($this->response::CODE_NOT_FOUND),
 			]);
 		}
+		$this->showTransformData($item);
 		$data = [
 			'status' => $this->getStatus($this->response::CODE_OK),
-			'data' => $entity,
+			'data' => $item,
 		];
 		return $this->respondOK($data);
+	}
+
+	/**
+	 * @param array<string,scalar>|Entity|stdClass $item
+	 */
+	protected function showTransformData(array | Entity | stdClass &$item) : void
+	{
 	}
 
 	public function update(string $id) : mixed
@@ -109,11 +137,20 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 			];
 			return $this->respondBadRequest($data);
 		}
+		$item = $this->model->find($id);
+		$this->updateTransformData($item);
 		$data = [
 			'status' => $this->getStatus($this->response::CODE_OK),
-			'data' => $this->model->find($id),
+			'data' => $item,
 		];
 		return $this->respondOK($data);
+	}
+
+	/**
+	 * @param array<string,scalar>|Entity|stdClass $item
+	 */
+	protected function updateTransformData(array | Entity | stdClass &$item) : void
+	{
 	}
 
 	public function replace(string $id) : mixed
