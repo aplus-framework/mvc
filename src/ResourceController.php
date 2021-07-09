@@ -59,7 +59,7 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 		}
 		$routeName = current_route()->getName();
 		if (isset($routeName) && \str_ends_with($routeName, '.create')) {
-			$routeName = \substr($routeName, -6);
+			$routeName = \substr($routeName, 0, -6);
 			$routeName .= 'show';
 			$this->response->setHeader(
 				$this->response::HEADER_LOCATION,
