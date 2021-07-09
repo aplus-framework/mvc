@@ -64,8 +64,12 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 	public function create() : mixed
 	{
 		$input = $this->request->isJSON()
-			? $this->request->getJSON()
+			? $this->request->getJSON(true)
 			: $this->request->getPOST();
+		$data = $this->fieldsNotAllowedData($input);
+		if ($data) {
+			return $this->respondBadRequest($data);
+		}
 		$id = $this->model->create($input);
 		if ($id === false) {
 			$data = [
@@ -140,6 +144,13 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 
 	public function update(string $id) : mixed
 	{
+		$input = $this->request->isJSON()
+			? $this->request->getJSON(true)
+			: $this->request->getParsedBody();
+		$data = $this->fieldsNotAllowedData($input);
+		if ($data) {
+			return $this->respondBadRequest($data);
+		}
 		$entity = $this->model->find($id);
 		if ($entity === null) {
 			$data = [
@@ -147,9 +158,6 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 			];
 			return $this->respondNotFound($data);
 		}
-		$input = $this->request->isJSON()
-			? $this->request->getJSON()
-			: $this->request->getParsedBody();
 		$affectedRows = $this->model->update($id, $input);
 		if ($affectedRows === false) {
 			$data = [
@@ -226,6 +234,28 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 		return [
 			'code' => $code,
 			'reason' => $this->response::getResponseReason($code),
+		];
+	}
+
+	/**
+	 * @param array<string,mixed> $input
+	 *
+	 * @return array<string,array|int>
+	 */
+	protected function fieldsNotAllowedData(array $input) : array
+	{
+		$allowedFields = $this->model->getAllowedFields();
+		$diff = \array_diff_key($input, \array_flip($allowedFields));
+		if (empty($diff)) {
+			return [];
+		}
+		$errors = [];
+		foreach (\array_keys($diff) as $field) {
+			$errors[$field] = lang('errors.fieldNotAllowed', [$field]);
+		}
+		return [
+			'status' => $this->getStatus($this->response::CODE_BAD_REQUEST),
+			'errors' => $errors,
 		];
 	}
 }
