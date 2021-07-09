@@ -78,13 +78,18 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 				route_url($routeName, [$id])
 			);
 		}
-		$item = $this->model->find($id);
+		$item = $this->createFindData((string) $id);
 		$this->createTransformData($item);
 		$data = [
 			'status' => $this->getStatus($this->response::CODE_CREATED),
 			'data' => $item,
 		];
 		return $this->respondCreated($data);
+	}
+
+	protected function createFindData(string ...$args) : array | Entity | stdClass | null
+	{
+		return $this->model->find($args[0]);
 	}
 
 	/**
@@ -96,7 +101,7 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 
 	public function show(string $id) : mixed
 	{
-		$item = $this->model->find($id);
+		$item = $this->showFindData($id);
 		if ($item === null) {
 			return $this->respondNotFound([
 				'status' => $this->getStatus($this->response::CODE_NOT_FOUND),
@@ -108,6 +113,11 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 			'data' => $item,
 		];
 		return $this->respondOK($data);
+	}
+
+	protected function showFindData(string ...$args) : array | Entity | stdClass | null
+	{
+		return $this->model->find($args[0]);
 	}
 
 	/**
@@ -137,13 +147,18 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 			];
 			return $this->respondBadRequest($data);
 		}
-		$item = $this->model->find($id);
+		$item = $this->updateFindData($id);
 		$this->updateTransformData($item);
 		$data = [
 			'status' => $this->getStatus($this->response::CODE_OK),
 			'data' => $item,
 		];
 		return $this->respondOK($data);
+	}
+
+	protected function updateFindData(string ...$args) : array | Entity | stdClass | null
+	{
+		return $this->model->find($args[0]);
 	}
 
 	/**
