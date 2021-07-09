@@ -30,9 +30,7 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 
 	public function index() : mixed
 	{
-		$page = $this->request->getQuery('page') ?? 1;
-		$page = Pager::sanitizePageNumber($page);
-		$items = $this->model->paginate($page);
+		$items = $this->indexPaginateData();
 		foreach ($items as &$item) {
 			$this->indexTransformData($item);
 		}
@@ -47,6 +45,13 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 			$this->response->setHeader($this->response::HEADER_LINK, $link);
 		}
 		return $this->respondOK($data);
+	}
+
+	protected function indexPaginateData() : array
+	{
+		$page = $this->request->getQuery('page') ?? 1;
+		$page = Pager::sanitizePageNumber($page);
+		return $this->model->paginate($page);
 	}
 
 	/**
