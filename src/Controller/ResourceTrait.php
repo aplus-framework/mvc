@@ -35,6 +35,40 @@ trait ResourceTrait
 	}
 
 	/**
+	 * Responds an HTTP 102 (Processing) status code and data.
+	 *
+	 * The 102 (Processing) status code is an interim response used to inform
+	 * the client that the server has accepted the complete request, but has not
+	 * yet completed it. This status code SHOULD only be sent when the server
+	 * has a reasonable expectation that the request will take significant time
+	 * to complete. As guidance, if a method is taking longer than 20 seconds
+	 * (a reasonable, but arbitrary value) to process the server SHOULD return a
+	 * 102 (Processing) response. The server MUST send a final response after
+	 * the request has been completed.
+	 *
+	 * Methods can potentially take a long period of time to process, especially
+	 * methods that support the Depth header. In such cases the client may
+	 * time-out the connection while waiting for a response. To prevent this the
+	 * server may return a 102 (Processing) status code to indicate to the
+	 * client that the server is still processing the method.
+	 *
+	 * NOTE: We will use it in case, for some strange reason, a inserted/updated
+	 * row could not be selected. Database for write/read out of sync in a
+	 * master-slave config, maybe...
+	 *
+	 * @param mixed $data
+	 *
+	 * @see https://www.restapitutorial.com/httpstatuscodes.html
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/102
+	 *
+	 * @return Response
+	 */
+	protected function respondProcessing(mixed $data = null) : Response
+	{
+		return $this->respond(Response::CODE_PROCESSING, $data);
+	}
+
+	/**
 	 * Responds an HTTP 200 (OK) status code and data.
 	 *
 	 * @param mixed $data
