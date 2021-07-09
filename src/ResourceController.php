@@ -74,6 +74,13 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 			];
 			return $this->respondBadRequest($data);
 		}
+		$item = $this->createFindData((string) $id);
+		if ($item === null) {
+			$data = [
+				'status' => $this->getStatus($this->response::CODE_PROCESSING),
+			];
+			return $this->respondProcessing($data);
+		}
 		$routeName = current_route()->getName();
 		if (isset($routeName) && \str_ends_with($routeName, '.create')) {
 			$routeName = \substr($routeName, 0, -6);
@@ -83,7 +90,6 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 				route_url($routeName, [$id])
 			);
 		}
-		$item = $this->createFindData((string) $id);
 		$this->createTransformData($item);
 		$data = [
 			'status' => $this->getStatus($this->response::CODE_CREATED),
@@ -153,6 +159,12 @@ abstract class ResourceController extends Controller implements ResourceInterfac
 			return $this->respondBadRequest($data);
 		}
 		$item = $this->updateFindData($id);
+		if ($item === null) {
+			$data = [
+				'status' => $this->getStatus($this->response::CODE_PROCESSING),
+			];
+			return $this->respondProcessing($data);
+		}
 		$this->updateTransformData($item);
 		$data = [
 			'status' => $this->getStatus($this->response::CODE_OK),
