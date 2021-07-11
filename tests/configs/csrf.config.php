@@ -8,8 +8,8 @@
  * file that was distributed with this source code.
  */
 return [
-	'default' => [
-		'enabled' => true,
-		'token_name' => 'csrf_token',
-	],
+    'default' => [
+        'enabled' => true,
+        'token_name' => 'csrf_token',
+    ],
 ];

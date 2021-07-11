@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 return [
-	'notFoundMessage' => 'Página não encontrada',
-	'notFoundTitle' => 'Erro 404',
+    'notFoundMessage' => 'Página não encontrada',
+    'notFoundTitle' => 'Erro 404',
+    'fieldNotAllowed' => 'O campo {0} não é permitido.',
 ];

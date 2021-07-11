@@ -4,33 +4,33 @@
          convertNoticesToExceptions="true" convertWarningsToExceptions="true" stopOnError="false"
          stopOnFailure="false" stopOnIncomplete="false" stopOnSkipped="false"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-	<coverage processUncoveredFiles="true">
-		<include>
-			<directory suffix=".php">src</directory>
-		</include>
-		<exclude>
-			<file>src/configs.php</file>
-			<file>src/routes.php</file>
-			<file>src/View/layout.php</file>
-		</exclude>
-		<report>
-			<clover outputFile="build/coverage/clover.xml"/>
-			<html outputDirectory="build/coverage"/>
-			<text outputFile="php://stdout"/>
-		</report>
-	</coverage>
-	<testsuite name="Tests">
-		<directory suffix="Test.php">tests</directory>
-	</testsuite>
-	<logging/>
-	<php>
-		<env name="DB_HOST" value="mariadb"/>
-		<env name="DB_PORT" value="3306"/>
-		<env name="DB_USERNAME" value="root"/>
-		<env name="DB_PASSWORD" value="password"/>
-		<env name="DB_SCHEMA" value="framework-tests"/>
-		<env name="MEMCACHED_HOST" value="memcached"/>
-		<env name="REDIS_HOST" value="redis"/>
-		<env name="XDEBUG_MODE" value="coverage"/>
-	</php>
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+        <exclude>
+            <file>src/configs.php</file>
+            <file>src/routes.php</file>
+            <file>src/View/layout.php</file>
+        </exclude>
+        <report>
+            <clover outputFile="build/coverage/clover.xml"/>
+            <html outputDirectory="build/coverage"/>
+            <text outputFile="php://stdout"/>
+        </report>
+    </coverage>
+    <testsuite name="Tests">
+        <directory suffix="Test.php">tests</directory>
+    </testsuite>
+    <logging/>
+    <php>
+        <env name="DB_HOST" value="mariadb"/>
+        <env name="DB_PORT" value="3306"/>
+        <env name="DB_USERNAME" value="root"/>
+        <env name="DB_PASSWORD" value="password"/>
+        <env name="DB_SCHEMA" value="framework-tests"/>
+        <env name="MEMCACHED_HOST" value="memcached"/>
+        <env name="REDIS_HOST" value="redis"/>
+        <env name="XDEBUG_MODE" value="coverage"/>
+    </php>
 </phpunit>

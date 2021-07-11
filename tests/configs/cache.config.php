@@ -11,12 +11,12 @@ use Framework\Cache\Cache;
 use Framework\Cache\FilesCache;
 
 return [
-	'default' => [
-		'class' => FilesCache::class,
-		'configs' => [
-			'directory' => sys_get_temp_dir(),
-		],
-		'prefix' => null,
-		'serializer' => Cache::SERIALIZER_PHP,
-	],
+    'default' => [
+        'class' => FilesCache::class,
+        'configs' => [
+            'directory' => sys_get_temp_dir(),
+        ],
+        'prefix' => null,
+        'serializer' => Cache::SERIALIZER_PHP,
+    ],
 ];

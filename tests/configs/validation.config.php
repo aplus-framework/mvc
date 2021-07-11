@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 return [
-	'default' => [
-		'validators' => [
-			\Framework\MVC\Validator::class,
-		],
-	],
+    'default' => [
+        'validators' => [
+            \Framework\MVC\Validator::class,
+        ],
+    ],
 ];

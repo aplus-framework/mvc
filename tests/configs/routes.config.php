@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 return [
-	'default' => [
-		__DIR__ . '/routes.php',
-	],
+    'default' => [
+        __DIR__ . '/routes.php',
+    ],
 ];

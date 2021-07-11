@@ -13,43 +13,43 @@ use Framework\Routing\PresenterInterface;
 
 abstract class PresenterController extends Controller implements PresenterInterface
 {
-	public function index() : mixed
-	{
-		return __METHOD__;
-	}
+    public function index() : mixed
+    {
+        return __METHOD__;
+    }
 
-	public function new() : mixed
-	{
-		return __METHOD__;
-	}
+    public function new() : mixed
+    {
+        return __METHOD__;
+    }
 
-	public function create() : mixed
-	{
-		return __METHOD__;
-	}
+    public function create() : mixed
+    {
+        return __METHOD__;
+    }
 
-	public function show(string $id) : mixed
-	{
-		return __METHOD__ . '/' . $id;
-	}
+    public function show(string $id) : mixed
+    {
+        return __METHOD__ . '/' . $id;
+    }
 
-	public function edit(string $id) : mixed
-	{
-		return __METHOD__ . '/' . $id;
-	}
+    public function edit(string $id) : mixed
+    {
+        return __METHOD__ . '/' . $id;
+    }
 
-	public function update(string $id) : mixed
-	{
-		return __METHOD__ . '/' . $id;
-	}
+    public function update(string $id) : mixed
+    {
+        return __METHOD__ . '/' . $id;
+    }
 
-	public function remove(string $id) : mixed
-	{
-		return __METHOD__ . '/' . $id;
-	}
+    public function remove(string $id) : mixed
+    {
+        return __METHOD__ . '/' . $id;
+    }
 
-	public function delete(string $id) : mixed
-	{
-		return __METHOD__ . '/' . $id;
-	}
+    public function delete(string $id) : mixed
+    {
+        return __METHOD__ . '/' . $id;
+    }
 }

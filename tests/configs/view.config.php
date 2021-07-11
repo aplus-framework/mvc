@@ -8,8 +8,8 @@
  * file that was distributed with this source code.
  */
 return [
-	'default' => [
-		'base_dir' => '/tmp',
-		'extension' => '.php',
-	],
+    'default' => [
+        'base_dir' => '/tmp',
+        'extension' => '.php',
+    ],
 ];

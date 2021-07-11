@@ -8,13 +8,13 @@
  * file that was distributed with this source code.
  */
 return [
-	'default' => [
-		'options' => [],
-		'save_handler' => [
-			'class' => null,
-			'config' => 'default',
-			'match_ip' => false,
-			'match_user_agent' => false,
-		],
-	],
+    'default' => [
+        'options' => [],
+        'save_handler' => [
+            'class' => null,
+            'config' => 'default',
+            'match_ip' => false,
+            'match_user_agent' => false,
+        ],
+    ],
 ];

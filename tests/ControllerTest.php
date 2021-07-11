@@ -22,36 +22,36 @@ use Tests\MVC\AppMock as App;
  */
 final class ControllerTest extends TestCase
 {
-	protected ControllerMock $controller;
+    protected ControllerMock $controller;
 
-	protected function setUp() : void
-	{
-		(new App(new Config(__DIR__ . '/configs')));
-		$this->controller = new ControllerMock();
-	}
+    protected function setUp() : void
+    {
+        (new App(new Config(__DIR__ . '/configs')));
+        $this->controller = new ControllerMock();
+    }
 
-	public function testConstruct() : void
-	{
-		self::assertInstanceOf(Controller::class, $this->controller);
-	}
+    public function testConstruct() : void
+    {
+        self::assertInstanceOf(Controller::class, $this->controller);
+    }
 
-	public function testModelInstance() : void
-	{
-		self::assertInstanceOf(Model::class, $this->controller->model);
-	}
+    public function testModelInstance() : void
+    {
+        self::assertInstanceOf(Model::class, $this->controller->model);
+    }
 
-	public function testValidate() : void
-	{
-		$rules = [
-			'foo' => 'minLength:5',
-		];
-		self::assertArrayHasKey('foo', $this->controller->validate($rules, []));
-		self::assertSame([
-			'foo' => 'The foo field requires 5 or more characters in length.',
-		], $this->controller->validate($rules, ['foo' => '1234']));
-		self::assertSame([], $this->controller->validate($rules, ['foo' => '12345']));
-		self::assertSame([
-			'foo' => 'The Foo field requires 5 or more characters in length.',
-		], $this->controller->validate($rules, [], ['foo' => 'Foo']));
-	}
+    public function testValidate() : void
+    {
+        $rules = [
+            'foo' => 'minLength:5',
+        ];
+        self::assertArrayHasKey('foo', $this->controller->validate($rules, []));
+        self::assertSame([
+            'foo' => 'The foo field requires 5 or more characters in length.',
+        ], $this->controller->validate($rules, ['foo' => '1234']));
+        self::assertSame([], $this->controller->validate($rules, ['foo' => '12345']));
+        self::assertSame([
+            'foo' => 'The Foo field requires 5 or more characters in length.',
+        ], $this->controller->validate($rules, [], ['foo' => 'Foo']));
+    }
 }

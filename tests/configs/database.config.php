@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 return [
-	'default' => [
-		'host' => getenv('DB_HOST'),
-		'port' => getenv('DB_PORT'),
-		'username' => getenv('DB_USERNAME'),
-		'password' => getenv('DB_PASSWORD'),
-		'schema' => getenv('DB_SCHEMA'),
-	],
+    'default' => [
+        'host' => getenv('DB_HOST'),
+        'port' => getenv('DB_PORT'),
+        'username' => getenv('DB_USERNAME'),
+        'password' => getenv('DB_PASSWORD'),
+        'schema' => getenv('DB_SCHEMA'),
+    ],
 ];

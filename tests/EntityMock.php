@@ -24,35 +24,35 @@ use Framework\MVC\Entity;
  */
 class EntityMock extends Entity
 {
-	protected $id;
-	protected $data;
-	protected $datetime;
-	protected $createdAt;
-	protected $updatedAt;
-	protected $settings;
+    protected $id;
+    protected $data;
+    protected $datetime;
+    protected $createdAt;
+    protected $updatedAt;
+    protected $settings;
 
-	public function setId($id) : void
-	{
-		$this->id = (int) $id;
-	}
+    public function setId($id) : void
+    {
+        $this->id = (int) $id;
+    }
 
-	public function getData() : string
-	{
-		return (string) $this->data;
-	}
+    public function getData() : string
+    {
+        return (string) $this->data;
+    }
 
-	public function setDatetime($datetime) : void
-	{
-		$this->datetime = $this->fromDateTime($datetime);
-	}
+    public function setDatetime($datetime) : void
+    {
+        $this->datetime = $this->fromDateTime($datetime);
+    }
 
-	public function setSettings($settings) : void
-	{
-		$this->settings = $this->fromJSON($settings);
-	}
+    public function setSettings($settings) : void
+    {
+        $this->settings = $this->fromJSON($settings);
+    }
 
-	public function getDataAsScalar() : string
-	{
-		return (string) $this->data;
-	}
+    public function getDataAsScalar() : string
+    {
+        return (string) $this->data;
+    }
 }

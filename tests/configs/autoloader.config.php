@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 return [
-	'default' => [
-		'classes' => [],
-		'namespaces' => [
-			'Tests\\MVC' => dirname(__DIR__),
-		],
-	],
+    'default' => [
+        'classes' => [],
+        'namespaces' => [
+            'Tests\\MVC' => dirname(__DIR__),
+        ],
+    ],
 ];

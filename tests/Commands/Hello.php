@@ -13,10 +13,10 @@ use Framework\CLI\Command;
 
 class Hello extends Command
 {
-	protected string $name = 'hello';
-	protected string $description = 'Say hello.';
+    protected string $name = 'hello';
+    protected string $description = 'Say hello.';
 
-	public function run() : void
-	{
-	}
+    public function run() : void
+    {
+    }
 }

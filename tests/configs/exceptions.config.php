@@ -10,9 +10,9 @@
 use Framework\Debug\ExceptionHandler;
 
 return [
-	'default' => [
-		'environment' => ExceptionHandler::PRODUCTION,
-		'views_dir' => null,
-		'log' => true,
-	],
+    'default' => [
+        'environment' => ExceptionHandler::PRODUCTION,
+        'views_dir' => null,
+        'log' => true,
+    ],
 ];
