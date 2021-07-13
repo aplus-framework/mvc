@@ -13,7 +13,10 @@
         "layout",
         "pages",
         "api",
-        "resource"
+        "resource",
+        "presenter",
+        "rest",
+        "restfull"
     ],
     "homepage": "https://the-framework.gitlab.io/libraries/mvc.html",
     "license": "MIT",
