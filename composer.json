@@ -1,7 +1,7 @@
 {
-    "name": "natanfelles/mvc",
+    "name": "aplus/mvc",
     "type": "library",
-    "description": "The Framework MVC Library",
+    "description": "Aplus Framework MVC Library",
     "keywords": [
         "app",
         "application",
@@ -18,7 +18,7 @@
         "rest",
         "restfull"
     ],
-    "homepage": "https://the-framework.gitlab.io/libraries/mvc.html",
+    "homepage": "https://aplus-framework.com/docs/mvc",
     "license": "MIT",
     "authors": [
         {
@@ -78,9 +78,9 @@
     "prefer-stable": true,
     "support": {
         "email": "natanfelles@gmail.com",
-        "issues": "https://gitlab.com/the-framework/libraries/mvc/issues",
-        "wiki": "https://gitlab.com/the-framework/libraries/mvc/wikis/home",
-        "source": "https://gitlab.com/the-framework/libraries/mvc",
-        "docs": "https://the-framework.gitlab.io/libraries/mvc/docs/"
+        "issues": "https://gitlab.com/aplus-framework/libraries/mvc/issues",
+        "wiki": "https://gitlab.com/aplus-framework/libraries/mvc/wikis/home",
+        "source": "https://gitlab.com/aplus-framework/libraries/mvc",
+        "docs": "https://aplus-framework.gitlab.io/libraries/mvc/docs/"
     }
 }
