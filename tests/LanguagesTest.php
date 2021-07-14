@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of The Framework MVC Library.
+ * This file is part of Aplus Framework MVC Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
