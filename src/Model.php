@@ -106,9 +106,9 @@ abstract class Model
      *
      * @see Validation::setRules
      *
-     * @var array<string,array|string>|null
+     * @var array<string,array|string>
      */
-    protected ?array $validationRules = null;
+    protected array $validationRules;
     /**
      * The Pager instance.
      *
@@ -484,7 +484,7 @@ abstract class Model
 
     protected function getValidation() : Validation
     {
-        if ($this->validationRules === null) {
+        if ( ! isset($this->validationRules)) {
             throw new \RuntimeException('Validation rules are not set');
         }
         return $this->validation
