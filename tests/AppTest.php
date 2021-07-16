@@ -181,29 +181,6 @@ final class AppTest extends TestCase
         $this->app->run();
     }
 
-    public function testMakeResponseBodyPart() : void
-    {
-        self::assertSame('', $this->app->makeResponseBodyPart(null));
-        self::assertSame('', $this->app->makeResponseBodyPart(App::response()));
-        self::assertSame('1.2', $this->app->makeResponseBodyPart(1.2));
-        $stringableObject = new class() {
-            public function __toString() : string
-            {
-                return 'foo';
-            }
-        };
-        self::assertSame('foo', $this->app->makeResponseBodyPart($stringableObject));
-        self::assertNull(App::response()->getHeader('content-type'));
-        self::assertSame('', $this->app->makeResponseBodyPart(['id' => 1]));
-        self::assertSame(
-            'application/json; charset=UTF-8',
-            App::response()->getHeader('content-type')
-        );
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage("Invalid return type 'Tests\\MVC\\AppMock' on matched route");
-        $this->app->makeResponseBodyPart($this->app);
-    }
-
     public function testIsCli() : void
     {
         self::assertTrue(App::isCLI());
