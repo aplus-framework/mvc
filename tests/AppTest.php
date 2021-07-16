@@ -42,7 +42,7 @@ final class AppTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->app = new App(new Config(__DIR__ . '/configs'));
+        $this->app = new App(new Config(__DIR__ . '/configs', [], '.config.php'));
     }
 
     public function testConfigInstance() : void

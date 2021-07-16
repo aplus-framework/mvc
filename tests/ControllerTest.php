@@ -26,7 +26,7 @@ final class ControllerTest extends TestCase
 
     protected function setUp() : void
     {
-        (new App(new Config(__DIR__ . '/configs')));
+        (new App(new Config(__DIR__ . '/configs', [], '.config.php')));
         $this->controller = new ControllerMock();
     }
 
