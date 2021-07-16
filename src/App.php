@@ -71,11 +71,6 @@ class App
         $exceptions->initialize();
     }
 
-    protected function loadHelpers() : void
-    {
-        require_isolated(__DIR__ . '/helpers.php');
-    }
-
     public function run() : void
     {
         if (static::$isRunning) {
@@ -84,7 +79,6 @@ class App
         static::$isRunning = true;
         $this->prepareExceptionHandler();
         static::autoloader();
-        $this->loadHelpers();
         $this->prepareRoutes();
         if (static::isCLI()) {
             if ( ! empty(static::config()->get('console')['enabled'])) {
