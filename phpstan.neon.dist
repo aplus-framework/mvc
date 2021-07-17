@@ -3,5 +3,3 @@ parameters:
     paths:
         - src
         - tests
-    ignoreErrors:
-        - '#Function [a-zA-Z0-9_]+ not found\.#'
