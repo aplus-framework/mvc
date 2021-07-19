@@ -25,14 +25,17 @@ use stdClass;
 abstract class Model
 {
     /**
-     * Database connection instance names.
+     * Database connection instance name for read operations.
      *
-     * @var array<string,string>
+     * @var string
      */
-    protected array $connections = [
-        'read' => 'default',
-        'write' => 'default',
-    ];
+    protected string $connectionRead = 'default';
+    /**
+     * Database connection instance name for write operations.
+     *
+     * @var string
+     */
+    protected string $connectionWrite = 'default';
     /**
      * Table name.
      *
@@ -184,23 +187,23 @@ abstract class Model
     }
 
     /**
-     * @see Model::$connections
+     * @see Model::$connectionRead
      *
      * @return Database
      */
     protected function getDatabaseForRead() : Database
     {
-        return App::database($this->connections['read']);
+        return App::database($this->connectionRead);
     }
 
     /**
-     * @see Model::$connections
+     * @see Model::$connectionWrite
      *
      * @return Database
      */
     protected function getDatabaseForWrite() : Database
     {
-        return App::database($this->connections['write']);
+        return App::database($this->connectionWrite);
     }
 
     /**
