@@ -15,6 +15,8 @@ class View
 {
     protected ?string $baseDir = null;
     protected string $extension;
+    protected string $layoutPrefix = '';
+    protected string $includePrefix = '';
     /**
      * The blocks with names as keys and output buffer contents as values.
      *
@@ -73,6 +75,44 @@ class View
         return $this->extension;
     }
 
+    /**
+     * @param string $prefix
+     *
+     * @return static
+     */
+    public function setLayoutPrefix(string $prefix) : static
+    {
+        $this->layoutPrefix = $prefix;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLayoutPrefix() : string
+    {
+        return $this->layoutPrefix;
+    }
+
+    /**
+     * @param string $prefix
+     *
+     * @return static
+     */
+    public function setIncludePrefix(string $prefix) : static
+    {
+        $this->includePrefix = $prefix;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIncludePrefix() : string
+    {
+        return $this->includePrefix;
+    }
+
     protected function getNamespacedFilepath(string $view) : string
     {
         $path = App::locator()->getNamespacedFilepath($view, $this->getExtension());
@@ -125,7 +165,7 @@ class View
     protected function renderLayout(string $view, array $variables) : string
     {
         $this->layout = null;
-        $contents = $this->render($view, $variables);
+        $contents = $this->render($this->getLayoutPrefix() . $view, $variables);
         \ob_end_clean();
         return $contents;
     }
@@ -188,6 +228,6 @@ class View
      */
     public function include(string $view, array $variables = []) : void
     {
-        echo $this->render($view, $variables);
+        echo $this->render($this->getIncludePrefix() . $view, $variables);
     }
 }
