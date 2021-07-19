@@ -164,26 +164,26 @@ abstract class Model
     }
 
     /**
-     * @param array<int,string> $columns
+     * @param array<int,string> $data
      *
      * @return array<int,string>
      */
-    protected function filterAllowedFields(array $columns) : array
+    protected function filterAllowedFields(array $data) : array
     {
         if (empty($this->allowedFields)) {
             throw new LogicException(
                 'Allowed fields not defined for database writes'
             );
         }
-        $columns = \array_intersect_key($columns, \array_flip($this->allowedFields));
+        $fields = \array_intersect_key($data, \array_flip($this->allowedFields));
         if ($this->protectPrimaryKey !== false
-            && \array_key_exists($this->primaryKey, $columns)
+            && \array_key_exists($this->primaryKey, $fields)
         ) {
             throw new LogicException(
                 'Protected Primary Key field can not be SET'
             );
         }
-        return $columns;
+        return $fields;
     }
 
     /**
