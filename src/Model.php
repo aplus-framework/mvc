@@ -78,13 +78,13 @@ abstract class Model
      *
      * @var string
      */
-    protected string $datetimeFieldCreate = 'createdAt';
+    protected string $fieldCreated = 'createdAt';
     /**
      * The datetime field for 'updated at' time when $useDatetime is true.
      *
      * @var string
      */
-    protected string $datetimeFieldUpdate = 'updatedAt';
+    protected string $fieldUpdated = 'updatedAt';
     /**
      * The datetime format used on database write operations.
      *
@@ -374,8 +374,8 @@ abstract class Model
         }
         if ($this->useDatetime) {
             $datetime = $this->getDatetime();
-            $data[$this->datetimeFieldCreate] ??= $datetime;
-            $data[$this->datetimeFieldUpdate] ??= $datetime;
+            $data[$this->fieldCreated] ??= $datetime;
+            $data[$this->fieldUpdated] ??= $datetime;
         }
         if (empty($data)) {
             // TODO: Set error - payload is empty
@@ -424,7 +424,7 @@ abstract class Model
             return false;
         }
         if ($this->useDatetime) {
-            $data[$this->datetimeFieldUpdate] ??= $this->getDatetime();
+            $data[$this->fieldUpdated] ??= $this->getDatetime();
         }
         return $this->getDatabaseForWrite()
             ->update()
@@ -455,8 +455,8 @@ abstract class Model
         }
         if ($this->useDatetime) {
             $datetime = $this->getDatetime();
-            $data[$this->datetimeFieldCreate] ??= $datetime;
-            $data[$this->datetimeFieldUpdate] ??= $datetime;
+            $data[$this->fieldCreated] ??= $datetime;
+            $data[$this->fieldUpdated] ??= $datetime;
         }
         return $this->getDatabaseForWrite()
             ->replace()
