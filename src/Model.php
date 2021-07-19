@@ -68,29 +68,29 @@ abstract class Model
      */
     protected array $allowedFields = [];
     /**
-     * Use datetime columns.
+     * Auto set timestamp fields.
      *
      * @var bool
      */
-    protected bool $useDatetime = false;
+    protected bool $autoTimestamps = false;
     /**
-     * The datetime field for 'created at' time when $useDatetime is true.
+     * The timestamp field for 'created at' time when $autoTimestamps is true.
      *
      * @var string
      */
     protected string $fieldCreated = 'createdAt';
     /**
-     * The datetime field for 'updated at' time when $useDatetime is true.
+     * The timestamp field for 'updated at' time when $autoTimestamps is true.
      *
      * @var string
      */
     protected string $fieldUpdated = 'updatedAt';
     /**
-     * The datetime format used on database write operations.
+     * The timestamp format used on database write operations.
      *
      * @var string
      */
-    protected string $datetimeFormat = 'Y-m-d H:i:s';
+    protected string $timestampFormat = 'Y-m-d H:i:s';
     /**
      * The Model Validation instance.
      */
@@ -341,7 +341,7 @@ abstract class Model
     }
 
     /**
-     * Used to set the datetime columns.
+     * Used to auto set the timestamp fields.
      *
      * By default, get the timezone from database write connection config. As
      * fallback, uses the UTC timezone.
@@ -349,14 +349,14 @@ abstract class Model
      * @throws Exception if database config has a bad timezone or a DateTime
      * error occur
      *
-     * @return string The datetime in the $datetimeFormat property format
+     * @return string The timestamp in the $timestampFormat property format
      */
-    protected function getDatetime() : string
+    protected function getTimestamp() : string
     {
         $timezone = $this->getDatabaseForWrite()->getConfig()['timezone'] ?? '+00:00';
         $timezone = new \DateTimeZone($timezone);
         $datetime = new \DateTime('now', $timezone);
-        return $datetime->format($this->datetimeFormat);
+        return $datetime->format($this->timestampFormat);
     }
 
     /**
@@ -372,10 +372,10 @@ abstract class Model
         if ($this->getValidation()->validate($data) === false) {
             return false;
         }
-        if ($this->useDatetime) {
-            $datetime = $this->getDatetime();
-            $data[$this->fieldCreated] ??= $datetime;
-            $data[$this->fieldUpdated] ??= $datetime;
+        if ($this->autoTimestamps) {
+            $timestamp = $this->getTimestamp();
+            $data[$this->fieldCreated] ??= $timestamp;
+            $data[$this->fieldUpdated] ??= $timestamp;
         }
         if (empty($data)) {
             // TODO: Set error - payload is empty
@@ -423,8 +423,8 @@ abstract class Model
         if ($this->getValidation()->validateOnly($data) === false) {
             return false;
         }
-        if ($this->useDatetime) {
-            $data[$this->fieldUpdated] ??= $this->getDatetime();
+        if ($this->autoTimestamps) {
+            $data[$this->fieldUpdated] ??= $this->getTimestamp();
         }
         return $this->getDatabaseForWrite()
             ->update()
@@ -453,10 +453,10 @@ abstract class Model
         if ($this->getValidation()->validate($data) === false) {
             return false;
         }
-        if ($this->useDatetime) {
-            $datetime = $this->getDatetime();
-            $data[$this->fieldCreated] ??= $datetime;
-            $data[$this->fieldUpdated] ??= $datetime;
+        if ($this->autoTimestamps) {
+            $timestamp = $this->getTimestamp();
+            $data[$this->fieldCreated] ??= $timestamp;
+            $data[$this->fieldUpdated] ??= $timestamp;
         }
         return $this->getDatabaseForWrite()
             ->replace()
