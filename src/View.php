@@ -9,6 +9,7 @@
  */
 namespace Framework\MVC;
 
+use Framework\Helpers\Isolation;
 use InvalidArgumentException;
 
 class View
@@ -149,7 +150,7 @@ class View
         $view = $this->getFilepath($view);
         $variables['view'] = $this;
         \ob_start();
-        require_isolated($view, $variables);
+        Isolation::require($view, $variables); // @phpstan-ignore-line
         if ($this->layout !== null) {
             return $this->renderLayout($this->layout, $variables);
         }

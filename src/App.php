@@ -109,7 +109,7 @@ class App
             if ( ! \is_file($file)) {
                 throw new LogicException('Invalid route file: ' . $file);
             }
-            require_isolated($file);
+            Isolation::require($file); // @phpstan-ignore-line
         }
     }
 
