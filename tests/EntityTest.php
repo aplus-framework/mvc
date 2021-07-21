@@ -20,10 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class EntityTest extends TestCase
 {
-    /**
-     * @var EntityMock
-     */
-    protected $entity;
+    protected EntityMock $entity;
 
     protected function setUp() : void
     {
@@ -99,11 +96,11 @@ final class EntityTest extends TestCase
         ], $this->entity->toArray());
     }
 
-    public function testUnknowTypeToScalar() : void
+    public function testUnknownTypeToScalar() : void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Property was not converted to scalar: createdAt');
-        $this->entity->createdAt = new \DateTimeZone('UTC');
+        $this->entity->createdAt = new \DateTimeZone('UTC'); // @phpstan-ignore-line
         $this->entity->toArray();
     }
 
@@ -111,14 +108,14 @@ final class EntityTest extends TestCase
     {
         $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage('Property not defined: foo');
-        $this->entity->foo;
+        $this->entity->foo; // @phpstan-ignore-line
     }
 
     public function testTrySetUndefinedProperty() : void
     {
         $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage('Property not defined: foo');
-        $this->entity->foo = 'bar';
+        $this->entity->foo = 'bar'; // @phpstan-ignore-line
     }
 
     public function testIssetAndUnset() : void
@@ -126,15 +123,5 @@ final class EntityTest extends TestCase
         self::assertTrue(isset($this->entity->id));
         unset($this->entity->id);
         self::assertFalse(isset($this->entity->id));
-    }
-
-    public function testToString() : void
-    {
-        self::assertSame(\json_encode($this->entity->toArray()), (string) $this->entity);
-    }
-
-    public function testJsonSerialize() : void
-    {
-        self::assertSame(\json_encode($this->entity->toArray()), \json_encode($this->entity));
     }
 }
