@@ -19,7 +19,8 @@ use Framework\Database\Database;
 use Framework\Debug\ExceptionHandler;
 use Framework\Email\Mailer;
 use Framework\Email\SMTP;
-use Framework\HTTP\CSRF;
+use Framework\Helpers\Isolation;
+use Framework\HTTP\AntiCSRF;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Language\Language;
@@ -250,17 +251,17 @@ class App
      *
      * @param string $instance
      *
-     * @return CSRF
+     * @return AntiCSRF
      */
-    public static function csrf(string $instance = 'default') : CSRF
+    public static function antiCsrf(string $instance = 'default') : AntiCSRF
     {
-        $service = static::getService('csrf', $instance);
+        $service = static::getService('anti-csrf', $instance);
         if ($service) {
             return $service;
         }
-        $config = static::config()->get('csrf', $instance);
+        $config = static::config()->get('anti-csrf', $instance);
         static::session($config['session_instance'] ?? 'default');
-        $service = new CSRF(static::request($config['request_instance'] ?? 'default'));
+        $service = new AntiCSRF(static::request($config['request_instance'] ?? 'default'));
         $service->setTokenName($config['token_name']);
         $config['enabled'] ? $service->enable() : $service->disable();
         return static::setService('csrf', $service, $instance);
