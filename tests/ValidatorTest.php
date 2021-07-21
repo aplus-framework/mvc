@@ -18,7 +18,7 @@ final class ValidatorTest extends TestCase
 {
     protected function setUp() : void
     {
-        (new App(new Config(__DIR__ . '/configs')));
+        (new App(new Config(__DIR__ . '/configs', [], '.config.php')));
         App::database()->dropTable()->table('Users')->ifExists()->run();
         App::database()->createTable()
             ->table('Users')
