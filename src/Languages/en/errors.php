@@ -10,5 +10,4 @@
 return [
     'notFoundMessage' => 'Page not found',
     'notFoundTitle' => 'Error 404',
-    'fieldNotAllowed' => 'The {0} field is not allowed.',
 ];

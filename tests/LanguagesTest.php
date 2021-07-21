@@ -18,19 +18,28 @@ use PHPUnit\Framework\TestCase;
  */
 final class LanguagesTest extends TestCase
 {
-    protected $langDir = __DIR__ . '/../src/Languages/';
+    protected string $langDir = __DIR__ . '/../src/Languages/';
 
-    protected function getCodes()
+    /**
+     * @return array<int,string>
+     */
+    protected function getCodes() : array
     {
-        $codes = \array_filter(\glob($this->langDir . '*'), 'is_dir');
+        $codes = \array_filter((array) \glob($this->langDir . '*'), 'is_dir');
         $length = \strlen($this->langDir);
+        $result = [];
         foreach ($codes as &$dir) {
-            $dir = \substr($dir, $length);
+            if ($dir === false) {
+                continue;
+            }
+            $result[] = \substr($dir, $length);
         }
-        return $codes;
+        return $result;
     }
 
     /**
+     * @param array<int,string> $rules
+     * @param string $file
      * @dataProvider languageProvider
      */
     public function testKeys(array $rules, string $file) : void
@@ -43,6 +52,9 @@ final class LanguagesTest extends TestCase
         }
     }
 
+    /**
+     * @return array<string,array>
+     */
     public function languageProvider() : array
     {
         $files = [
