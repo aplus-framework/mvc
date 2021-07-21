@@ -37,19 +37,19 @@ final class ModelTest extends ModelTestCase
         self::assertNull($this->model->find(100));
     }
 
-    public function testAllowedColumnsNotDefined() : void
+    public function testAllowedFieldsNotDefined() : void
     {
-        $this->model->allowedColumns = [];
+        $this->model->allowedFields = [];
         $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('Allowed columns not defined for INSERT and UPDATE');
+        $this->expectExceptionMessage('Allowed fields not defined for database writes');
         $this->model->create(['data' => 'Value']);
     }
 
     public function testProtectedPrimaryKeyCanNotBeSet() : void
     {
-        $this->model->allowedColumns = ['id', 'data'];
+        $this->model->allowedFields = ['id', 'data'];
         $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('Protected Primary Key column can not be SET');
+        $this->expectExceptionMessage('Protected Primary Key field can not be SET');
         $this->model->create(['id' => 1, 'data' => 'x']);
     }
 
@@ -79,7 +79,7 @@ final class ModelTest extends ModelTestCase
 
     public function testCreateExceptionUnknownColumn() : void
     {
-        $this->model->allowedColumns[] = 'not-exists';
+        $this->model->allowedFields[] = 'not-exists';
         $this->expectException(\mysqli_sql_exception::class);
         $this->expectExceptionMessage("Unknown column 'not-exists' in 'field list'");
         $this->model->create(['not-exists' => 'Value']);
@@ -100,7 +100,7 @@ final class ModelTest extends ModelTestCase
 
     public function testUpdateExceptionUnknownColumn() : void
     {
-        $this->model->allowedColumns[] = 'not-exists';
+        $this->model->allowedFields[] = 'not-exists';
         $this->expectException(\mysqli_sql_exception::class);
         $this->expectExceptionMessage("Unknown column 'not-exists' in 'field list'");
         $this->model->update(1, ['not-exists' => 'Value']);
@@ -118,7 +118,7 @@ final class ModelTest extends ModelTestCase
 
     public function testReplaceExceptionUnknownColumn() : void
     {
-        $this->model->allowedColumns[] = 'not-exists';
+        $this->model->allowedFields[] = 'not-exists';
         $this->expectException(\mysqli_sql_exception::class);
         $this->expectExceptionMessage("Unknown column 'not-exists' in 'field list'");
         $this->model->replace(1, ['not-exists' => 'Value']);
@@ -126,7 +126,7 @@ final class ModelTest extends ModelTestCase
 
     public function testSave() : void
     {
-        $this->model->allowedColumns = ['data'];
+        $this->model->allowedFields = ['data'];
         $affected_rows = $this->model->save(['id' => 1, 'data' => 'x']);
         self::assertSame(1, $affected_rows);
         $insert_id = $this->model->save(['data' => 'x']);
@@ -159,7 +159,7 @@ final class ModelTest extends ModelTestCase
                 'createdAt' => \date('Y-m-d H:i:s'),
                 'updatedAt' => \date('Y-m-d H:i:s'),
             ],
-        ], $this->model->paginate(-1, 1)->getItems());
+        ], $this->model->paginate(-1, 1));
         self::assertSame([
             [
                 'id' => 1,
@@ -167,7 +167,7 @@ final class ModelTest extends ModelTestCase
                 'createdAt' => \date('Y-m-d H:i:s'),
                 'updatedAt' => \date('Y-m-d H:i:s'),
             ],
-        ], $this->model->paginate(1, 1)->getItems());
+        ], $this->model->paginate(1, 1));
         self::assertSame([
             [
                 'id' => 2,
@@ -175,19 +175,21 @@ final class ModelTest extends ModelTestCase
                 'createdAt' => \date('Y-m-d H:i:s'),
                 'updatedAt' => \date('Y-m-d H:i:s'),
             ],
-        ], $this->model->paginate(2, 1)->getItems());
-        self::assertSame([], $this->model->paginate(3, 1)->getItems());
+        ], $this->model->paginate(2, 1));
+        self::assertSame([], $this->model->paginate(3, 1));
     }
 
     public function testPaginatedUrl() : void
     {
+        $this->model->paginate(5);
         self::assertSame(
             'http://localhost:8080/contact?page=5',
-            $this->model->paginate(5)->getCurrentPageURL()
+            $this->model->getPager()->getCurrentPageURL()
         );
+        $this->model->paginate(10, 25);
         self::assertSame(
             'http://localhost:8080/contact?page=10',
-            $this->model->paginate(10, 25)->getCurrentPageURL()
+            $this->model->getPager()->getCurrentPageURL()
         );
     }
 
@@ -198,6 +200,7 @@ final class ModelTest extends ModelTestCase
         self::assertSame([10, 10], $this->model->makePageLimitAndOffset(2));
         self::assertSame([20, null], $this->model->makePageLimitAndOffset(1, 20));
         self::assertSame([20, 20], $this->model->makePageLimitAndOffset(2, 20));
+        // @phpstan-ignore-next-line
         self::assertSame([20, 40], $this->model->makePageLimitAndOffset('-3', '-20'));
     }
 

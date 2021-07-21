@@ -22,7 +22,7 @@ abstract class ModelTestCase extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['HTTP_HOST'] = 'localhost:8080';
         $_SERVER['REQUEST_URI'] = '/contact';
-        (new App(new Config(__DIR__ . '/configs')));
+        (new App(new Config(__DIR__ . '/configs', suffix: '.config.php')));
         App::database()->dropTable()->ifExists()->table('ModelMock')->run();
         App::database()->createTable()->table('ModelMock')
             ->definition(static function (TableDefinition $definition) : void {
