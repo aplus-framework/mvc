@@ -35,6 +35,9 @@ use LogicException;
  */
 class App
 {
+    /**
+     * @var array<string,array>
+     */
     protected static array $services = [];
     protected static bool $isRunning = false;
     protected static ?Config $config;
@@ -279,7 +282,7 @@ class App
         return static::getService('database', $instance)
             ?? static::setService(
                 'database',
-                new Database(static::config()->get('database', $instance)),
+                new Database(static::config()->get('database', $instance)), // @phpstan-ignore-line
                 $instance
             );
     }

@@ -231,7 +231,7 @@ abstract class Model
      *
      * @see Model::paginate
      *
-     * @return array
+     * @return array<int,int|null>
      */
     #[ArrayShape([0 => 'int', 1 => 'int|null'])]
     #[Pure]
