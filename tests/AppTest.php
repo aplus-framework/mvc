@@ -18,7 +18,7 @@ use Framework\Config\Config;
 use Framework\Database\Database;
 use Framework\Database\Definition\Table\TableDefinition;
 use Framework\Email\Mailer;
-use Framework\HTTP\CSRF;
+use Framework\HTTP\AntiCSRF;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Language\Language;
@@ -77,8 +77,8 @@ final class AppTest extends TestCase
         self::assertInstanceOf(Cache::class, App::cache());
         self::assertInstanceOf(Console::class, App::console());
         self::assertInstanceOf(Console::class, App::console());
-        self::assertInstanceOf(CSRF::class, App::csrf());
-        self::assertInstanceOf(CSRF::class, App::csrf());
+        self::assertInstanceOf(AntiCSRF::class, App::antiCsrf());
+        self::assertInstanceOf(AntiCSRF::class, App::antiCsrf());
         self::assertInstanceOf(Console::class, App::console());
         self::assertInstanceOf(Database::class, App::database());
         self::assertInstanceOf(Database::class, App::database());
@@ -166,18 +166,18 @@ final class AppTest extends TestCase
         self::assertTrue(App::response()->isSent());
     }
 
-    public function testAppIsAlreadyInitilized() : void
+    public function testAppAlreadyInitialized() : void
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('App already initialized');
         (new App(new Config(__DIR__ . '/configs')));
     }
 
-    public function testAppAlreadyIsRunning() : void
+    public function testAppIsAlreadyRunning() : void
     {
         $this->app->run();
         $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('App already is running');
+        $this->expectExceptionMessage('App is already running');
         $this->app->run();
     }
 
@@ -191,16 +191,18 @@ final class AppTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testSessionWithCacheHandler() : void
+    public function testSessionWithFilesHandler() : void
     {
         App::config()->add('session', [
             'save_handler' => [
-                'class' => \Framework\Session\SaveHandlers\Cache::class,
-                'config' => 'default',
+                'class' => \Framework\Session\SaveHandlers\FilesHandler::class,
+                'config' => [
+                    'directory' => \sys_get_temp_dir(),
+                ],
             ],
         ]);
         self::assertInstanceOf(Session::class, App::session());
-        App::session()->foo = 'Foo';
+        App::session()->foo = 'Foo'; // @phpstan-ignore-line
         self::assertSame('Foo', App::session()->foo);
     }
 
@@ -213,30 +215,34 @@ final class AppTest extends TestCase
         App::database()->createTable('Sessions')
             ->definition(static function (TableDefinition $definition) : void {
                 $definition->column('id')->varchar(128)->primaryKey();
-                $definition->column('ip')->varchar(45)->null();
-                $definition->column('ua')->varchar(255)->null();
-                $definition->column('timestamp')->int(10)->unsigned();
                 $definition->column('data')->blob();
-                $definition->index('ip')->key('ip');
-                $definition->index('ua')->key('ua');
-                $definition->index('timestamp')->key('timestamp');
+                $definition->column('timestamp')->timestamp();
             })->run();
+        $config = App::database()->getConfig();
         App::config()->add('session', [
             'save_handler' => [
-                'class' => \Framework\Session\SaveHandlers\Database::class,
-                'config' => 'default',
+                'class' => \Framework\Session\SaveHandlers\DatabaseHandler::class,
+                'config' => [
+                    'table' => 'Sessions',
+                    'host' => $config['host'],
+                    'username' => $config['username'],
+                    'password' => $config['password'],
+                    'schema' => $config['schema'],
+                ],
             ],
         ]);
         self::assertInstanceOf(Session::class, App::session());
-        App::session()->foo = 'Foo';
+        App::session()->foo = 'Foo'; // @phpstan-ignore-line
         self::assertSame('Foo', App::session()->foo);
         App::session()->stop();
         self::assertSame(
-            \time(),
+            (new \DateTime('now', new \DateTimeZone($config['timezone'])))->format('Y-m-d H:i:s'),
+            // @phpstan-ignore-next-line
             App::database()
                 ->select()
                 ->from('Sessions')
-                ->whereEqual('id', \session_id())
+                // @phpstan-ignore-next-line
+                ->whereEqual('id', \session_id()) // @phpstan-ignore-line
                 ->limit(1)
                 ->run()
                 ->fetch()

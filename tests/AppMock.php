@@ -27,16 +27,6 @@ class AppMock extends \Framework\MVC\App
         parent::prepareRoutes($instance);
     }
 
-    public function makeResponseBodyPart($response) : string
-    {
-        return parent::makeResponseBodyPart($response);
-    }
-
-    public function loadHelpers() : void
-    {
-        parent::loadHelpers();
-    }
-
     public static function setConfigProperty(?Config $config) : void
     {
         static::$config = $config;
