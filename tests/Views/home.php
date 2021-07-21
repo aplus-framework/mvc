@@ -1,18 +1,18 @@
 <?php
 /**
- * @var string              $name
- * @var \Framework\MVC\View $this
+ * @var string $name
+ * @var Framework\MVC\View $view
  */
-$this->extends('layouts/default');
-$this->startSection('contents');
+$view->extends('layouts/default');
+$view->block('contents');
 ?>
-	<div>CONTENTS - <?= $this->escape($name) ?></div>
+    <div>CONTENTS - <?= $name ?></div>
 <?php
-$this->endSection();
-$this->startSection('scripts');
+$view->endBlock();
+$view->block('scripts');
 ?>
-	<script>
-		console.log('Oi')
-	</script>
+    <script>
+        console.log('Oi')
+    </script>
 <?php
-$this->endSection();
+$view->endBlock();

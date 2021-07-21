@@ -22,11 +22,11 @@ use Tests\MVC\AppMock as App;
 final class ViewTest extends TestCase
 {
     protected View $view;
-    protected string $basePath = __DIR__ . '/Views/';
+    protected string $baseDir = __DIR__ . '/Views/';
 
     protected function setUp() : void
     {
-        $this->view = new View($this->basePath);
+        $this->view = new View($this->baseDir);
     }
 
     public function testRender() : void
@@ -43,7 +43,7 @@ final class ViewTest extends TestCase
 
     public function testRenderNamespacedView() : void
     {
-        (new App(new Config(__DIR__ . '/configs')));
+        (new App(new Config(__DIR__ . '/configs', [], '.config.php')));
         App::autoloader()->setNamespace('Tests\MVC', __DIR__);
         self::assertSame(
             "<h1>Block</h1>\n",
@@ -61,15 +61,15 @@ final class ViewTest extends TestCase
     public function testFileNotFound() : void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("View path does not match a file: {$this->basePath}foo/bar");
+        $this->expectExceptionMessage("View path does not match a file: {$this->baseDir}foo/bar");
         $this->view->render('foo/bar');
     }
 
-    public function testFileOutOfBasePath() : void
+    public function testFileOutOfBaseDir() : void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'View path out of base path directory: ' . __FILE__
+            'View path out of base directory: ' . __FILE__
         );
         $this->view->render('../ViewTest');
     }
@@ -78,28 +78,22 @@ final class ViewTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'View base path is not a valid directory: ' . __FILE__
+            'View base dir is not a valid directory: ' . __FILE__
         );
-        $this->view->setBasePath(__FILE__);
+        $this->view->setBaseDir(__FILE__);
     }
 
-    public function testEscape() : void
+    public function testBlock() : void
     {
-        self::assertSame('&gt;&apos;&quot;', $this->view->escape('>\'"'));
-        self::assertSame('', $this->view->escape(null));
-    }
-
-    public function testSection() : void
-    {
-        $this->view->startSection('foo');
+        $this->view->block('foo');
         echo 'bar';
-        $this->view->endSection();
-        self::assertSame('bar', $this->view->renderSection('foo'));
+        $this->view->endBlock();
+        self::assertSame('bar', $this->view->renderBlock('foo'));
     }
 
-    public function testSectionNotFound() : void
+    public function testBlockNotFound() : void
     {
-        self::assertSame('', $this->view->renderSection('foo'));
+        self::assertSame('', $this->view->renderBlock('foo'));
     }
 
     public function testLayout() : void
@@ -108,20 +102,20 @@ final class ViewTest extends TestCase
             <!DOCTYPE html>
             <html lang="en">
             <head>
-            	<title>Layout & Sections</title>
+                <title>Layout & Blocks</title>
             </head>
             <body>
-            	<div>CONTENTS - Natan Felles &gt;&apos;&quot;</div>
-            	<script>
-            		console.log('Oi')
-            	</script>
+                <div>CONTENTS - Natan Felles >'"</div>
+                <script>
+                    console.log('Oi')
+                </script>
             </body>
             </html>
 
             EOL;
         self::assertSame($html, $this->view->render('home', [
             'name' => 'Natan Felles >\'"',
-            'title' => 'Layout & Sections',
+            'title' => 'Layout & Blocks',
         ]));
     }
 }

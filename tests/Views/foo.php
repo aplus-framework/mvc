@@ -1,1 +1,1 @@
-<div><?= $contents; ?></div>
+<div><?= $contents; // @phpstan-ignore-line?></div>
