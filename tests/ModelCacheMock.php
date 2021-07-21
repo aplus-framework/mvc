@@ -16,8 +16,8 @@ class ModelCacheMock extends Model
     use Model\CacheTrait;
 
     protected string $table = 'ModelMock';
-    protected array $allowedColumns = ['data'];
-    protected bool $useDatetime = true;
+    protected array $allowedFields = ['data'];
+    protected bool $autoTimestamps = true;
     protected array $validationRules = [
         'data' => 'minLength:3',
     ];
