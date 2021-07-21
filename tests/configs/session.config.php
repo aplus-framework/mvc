@@ -7,14 +7,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+/**
+ * @see Framework\Session\SaveHandlers\DatabaseHandler::prepareConfig()
+ * @see Framework\Session\SaveHandlers\FilesHandler::prepareConfig()
+ * @see Framework\Session\SaveHandlers\MemcachedHandler::prepareConfig()
+ * @see Framework\Session\SaveHandlers\RedisHandler::prepareConfig()
+ */
 return [
     'default' => [
         'options' => [],
         'save_handler' => [
             'class' => null,
-            'config' => 'default',
-            'match_ip' => false,
-            'match_user_agent' => false,
+            'config' => [],
         ],
+        'logger_instance' => 'default',
     ],
 ];

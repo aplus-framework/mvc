@@ -453,25 +453,12 @@ class App
         }
         $config = static::config()->get('session', $instance);
         if (isset($config['save_handler']['class'])) {
-            if ($config['save_handler']['class'] === \Framework\Session\SaveHandlers\Cache::class) {
-                $config['save_handler']['config'] = static::cache($config['save_handler']['config']);
-            } elseif ($config['save_handler']['class'] === \Framework\Session\SaveHandlers\Database::class) {
-                if (\is_string($config['save_handler']['config'])) {
-                    $config['save_handler']['config'] = [
-                        'read' => $config['save_handler']['config'],
-                        'write' => $config['save_handler']['config'],
-                    ];
-                }
-                $config['save_handler']['config']['read'] = static::database($config['save_handler']['config']['read']);
-                $config['save_handler']['config']['write'] = static::database($config['save_handler']['config']['write']);
-            }
-            $save_handler = new $config['save_handler']['class'](
-                $config['save_handler']['config'],
-                $config['save_handler']['match_ip'] ?? false,
-                $config['save_handler']['match_user_agent'] ?? false
+            $saveHandler = new $config['save_handler']['class'](
+                $config['save_handler']['config'] ?? [],
+                static::logger($config['logger_instance'] ?? 'default')
             );
         }
-        $service = new Session($config['options'] ?? [], $save_handler ?? null);
+        $service = new Session($config['options'] ?? [], $saveHandler ?? null);
         $service->start();
         return static::setService('session', $service, $instance);
     }
