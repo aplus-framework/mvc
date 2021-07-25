@@ -58,7 +58,6 @@ final class LanguagesTest extends TestCase
     public function languageProvider() : array
     {
         $files = [
-            'errors',
             'validation',
         ];
         $data = [];
