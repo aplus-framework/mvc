@@ -503,11 +503,15 @@ class App
         }
         $service = new View();
         $config = static::config()->get('view', $instance);
-        if (isset($config['base_dir'])) {
-            $service->setBaseDir($config['base_dir']);
-        }
+        $service->setBaseDir($config['base_dir']);
         if (isset($config['extension'])) {
             $service->setExtension($config['extension']);
+        }
+        if (isset($config['layout_prefix'])) {
+            $service->setLayoutPrefix($config['layout_prefix']);
+        }
+        if (isset($config['include_prefix'])) {
+            $service->setIncludePrefix($config['include_prefix']);
         }
         return static::setService('view', $service, $instance);
     }

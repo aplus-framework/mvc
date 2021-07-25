@@ -11,5 +11,7 @@ return [
     'default' => [
         'base_dir' => '/tmp',
         'extension' => '.php',
+        'layout_prefix' => '',
+        'include_prefix' => '',
     ],
 ];
