@@ -117,7 +117,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
      *
      * @return \stdClass|null
      */
-    protected function fromJSON($value) : ?\stdClass
+    protected function fromJson($value) : ?\stdClass
     {
         if ($value === null) {
             return null;
@@ -139,7 +139,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
      *
      * @return string
      */
-    protected function toScalarJSON($value) : string
+    protected function toScalarJson($value) : string
     {
         return \json_encode($value, $this->jsonOptions(), 512);
     }
@@ -221,7 +221,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
             return null; // Not scalar, but Database::quote handles it!
         }
         if ($this->{$property} instanceof \stdClass || \is_array($this->{$property})) {
-            return $this->toScalarJSON($this->{$property});
+            return $this->toScalarJson($this->{$property});
         }
         if ($this->{$property} instanceof Date) {
             return $this->toScalarDateTime($this->{$property});

@@ -48,7 +48,7 @@ class EntityMock extends Entity
 
     public function setSettings($settings) : void
     {
-        $this->settings = $this->fromJSON($settings);
+        $this->settings = $this->fromJson($settings);
     }
 
     public function getDataAsScalar() : string

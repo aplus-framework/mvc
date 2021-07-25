@@ -184,12 +184,12 @@ final class ModelTest extends ModelTestCase
         $this->model->paginate(5);
         self::assertSame(
             'http://localhost:8080/contact?page=5',
-            $this->model->getPager()->getCurrentPageURL()
+            $this->model->getPager()->getCurrentPageUrl()
         );
         $this->model->paginate(10, 25);
         self::assertSame(
             'http://localhost:8080/contact?page=10',
-            $this->model->getPager()->getCurrentPageURL()
+            $this->model->getPager()->getCurrentPageUrl()
         );
     }
 

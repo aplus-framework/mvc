@@ -41,7 +41,7 @@ class App
     protected static array $services = [];
     protected static bool $isRunning = false;
     protected static ?Config $config;
-    protected static ?bool $isCLI = null;
+    protected static ?bool $isCli = null;
 
     /**
      * Initialize the App.
@@ -84,7 +84,7 @@ class App
         $this->prepareExceptionHandler();
         static::autoloader();
         $this->prepareRoutes();
-        if (static::isCLI()) {
+        if (static::isCli()) {
             if ( ! empty(static::config()->get('console')['enabled'])) {
                 static::console()->run();
             }
@@ -331,7 +331,7 @@ class App
         }
         if (isset($config['negotiate'])
             && $config['negotiate'] === true
-            && ! static::isCLI()
+            && ! static::isCli()
         ) {
             $service->setCurrentLocale(
                 static::request($config['request_instance'] ?? 'default')
@@ -517,12 +517,12 @@ class App
      *
      * @return bool
      */
-    public static function isCLI() : bool
+    public static function isCli() : bool
     {
-        if (static::$isCLI === null) {
-            static::$isCLI = \PHP_SAPI === 'cli' || \defined('STDIN');
+        if (static::$isCli === null) {
+            static::$isCli = \PHP_SAPI === 'cli' || \defined('STDIN');
         }
-        return static::$isCLI;
+        return static::$isCli;
     }
 
     /**
@@ -530,8 +530,8 @@ class App
      *
      * @param bool $is
      */
-    public static function setIsCLI(bool $is) : void
+    public static function setIsCli(bool $is) : void
     {
-        static::$isCLI = $is;
+        static::$isCli = $is;
     }
 }

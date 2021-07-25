@@ -161,7 +161,7 @@ final class AppTest extends TestCase
 
     public function testRunResponse() : void
     {
-        App::setIsCLI(false);
+        App::setIsCli(false);
         $this->app->run();
         self::assertTrue(App::response()->isSent());
     }
@@ -183,9 +183,9 @@ final class AppTest extends TestCase
 
     public function testIsCli() : void
     {
-        self::assertTrue(App::isCLI());
-        App::setIsCLI(false);
-        self::assertFalse(App::isCLI());
+        self::assertTrue(App::isCli());
+        App::setIsCli(false);
+        self::assertFalse(App::isCli());
     }
 
     /**
