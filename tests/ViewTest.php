@@ -118,4 +118,26 @@ final class ViewTest extends TestCase
             'title' => 'Layout & Blocks',
         ]));
     }
+
+    public function testLayoutPrefix() : void
+    {
+        self::assertSame('', $this->view->getLayoutPrefix());
+        $this->view->setLayoutPrefix('foo');
+        self::assertSame('foo/', $this->view->getLayoutPrefix());
+        $this->view->setLayoutPrefix('/foo/bar/');
+        self::assertSame('foo/bar/', $this->view->getLayoutPrefix());
+        $this->view->setLayoutPrefix('');
+        self::assertSame('', $this->view->getLayoutPrefix());
+    }
+
+    public function testIncludePrefix() : void
+    {
+        self::assertSame('', $this->view->getIncludePrefix());
+        $this->view->setIncludePrefix('foo');
+        self::assertSame('foo/', $this->view->getIncludePrefix());
+        $this->view->setIncludePrefix('/foo/bar/');
+        self::assertSame('foo/bar/', $this->view->getIncludePrefix());
+        $this->view->setIncludePrefix('');
+        self::assertSame('', $this->view->getIncludePrefix());
+    }
 }

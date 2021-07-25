@@ -83,7 +83,7 @@ class View
      */
     public function setLayoutPrefix(string $prefix) : static
     {
-        $this->layoutPrefix = $prefix;
+        $this->layoutPrefix = $this->makeDirectoryPrefix($prefix);
         return $this;
     }
 
@@ -95,6 +95,13 @@ class View
         return $this->layoutPrefix;
     }
 
+    protected function makeDirectoryPrefix(string $prefix) : string
+    {
+        return $prefix === ''
+            ? ''
+            : \trim($prefix, '\\/') . \DIRECTORY_SEPARATOR;
+    }
+
     /**
      * @param string $prefix
      *
@@ -102,7 +109,7 @@ class View
      */
     public function setIncludePrefix(string $prefix) : static
     {
-        $this->includePrefix = $prefix;
+        $this->includePrefix = $this->makeDirectoryPrefix($prefix);
         return $this;
     }
 
