@@ -22,7 +22,7 @@ use stdClass;
 /**
  * Class Model.
  */
-abstract class Model
+abstract class Model implements ModelInterface
 {
     /**
      * Database connection instance name for read operations.
