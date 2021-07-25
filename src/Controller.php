@@ -18,7 +18,7 @@ abstract class Controller extends RouteActions
     protected Request $request;
     protected Response $response;
     protected string $modelClass;
-    protected ModelInterface | Model $model;
+    protected ModelInterface $model;
 
     public function __construct(Request $request, Response $response)
     {
