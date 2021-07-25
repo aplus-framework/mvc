@@ -13,11 +13,12 @@ use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\MVC\Controller;
 use Framework\MVC\Model;
+use Framework\MVC\ModelInterface;
 
 class ControllerMock extends Controller
 {
     protected string $modelClass = ModelMock::class;
-    public Model $model;
+    public ModelInterface | Model $model;
 
     public function __construct()
     {
