@@ -367,9 +367,10 @@ abstract class Model implements ModelInterface
      *
      * @param array<string,float|int|string|null>|Entity|stdClass $data
      *
-     * @return false|int The LAST_INSERT_ID() on success or false if validation fail
+     * @return false|int|string The LAST_INSERT_ID() on success or false if
+     * validation fail
      */
-    public function create(array | Entity | stdClass $data) : false | int
+    public function create(array | Entity | stdClass $data) : false | int | string
     {
         $data = $this->prepareData($data);
         if ($this->getValidation()->validate($data) === false) {
@@ -396,10 +397,10 @@ abstract class Model implements ModelInterface
      *
      * @param array<string,float|int|string|null>|Entity|stdClass $data
      *
-     * @return false|int The number of affected rows on updates as int, the
+     * @return false|int|string The number of affected rows on updates as int, the
      * LAST_INSERT_ID() as int on inserts or false if validation fails
      */
-    public function save(array | Entity | stdClass $data) : false | int
+    public function save(array | Entity | stdClass $data) : false | int | string
     {
         $data = $this->makeArray($data);
         $primaryKey = $data[$this->primaryKey] ?? null;

@@ -68,7 +68,7 @@ trait CacheTrait
         return \is_array($data) ? $this->makeEntity($data) : null;
     }
 
-    public function create(array | Entity | stdClass $data) : false | int
+    public function create(array | Entity | stdClass $data) : false | int | string
     {
         $created = parent::create($data);
         if ($created === false) {

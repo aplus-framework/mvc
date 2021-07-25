@@ -31,10 +31,10 @@ interface ModelInterface
      *
      * @param array<string,float|int|string|null>|Entity|stdClass $data
      *
-     * @return false|int The created item id on success or false if it could not
+     * @return false|int|string The created item id on success or false if it could not
      * be created
      */
-    public function create(array | Entity | stdClass $data) : false | int;
+    public function create(array | Entity | stdClass $data) : false | int | string;
 
     /**
      * Update based on id and return the number of updated items.
