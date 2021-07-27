@@ -81,8 +81,8 @@ class App
             throw new LogicException('App is already running');
         }
         static::$isRunning = true;
-        $this->prepareExceptionHandler();
         static::autoloader();
+        $this->prepareExceptionHandler();
         $this->prepareRoutes();
         if (static::isCli()) {
             if ( ! empty(static::config()->get('console')['enabled'])) {
