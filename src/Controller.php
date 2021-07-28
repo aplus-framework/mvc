@@ -44,6 +44,7 @@ abstract class Controller extends RouteActions
      *
      * Tip: Append the $modelClass type to the declaration of this property to
      * enable an improved code-completion in your code editor.
+     * ...Or update the PHPDoc var!
      *
      * @var ModelInterface
      */
