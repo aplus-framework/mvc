@@ -68,16 +68,16 @@ abstract class Controller extends RouteActions
     /**
      * Validate data.
      *
+     * @param array<string,mixed> $data The data to be validated
      * @param array<string,array|string> $rules An associative array with fields
      * as keys and values as rules
-     * @param array<string,mixed> $data The data to be validated
      * @param array<string,string> $labels An associative array with fields as
      * keys and labels as values
      *
      * @return array<string,string> An empty array if validation pass or an
      * associative array with field names as keys and error messages as values
      */
-    protected function validate(array $rules, array $data, array $labels = []) : array
+    protected function validate(array $data, array $rules, array $labels = []) : array
     {
         return App::validation()->setRules($rules)->setLabels($labels)->validate($data)
             ? []

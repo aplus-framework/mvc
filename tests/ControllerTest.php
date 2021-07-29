@@ -45,13 +45,13 @@ final class ControllerTest extends TestCase
         $rules = [
             'foo' => 'minLength:5',
         ];
-        self::assertArrayHasKey('foo', $this->controller->validate($rules, []));
+        self::assertArrayHasKey('foo', $this->controller->validate([], $rules));
         self::assertSame([
             'foo' => 'The foo field requires 5 or more characters in length.',
-        ], $this->controller->validate($rules, ['foo' => '1234']));
-        self::assertSame([], $this->controller->validate($rules, ['foo' => '12345']));
+        ], $this->controller->validate(['foo' => '1234'], $rules));
+        self::assertSame([], $this->controller->validate(['foo' => '12345'], $rules));
         self::assertSame([
             'foo' => 'The Foo field requires 5 or more characters in length.',
-        ], $this->controller->validate($rules, [], ['foo' => 'Foo']));
+        ], $this->controller->validate([], $rules, ['foo' => 'Foo']));
     }
 }

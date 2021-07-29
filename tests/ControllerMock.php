@@ -30,8 +30,8 @@ class ControllerMock extends Controller
         parent::__construct($request, new Response($request));
     }
 
-    public function validate(array $rules, array $data, array $labels = []) : array
+    public function validate(array $data, array $rules, array $labels = []) : array
     {
-        return parent::validate($rules, $data, $labels);
+        return parent::validate($data, $rules, $labels);
     }
 }
