@@ -41,19 +41,19 @@
         "aplus/http": "^4.0",
         "aplus/http-client": "dev-master",
         "aplus/image": "^2.1",
-        "aplus/language": "^1.5",
+        "aplus/language": "^1.6",
         "aplus/log": "^2.2",
-        "aplus/pagination": "dev-master",
-        "aplus/routing": "dev-master",
+        "aplus/pagination": "^2.3",
+        "aplus/routing": "^2.1",
         "aplus/session": "dev-master",
-        "aplus/validation": "^1.8"
+        "aplus/validation": "^1.9"
     },
     "require-dev": {
         "ext-mysqli": "*",
         "ext-xdebug": "*",
+        "aplus/coding-standard": "^1.9",
         "ergebnis/composer-normalize": "^2.15",
         "jetbrains/phpstorm-attributes": "^1.0",
-        "aplus/coding-standard": "^1.9",
         "phpmd/phpmd": "^2.10",
         "phpstan/phpstan": "^0.12",
         "phpunit/phpunit": "^9.5"
