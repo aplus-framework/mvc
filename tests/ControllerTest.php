@@ -53,5 +53,12 @@ final class ControllerTest extends TestCase
         self::assertSame([
             'foo' => 'The Foo field requires 5 or more characters in length.',
         ], $this->controller->validate([], $rules, ['foo' => 'Foo']));
+        self::assertSame([
+            'foo' => 'Field Bar is too short.',
+        ], $this->controller->validate([], $rules, ['foo' => 'Bar'], [
+            'foo' => [
+                'minLength' => 'Field {field} is too short.',
+            ],
+        ]));
     }
 }
