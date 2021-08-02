@@ -46,7 +46,6 @@ pages:
     - mkdir public/
     - mv build/coverage/ public/
     - mv build/docs/ public/
-    - curl -sS https://aplus-framework.gitlab.io/redirect.php | php
   artifacts:
     paths:
       - public/
