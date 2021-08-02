@@ -18,7 +18,6 @@ use Framework\Config\Config;
 use Framework\Database\Database;
 use Framework\Debug\ExceptionHandler;
 use Framework\Email\Mailer;
-use Framework\Email\SMTP;
 use Framework\Helpers\Isolation;
 use Framework\HTTP\AntiCSRF;
 use Framework\HTTP\Request;
@@ -301,9 +300,6 @@ class App
             return $service;
         }
         $config = static::config()->get('mailer', $instance);
-        if (empty($config['class'])) {
-            $config['class'] = SMTP::class;
-        }
         return static::setService(
             'mailer',
             new $config['class']($config),

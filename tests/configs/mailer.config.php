@@ -7,8 +7,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+/**
+ * @see App::mailer()
+ */
+
+use Framework\Email\SMTP;
+
 return [
     'default' => [
+        'class' => SMTP::class,
         'server' => 'localhost',
         'port' => 587,
         'tls' => true,
