@@ -231,10 +231,13 @@ class App
         if ($service) {
             return $service;
         }
-        $service = new Console(static::language());
-        $files = static::locator()->getFiles('Commands');
-        foreach ($files as $file) {
-            $className = static::locator()->getClassName($file);
+        $config = static::config()->get('console', $instance);
+        $service = new Console(
+            static::language($config['language_instance'] ?? 'default')
+        );
+        $locator = static::locator($config['locator_instance'] ?? 'default');
+        foreach ($locator->getFiles('Commands') as $file) {
+            $className = $locator->getClassName($file);
             if (empty($className)) {
                 continue;
             }
