@@ -12,5 +12,6 @@ return [
         'validators' => [
             \Framework\MVC\Validator::class,
         ],
+        'language_instance' => 'default',
     ],
 ];

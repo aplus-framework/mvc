@@ -522,7 +522,10 @@ class App
         $config = static::config()->get('validation', $instance);
         return static::setService(
             'validation',
-            new Validation($config['validators'] ?? null, static::language()),
+            new Validation(
+                $config['validators'] ?? null,
+                static::language($config['language_instance'] ?? 'default')
+            ),
             $instance
         );
     }
