@@ -60,13 +60,13 @@ class App
         $config = static::config()->get('exceptions');
         $environment = $config['environment'] ?? ExceptionHandler::PRODUCTION;
         $logger = null;
-        if (isset($config['log']) && $config['log'] === true) {
-            $logger = static::logger();
+        if (isset($config['logger_instance'])) {
+            $logger = static::logger($config['logger_instance']);
         }
         $exceptions = new ExceptionHandler(
             $environment,
             $logger,
-            static::language()
+            static::language($config['language_instance'] ?? 'default')
         );
         if (isset($config['views_dir'])) {
             $exceptions->setViewsDir($config['views_dir']);
