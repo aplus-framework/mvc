@@ -446,8 +446,16 @@ class App
      */
     public static function response(string $instance = 'default') : Response
     {
-        return static::getService('response', $instance)
-            ?? static::setService('response', new Response(static::request()), $instance);
+        $service = static::getService('response', $instance);
+        if ($service) {
+            return $service;
+        }
+        $config = static::config()->get('response', $instance);
+        return static::setService(
+            'response',
+            new Response(static::request($config['request_instance'] ?? 'default')),
+            $instance
+        );
     }
 
     /**
