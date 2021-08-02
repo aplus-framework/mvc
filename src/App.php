@@ -425,8 +425,16 @@ class App
      */
     public static function request(string $instance = 'default') : Request
     {
-        return static::getService('request', $instance)
-            ?? static::setService('request', new Request(), $instance);
+        $service = static::getService('request', $instance);
+        if ($service) {
+            return $service;
+        }
+        $config = static::config()->get('request', $instance);
+        return static::setService(
+            'request',
+            new Request($config['allowed_hosts'] ?? null),
+            $instance
+        );
     }
 
     /**
