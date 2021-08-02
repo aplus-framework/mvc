@@ -278,12 +278,20 @@ class App
      */
     public static function database(string $instance = 'default') : Database
     {
-        return static::getService('database', $instance)
-            ?? static::setService(
-                'database',
-                new Database(static::config()->get('database', $instance)), // @phpstan-ignore-line
-                $instance
-            );
+        $service = static::getService('database', $instance);
+        if ($service) {
+            return $service;
+        }
+        $config = static::config()->get('database', $instance);
+        $logger = null;
+        if (isset($config['logger_instance'])) {
+            $logger = static::logger($config['logger_instance']);
+        }
+        return static::setService(
+            'database',
+            new Database($config, logger: $logger),
+            $instance
+        );
     }
 
     /**
