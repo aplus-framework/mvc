@@ -492,9 +492,13 @@ class App
         }
         $config = static::config()->get('session', $instance);
         if (isset($config['save_handler']['class'])) {
+            $logger = null;
+            if (isset($config['logger_instance'])) {
+                $logger = static::logger($config['logger_instance']);
+            }
             $saveHandler = new $config['save_handler']['class'](
                 $config['save_handler']['config'] ?? [],
-                static::logger($config['logger_instance'] ?? 'default')
+                $logger
             );
         }
         $service = new Session($config['options'] ?? [], $saveHandler ?? null);
