@@ -8,6 +8,6 @@
  * file that was distributed with this source code.
  */
 return [
-    'inDatabase' => 'O valor do campo {field} não existe.',
-    'notInDatabase' => 'O valor do campo {field} já existe.',
+    'notUnique' => 'O campo {field} não está registrado.',
+    'unique' => 'O campo {field} já foi registrado.',
 ];

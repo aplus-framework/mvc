@@ -36,7 +36,7 @@ final class ValidatorTest extends TestCase
     public function testValidator() : void
     {
         $validation = App::validation();
-        $validation->setRule('id', 'inDatabase:Users,id,default');
+        $validation->setRule('id', 'notUnique:Users,id,default');
         $status = $validation->validate(['id' => 1]);
         self::assertTrue($status);
         $status = $validation->validate(['id' => 2]);
@@ -44,14 +44,23 @@ final class ValidatorTest extends TestCase
         $status = $validation->validate(['id' => 3]);
         self::assertFalse($status);
         self::assertSame(
-            'The id field value does not exists.',
+            'The id field is not registered.',
             $validation->getError('id')
         );
-        $validation->setRule('id', 'notInDatabase:Users,id,default');
+        $status = $validation->validate([]);
+        self::assertFalse($status);
+        self::assertSame(
+            'The id field is not registered.',
+            $validation->getError('id')
+        );
+        $validation->setRule('id', 'notUnique:Users');
+        $status = $validation->validate(['id' => 1]);
+        self::assertTrue($status);
+        $validation->setRule('id', 'unique:Users,,default');
         $status = $validation->validate(['id' => 1]);
         self::assertFalse($status);
         self::assertSame(
-            'The id field value already exists.',
+            'The id field has already been registered.',
             $validation->getError('id')
         );
     }
