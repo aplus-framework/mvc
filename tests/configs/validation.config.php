@@ -11,6 +11,7 @@ return [
     'default' => [
         'validators' => [
             \Framework\MVC\Validator::class,
+            \Framework\Validation\FilesValidator::class,
         ],
         'language_instance' => 'default',
     ],
