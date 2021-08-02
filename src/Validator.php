@@ -11,7 +11,7 @@ namespace Framework\MVC;
 
 class Validator extends \Framework\Validation\Validator
 {
-    public static function inDatabase(
+    public static function notUnique(
         string $field,
         array $data,
         string $table,
@@ -35,13 +35,13 @@ class Validator extends \Framework\Validation\Validator
         return (bool) $result->numRows();
     }
 
-    public static function notInDatabase(
+    public static function unique(
         string $field,
         array $data,
         string $table,
         string $column = null,
         string $connection = 'default'
     ) : bool {
-        return ! static::inDatabase($field, $data, $table, $column, $connection);
+        return ! static::notUnique($field, $data, $table, $column, $connection);
     }
 }
