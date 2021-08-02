@@ -371,12 +371,16 @@ class App
      */
     public static function locator(string $instance = 'default') : Locator
     {
-        return static::getService('locator', $instance)
-            ?? static::setService(
-                'locator',
-                new Locator(static::autoloader()),
-                $instance
-            );
+        $service = static::getService('locator', $instance);
+        if ($service) {
+            return $service;
+        }
+        $config = static::config()->get('locator', $instance);
+        return static::setService(
+            'locator',
+            new Locator(static::autoloader($config['autoloader_instance'] ?? 'default')),
+            $instance
+        );
     }
 
     /**
