@@ -18,11 +18,18 @@ class Validator extends \Framework\Validation\Validator
         string $column = null,
         string $connection = 'default'
     ) : bool {
+        $value = static::getData($field, $data);
+        if ($value === null) {
+            return false;
+        }
+        if ($column === null || $column === '') {
+            $column = $field;
+        }
         $result = App::database($connection)
             ->select()
-            ->columns($column ?? $field)
+            ->columns($column)
             ->from($table)
-            ->whereEqual($column ?? $field, static::getData($field, $data))
+            ->whereEqual($column, $value)
             ->limit(1)
             ->run();
         return (bool) $result->numRows();
