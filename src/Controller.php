@@ -73,7 +73,7 @@ abstract class Controller extends RouteActions
      * as keys and values as rules
      * @param array<string,string> $labels An associative array with fields as
      * keys and label as values
-     *@param array<string,array<string,string>> $messages A multi-dimensional
+     * @param array<string,array<string,string>> $messages A multi-dimensional
      * array with field names as keys and values as arrays where the keys are
      * rule names and values are the custom error message strings
      *
