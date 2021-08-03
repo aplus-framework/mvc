@@ -96,6 +96,11 @@ class App
 
     public function runCli() : void
     {
+        // Default $_SERVER vars required by Request when Router is instantiated
+        $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['HTTP_HOST'] = 'localhost';
+        $_SERVER['REQUEST_URI'] = '/';
         $this->prepareToRun();
         static::console()->run();
     }
