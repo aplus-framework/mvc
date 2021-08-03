@@ -74,7 +74,7 @@ class App
         $exceptions->initialize();
     }
 
-    public function run() : void
+    protected function prepareToRun() : void
     {
         if (static::$isRunning) {
             throw new LogicException('App is already running');
@@ -83,16 +83,21 @@ class App
         static::autoloader();
         $this->prepareExceptionHandler();
         $this->prepareRoutes();
-        if (static::isCli()) {
-            if ( ! empty(static::config()->get('console')['enabled'])) {
-                static::console()->run();
-            }
-            return;
-        }
+    }
+
+    public function runHttp() : void
+    {
+        $this->prepareToRun();
         static::router()
             ->match()
             ->run(static::request(), static::response())
             ->send();
+    }
+
+    public function runCli() : void
+    {
+        $this->prepareToRun();
+        static::console()->run();
     }
 
     /**

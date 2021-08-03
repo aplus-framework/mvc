@@ -151,18 +151,18 @@ final class AppTest extends TestCase
         self::assertSame('', Stream::getOutput());
     }
 
-    public function testRunConsole() : void
+    public function testRunCli() : void
     {
         App::config()->set('console', ['enabled' => true]);
         Stream::init();
-        $this->app->run();
+        $this->app->runCli();
         self::assertStringContainsString('Commands', Stream::getOutput());
     }
 
-    public function testRunResponse() : void
+    public function testRunHttp() : void
     {
         App::setIsCli(false);
-        $this->app->run();
+        $this->app->runHttp();
         self::assertTrue(App::response()->isSent());
     }
 
@@ -175,10 +175,10 @@ final class AppTest extends TestCase
 
     public function testAppIsAlreadyRunning() : void
     {
-        $this->app->run();
+        $this->app->runHttp();
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('App is already running');
-        $this->app->run();
+        $this->app->runCli();
     }
 
     public function testIsCli() : void
