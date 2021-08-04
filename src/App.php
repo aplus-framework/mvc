@@ -96,13 +96,25 @@ class App
 
     public function runCli() : void
     {
-        // Default $_SERVER vars required by Request when Router is instantiated
+        $this->setRequiredCliVars();
+        $this->prepareToRun();
+        static::console()->run();
+    }
+
+    /**
+     * Set default super-global vars required by some services.
+     *
+     * For example: To load Routes with Router, a Request instance is required
+     * and it requires some $_SERVER vars to be initialized.
+     *
+     * @return void
+     */
+    protected function setRequiredCliVars() : void
+    {
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['HTTP_HOST'] = 'localhost';
         $_SERVER['REQUEST_URI'] = '/';
-        $this->prepareToRun();
-        static::console()->run();
     }
 
     /**
