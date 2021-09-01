@@ -18,7 +18,7 @@
         "rest",
         "restfull"
     ],
-    "homepage": "https://aplus-framework.com/docs/mvc",
+    "homepage": "https://docs.aplus-framework.com/guides/libraries/mvc/",
     "license": "MIT",
     "authors": [
         {
@@ -30,9 +30,9 @@
     "require": {
         "php": ">=8.0",
         "ext-json": "*",
-        "aplus/autoload": "^1.6",
+        "aplus/autoload": "^1.7",
         "aplus/cache": "^2.2",
-        "aplus/cli": "^1.14",
+        "aplus/cli": "^1.15",
         "aplus/config": "^1.4",
         "aplus/database": "^2.8",
         "aplus/date": "^1.4",
@@ -51,7 +51,7 @@
     "require-dev": {
         "ext-mysqli": "*",
         "ext-xdebug": "*",
-        "aplus/coding-standard": "^1.9",
+        "aplus/coding-standard": "^1.11",
         "ergebnis/composer-normalize": "^2.15",
         "jetbrains/phpstorm-attributes": "^1.0",
         "phpmd/phpmd": "^2.10",
@@ -76,10 +76,10 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "support": {
-        "email": "natanfelles@gmail.com",
+        "email": "support@aplus-framework.com",
         "issues": "https://gitlab.com/aplus-framework/libraries/mvc/issues",
         "wiki": "https://gitlab.com/aplus-framework/libraries/mvc/wikis/home",
         "source": "https://gitlab.com/aplus-framework/libraries/mvc",
-        "docs": "https://aplus-framework.gitlab.io/libraries/mvc/docs/"
+        "docs": "https://docs.aplus-framework.com/guides/libraries/mvc/"
     }
 }
