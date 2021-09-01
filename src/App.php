@@ -76,7 +76,7 @@ class App
         $exceptions->initialize();
     }
 
-    protected function prepareToRun() : void
+    protected function prepareToRun(callable $deferred = null) : void
     {
         if (static::$isRunning) {
             throw new LogicException('App is already running');
@@ -85,21 +85,24 @@ class App
         static::autoloader();
         $this->prepareExceptionHandler();
         $this->prepareRoutes();
+        if ($deferred !== null) {
+            $deferred($this);
+        }
     }
 
-    public function runHttp() : void
+    public function runHttp(callable $deferred = null) : void
     {
-        $this->prepareToRun();
+        $this->prepareToRun($deferred);
         static::router()
             ->match()
             ->run(static::request(), static::response())
             ->send();
     }
 
-    public function runCli() : void
+    public function runCli(callable $deferred = null) : void
     {
         $this->setRequiredCliVars();
-        $this->prepareToRun();
+        $this->prepareToRun($deferred);
         static::console()->run();
     }
 
