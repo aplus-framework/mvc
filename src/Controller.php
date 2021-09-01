@@ -15,6 +15,8 @@ use Framework\Routing\RouteActions;
 
 /**
  * Class Controller.
+ *
+ * @package mvc
  */
 abstract class Controller extends RouteActions
 {

@@ -12,6 +12,11 @@ namespace Framework\MVC;
 use Framework\Helpers\Isolation;
 use InvalidArgumentException;
 
+/**
+ * Class View.
+ *
+ * @package mvc
+ */
 class View
 {
     protected ?string $baseDir = null;

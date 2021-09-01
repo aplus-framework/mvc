@@ -13,6 +13,8 @@ use stdClass;
 
 /**
  * Interface ModelInterface.
+ *
+ * @package mvc
  */
 interface ModelInterface
 {

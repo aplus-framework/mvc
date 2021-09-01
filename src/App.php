@@ -31,6 +31,8 @@ use LogicException;
 
 /**
  * Class App.
+ *
+ * @package mvc
  */
 class App
 {

@@ -9,6 +9,11 @@
  */
 namespace Framework\MVC;
 
+/**
+ * Class Validator.
+ *
+ * @package mvc
+ */
 class Validator extends \Framework\Validation\Validator
 {
     public static function notUnique(

@@ -13,6 +13,11 @@ use Framework\Date\Date;
 use InvalidArgumentException;
 use OutOfBoundsException;
 
+/**
+ * Class Entity.
+ *
+ * @package mvc
+ */
 abstract class Entity implements \JsonSerializable //, \Stringable
 {
     protected static array $jsonVars = [];

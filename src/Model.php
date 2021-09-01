@@ -21,6 +21,8 @@ use stdClass;
 
 /**
  * Class Model.
+ *
+ * @package mvc
  */
 abstract class Model implements ModelInterface
 {

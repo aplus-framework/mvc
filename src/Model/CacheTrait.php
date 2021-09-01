@@ -20,6 +20,8 @@ use stdClass;
  *
  * Adds a cache layer for a Model
  *
+ * @package mvc
+ *
  * @mixin Model
  */
 trait CacheTrait
