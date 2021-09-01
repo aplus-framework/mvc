@@ -16,7 +16,7 @@
             <source dsn=".">
                 <path>src</path>
             </source>
-            <default-package-name>MVC</default-package-name>
+            <default-package-name>mvc</default-package-name>
             <include-source>true</include-source>
         </api>
         <guide>
