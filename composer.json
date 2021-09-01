@@ -39,8 +39,6 @@
         "aplus/debug": "^2.2",
         "aplus/email": "^2.2",
         "aplus/http": "^4.0",
-        "aplus/http-client": "dev-master",
-        "aplus/image": "^2.1",
         "aplus/language": "^1.6",
         "aplus/log": "^2.2",
         "aplus/pagination": "^2.3",
