@@ -68,6 +68,23 @@ abstract class Controller extends RouteActions
     }
 
     /**
+     * Render a view.
+     *
+     * @param string $view The view file
+     * @param array<string,mixed> $variables The variables passed to the view
+     * @param string $instance The View service instance name
+     *
+     * @return string The rendered view contents
+     */
+    protected function render(
+        string $view,
+        array $variables = [],
+        string $instance = 'default'
+    ) : string {
+        return App::view($instance)->render($view, $variables);
+    }
+
+    /**
      * Validate data.
      *
      * @param array<string,mixed> $data The data to be validated

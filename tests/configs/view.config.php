@@ -9,7 +9,7 @@
  */
 return [
     'default' => [
-        'base_dir' => '/tmp',
+        'base_dir' => __DIR__ . '/../Views',
         'extension' => '.php',
         'layout_prefix' => '',
         'include_prefix' => '',

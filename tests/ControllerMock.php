@@ -30,6 +30,14 @@ class ControllerMock extends Controller
         parent::__construct($request, new Response($request));
     }
 
+    public function render(
+        string $view,
+        array $variables = [],
+        string $instance = 'default'
+    ) : string {
+        return parent::render($view, $variables, $instance);
+    }
+
     public function validate(
         array $data,
         array $rules,

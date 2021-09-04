@@ -40,6 +40,14 @@ final class ControllerTest extends TestCase
         self::assertInstanceOf(Model::class, $this->controller->model);
     }
 
+    public function testRender() : void
+    {
+        self::assertSame(
+            "<div>yyy</div>\n",
+            $this->controller->render('foo', ['contents' => 'yyy'])
+        );
+    }
+
     public function testValidate() : void
     {
         $rules = [
