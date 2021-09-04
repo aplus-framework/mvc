@@ -54,7 +54,8 @@ interface ModelInterface
      *
      * @param int|string $id
      *
-     * @return int The number of deleted items
+     * @return false|int The number of deleted items or false if it could not be
+     * deleted
      */
-    public function delete(int | string $id) : int;
+    public function delete(int | string $id) : false | int;
 }

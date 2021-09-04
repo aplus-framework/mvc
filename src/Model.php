@@ -544,9 +544,9 @@ abstract class Model implements ModelInterface
      *
      * @param int|string $primaryKey
      *
-     * @return int The number of affected rows
+     * @return false|int The number of affected rows
      */
-    public function delete(int | string $primaryKey) : int
+    public function delete(int | string $primaryKey) : false | int
     {
         $this->checkPrimaryKey($primaryKey);
         $affectedRows = $this->getDatabaseForWrite()
