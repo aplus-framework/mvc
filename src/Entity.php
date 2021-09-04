@@ -9,9 +9,11 @@
  */
 namespace Framework\MVC;
 
+use DateTimeZone;
 use Framework\Date\Date;
 use InvalidArgumentException;
 use OutOfBoundsException;
+use RuntimeException;
 
 /**
  * Class Entity.
@@ -175,10 +177,10 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         return new Date($value, $this->timezone());
     }
 
-    protected function timezone() : \DateTimeZone
+    protected function timezone() : DateTimeZone
     {
         static $timezone;
-        return $timezone ?: $timezone = new \DateTimeZone('UTC');
+        return $timezone ?: $timezone = new DateTimeZone('UTC');
     }
 
     /**
@@ -209,7 +211,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
      *
      * @param string $property
      *
-     * @throws \RuntimeException if property was not converted to scalar
+     * @throws RuntimeException if property was not converted to scalar
      *
      * @return bool|float|int|string|null
      */
@@ -231,7 +233,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         if ($this->{$property} instanceof Date) {
             return $this->toScalarDateTime($this->{$property});
         }
-        throw new \RuntimeException(
+        throw new RuntimeException(
             "Property was not converted to scalar: {$property}"
         );
     }

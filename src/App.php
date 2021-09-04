@@ -28,6 +28,7 @@ use Framework\Routing\Router;
 use Framework\Session\Session;
 use Framework\Validation\Validation;
 use LogicException;
+use ReflectionClass;
 
 /**
  * Class App.
@@ -268,7 +269,7 @@ class App
             if (empty($className)) {
                 continue;
             }
-            $class = new \ReflectionClass($className);
+            $class = new ReflectionClass($className);
             if ( ! $class->isInstantiable() || ! $class->isSubclassOf(Command::class)) {
                 continue;
             }

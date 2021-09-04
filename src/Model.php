@@ -9,6 +9,8 @@
  */
 namespace Framework\MVC;
 
+use DateTime;
+use DateTimeZone;
 use Exception;
 use Framework\Cache\Cache;
 use Framework\Database\Database;
@@ -18,6 +20,7 @@ use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
 use LogicException;
+use RuntimeException;
 use stdClass;
 
 /**
@@ -402,8 +405,8 @@ abstract class Model implements ModelInterface
     protected function getTimestamp() : string
     {
         $timezone = $this->getDatabaseForWrite()->getConfig()['timezone'] ?? '+00:00';
-        $timezone = new \DateTimeZone($timezone);
-        $datetime = new \DateTime('now', $timezone);
+        $timezone = new DateTimeZone($timezone);
+        $datetime = new DateTime('now', $timezone);
         return $datetime->format($this->timestampFormat);
     }
 
@@ -565,7 +568,7 @@ abstract class Model implements ModelInterface
     protected function getValidation() : Validation
     {
         if ( ! isset($this->validationRules)) {
-            throw new \RuntimeException('Validation rules are not set');
+            throw new RuntimeException('Validation rules are not set');
         }
         return $this->validation
             ?? ($this->validation = App::validation($this->getModelIdentifier())

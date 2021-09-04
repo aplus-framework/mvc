@@ -11,6 +11,7 @@ namespace Framework\MVC;
 
 use Framework\Helpers\Isolation;
 use InvalidArgumentException;
+use LogicException;
 
 /**
  * Class View.
@@ -46,7 +47,7 @@ class View
     public function __destruct()
     {
         if ($this->openBlocks) {
-            throw new \LogicException(
+            throw new LogicException(
                 'Trying to destruct a View instance while the following blocks stayed open: '
                 . \implode(', ', \array_map(static function ($name) {
                     return "'{$name}'";
@@ -192,7 +193,7 @@ class View
     public function endBlock() : void
     {
         if (empty($this->openBlocks)) {
-            throw new \LogicException('Trying to end a view block when none is open');
+            throw new LogicException('Trying to end a view block when none is open');
         }
         $endedBlock = \array_pop($this->openBlocks);
         $this->blocks[$endedBlock] = \ob_get_clean();
