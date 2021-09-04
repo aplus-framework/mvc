@@ -13,12 +13,11 @@ use Framework\MVC\Model;
 
 class ModelCacheMock extends Model
 {
-    use Model\CacheTrait;
-
     protected string $table = 'ModelMock';
     protected array $allowedFields = ['data'];
     protected bool $autoTimestamps = true;
     protected array $validationRules = [
         'data' => 'minLength:3',
     ];
+    protected bool $cacheActive = true;
 }

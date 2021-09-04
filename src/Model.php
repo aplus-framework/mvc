@@ -10,6 +10,7 @@
 namespace Framework\MVC;
 
 use Exception;
+use Framework\Cache\Cache;
 use Framework\Database\Database;
 use Framework\Pagination\Pager;
 use Framework\Validation\Validation;
@@ -124,6 +125,10 @@ abstract class Model implements ModelInterface
      * @var Pager
      */
     protected Pager $pager;
+    protected bool $cacheActive = false;
+    protected string $cacheInstance = 'default';
+    protected int $cacheTtl = 60;
+    protected int | string $cacheDataNotFound = 0;
 
     public function __destruct()
     {
@@ -294,14 +299,52 @@ abstract class Model implements ModelInterface
     public function find(int | string $primaryKey) : array | Entity | stdClass | null
     {
         $this->checkPrimaryKey($primaryKey);
-        $data = $this->getDatabaseForRead()
+        if ($this->cacheActive) {
+            return $this->findWithCache($primaryKey);
+        }
+        $data = $this->findRow($primaryKey);
+        return $data ? $this->makeEntity($data) : null;
+    }
+
+    /**
+     * @param int|string $primaryKey
+     *
+     * @return array<string,float|int|string|null>|null
+     */
+    protected function findRow(int | string $primaryKey) : array | null
+    {
+        return $this->getDatabaseForRead()
             ->select()
             ->from($this->getTable())
             ->whereEqual($this->primaryKey, $primaryKey)
             ->limit(1)
             ->run()
             ->fetchArray();
-        return $data ? $this->makeEntity($data) : null;
+    }
+
+    /**
+     * @param int|string $primaryKey
+     *
+     * @return array<string,float|int|string|null>|Entity|stdClass|null
+     */
+    protected function findWithCache(int | string $primaryKey) : array | Entity | stdClass | null
+    {
+        $cacheKey = $this->getCacheKey([
+            $this->primaryKey => $primaryKey,
+        ]);
+        $data = $this->getCache()->get($cacheKey);
+        if ($data === $this->cacheDataNotFound) {
+            return null;
+        }
+        if (\is_array($data)) {
+            return $this->makeEntity($data);
+        }
+        $data = $this->findRow($primaryKey);
+        if ($data === null) {
+            $data = $this->cacheDataNotFound;
+        }
+        $this->getCache()->set($cacheKey, $data, $this->cacheTtl);
+        return \is_array($data) ? $this->makeEntity($data) : null;
     }
 
     /**
@@ -388,9 +431,26 @@ abstract class Model implements ModelInterface
             return false;
         }
         $database = $this->getDatabaseForWrite();
-        return $database->insert()->into($this->getTable())->set($data)->run()
+        $insertId = $database->insert()->into($this->getTable())->set($data)->run()
             ? $database->insertId()
             : false;
+        if ($insertId && $this->cacheActive) {
+            $this->updateCachedRow($insertId);
+        }
+        return $insertId;
+    }
+
+    protected function updateCachedRow(int | string $primaryKey) : void
+    {
+        $data = $this->findRow($primaryKey);
+        if ($data === null) {
+            $data = $this->cacheDataNotFound;
+        }
+        $this->getCache()->set(
+            $this->getCacheKey([$this->primaryKey => $primaryKey]),
+            $data,
+            $this->cacheTtl
+        );
     }
 
     /**
@@ -432,12 +492,16 @@ abstract class Model implements ModelInterface
         if ($this->autoTimestamps) {
             $data[$this->fieldUpdated] ??= $this->getTimestamp();
         }
-        return $this->getDatabaseForWrite()
+        $affectedRows = $this->getDatabaseForWrite()
             ->update()
             ->table($this->getTable())
             ->set($data)
             ->whereEqual($this->primaryKey, $primaryKey)
             ->run();
+        if ($this->cacheActive) {
+            $this->updateCachedRow($primaryKey);
+        }
+        return $affectedRows;
     }
 
     /**
@@ -464,11 +528,15 @@ abstract class Model implements ModelInterface
             $data[$this->fieldCreated] ??= $timestamp;
             $data[$this->fieldUpdated] ??= $timestamp;
         }
-        return $this->getDatabaseForWrite()
+        $affectedRows = $this->getDatabaseForWrite()
             ->replace()
             ->into($this->getTable())
             ->set($data)
             ->run();
+        if ($this->cacheActive) {
+            $this->updateCachedRow($primaryKey);
+        }
+        return $affectedRows;
     }
 
     /**
@@ -481,11 +549,17 @@ abstract class Model implements ModelInterface
     public function delete(int | string $primaryKey) : int
     {
         $this->checkPrimaryKey($primaryKey);
-        return $this->getDatabaseForWrite()
+        $affectedRows = $this->getDatabaseForWrite()
             ->delete()
             ->from($this->getTable())
             ->whereEqual($this->primaryKey, $primaryKey)
             ->run();
+        if ($this->cacheActive) {
+            $this->getCache()->delete(
+                $this->getCacheKey([$this->primaryKey => $primaryKey])
+            );
+        }
+        return $affectedRows;
     }
 
     protected function getValidation() : Validation
@@ -513,5 +587,26 @@ abstract class Model implements ModelInterface
     protected function getModelIdentifier() : string
     {
         return 'Model:' . \spl_object_hash($this);
+    }
+
+    protected function getCache() : Cache
+    {
+        return App::cache($this->cacheInstance);
+    }
+
+    /**
+     * @param array<string,float|int|string> $fields
+     *
+     * @return string
+     */
+    protected function getCacheKey(array $fields) : string
+    {
+        \ksort($fields);
+        $suffix = [];
+        foreach ($fields as $field => $value) {
+            $suffix[] = $field . '=' . $value;
+        }
+        $suffix = \implode(';;', $suffix);
+        return 'Cache:' . static::class . '::' . $suffix;
     }
 }
