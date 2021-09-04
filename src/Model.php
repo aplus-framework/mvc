@@ -161,9 +161,9 @@ abstract class Model implements ModelInterface
         return $this->allowedFields;
     }
 
-    protected function checkPrimaryKey(int | string $primaryKey) : void
+    protected function checkPrimaryKey(int | string $id) : void
     {
-        if (empty($primaryKey)) {
+        if (empty($id)) {
             throw new InvalidArgumentException(
                 'Primary Key can not be empty'
             );
@@ -290,47 +290,47 @@ abstract class Model implements ModelInterface
     /**
      * Find a row based on Primary Key.
      *
-     * @param int|string $primaryKey
+     * @param int|string $id
      *
      * @return array<string,float|int|string|null>|Entity|stdClass|null The
      * selected row as configured on $returnType property or null if row was
      * not found
      */
-    public function find(int | string $primaryKey) : array | Entity | stdClass | null
+    public function find(int | string $id) : array | Entity | stdClass | null
     {
-        $this->checkPrimaryKey($primaryKey);
+        $this->checkPrimaryKey($id);
         if ($this->cacheActive) {
-            return $this->findWithCache($primaryKey);
+            return $this->findWithCache($id);
         }
-        $data = $this->findRow($primaryKey);
+        $data = $this->findRow($id);
         return $data ? $this->makeEntity($data) : null;
     }
 
     /**
-     * @param int|string $primaryKey
+     * @param int|string $id
      *
      * @return array<string,float|int|string|null>|null
      */
-    protected function findRow(int | string $primaryKey) : array | null
+    protected function findRow(int | string $id) : array | null
     {
         return $this->getDatabaseForRead()
             ->select()
             ->from($this->getTable())
-            ->whereEqual($this->primaryKey, $primaryKey)
+            ->whereEqual($this->primaryKey, $id)
             ->limit(1)
             ->run()
             ->fetchArray();
     }
 
     /**
-     * @param int|string $primaryKey
+     * @param int|string $id
      *
      * @return array<string,float|int|string|null>|Entity|stdClass|null
      */
-    protected function findWithCache(int | string $primaryKey) : array | Entity | stdClass | null
+    protected function findWithCache(int | string $id) : array | Entity | stdClass | null
     {
         $cacheKey = $this->getCacheKey([
-            $this->primaryKey => $primaryKey,
+            $this->primaryKey => $id,
         ]);
         $data = $this->getCache()->get($cacheKey);
         if ($data === $this->cacheDataNotFound) {
@@ -339,7 +339,7 @@ abstract class Model implements ModelInterface
         if (\is_array($data)) {
             return $this->makeEntity($data);
         }
-        $data = $this->findRow($primaryKey);
+        $data = $this->findRow($id);
         if ($data === null) {
             $data = $this->cacheDataNotFound;
         }
@@ -440,14 +440,14 @@ abstract class Model implements ModelInterface
         return $insertId;
     }
 
-    protected function updateCachedRow(int | string $primaryKey) : void
+    protected function updateCachedRow(int | string $id) : void
     {
-        $data = $this->findRow($primaryKey);
+        $data = $this->findRow($id);
         if ($data === null) {
             $data = $this->cacheDataNotFound;
         }
         $this->getCache()->set(
-            $this->getCacheKey([$this->primaryKey => $primaryKey]),
+            $this->getCacheKey([$this->primaryKey => $id]),
             $data,
             $this->cacheTtl
         );
@@ -465,10 +465,10 @@ abstract class Model implements ModelInterface
     public function save(array | Entity | stdClass $data) : false | int | string
     {
         $data = $this->makeArray($data);
-        $primaryKey = $data[$this->primaryKey] ?? null;
+        $id = $data[$this->primaryKey] ?? null;
         $data = $this->filterAllowedFields($data);
-        if ($primaryKey !== null) {
-            return $this->update($primaryKey, $data);
+        if ($id !== null) {
+            return $this->update($id, $data);
         }
         return $this->create($data);
     }
@@ -476,15 +476,15 @@ abstract class Model implements ModelInterface
     /**
      * Update based on Primary Key and return the number of affected rows.
      *
-     * @param int|string $primaryKey
+     * @param int|string $id
      * @param array<string,float|int|string|null>|Entity|stdClass $data
      *
      * @return false|int The number of affected rows as int or false if
      * validation fails
      */
-    public function update(int | string $primaryKey, array | Entity | stdClass $data) : false | int
+    public function update(int | string $id, array | Entity | stdClass $data) : false | int
     {
-        $this->checkPrimaryKey($primaryKey);
+        $this->checkPrimaryKey($id);
         $data = $this->prepareData($data);
         if ($this->getValidation()->validateOnly($data) === false) {
             return false;
@@ -496,10 +496,10 @@ abstract class Model implements ModelInterface
             ->update()
             ->table($this->getTable())
             ->set($data)
-            ->whereEqual($this->primaryKey, $primaryKey)
+            ->whereEqual($this->primaryKey, $id)
             ->run();
         if ($this->cacheActive) {
-            $this->updateCachedRow($primaryKey);
+            $this->updateCachedRow($id);
         }
         return $affectedRows;
     }
@@ -509,17 +509,17 @@ abstract class Model implements ModelInterface
      *
      * Most used with HTTP PUT method.
      *
-     * @param int|string $primaryKey
+     * @param int|string $id
      * @param array<string,float|int|string|null>|Entity|stdClass $data
      *
      * @return false|int The number of affected rows as int or false if
      * validation fails
      */
-    public function replace(int | string $primaryKey, array | Entity | stdClass $data) : false | int
+    public function replace(int | string $id, array | Entity | stdClass $data) : false | int
     {
-        $this->checkPrimaryKey($primaryKey);
+        $this->checkPrimaryKey($id);
         $data = $this->prepareData($data);
-        $data[$this->primaryKey] = $primaryKey;
+        $data[$this->primaryKey] = $id;
         if ($this->getValidation()->validate($data) === false) {
             return false;
         }
@@ -534,7 +534,7 @@ abstract class Model implements ModelInterface
             ->set($data)
             ->run();
         if ($this->cacheActive) {
-            $this->updateCachedRow($primaryKey);
+            $this->updateCachedRow($id);
         }
         return $affectedRows;
     }
@@ -542,21 +542,21 @@ abstract class Model implements ModelInterface
     /**
      * Delete based on Primary Key.
      *
-     * @param int|string $primaryKey
+     * @param int|string $id
      *
      * @return false|int The number of affected rows
      */
-    public function delete(int | string $primaryKey) : false | int
+    public function delete(int | string $id) : false | int
     {
-        $this->checkPrimaryKey($primaryKey);
+        $this->checkPrimaryKey($id);
         $affectedRows = $this->getDatabaseForWrite()
             ->delete()
             ->from($this->getTable())
-            ->whereEqual($this->primaryKey, $primaryKey)
+            ->whereEqual($this->primaryKey, $id)
             ->run();
         if ($this->cacheActive) {
             $this->getCache()->delete(
-                $this->getCacheKey([$this->primaryKey => $primaryKey])
+                $this->getCacheKey([$this->primaryKey => $id])
             );
         }
         return $affectedRows;
