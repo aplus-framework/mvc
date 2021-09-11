@@ -33,7 +33,7 @@
         "aplus/autoload": "^1.7",
         "aplus/cache": "^2.2",
         "aplus/cli": "^1.15",
-        "aplus/config": "^1.4",
+        "aplus/config": "^2.0",
         "aplus/database": "^2.8",
         "aplus/date": "^1.4",
         "aplus/debug": "^2.2",
