@@ -135,7 +135,9 @@ abstract class Model implements ModelInterface
 
     public function __destruct()
     {
-        App::removeService('validation', $this->getModelIdentifier());
+        if (isset($this->validation)) {
+            App::removeService('validation', $this->getModelIdentifier());
+        }
     }
 
     #[Pure]
