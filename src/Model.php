@@ -75,7 +75,7 @@ abstract class Model implements ModelInterface
      *
      * @var array<int,string>
      */
-    protected array $allowedFields = [];
+    protected array $allowedFields;
     /**
      * Auto set timestamp fields.
      *
@@ -109,7 +109,7 @@ abstract class Model implements ModelInterface
      *
      * @var array<string,string>
      */
-    protected array $validationLabels = [];
+    protected array $validationLabels;
     /**
      * Validation rules.
      *
@@ -139,6 +139,18 @@ abstract class Model implements ModelInterface
     }
 
     #[Pure]
+    protected function getConnectionRead() : string
+    {
+        return $this->connectionRead;
+    }
+
+    #[Pure]
+    protected function getConnectionWrite() : string
+    {
+        return $this->connectionWrite;
+    }
+
+    #[Pure]
     protected function getTable() : string
     {
         if (isset($this->table)) {
@@ -155,13 +167,59 @@ abstract class Model implements ModelInterface
         return $this->table = $class;
     }
 
-    /**
-     * @return string[]
-     */
     #[Pure]
-    public function getAllowedFields() : array
+    protected function getPrimaryKey() : string
     {
+        return $this->primaryKey;
+    }
+
+    #[Pure]
+    protected function isProtectPrimaryKey() : bool
+    {
+        return $this->protectPrimaryKey;
+    }
+
+    #[Pure]
+    protected function getReturnType() : string
+    {
+        return $this->returnType;
+    }
+
+    /**
+     * @return array<int,string>
+     */
+    protected function getAllowedFields() : array
+    {
+        if (empty($this->allowedFields)) {
+            throw new LogicException(
+                'Allowed fields not defined for database writes'
+            );
+        }
         return $this->allowedFields;
+    }
+
+    #[Pure]
+    protected function isAutoTimestamps() : bool
+    {
+        return $this->autoTimestamps;
+    }
+
+    #[Pure]
+    protected function getFieldCreated() : string
+    {
+        return $this->fieldCreated;
+    }
+
+    #[Pure]
+    protected function getFieldUpdated() : string
+    {
+        return $this->fieldUpdated;
+    }
+
+    #[Pure]
+    protected function getTimestampFormat() : string
+    {
+        return $this->timestampFormat;
     }
 
     protected function checkPrimaryKey(int | string $id) : void
@@ -180,14 +238,9 @@ abstract class Model implements ModelInterface
      */
     protected function filterAllowedFields(array $data) : array
     {
-        if (empty($this->allowedFields)) {
-            throw new LogicException(
-                'Allowed fields not defined for database writes'
-            );
-        }
-        $fields = \array_intersect_key($data, \array_flip($this->allowedFields));
-        if ($this->protectPrimaryKey !== false
-            && \array_key_exists($this->primaryKey, $fields)
+        $fields = \array_intersect_key($data, \array_flip($this->getAllowedFields()));
+        if ($this->isProtectPrimaryKey() !== false
+            && \array_key_exists($this->getPrimaryKey(), $fields)
         ) {
             throw new LogicException(
                 'Protected Primary Key field can not be SET'
@@ -203,7 +256,7 @@ abstract class Model implements ModelInterface
      */
     protected function getDatabaseForRead() : Database
     {
-        return App::database($this->connectionRead);
+        return App::database($this->getConnectionRead());
     }
 
     /**
@@ -213,7 +266,7 @@ abstract class Model implements ModelInterface
      */
     protected function getDatabaseForWrite() : Database
     {
-        return App::database($this->connectionWrite);
+        return App::database($this->getConnectionWrite());
     }
 
     /**
@@ -302,7 +355,7 @@ abstract class Model implements ModelInterface
     public function find(int | string $id) : array | Entity | stdClass | null
     {
         $this->checkPrimaryKey($id);
-        if ($this->cacheActive) {
+        if ($this->isCacheActive()) {
             return $this->findWithCache($id);
         }
         $data = $this->findRow($id);
@@ -319,7 +372,7 @@ abstract class Model implements ModelInterface
         return $this->getDatabaseForRead()
             ->select()
             ->from($this->getTable())
-            ->whereEqual($this->primaryKey, $id)
+            ->whereEqual($this->getPrimaryKey(), $id)
             ->limit(1)
             ->run()
             ->fetchArray();
@@ -333,10 +386,10 @@ abstract class Model implements ModelInterface
     protected function findWithCache(int | string $id) : array | Entity | stdClass | null
     {
         $cacheKey = $this->getCacheKey([
-            $this->primaryKey => $id,
+            $this->getPrimaryKey() => $id,
         ]);
         $data = $this->getCache()->get($cacheKey);
-        if ($data === $this->cacheDataNotFound) {
+        if ($data === $this->getCacheDataNotFound()) {
             return null;
         }
         if (\is_array($data)) {
@@ -344,9 +397,9 @@ abstract class Model implements ModelInterface
         }
         $data = $this->findRow($id);
         if ($data === null) {
-            $data = $this->cacheDataNotFound;
+            $data = $this->getCacheDataNotFound();
         }
-        $this->getCache()->set($cacheKey, $data, $this->cacheTtl);
+        $this->getCache()->set($cacheKey, $data, $this->getCacheTtl());
         return \is_array($data) ? $this->makeEntity($data) : null;
     }
 
@@ -357,13 +410,14 @@ abstract class Model implements ModelInterface
      */
     protected function makeEntity(array $data) : array | Entity | stdClass
     {
-        if ($this->returnType === 'array') {
+        $returnType = $this->getReturnType();
+        if ($returnType === 'array') {
             return $data;
         }
-        if ($this->returnType === 'object' || $this->returnType === 'stdClass') {
+        if ($returnType === 'object' || $returnType === 'stdClass') {
             return (object) $data;
         }
-        return new $this->returnType($data);
+        return new $returnType($data);
     }
 
     /**
@@ -407,7 +461,7 @@ abstract class Model implements ModelInterface
         $timezone = $this->getDatabaseForWrite()->getConfig()['timezone'] ?? '+00:00';
         $timezone = new DateTimeZone($timezone);
         $datetime = new DateTime('now', $timezone);
-        return $datetime->format($this->timestampFormat);
+        return $datetime->format($this->getTimestampFormat());
     }
 
     /**
@@ -424,10 +478,10 @@ abstract class Model implements ModelInterface
         if ($this->getValidation()->validate($data) === false) {
             return false;
         }
-        if ($this->autoTimestamps) {
+        if ($this->isAutoTimestamps()) {
             $timestamp = $this->getTimestamp();
-            $data[$this->fieldCreated] ??= $timestamp;
-            $data[$this->fieldUpdated] ??= $timestamp;
+            $data[$this->getFieldCreated()] ??= $timestamp;
+            $data[$this->getFieldUpdated()] ??= $timestamp;
         }
         if (empty($data)) {
             // TODO: Set error - payload is empty
@@ -437,7 +491,7 @@ abstract class Model implements ModelInterface
         $insertId = $database->insert()->into($this->getTable())->set($data)->run()
             ? $database->insertId()
             : false;
-        if ($insertId && $this->cacheActive) {
+        if ($insertId && $this->isCacheActive()) {
             $this->updateCachedRow($insertId);
         }
         return $insertId;
@@ -447,12 +501,12 @@ abstract class Model implements ModelInterface
     {
         $data = $this->findRow($id);
         if ($data === null) {
-            $data = $this->cacheDataNotFound;
+            $data = $this->getCacheDataNotFound();
         }
         $this->getCache()->set(
-            $this->getCacheKey([$this->primaryKey => $id]),
+            $this->getCacheKey([$this->getPrimaryKey() => $id]),
             $data,
-            $this->cacheTtl
+            $this->getCacheTtl()
         );
     }
 
@@ -468,7 +522,7 @@ abstract class Model implements ModelInterface
     public function save(array | Entity | stdClass $data) : false | int | string
     {
         $data = $this->makeArray($data);
-        $id = $data[$this->primaryKey] ?? null;
+        $id = $data[$this->getPrimaryKey()] ?? null;
         $data = $this->filterAllowedFields($data);
         if ($id !== null) {
             return $this->update($id, $data);
@@ -492,16 +546,16 @@ abstract class Model implements ModelInterface
         if ($this->getValidation()->validateOnly($data) === false) {
             return false;
         }
-        if ($this->autoTimestamps) {
-            $data[$this->fieldUpdated] ??= $this->getTimestamp();
+        if ($this->isAutoTimestamps()) {
+            $data[$this->getFieldUpdated()] ??= $this->getTimestamp();
         }
         $affectedRows = $this->getDatabaseForWrite()
             ->update()
             ->table($this->getTable())
             ->set($data)
-            ->whereEqual($this->primaryKey, $id)
+            ->whereEqual($this->getPrimaryKey(), $id)
             ->run();
-        if ($this->cacheActive) {
+        if ($this->isCacheActive()) {
             $this->updateCachedRow($id);
         }
         return $affectedRows;
@@ -522,21 +576,21 @@ abstract class Model implements ModelInterface
     {
         $this->checkPrimaryKey($id);
         $data = $this->prepareData($data);
-        $data[$this->primaryKey] = $id;
+        $data[$this->getPrimaryKey()] = $id;
         if ($this->getValidation()->validate($data) === false) {
             return false;
         }
-        if ($this->autoTimestamps) {
+        if ($this->isAutoTimestamps()) {
             $timestamp = $this->getTimestamp();
-            $data[$this->fieldCreated] ??= $timestamp;
-            $data[$this->fieldUpdated] ??= $timestamp;
+            $data[$this->getFieldCreated()] ??= $timestamp;
+            $data[$this->getFieldUpdated()] ??= $timestamp;
         }
         $affectedRows = $this->getDatabaseForWrite()
             ->replace()
             ->into($this->getTable())
             ->set($data)
             ->run();
-        if ($this->cacheActive) {
+        if ($this->isCacheActive()) {
             $this->updateCachedRow($id);
         }
         return $affectedRows;
@@ -555,11 +609,11 @@ abstract class Model implements ModelInterface
         $affectedRows = $this->getDatabaseForWrite()
             ->delete()
             ->from($this->getTable())
-            ->whereEqual($this->primaryKey, $id)
+            ->whereEqual($this->getPrimaryKey(), $id)
             ->run();
-        if ($this->cacheActive) {
+        if ($this->isCacheActive()) {
             $this->getCache()->delete(
-                $this->getCacheKey([$this->primaryKey => $id])
+                $this->getCacheKey([$this->getPrimaryKey() => $id])
             );
         }
         return $affectedRows;
@@ -567,13 +621,29 @@ abstract class Model implements ModelInterface
 
     protected function getValidation() : Validation
     {
+        return $this->validation
+            ?? ($this->validation = App::validation($this->getModelIdentifier())
+                ->setLabels($this->getValidationLabels())
+                ->setRules($this->getValidationRules()));
+    }
+
+    /**
+     * @return array<string,string>
+     */
+    protected function getValidationLabels() : array
+    {
+        return $this->validationLabels ?? [];
+    }
+
+    /**
+     * @return array<string,array|string>
+     */
+    protected function getValidationRules() : array
+    {
         if ( ! isset($this->validationRules)) {
             throw new RuntimeException('Validation rules are not set');
         }
-        return $this->validation
-            ?? ($this->validation = App::validation($this->getModelIdentifier())
-                ->setLabels($this->validationLabels)
-                ->setRules($this->validationRules));
+        return $this->validationRules;
     }
 
     /**
@@ -592,9 +662,33 @@ abstract class Model implements ModelInterface
         return 'Model:' . \spl_object_hash($this);
     }
 
+    #[Pure]
+    protected function isCacheActive() : bool
+    {
+        return $this->cacheActive;
+    }
+
+    #[Pure]
+    protected function getCacheInstance() : string
+    {
+        return $this->cacheInstance;
+    }
+
+    #[Pure]
+    protected function getCacheTtl() : int
+    {
+        return $this->cacheTtl;
+    }
+
+    #[Pure]
+    protected function getCacheDataNotFound() : int | string
+    {
+        return $this->cacheDataNotFound;
+    }
+
     protected function getCache() : Cache
     {
-        return App::cache($this->cacheInstance);
+        return App::cache($this->getCacheInstance());
     }
 
     /**
