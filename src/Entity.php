@@ -199,12 +199,16 @@ abstract class Entity implements \JsonSerializable //, \Stringable
      */
     public function toModel() : array
     {
+        $jsonVars = static::$jsonVars;
+        static::$jsonVars = \array_keys(\get_object_vars($this));
         $data = \json_decode(\json_encode($this, $this->jsonOptions()), true, 512, $this->jsonOptions());
         foreach ($data as &$value) {
             if (\is_array($value)) {
                 $value = \json_encode($value, $this->jsonOptions());
             }
         }
+        unset($value);
+        static::$jsonVars = $jsonVars;
         return $data;
     }
 
