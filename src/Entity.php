@@ -11,9 +11,12 @@ namespace Framework\MVC;
 
 use DateTimeZone;
 use Framework\Date\Date;
+use Framework\HTTP\URL;
 use InvalidArgumentException;
 use OutOfBoundsException;
+use ReflectionProperty;
 use RuntimeException;
+use stdClass;
 
 /**
  * Class Entity.
@@ -111,25 +114,97 @@ abstract class Entity implements \JsonSerializable //, \Stringable
                 $this->{$method}($value);
                 continue;
             }
-            $this->{$property} = $value;
+            $this->setProperty($property, $value);
         }
+    }
+
+    protected function setProperty(string $name, mixed $value) : void
+    {
+        if ( ! \property_exists($this, $name)) {
+            $this->{$name} = $value;
+            return;
+        }
+        if ($value !== null) {
+            $rp = new ReflectionProperty($this, $name);
+            $propertyType = $rp->getType()?->getName();
+            if ($propertyType !== null) {
+                $value = $this->typeHint($propertyType, $value);
+            }
+        }
+        $this->{$name} = $value;
+    }
+
+    protected function typeHint(string $propertyType, mixed $value) : mixed
+    {
+        $valueType = \get_debug_type($value);
+        $newValue = $this->typeHintCustom($propertyType, $valueType, $value);
+        if ($newValue === null) {
+            $newValue = $this->typeHintNative($propertyType, $valueType, $value);
+        }
+        if ($newValue === null) {
+            $newValue = $this->typeHintAplus($propertyType, $valueType, $value);
+        }
+        return $newValue ?? $value;
+    }
+
+    protected function typeHintCustom(string $propertyType, string $valueType, mixed $value) : mixed
+    {
+        return null;
+    }
+
+    protected function typeHintNative(string $propertyType, string $valueType, mixed $value) : mixed
+    {
+        if ($propertyType === 'array') {
+            return $valueType === 'string'
+                ? \json_decode($value, true, flags: \JSON_THROW_ON_ERROR)
+                : (array) $value;
+        }
+        if ($propertyType === 'bool') {
+            return (bool) $value;
+        }
+        if ($propertyType === 'float') {
+            return (float) $value;
+        }
+        if ($propertyType === 'int') {
+            return (int) $value;
+        }
+        if ($propertyType === 'string') {
+            return (string) $value;
+        }
+        if ($propertyType === stdClass::class) {
+            return $valueType === 'string'
+                ? \json_decode($value, flags: \JSON_THROW_ON_ERROR)
+                : (object) $value;
+        }
+        return null;
+    }
+
+    protected function typeHintAplus(string $propertyType, string $valueType, mixed $value) : mixed
+    {
+        if ($propertyType === Date::class) {
+            return new Date((string) $value);
+        }
+        if ($propertyType === URL::class) {
+            return new URL((string) $value);
+        }
+        return null;
     }
 
     /**
      * Used in setters where the scalar conversion results in a JSON string.
      *
-     * @param array|\stdClass|null $value
+     * @param array|stdClass|null $value
      *
      * @see toScalar
      *
-     * @return \stdClass|null
+     * @return stdClass|null
      */
-    protected function fromJson($value) : ?\stdClass
+    protected function fromJson($value) : ?stdClass
     {
         if ($value === null) {
             return null;
         }
-        if ($value instanceof \stdClass || \is_array($value)) {
+        if ($value instanceof stdClass || \is_array($value)) {
             return (object) $value;
         }
         return \json_decode($value, false, 512, $this->jsonOptions());
@@ -227,7 +302,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         if ($this->{$property} === null) {
             return null; // Not scalar, but Database::quote handles it!
         }
-        if ($this->{$property} instanceof \stdClass || \is_array($this->{$property})) {
+        if ($this->{$property} instanceof stdClass || \is_array($this->{$property})) {
             return $this->toScalarJson($this->{$property});
         }
         if ($this->{$property} instanceof Date) {
