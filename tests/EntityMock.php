@@ -10,49 +10,33 @@
 namespace Tests\MVC;
 
 use Framework\Date\Date;
+use Framework\HTTP\URL;
 use Framework\MVC\Entity;
+use stdClass;
 
 /**
  * Class EntityMock.
  *
- * @property int    $id
- * @property string $data
- * @property Date   $datetime
- * @property Date   $createdAt
- * @property Date   $updatedAt
- * @property string $settings
+ * @property array $array;
+ * @property bool $bool;
+ * @property float $float;
+ * @property int $int;
+ * @property string $string;
+ * @property stdClass $stdClass;
+ * @property Date $date;
+ * @property URL $url;
+ * @property mixed $mixed;
  */
 class EntityMock extends Entity
 {
-    protected $id;
-    protected $data;
-    protected $datetime;
-    protected $createdAt;
-    protected $updatedAt;
-    protected $settings;
-
-    public function setId($id) : void
-    {
-        $this->id = (int) $id;
-    }
-
-    public function getData() : string
-    {
-        return (string) $this->data;
-    }
-
-    public function setDatetime($datetime) : void
-    {
-        $this->datetime = $this->fromDateTime($datetime);
-    }
-
-    public function setSettings($settings) : void
-    {
-        $this->settings = $this->fromJson($settings);
-    }
-
-    public function getDataAsScalar() : string
-    {
-        return (string) $this->data;
-    }
+    public static array $jsonVars = [];
+    protected array $array; // @phpstan-ignore-line
+    protected bool $bool;
+    protected float $float;
+    protected int $int;
+    protected string $string;
+    protected stdClass $stdClass;
+    protected Date $date;
+    protected URL $url;
+    protected mixed $mixed;
 }
