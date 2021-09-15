@@ -23,19 +23,25 @@ use stdClass;
  */
 abstract class Entity implements \JsonSerializable //, \Stringable
 {
+    /**
+     * @var array<int,string>
+     */
     protected static array $jsonVars = [];
 
+    /**
+     * @param array<string,mixed> $properties
+     */
     public function __construct(array $properties)
     {
         $this->populate($properties);
     }
 
-    public function __isset($property)
+    public function __isset(string $property) : bool
     {
         return isset($this->{$property});
     }
 
-    public function __unset($property) : void
+    public function __unset(string $property) : void
     {
         unset($this->{$property});
     }
@@ -44,7 +50,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
      * @param string $property
      * @param mixed $value
      *
-     * @throws \OutOfBoundsException if property not defined
+     * @throws OutOfBoundsException If property is not defined
      */
     public function __set(string $property, $value) : void
     {
@@ -63,11 +69,11 @@ abstract class Entity implements \JsonSerializable //, \Stringable
     /**
      * @param string $property
      *
-     * @throws \OutOfBoundsException if property not defined
+     * @throws OutOfBoundsException If property is not defined
      *
      * @return mixed
      */
-    public function __get(string $property)
+    public function __get(string $property) : mixed
     {
         $method = $this->renderMethodName('get', $property);
         if (\method_exists($this, $method)) {
@@ -102,6 +108,9 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         return "{$type}{$name}";
     }
 
+    /**
+     * @param array<string,mixed> $properties
+     */
     protected function populate(array $properties) : void
     {
         foreach ($properties as $property => $value) {
@@ -196,11 +205,14 @@ abstract class Entity implements \JsonSerializable //, \Stringable
      * Convert the Entity to an associative array accepted by Model methods.
      *
      * @throws JsonException
+     *
+     * @return array<string,scalar>
      */
     public function toModel() : array
     {
         $jsonVars = static::$jsonVars;
         static::$jsonVars = \array_keys(\get_object_vars($this));
+        // @phpstan-ignore-next-line
         $data = \json_decode(\json_encode($this, $this->jsonOptions()), true, 512, $this->jsonOptions());
         foreach ($data as &$value) {
             if (\is_array($value)) {
