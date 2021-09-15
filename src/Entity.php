@@ -9,14 +9,11 @@
  */
 namespace Framework\MVC;
 
-use DateTimeZone;
 use Framework\Date\Date;
 use Framework\HTTP\URL;
-use InvalidArgumentException;
 use JsonException;
 use OutOfBoundsException;
 use ReflectionProperty;
-use RuntimeException;
 use stdClass;
 
 /**
@@ -191,26 +188,6 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         return null;
     }
 
-    /**
-     * Used in setters where the scalar conversion results in a JSON string.
-     *
-     * @param array|stdClass|null $value
-     *
-     * @see toScalar
-     *
-     * @return stdClass|null
-     */
-    protected function fromJson($value) : ?stdClass
-    {
-        if ($value === null) {
-            return null;
-        }
-        if ($value instanceof stdClass || \is_array($value)) {
-            return (object) $value;
-        }
-        return \json_decode($value, false, 512, $this->jsonOptions());
-    }
-
     protected function jsonOptions() : int
     {
         return \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE
@@ -218,117 +195,8 @@ abstract class Entity implements \JsonSerializable //, \Stringable
     }
 
     /**
-     * @param array|object $value
+     * Convert the Entity to an associative array accepted by Model methods.
      *
-     * @return string
-     */
-    protected function toScalarJson($value) : string
-    {
-        return \json_encode($value, $this->jsonOptions(), 512);
-    }
-
-    /**
-     * Used in setters where the scalar conversion results in a datetime string.
-     *
-     * @param Date|string|null $value
-     *
-     * @see toScalar
-     *
-     * @throws \InvalidArgumentException if value is not a string or Date
-     * @throws \Exception                Emits Exception in case of an error
-     *
-     * @return Date|null
-     */
-    protected function fromDateTime($value) : ?Date
-    {
-        if ($value === null) {
-            return null;
-        }
-        if ($value instanceof Date) {
-            return $value;
-        }
-        if ( ! \is_string($value)) {
-            throw new InvalidArgumentException('Value type must be string or Framework\Date\Date');
-        }
-        return new Date($value, $this->timezone());
-    }
-
-    protected function timezone() : DateTimeZone
-    {
-        static $timezone;
-        return $timezone ?: $timezone = new DateTimeZone('UTC');
-    }
-
-    /**
-     * Converts the value to the string format Y-m-d H:i:s as UTC or custom timezone.
-     *
-     * @param Date $value
-     *
-     * @see timezone
-     *
-     * @return string
-     */
-    protected function toScalarDateTime(Date $value) : string
-    {
-        $value = clone $value;
-        // ATOM constant is present on DateTimeInterface. All right.
-        return $value->setTimezone($this->timezone())->format(Date::ATOM);
-    }
-
-    /**
-     * Converts a property value into scalar type or null.
-     *
-     * If a setter/getter ending with AsScalar exists, (i.e. getConfigAsScalar), it will run to
-     * render the proper value.
-     *
-     * stdClass or array types are converted to a JSON string.
-     *
-     * DateTime instances are converted to a string in the format Y-m-d H:i:s
-     *
-     * @param string $property
-     *
-     * @throws RuntimeException if property was not converted to scalar
-     *
-     * @return bool|float|int|string|null
-     */
-    protected function toScalar(string $property)
-    {
-        if (\is_scalar($this->{$property})) {
-            return $this->{$property};
-        }
-        $method = $this->renderMethodName('get', $property) . 'AsScalar';
-        if (\method_exists($this, $method)) {
-            return $this->{$method}();
-        }
-        if ($this->{$property} === null) {
-            return null; // Not scalar, but Database::quote handles it!
-        }
-        if ($this->{$property} instanceof stdClass || \is_array($this->{$property})) {
-            return $this->toScalarJson($this->{$property});
-        }
-        if ($this->{$property} instanceof Date) {
-            return $this->toScalarDateTime($this->{$property});
-        }
-        throw new RuntimeException(
-            "Property was not converted to scalar: {$property}"
-        );
-    }
-
-    /**
-     * Converts the Entity properties values to scalar and returns an associative array.
-     *
-     * @return array
-     */
-    public function toArray() : array
-    {
-        $data = [];
-        foreach (\array_keys(\get_object_vars($this)) as $property) {
-            $data[$property] = $this->toScalar($property);
-        }
-        return $data;
-    }
-
-    /**
      * @throws JsonException
      */
     public function toModel() : array

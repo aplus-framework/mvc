@@ -9,7 +9,6 @@
  */
 namespace Tests\MVC;
 
-use Framework\Date\Date;
 use Framework\MVC\Entity;
 use PHPUnit\Framework\TestCase;
 
@@ -42,66 +41,6 @@ final class EntityTest extends TestCase
         self::assertSame('', $this->entity->data);
         $this->entity->data = 25;
         self::assertSame('25', $this->entity->data);
-    }
-
-    public function testFromDateTime() : void
-    {
-        self::assertNull($this->entity->datetime);
-        $datetime = new Date();
-        $this->entity->datetime = $datetime;
-        self::assertSame($datetime, $this->entity->datetime);
-        $this->entity->datetime = '2018-12-24 10:00:00';
-        self::assertSame('2018-12-24 10:00:00', $this->entity->datetime->format('Y-m-d H:i:s'));
-        $this->entity->datetime = null;
-        self::assertNull($this->entity->datetime);
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Value type must be string or Framework\Date\Date');
-        $this->entity->datetime = [];
-    }
-
-    public function testFromJSON() : void
-    {
-        self::assertNull($this->entity->settings);
-        $settings = new class() extends \stdClass {
-            public $foo = 'foo';
-        };
-        $this->entity->settings = $settings;
-        self::assertSame('foo', $this->entity->settings->foo);
-        $settings = [
-            'foo' => 'bar',
-        ];
-        $this->entity->settings = $settings;
-        self::assertSame('bar', $this->entity->settings->foo);
-        $this->entity->settings = '{"foo":"baz"}';
-        self::assertSame('baz', $this->entity->settings->foo);
-        $this->entity->settings = null;
-        self::assertNull($this->entity->settings);
-    }
-
-    public function testToArray() : void
-    {
-        $datetime = new Date();
-        $this->entity->datetime = $datetime;
-        $settings = new class() extends \stdClass {
-            public $foo = 'foo';
-        };
-        $this->entity->settings = $settings;
-        self::assertSame([
-            'id' => 10,
-            'data' => '',
-            'datetime' => $datetime->format(Date::ATOM),
-            'createdAt' => null,
-            'updatedAt' => null,
-            'settings' => \json_encode($settings),
-        ], $this->entity->toArray());
-    }
-
-    public function testUnknownTypeToScalar() : void
-    {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Property was not converted to scalar: createdAt');
-        $this->entity->createdAt = new \DateTimeZone('UTC'); // @phpstan-ignore-line
-        $this->entity->toArray();
     }
 
     public function testTryGetUndefinedProperty() : void
