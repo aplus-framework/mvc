@@ -210,15 +210,15 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         return $data;
     }
 
-    public function jsonSerialize() : array
+    public function jsonSerialize() : stdClass
     {
         if (empty(static::$jsonVars)) {
-            return [];
+            return new stdClass();
         }
         $allowed = \array_flip(static::$jsonVars);
         $filtered = \array_intersect_key(\get_object_vars($this), $allowed);
         $allowed = \array_intersect_key($allowed, $filtered);
         $ordered = \array_replace($allowed, $filtered);
-        return $ordered;
+        return (object) $ordered;
     }
 }
