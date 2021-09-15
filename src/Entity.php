@@ -13,6 +13,7 @@ use DateTimeZone;
 use Framework\Date\Date;
 use Framework\HTTP\URL;
 use InvalidArgumentException;
+use JsonException;
 use OutOfBoundsException;
 use ReflectionProperty;
 use RuntimeException;
@@ -323,6 +324,20 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         $data = [];
         foreach (\array_keys(\get_object_vars($this)) as $property) {
             $data[$property] = $this->toScalar($property);
+        }
+        return $data;
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function toModel() : array
+    {
+        $data = \json_decode(\json_encode($this, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
+        foreach ($data as &$value) {
+            if (\is_array($value)) {
+                $value = \json_encode($value, JSON_THROW_ON_ERROR);
+            }
         }
         return $data;
     }
