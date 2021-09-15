@@ -154,7 +154,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
     {
         if ($propertyType === 'array') {
             return $valueType === 'string'
-                ? \json_decode($value, true, flags: \JSON_THROW_ON_ERROR)
+                ? \json_decode($value, true, flags: $this->jsonOptions())
                 : (array) $value;
         }
         if ($propertyType === 'bool') {
@@ -171,7 +171,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         }
         if ($propertyType === stdClass::class) {
             return $valueType === 'string'
-                ? \json_decode($value, flags: \JSON_THROW_ON_ERROR)
+                ? \json_decode($value, flags: $this->jsonOptions())
                 : (object) $value;
         }
         return null;
@@ -201,10 +201,10 @@ abstract class Entity implements \JsonSerializable //, \Stringable
      */
     public function toModel() : array
     {
-        $data = \json_decode(\json_encode($this, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
+        $data = \json_decode(\json_encode($this, $this->jsonOptions()), true, 512, $this->jsonOptions());
         foreach ($data as &$value) {
             if (\is_array($value)) {
-                $value = \json_encode($value, JSON_THROW_ON_ERROR);
+                $value = \json_encode($value, $this->jsonOptions());
             }
         }
         return $data;
