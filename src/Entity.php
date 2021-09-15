@@ -37,9 +37,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
 
     public function __unset($property) : void
     {
-        if (\property_exists($this, $property)) {
-            $this->{$property} = null;
-        }
+        unset($this->{$property});
     }
 
     /**
