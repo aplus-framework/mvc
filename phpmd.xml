@@ -2,7 +2,9 @@
 <ruleset name="Mess Detector">
     <!-- cleancode -->
     <rule ref="rulesets/cleancode.xml">
+        <exclude name="ElseExpression"/>
         <exclude name="StaticAccess"/>
+        <exclude name="UndefinedVariable"/>
     </rule>
     <!-- codesize -->
     <rule ref="rulesets/codesize.xml/TooManyPublicMethods">
@@ -27,5 +29,7 @@
         </properties>
     </rule>
     <!-- unusedcode -->
-    <rule ref="rulesets/unusedcode.xml"/>
+    <rule ref="rulesets/unusedcode.xml">
+        <exclude name="UnusedFormalParameter"/>
+    </rule>
 </ruleset>

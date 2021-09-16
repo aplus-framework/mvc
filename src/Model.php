@@ -237,9 +237,9 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * @param array<int,string> $data
+     * @param array<string,string> $data
      *
-     * @return array<int,string>
+     * @return array<string,mixed>
      */
     protected function filterAllowedFields(array $data) : array
     {
@@ -281,7 +281,7 @@ abstract class Model implements ModelInterface
      */
     public function count() : int
     {
-        return $this->getDatabaseForRead()
+        $result = $this->getDatabaseForRead()
             ->select()
             ->expressions([
                 'count' => static function () : string {
@@ -290,7 +290,8 @@ abstract class Model implements ModelInterface
             ])
             ->from($this->getTable())
             ->run()
-            ->fetch()->count;
+            ->fetch();
+        return $result->count; // @phpstan-ignore-line
     }
 
     /**

@@ -131,7 +131,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         }
         if ($value !== null) {
             $rp = new ReflectionProperty($this, $name);
-            $propertyType = $rp->getType()?->getName();
+            $propertyType = $rp->getType()?->getName(); // @phpstan-ignore-line
             if ($propertyType !== null) {
                 $value = $this->typeHint($propertyType, $value);
             }

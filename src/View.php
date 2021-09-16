@@ -163,11 +163,17 @@ class View
         $view = $this->getFilepath($view);
         $variables['view'] = $this;
         \ob_start();
-        Isolation::require($view, $variables); // @phpstan-ignore-line
+        Isolation::require($view, $variables);
         if ($this->layout !== null) {
             return $this->renderLayout($this->layout, $variables);
         }
-        return \ob_get_clean();
+        $contents = \ob_get_clean();
+        if ($contents === false) {
+            App::logger()->error(
+                'View::render could not get ob contents of "' . $view . '"'
+            );
+        }
+        return (string) $contents;
     }
 
     /**
@@ -196,7 +202,13 @@ class View
             throw new LogicException('Trying to end a view block when none is open');
         }
         $endedBlock = \array_pop($this->openBlocks);
-        $this->blocks[$endedBlock] = \ob_get_clean();
+        $contents = \ob_get_clean();
+        if ($contents === false) {
+            App::logger()->error(
+                'View::endBlock could not get ob contents of "' . $endedBlock . '"'
+            );
+        }
+        $this->blocks[$endedBlock] = (string) $contents;
     }
 
     public function renderBlock(string $name) : string

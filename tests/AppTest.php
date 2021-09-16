@@ -13,7 +13,7 @@ use Framework\Autoload\Autoloader;
 use Framework\Autoload\Locator;
 use Framework\Cache\Cache;
 use Framework\CLI\Console;
-use Framework\CLI\Stream;
+use Framework\CLI\Streams\Stdout;
 use Framework\Config\Config;
 use Framework\Database\Database;
 use Framework\Database\Definition\Table\TableDefinition;
@@ -146,17 +146,17 @@ final class AppTest extends TestCase
 
     public function testRunEmptyConsole() : void
     {
-        Stream::init();
-        $this->app->run();
-        self::assertSame('', Stream::getOutput());
+        Stdout::init();
+        $this->app->runCli();
+        self::assertSame('', Stdout::getContents());
     }
 
     public function testRunCli() : void
     {
         App::config()->set('console', ['enabled' => true]);
-        Stream::init();
+        Stdout::init();
         $this->app->runCli();
-        self::assertStringContainsString('Commands', Stream::getOutput());
+        self::assertStringContainsString('Commands', Stdout::getContents());
     }
 
     public function testRunHttp() : void
@@ -175,6 +175,7 @@ final class AppTest extends TestCase
 
     public function testAppIsAlreadyRunning() : void
     {
+        $this->app::config()->set('console', ['enabled' => true]);
         $this->app->runHttp();
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('App is already running');
@@ -235,18 +236,15 @@ final class AppTest extends TestCase
         App::session()->foo = 'Foo'; // @phpstan-ignore-line
         self::assertSame('Foo', App::session()->foo);
         App::session()->stop();
+        // @phpstan-ignore-next-line
+        $timestamp = App::database()->select('Sessions')->whereEqual('id', \session_id())
+            ->limit(1)
+            ->run()
+            ->fetch()
+            ->timestamp;
         self::assertSame(
             (new \DateTime('now', new \DateTimeZone($config['timezone'])))->format('Y-m-d H:i:s'),
-            // @phpstan-ignore-next-line
-            App::database()
-                ->select()
-                ->from('Sessions')
-                // @phpstan-ignore-next-line
-                ->whereEqual('id', \session_id()) // @phpstan-ignore-line
-                ->limit(1)
-                ->run()
-                ->fetch()
-                ->timestamp
+            $timestamp
         );
     }
 }

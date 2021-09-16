@@ -39,4 +39,8 @@ class EntityMock extends Entity
     protected Date $date;
     protected URL $url;
     protected mixed $mixed;
+    protected $id; // @phpstan-ignore-line
+    protected $data; // @phpstan-ignore-line
+    protected $createdAt; // @phpstan-ignore-line
+    protected $updatedAt; // @phpstan-ignore-line
 }

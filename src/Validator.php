@@ -16,6 +16,17 @@ namespace Framework\MVC;
  */
 class Validator extends \Framework\Validation\Validator
 {
+    /**
+     * Validates database table not unique value.
+     *
+     * @param string $field
+     * @param array<string,mixed> $data
+     * @param string $table
+     * @param string|null $column
+     * @param string $connection
+     *
+     * @return bool
+     */
     public static function notUnique(
         string $field,
         array $data,
@@ -40,6 +51,17 @@ class Validator extends \Framework\Validation\Validator
         return (bool) $result->numRows();
     }
 
+    /**
+     * Validates database table unique value.
+     *
+     * @param string $field
+     * @param array<string,mixed> $data
+     * @param string $table
+     * @param string|null $column
+     * @param string $connection
+     *
+     * @return bool
+     */
     public static function unique(
         string $field,
         array $data,

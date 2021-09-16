@@ -131,6 +131,10 @@ final class EntityTest extends TestCase
             'date' => '2021-09-15T15:47:08+00:00',
             'url' => 'https://foo.com/',
             'mixed' => null,
+            'id' => null,
+            'data' => null,
+            'createdAt' => null,
+            'updatedAt' => null,
         ], $this->entity->toModel());
     }
 }

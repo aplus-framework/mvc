@@ -102,6 +102,10 @@ class App
 
     public function runCli(callable $deferred = null) : void
     {
+        $config = static::config()->get('console');
+        if ( ! isset($config['enabled']) || $config['enabled'] !== true) {
+            return;
+        }
         $this->setRequiredCliVars();
         $this->prepareToRun($deferred);
         static::console()->run();
@@ -139,7 +143,7 @@ class App
             if ( ! \is_file($file)) {
                 throw new LogicException('Invalid route file: ' . $file);
             }
-            Isolation::require($file); // @phpstan-ignore-line
+            Isolation::require($file);
         }
     }
 
@@ -269,7 +273,7 @@ class App
             if (empty($className)) {
                 continue;
             }
-            $class = new ReflectionClass($className);
+            $class = new ReflectionClass($className); // @phpstan-ignore-line
             if ( ! $class->isInstantiable() || ! $class->isSubclassOf(Command::class)) {
                 continue;
             }
@@ -320,7 +324,7 @@ class App
         }
         return static::setService(
             'database',
-            new Database($config, logger: $logger),
+            new Database($config, logger: $logger), // @phpstan-ignore-line
             $instance
         );
     }
