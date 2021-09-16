@@ -57,6 +57,14 @@ final class EntityTest extends TestCase
             'array' => '{"foo":1}',
         ]);
         self::assertSame(['foo' => 1], $entity->array);
+        $entity = new EntityMock([
+            'array' => '{}',
+        ]);
+        self::assertIsArray($entity->array);
+        $entity = new EntityMock([
+            'array' => '[]',
+        ]);
+        self::assertIsArray($entity->array);
     }
 
     public function testTypeHintStdClassString() : void
@@ -67,6 +75,14 @@ final class EntityTest extends TestCase
         $class = new stdClass();
         $class->foo = 1;
         self::assertEquals($class, $entity->stdClass);
+        $entity = new EntityMock([
+            'stdClass' => '{}',
+        ]);
+        self::assertInstanceOf(stdClass::class, $entity->stdClass);
+        $entity = new EntityMock([
+            'stdClass' => '[]',
+        ]);
+        self::assertInstanceOf(stdClass::class, $entity->stdClass);
     }
 
     public function testNewEntityWithUndefinedProperty() : void

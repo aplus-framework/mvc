@@ -178,7 +178,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         }
         if ($propertyType === stdClass::class) {
             return $valueType === 'string'
-                ? \json_decode($value, flags: $this->jsonOptions())
+                ? (object) \json_decode($value, flags: $this->jsonOptions())
                 : (object) $value;
         }
         return null;
