@@ -142,6 +142,7 @@ abstract class Model implements ModelInterface
     protected string $cacheInstance = 'default';
     protected int $cacheTtl = 60;
     protected int | string $cacheDataNotFound = 0;
+    protected string $languageInstance = 'default';
 
     #[Pure]
     protected function getConnectionRead() : string
@@ -225,6 +226,11 @@ abstract class Model implements ModelInterface
     protected function getTimestampFormat() : string
     {
         return $this->timestampFormat;
+    }
+
+    protected function getLanguageInstance() : string
+    {
+        return $this->languageInstance;
     }
 
     protected function checkPrimaryKey(int | string $id) : void
@@ -335,7 +341,12 @@ abstract class Model implements ModelInterface
             $row = $this->makeEntity($row);
         }
         unset($row);
-        $this->pager = new Pager($page, $perPage, $this->count(), App::language());
+        $this->pager = new Pager(
+            $page,
+            $perPage,
+            $this->count(),
+            App::language($this->getLanguageInstance())
+        );
         return $data;
     }
 
@@ -630,7 +641,7 @@ abstract class Model implements ModelInterface
         return $this->validation
             ?? ($this->validation = new Validation(
                 $this->getValidationValidators(),
-                App::language()
+                App::language($this->getLanguageInstance())
             ))->setLabels($this->getValidationLabels())
                 ->setRules($this->getValidationRules());
     }
