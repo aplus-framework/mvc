@@ -34,6 +34,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
     public function __construct(array $properties)
     {
         $this->populate($properties);
+        $this->init();
     }
 
     public function __isset(string $property) : bool
@@ -89,6 +90,14 @@ abstract class Entity implements \JsonSerializable //, \Stringable
     {
         return $this->toScalarJSON($this->toArray());
     }*/
+
+    /**
+     * Used to initialize settings, set custom properties, etc.
+     * Called in the constructor just after the properties be populated.
+     */
+    protected function init() : void
+    {
+    }
 
     /**
      * @param string $type get or set
