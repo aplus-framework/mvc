@@ -15,6 +15,7 @@ use Exception;
 use Framework\Cache\Cache;
 use Framework\Database\Database;
 use Framework\Pagination\Pager;
+use Framework\Validation\FilesValidator;
 use Framework\Validation\Validation;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
@@ -119,6 +120,15 @@ abstract class Model implements ModelInterface
      */
     protected array $validationRules;
     /**
+     * Validation Validators.
+     *
+     * @var array<int,string>
+     */
+    protected array $validationValidators = [
+        Validator::class,
+        FilesValidator::class,
+    ];
+    /**
      * The Pager instance.
      *
      * Instantiated when calling the paginate method.
@@ -132,13 +142,6 @@ abstract class Model implements ModelInterface
     protected string $cacheInstance = 'default';
     protected int $cacheTtl = 60;
     protected int | string $cacheDataNotFound = 0;
-
-    public function __destruct()
-    {
-        if (isset($this->validation)) {
-            App::removeService('validation', $this->getModelIdentifier());
-        }
-    }
 
     #[Pure]
     protected function getConnectionRead() : string
@@ -624,9 +627,11 @@ abstract class Model implements ModelInterface
     protected function getValidation() : Validation
     {
         return $this->validation
-            ?? ($this->validation = App::validation($this->getModelIdentifier())
-                ->setLabels($this->getValidationLabels())
-                ->setRules($this->getValidationRules()));
+            ?? ($this->validation = new Validation(
+                $this->getValidationValidators(),
+                App::language()
+            ))->setLabels($this->getValidationLabels())
+                ->setRules($this->getValidationRules());
     }
 
     /**
@@ -649,6 +654,14 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * @return array<int,string>
+     */
+    public function getValidationValidators() : array
+    {
+        return $this->validationValidators;
+    }
+
+    /**
      * Get Validation errors.
      *
      * @return array<string,string>
@@ -656,12 +669,6 @@ abstract class Model implements ModelInterface
     public function getErrors() : array
     {
         return $this->getValidation()->getErrors();
-    }
-
-    #[Pure]
-    protected function getModelIdentifier() : string
-    {
-        return 'Model:' . \spl_object_hash($this);
     }
 
     #[Pure]

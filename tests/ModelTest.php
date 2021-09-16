@@ -9,9 +9,6 @@
  */
 namespace Tests\MVC;
 
-use Framework\MVC\App;
-use Framework\Validation\Validation;
-
 /**
  * Class ModelTest.
  *
@@ -213,15 +210,5 @@ final class ModelTest extends ModelTestCase
         $row = $this->model->update(1, ['data' => 'Value']);
         self::assertFalse($row);
         self::assertArrayHasKey('data', $this->model->getErrors());
-    }
-
-    public function testValidationUnset() : void
-    {
-        $id = 'Model:' . \spl_object_hash($this->model);
-        self::assertNull(App::getService('validation', $id));
-        $this->model->getValidation();
-        self::assertInstanceOf(Validation::class, App::getService('validation', $id));
-        $this->model = null;
-        self::assertNull(App::getService('validation', $id));
     }
 }
