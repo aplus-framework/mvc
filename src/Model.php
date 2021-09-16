@@ -433,7 +433,7 @@ abstract class Model implements ModelInterface
     protected function makeArray(array | Entity | stdClass $data) : array
     {
         return $data instanceof Entity
-            ? $data->toArray()
+            ? $data->toModel()
             : (array) $data;
     }
 
