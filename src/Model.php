@@ -506,10 +506,6 @@ abstract class Model implements ModelInterface
             $data[$this->getFieldCreated()] ??= $timestamp;
             $data[$this->getFieldUpdated()] ??= $timestamp;
         }
-        if (empty($data)) {
-            // TODO: Set error - payload is empty
-            return false;
-        }
         $database = $this->getDatabaseForWrite();
         $insertId = $database->insert()->into($this->getTable())->set($data)->run()
             ? $database->insertId()
