@@ -18,6 +18,7 @@ class ModelMock extends Model
     public array $allowedFields = ['data'];
     public bool $autoTimestamps = true;
     public array $validationRules = [];
+    public array $validationMessages = [];
     public bool $protectPrimaryKey = true;
 
     /**

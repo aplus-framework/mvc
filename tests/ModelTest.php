@@ -203,10 +203,13 @@ final class ModelTest extends ModelTestCase
 
     public function testValidation() : void
     {
+        $message = 'Mui curto';
         $this->model->validationRules = ['data' => 'minLength:200'];
+        $this->model->validationMessages = ['data' => ['minLength' => $message]];
         $row = $this->model->create(['data' => 'Value']);
         self::assertFalse($row);
         self::assertArrayHasKey('data', $this->model->getErrors());
+        self::assertSame($message, $this->model->getErrors()['data']);
         $row = $this->model->update(1, ['data' => 'Value']);
         self::assertFalse($row);
         self::assertArrayHasKey('data', $this->model->getErrors());

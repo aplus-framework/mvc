@@ -112,6 +112,12 @@ abstract class Model implements ModelInterface
      */
     protected array $validationLabels;
     /**
+     * Validation error messages.
+     *
+     * @var array<string,array<string,string>>
+     */
+    protected array $validationMessages;
+    /**
      * Validation rules.
      *
      * @see Validation::setRules
@@ -642,8 +648,9 @@ abstract class Model implements ModelInterface
             ?? ($this->validation = new Validation(
                 $this->getValidationValidators(),
                 App::language($this->getLanguageInstance())
-            ))->setLabels($this->getValidationLabels())
-                ->setRules($this->getValidationRules());
+            ))->setRules($this->getValidationRules())
+                ->setLabels($this->getValidationLabels())
+                ->setMessages($this->getValidationMessages());
     }
 
     /**
@@ -652,6 +659,14 @@ abstract class Model implements ModelInterface
     protected function getValidationLabels() : array
     {
         return $this->validationLabels ?? [];
+    }
+
+    /**
+     * @return array<string,array<string,string>>
+     */
+    public function getValidationMessages() : array
+    {
+        return $this->validationMessages ?? [];
     }
 
     /**
