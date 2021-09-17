@@ -214,4 +214,12 @@ final class ModelTest extends ModelTestCase
         self::assertFalse($row);
         self::assertArrayHasKey('data', $this->model->getErrors());
     }
+
+    public function testCreateWithValidationRulesNotSet() : void
+    {
+        unset($this->model->validationRules);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Validation rules are not set');
+        $this->model->create(['data' => 'foo']);
+    }
 }
