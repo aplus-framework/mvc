@@ -114,9 +114,11 @@ final class ViewTest extends TestCase
 
             EOL;
         $this->view->setLayoutPrefix('layouts');
+        self::assertFalse($this->view->isExtending('default'));
         self::assertSame($html, $this->view->render('home', [
             'name' => 'Natan Felles >\'"',
             'title' => 'Layout & Blocks',
+            'testCase' => $this,
         ]));
     }
 
@@ -138,9 +140,11 @@ final class ViewTest extends TestCase
 
             EOL;
         $this->view->setLayoutPrefix('layouts');
+        self::assertFalse($this->view->isExtending('default'));
         self::assertSame($html, $this->view->render('noprefix', [
             'name' => 'Natan Felles >\'"',
             'title' => 'Layout & Blocks',
+            'testCase' => $this,
         ]));
     }
 
