@@ -113,7 +113,32 @@ final class ViewTest extends TestCase
             </html>
 
             EOL;
+        $this->view->setLayoutPrefix('layouts');
         self::assertSame($html, $this->view->render('home', [
+            'name' => 'Natan Felles >\'"',
+            'title' => 'Layout & Blocks',
+        ]));
+    }
+
+    public function testLayoutWithoutPrefix() : void
+    {
+        $html = <<<'EOL'
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <title>Layout & Blocks</title>
+            </head>
+            <body>
+                <div>CONTENTS - Natan Felles >'"</div>
+                <script>
+                    console.log('Oi')
+                </script>
+            </body>
+            </html>
+
+            EOL;
+        $this->view->setLayoutPrefix('layouts');
+        self::assertSame($html, $this->view->render('noprefix', [
             'name' => 'Natan Felles >\'"',
             'title' => 'Layout & Blocks',
         ]));

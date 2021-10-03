@@ -35,6 +35,7 @@ class View
      */
     protected array $openBlocks = [];
     protected ?string $layout = null;
+    protected bool $layoutUsePrefix = true;
 
     public function __construct(string $baseDir = null, string $extension = '.php')
     {
@@ -184,8 +185,12 @@ class View
      */
     protected function renderLayout(string $view, array $variables) : string
     {
+        if ($this->layoutUsePrefix) {
+            $view = $this->getLayoutPrefix() . $view;
+        }
         $this->layout = null;
-        $contents = $this->render($this->getLayoutPrefix() . $view, $variables);
+        $this->layoutUsePrefix = true;
+        $contents = $this->render($view, $variables);
         \ob_end_clean();
         return $contents;
     }
@@ -241,6 +246,13 @@ class View
     public function extends(string $layout) : void
     {
         $this->layout = $layout;
+        $this->layoutUsePrefix = true;
+    }
+
+    public function extendsWithoutPrefix(string $layout) : void
+    {
+        $this->layout = $layout;
+        $this->layoutUsePrefix = false;
     }
 
     public function isExtending(string $layout) : bool
@@ -255,5 +267,14 @@ class View
     public function include(string $view, array $variables = []) : void
     {
         echo $this->render($this->getIncludePrefix() . $view, $variables);
+    }
+
+    /**
+     * @param string $view
+     * @param array<string,mixed> $variables
+     */
+    public function includeWithoutPrefix(string $view, array $variables = []) : void
+    {
+        echo $this->render($view, $variables);
     }
 }

@@ -3,7 +3,7 @@
  * @var string $name
  * @var Framework\MVC\View $view
  */
-$view->extends('default');
+$view->extendsWithoutPrefix('layouts/default');
 $view->block('contents');
 ?>
     <div>CONTENTS - <?= $name ?></div>
