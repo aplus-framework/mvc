@@ -89,11 +89,16 @@ final class ViewTest extends TestCase
         echo 'bar';
         $this->view->endBlock();
         self::assertSame('bar', $this->view->renderBlock('foo'));
+        $this->view->removeBlock('foo');
+        self::assertSame('', $this->view->renderBlock('foo'));
     }
 
     public function testBlockNotFound() : void
     {
         self::assertSame('', $this->view->renderBlock('foo'));
+        $this->expectWarning();
+        $this->expectWarningMessage('Trying to remove a block that is not set: foo');
+        $this->view->removeBlock('foo');
     }
 
     public function testLayout() : void
