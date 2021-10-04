@@ -9,6 +9,7 @@
  */
 namespace Framework\MVC;
 
+use BadMethodCallException;
 use Framework\Autoload\Autoloader;
 use Framework\Autoload\Locator;
 use Framework\Cache\Cache;
@@ -56,6 +57,21 @@ class App
             throw new LogicException('App already initialized');
         }
         static::$config = $config;
+    }
+
+    /**
+     * @param string $method
+     * @param array<int,mixed> $arguments
+     *
+     * @return mixed
+     */
+    public function __call(string $method, array $arguments) : mixed
+    {
+        if (\method_exists($this, $method)) {
+            return $this->{$method}(...$arguments);
+        }
+        $class = static::class;
+        throw new BadMethodCallException("Call to undefined method {$class}::{$method}()");
     }
 
     protected function prepareExceptionHandler() : void
