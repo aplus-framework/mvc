@@ -159,6 +159,38 @@ final class ViewTest extends TestCase
         self::assertSame('', $this->view->getLayoutPrefix());
     }
 
+    public function testInclude() : void
+    {
+        $html = "<h1>Block</h1>\n";
+        $this->view->setIncludePrefix('include');
+        \ob_start();
+        $this->view->include('block');
+        $contents = \ob_get_clean();
+        self::assertSame($html, $contents);
+        $html = "<h1>Block</h1>\nFoo Bar";
+        $this->view->setIncludePrefix('include');
+        \ob_start();
+        $this->view->include('block', ['data' => 'Foo Bar']);
+        $contents = \ob_get_clean();
+        self::assertSame($html, $contents);
+    }
+
+    public function testIncludeWithoutPrefix() : void
+    {
+        $html = "<h1>Block</h1>\n";
+        $this->view->setIncludePrefix('include');
+        \ob_start();
+        $this->view->includeWithoutPrefix('include/block');
+        $contents = \ob_get_clean();
+        self::assertSame($html, $contents);
+        $html = "<h1>Block</h1>\nFoo Bar";
+        $this->view->setIncludePrefix('include');
+        \ob_start();
+        $this->view->includeWithoutPrefix('include/block', ['data' => 'Foo Bar']);
+        $contents = \ob_get_clean();
+        self::assertSame($html, $contents);
+    }
+
     public function testIncludePrefix() : void
     {
         self::assertSame('', $this->view->getIncludePrefix());
