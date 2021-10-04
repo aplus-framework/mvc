@@ -101,6 +101,26 @@ final class ViewTest extends TestCase
         $this->view->removeBlock('foo');
     }
 
+    public function testEndBlockWhenNoneIsOpen() : void
+    {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Trying to end a view block when none is open');
+        $this->view->endBlock();
+    }
+
+    public function testBlockWasNotEnded() : void
+    {
+        $this->view->block('foo');
+        $this->view->block('bar');
+        \ob_end_clean();
+        \ob_end_clean();
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage(
+            "Trying to destruct a View instance while the following blocks stayed open: 'foo', 'bar'"
+        );
+        unset($this->view);
+    }
+
     public function testLayout() : void
     {
         $html = <<<'EOL'
