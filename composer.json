@@ -56,6 +56,11 @@
         "phpstan/phpstan": "^0.12",
         "phpunit/phpunit": "^9.5"
     },
+    "suggest": {
+        "aplus/coding-standard": "Aplus Framework Coding Standard Library",
+        "aplus/front": "Aplus Framework Front Library",
+        "aplus/testing": "Aplus Framework Testing Library"
+    },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
