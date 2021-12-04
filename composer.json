@@ -18,7 +18,7 @@
         "rest",
         "restfull"
     ],
-    "homepage": "https://docs.aplus-framework.com/guides/libraries/mvc/",
+    "homepage": "https://aplus-framework.com/packages/mvc",
     "license": "MIT",
     "authors": [
         {
@@ -81,13 +81,13 @@
     "support": {
         "email": "support@aplus-framework.com",
         "issues": "https://gitlab.com/aplus-framework/libraries/mvc/issues",
-        "wiki": "https://gitlab.com/aplus-framework/libraries/mvc/wikis/home",
+        "forum": "https://aplus-framework.com/forum",
         "source": "https://gitlab.com/aplus-framework/libraries/mvc",
         "docs": "https://docs.aplus-framework.com/guides/libraries/mvc/"
     },
     "funding": [
         {
-            "type": "other",
+            "type": "Aplus Sponsor",
             "url": "https://aplus-framework.com/sponsor"
         }
     ]
