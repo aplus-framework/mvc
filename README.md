@@ -2,6 +2,7 @@
 
 # Aplus Framework MVC Library
 
+- [Homepage](https://aplus-framework.com/packages/mvc)
 - [User Guide](https://docs.aplus-framework.com/guides/libraries/mvc/index.html)
 - [API Documentation](https://docs.aplus-framework.com/packages/mvc.html)
 
