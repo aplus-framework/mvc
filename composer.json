@@ -1,7 +1,8 @@
 {
     "name": "aplus/mvc",
-    "type": "library",
     "description": "Aplus Framework MVC Library",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "app",
         "application",
@@ -18,13 +19,25 @@
         "rest",
         "restfull"
     ],
-    "homepage": "https://aplus-framework.com/packages/mvc",
-    "license": "MIT",
     "authors": [
         {
             "name": "Natan Felles",
             "email": "natanfelles@gmail.com",
             "homepage": "https://natanfelles.github.io"
+        }
+    ],
+    "homepage": "https://aplus-framework.com/packages/mvc",
+    "support": {
+        "email": "support@aplus-framework.com",
+        "issues": "https://gitlab.com/aplus-framework/libraries/mvc/issues",
+        "forum": "https://aplus-framework.com/forum",
+        "source": "https://gitlab.com/aplus-framework/libraries/mvc",
+        "docs": "https://docs.aplus-framework.com/guides/libraries/mvc/"
+    },
+    "funding": [
+        {
+            "type": "Aplus Sponsor",
+            "url": "https://aplus-framework.com/sponsor"
         }
     ],
     "require": {
@@ -61,11 +74,8 @@
         "aplus/front": "Aplus Framework Front Library",
         "aplus/testing": "Aplus Framework Testing Library"
     },
-    "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
-        "sort-packages": true
-    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Framework\\MVC\\": "src/"
@@ -76,19 +86,9 @@
             "Tests\\MVC\\": "tests/"
         }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "support": {
-        "email": "support@aplus-framework.com",
-        "issues": "https://gitlab.com/aplus-framework/libraries/mvc/issues",
-        "forum": "https://aplus-framework.com/forum",
-        "source": "https://gitlab.com/aplus-framework/libraries/mvc",
-        "docs": "https://docs.aplus-framework.com/guides/libraries/mvc/"
-    },
-    "funding": [
-        {
-            "type": "Aplus Sponsor",
-            "url": "https://aplus-framework.com/sponsor"
-        }
-    ]
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    }
 }
