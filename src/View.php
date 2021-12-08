@@ -195,13 +195,14 @@ class View
         return $contents;
     }
 
-    public function block(string $name) : void
+    public function block(string $name) : static
     {
         $this->openBlocks[] = $name;
         \ob_start();
+        return $this;
     }
 
-    public function endBlock() : void
+    public function endBlock() : static
     {
         if (empty($this->openBlocks)) {
             throw new LogicException('Trying to end a view block when none is open');
@@ -214,6 +215,7 @@ class View
             );
         }
         $this->blocks[$endedBlock] = (string) $contents;
+        return $this;
     }
 
     public function renderBlock(string $name) : string
@@ -226,7 +228,7 @@ class View
         return isset($this->blocks[$name]);
     }
 
-    public function removeBlock(string $name) : void
+    public function removeBlock(string $name) : static
     {
         if ( ! $this->hasBlock($name)) {
             \trigger_error(
@@ -235,6 +237,7 @@ class View
             );
         }
         unset($this->blocks[$name]);
+        return $this;
     }
 
     public function inBlock(string $name) : bool
@@ -243,16 +246,18 @@ class View
             && \in_array($name, $this->openBlocks, true);
     }
 
-    public function extends(string $layout) : void
+    public function extends(string $layout) : static
     {
         $this->layout = $layout;
         $this->layoutUsePrefix = true;
+        return $this;
     }
 
-    public function extendsWithoutPrefix(string $layout) : void
+    public function extendsWithoutPrefix(string $layout) : static
     {
         $this->layout = $layout;
         $this->layoutUsePrefix = false;
+        return $this;
     }
 
     public function isExtending(string $layout) : bool
@@ -263,18 +268,24 @@ class View
     /**
      * @param string $view
      * @param array<string,mixed> $variables
+     *
+     * @return static
      */
-    public function include(string $view, array $variables = []) : void
+    public function include(string $view, array $variables = []) : static
     {
         echo $this->render($this->getIncludePrefix() . $view, $variables);
+        return $this;
     }
 
     /**
      * @param string $view
      * @param array<string,mixed> $variables
+     *
+     * @return static
      */
-    public function includeWithoutPrefix(string $view, array $variables = []) : void
+    public function includeWithoutPrefix(string $view, array $variables = []) : static
     {
         echo $this->render($view, $variables);
+        return $this;
     }
 }
