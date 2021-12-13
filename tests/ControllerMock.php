@@ -42,8 +42,9 @@ class ControllerMock extends Controller
         array $data,
         array $rules,
         array $labels = [],
-        array $messages = []
+        array $messages = [],
+        string $instance = 'default'
     ) : array {
-        return parent::validate($data, $rules, $labels, $messages);
+        return parent::validate($data, $rules, $labels, $messages, $instance);
     }
 }

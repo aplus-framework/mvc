@@ -95,6 +95,7 @@ abstract class Controller extends RouteActions
      * @param array<string,array<string,string>> $messages A multi-dimensional
      * array with field names as keys and values as arrays where the keys are
      * rule names and values are the custom error message strings
+     * @param string $instance The Validation service instance name
      *
      * @return array<string,string> An empty array if validation pass or an
      * associative array with field names as keys and error messages as values
@@ -103,11 +104,13 @@ abstract class Controller extends RouteActions
         array $data,
         array $rules,
         array $labels = [],
-        array $messages = []
+        array $messages = [],
+        string $instance = 'default'
     ) : array {
-        return App::validation()->setRules($rules)->setLabels($labels)
+        $validation = App::validation($instance);
+        return $validation->setRules($rules)->setLabels($labels)
             ->setMessages($messages)->validate($data)
             ? []
-            : App::validation()->getErrors();
+            : $validation->getErrors();
     }
 }
