@@ -640,13 +640,12 @@ abstract class Model implements ModelInterface
 
     protected function getValidation() : Validation
     {
-        return $this->validation
-            ?? ($this->validation = new Validation(
-                $this->getValidationValidators(),
-                App::language($this->getLanguageInstance())
-            ))->setRules($this->getValidationRules())
-                ->setLabels($this->getValidationLabels())
-                ->setMessages($this->getValidationMessages());
+        return $this->validation ??= (new Validation(
+            $this->getValidationValidators(),
+            App::language($this->getLanguageInstance())
+        ))->setRules($this->getValidationRules())
+            ->setLabels($this->getValidationLabels())
+            ->setMessages($this->getValidationMessages());
     }
 
     /**
