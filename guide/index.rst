@@ -1,6 +1,9 @@
 MVC
 ===
 
+.. image:: image.png
+    :alt: Aplus Framework MVC Library
+
 Aplus Framework MVC (Model-View-Controller) Library.
 
 - `Installation`_
