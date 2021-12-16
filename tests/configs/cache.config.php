@@ -14,7 +14,7 @@ return [
     'default' => [
         'class' => FilesCache::class,
         'configs' => [
-            'directory' => sys_get_temp_dir(),
+            'directory' => getenv('GITHUB_ACTION') ? getenv('RUNNER_TEMP') : sys_get_temp_dir(),
         ],
         'prefix' => null,
         'serializer' => Cache::SERIALIZER_PHP,
