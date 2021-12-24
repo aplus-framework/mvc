@@ -318,7 +318,7 @@ class App
         $service = new AntiCSRF(static::request($config['request_instance'] ?? 'default'));
         $service->setTokenName($config['token_name']);
         $config['enabled'] ? $service->enable() : $service->disable();
-        return static::setService('csrf', $service, $instance);
+        return static::setService('anti-csrf', $service, $instance);
     }
 
     /**
