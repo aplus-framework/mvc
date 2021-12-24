@@ -168,10 +168,35 @@ final class AppTest extends TestCase
         self::assertStringContainsString('Commands', Stdout::getContents());
     }
 
+    public function testRunCliWithDeferred() : void
+    {
+        App::config()->set('console', ['enabled' => true]);
+        $var = null;
+        Stdout::init();
+        $this->app->runCli(static function ($app) use (&$var) : void {
+            self::assertInstanceOf(App::class, $app);
+            $var = 'foo';
+        });
+        self::assertSame('foo', $var);
+        self::assertStringContainsString('Commands', Stdout::getContents());
+    }
+
     public function testRunHttp() : void
     {
         App::setIsCli(false);
         $this->app->runHttp();
+        self::assertTrue(App::response()->isSent());
+    }
+
+    public function testRunHttpWithDeferred() : void
+    {
+        App::setIsCli(false);
+        $var = null;
+        $this->app->runHttp(static function ($app) use (&$var) : void {
+            self::assertInstanceOf(App::class, $app);
+            $var = 'bar';
+        });
+        self::assertSame('bar', $var);
         self::assertTrue(App::response()->isSent());
     }
 
