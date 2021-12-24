@@ -549,7 +549,9 @@ class App
             );
         }
         $service = new Session($config['options'] ?? [], $saveHandler ?? null);
-        $service->start();
+        if (isset($config['auto_start']) && $config['auto_start'] === true) {
+            $service->start();
+        }
         return static::setService('session', $service, $instance);
     }
 

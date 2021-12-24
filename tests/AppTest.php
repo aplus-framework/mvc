@@ -238,6 +238,7 @@ final class AppTest extends TestCase
             'logger_instance' => 'default',
         ]);
         self::assertInstanceOf(Session::class, App::session());
+        self::assertFalse(App::session()->isActive());
         App::session()->foo = 'Foo'; // @phpstan-ignore-line
         self::assertSame('Foo', App::session()->foo);
     }
@@ -268,6 +269,7 @@ final class AppTest extends TestCase
             ],
         ]);
         self::assertInstanceOf(Session::class, App::session());
+        App::session()->start();
         App::session()->foo = 'Foo'; // @phpstan-ignore-line
         self::assertSame('Foo', App::session()->foo);
         App::session()->stop();

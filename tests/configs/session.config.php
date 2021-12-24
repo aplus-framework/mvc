@@ -21,5 +21,6 @@ return [
             'config' => [],
         ],
         'logger_instance' => 'default',
+        'auto_start' => true,
     ],
 ];
