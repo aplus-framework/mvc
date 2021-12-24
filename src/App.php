@@ -398,20 +398,18 @@ class App
         if (isset($config['fallback_level'])) {
             $service->setFallbackLevel($config['fallback_level']);
         }
-        if (isset($config['directories'])) {
-            $service->setDirectories($config['directories']);
-        } else {
-            $directories = [];
+        if ( ! isset($config['directories'])) {
+            $config['directories'] = [];
             foreach (static::autoloader($config['autoloader_instance'] ?? 'default')
                 ->getNamespaces() as $directory) {
-                $directory = "{$directory}Languages";
+                $directory .= 'Languages';
                 if (\is_dir($directory)) {
-                    $directories[] = $directory;
+                    $config['directories'][] = $directory;
                 }
             }
-            if ($directories) {
-                $service->setDirectories($directories);
-            }
+        }
+        if ($config['directories']) {
+            $service->setDirectories($config['directories']);
         }
         $service->addDirectory(__DIR__ . '/Languages');
         return static::setService('language', $service, $instance);
