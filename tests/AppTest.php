@@ -235,6 +235,7 @@ final class AppTest extends TestCase
                     'directory' => \sys_get_temp_dir(),
                 ],
             ],
+            'logger_instance' => 'default',
         ]);
         self::assertInstanceOf(Session::class, App::session());
         App::session()->foo = 'Foo'; // @phpstan-ignore-line

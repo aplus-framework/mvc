@@ -12,7 +12,7 @@ use Framework\Debug\ExceptionHandler;
 return [
     'default' => [
         'environment' => ExceptionHandler::PRODUCTION,
-        'views_dir' => null,
+        'views_dir' => __DIR__ . '/../Views',
         'logger_instance' => 'default',
         'language_instance' => 'default',
     ],
