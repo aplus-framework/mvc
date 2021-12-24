@@ -41,14 +41,14 @@ class Validator extends \Framework\Validation\Validator
         if ($column === null || $column === '') {
             $column = $field;
         }
-        $result = App::database($connection)
+        // @phpstan-ignore-next-line
+        return App::database($connection)
             ->select()
-            ->columns($column)
+            ->expressions(['count' => static fn () => 'COUNT(*)'])
             ->from($table)
             ->whereEqual($column, $value)
             ->limit(1)
-            ->run();
-        return (bool) $result->numRows();
+            ->run()->fetch()->count > 0;
     }
 
     /**
