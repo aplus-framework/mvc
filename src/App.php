@@ -110,9 +110,10 @@ class App
     public function runHttp(callable $deferred = null) : void
     {
         $this->prepareToRun($deferred);
-        static::router()
-            ->match()
-            ->run(static::request(), static::response())
+        $router = static::router();
+        $response = $router->getResponse();
+        $router->match()
+            ->run($response->getRequest(), $response)
             ->send();
     }
 
