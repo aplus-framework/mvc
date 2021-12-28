@@ -184,7 +184,9 @@ final class AppTest extends TestCase
     public function testRunHttp() : void
     {
         App::setIsCli(false);
+        \ob_start();
         $this->app->runHttp();
+        \ob_end_clean();
         self::assertTrue(App::response()->isSent());
     }
 
@@ -192,10 +194,12 @@ final class AppTest extends TestCase
     {
         App::setIsCli(false);
         $var = null;
+        \ob_start();
         $this->app->runHttp(static function ($app) use (&$var) : void {
             self::assertInstanceOf(App::class, $app);
             $var = 'bar';
         });
+        \ob_end_clean();
         self::assertSame('bar', $var);
         self::assertTrue(App::response()->isSent());
     }
@@ -210,7 +214,9 @@ final class AppTest extends TestCase
     public function testAppIsAlreadyRunning() : void
     {
         $this->app::config()->set('console', ['enabled' => true]);
+        \ob_start();
         $this->app->runHttp();
+        \ob_end_clean();
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('App is already running');
         $this->app->runCli();
