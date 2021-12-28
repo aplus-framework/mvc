@@ -12,6 +12,9 @@
  */
 return [
     'default' => [
+        'files' => [
+            __DIR__ . '/routes.php',
+        ],
         'response_instance' => 'default',
         'language_instance' => 'default',
     ],

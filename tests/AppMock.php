@@ -23,11 +23,6 @@ class AppMock extends \Framework\MVC\App
         parent::__construct($config);
     }
 
-    public function prepareRoutes(string $instance = 'default') : void
-    {
-        parent::prepareRoutes($instance);
-    }
-
     public static function setConfigProperty(?Config $config) : void
     {
         static::$config = $config;

@@ -25,7 +25,6 @@ use Framework\HTTP\Response;
 use Framework\Language\Language;
 use Framework\Log\Logger;
 use Framework\MVC\View;
-use Framework\Routing\Route;
 use Framework\Routing\Router;
 use Framework\Session\Session;
 use Framework\Validation\Validation;
@@ -134,28 +133,6 @@ final class AppTest extends TestCase
         ], App::autoloader()->getClasses());
     }
 
-    public function testPrepareRoutes() : void
-    {
-        $this->app->prepareRoutes();
-        self::assertInstanceOf(Route::class, App::router()->getNamedRoute('home'));
-        App::config()->setMany([
-            'routes' => [
-                'default' => [],
-            ],
-        ]);
-        $this->app->prepareRoutes();
-        App::config()->setMany([
-            'routes' => [
-                'default' => [
-                    'file-not-found',
-                ],
-            ],
-        ]);
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('Invalid route file: file-not-found');
-        $this->app->prepareRoutes();
-    }
-
     public function testRunCli() : void
     {
         Stdout::init();
@@ -163,16 +140,11 @@ final class AppTest extends TestCase
         self::assertStringContainsString('Commands', Stdout::getContents());
     }
 
-    public function testRunCliWithDeferred() : void
+    public function testRunCliWithConsoleDisabled() : void
     {
-        $var = null;
         Stdout::init();
-        $this->app->runCli(static function ($app) use (&$var) : void {
-            self::assertInstanceOf(App::class, $app);
-            $var = 'foo';
-        });
-        self::assertSame('foo', $var);
-        self::assertStringContainsString('Commands', Stdout::getContents());
+        $this->app->runCli(['console' => false]);
+        self::assertSame('', Stdout::getContents());
     }
 
     public function testRunHttp() : void
@@ -184,18 +156,23 @@ final class AppTest extends TestCase
         self::assertTrue(App::response()->isSent());
     }
 
-    public function testRunHttpWithDeferred() : void
+    public function testRunHttpWithInvalidRouterFile() : void
+    {
+        $file = __DIR__ . '/foobar.php';
+        App::config()->add('router', ['files' => [$file]]);
+        App::setIsCli(false);
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Invalid router file: ' . $file);
+        $this->app->runHttp();
+    }
+
+    public function testRunHttpWithRouterDisabled() : void
     {
         App::setIsCli(false);
-        $var = null;
         \ob_start();
-        $this->app->runHttp(static function ($app) use (&$var) : void {
-            self::assertInstanceOf(App::class, $app);
-            $var = 'bar';
-        });
+        $this->app->runHttp(['router' => false]);
         \ob_end_clean();
-        self::assertSame('bar', $var);
-        self::assertTrue(App::response()->isSent());
+        self::assertFalse(App::response()->isSent());
     }
 
     public function testAppAlreadyInitialized() : void

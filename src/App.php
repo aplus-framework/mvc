@@ -74,36 +74,24 @@ class App
         throw new BadMethodCallException("Call to undefined method {$class}::{$method}()");
     }
 
-    protected function prepareExceptionHandler() : void
-    {
-        $config = static::config()->get('exceptions');
-        $environment = $config['environment'] ?? ExceptionHandler::PRODUCTION;
-        $logger = null;
-        if (isset($config['logger_instance'])) {
-            $logger = static::logger($config['logger_instance']);
-        }
-        $exceptions = new ExceptionHandler(
-            $environment,
-            $logger,
-            static::language($config['language_instance'] ?? 'default')
-        );
-        if (isset($config['views_dir'])) {
-            $exceptions->setViewsDir($config['views_dir']);
-        }
-        $exceptions->initialize();
-    }
-
-    protected function prepareToRun(callable $deferred = null) : void
+    /**
+     * @param array<string,mixed> $options
+     *
+     * @return Router|null
+     */
+    protected function prepareToRun(array $options = []) : ?Router
     {
         if (static::$isRunning) {
             throw new LogicException('App is already running');
         }
         static::$isRunning = true;
-        static::autoloader();
-        $this->prepareExceptionHandler();
-        $this->prepareRoutes();
-        if ($deferred !== null) {
-            $deferred($this);
+        $options['autoloader'] ??= 'default';
+        if ($options['autoloader'] !== false) {
+            static::autoloader($options['autoloader']);
+        }
+        $options['exceptions'] ??= 'default';
+        if ($options['exceptions'] !== false) {
+            static::exceptions($options['exceptions']);
         }
         $options['router'] ??= 'default';
         if ($options['router'] !== false) {
@@ -112,21 +100,32 @@ class App
         return null;
     }
 
-    public function runHttp(callable $deferred = null) : void
+    /**
+     * @param array<string,mixed> $options
+     */
+    public function runHttp(array $options = []) : void
     {
-        $this->prepareToRun($deferred);
-        $router = static::router();
+        $router = $this->prepareToRun($options);
+        if ($router === null) {
+            return;
+        }
         $response = $router->getResponse();
         $router->match()
             ->run($response->getRequest(), $response)
             ->send();
     }
 
-    public function runCli(callable $deferred = null) : void
+    /**
+     * @param array<string,mixed> $options
+     */
+    public function runCli(array $options = []) : void
     {
         $this->setRequiredCliVars();
-        $this->prepareToRun($deferred);
-        static::console()->run();
+        $this->prepareToRun($options);
+        $options['console'] ??= 'default';
+        if ($options['console'] !== false) {
+            static::console($options['console'])->run();
+        }
     }
 
     /**
@@ -143,26 +142,6 @@ class App
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['HTTP_HOST'] = 'localhost';
         $_SERVER['REQUEST_URI'] = '/';
-    }
-
-    /**
-     * Load files to set routes.
-     *
-     * @param string $instance
-     */
-    protected function prepareRoutes(string $instance = 'default') : void
-    {
-        $files = static::config()->get('routes', $instance);
-        if ( ! $files) {
-            return;
-        }
-        $files = \array_unique($files);
-        foreach ($files as $file) {
-            if ( ! \is_file($file)) {
-                throw new LogicException('Invalid route file: ' . $file);
-            }
-            Isolation::require($file);
-        }
     }
 
     /**
@@ -522,14 +501,19 @@ class App
             return $service;
         }
         $config = static::config()->get('router', $instance);
-        return static::setService(
-            'router',
-            new Router(
-                static::response($config['response_instance'] ?? 'default'),
-                static::language($config['language_instance'] ?? 'default')
-            ),
-            $instance
-        );
+        $router = static::setService('router', new Router(
+            static::response($config['response_instance'] ?? 'default'),
+            static::language($config['language_instance'] ?? 'default')
+        ), $instance);
+        if (isset($config['files'])) {
+            foreach ($config['files'] as $file) {
+                if ( ! \is_file($file)) {
+                    throw new LogicException('Invalid router file: ' . $file);
+                }
+                Isolation::require($file);
+            }
+        }
+        return $router;
     }
 
     /**
