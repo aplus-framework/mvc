@@ -153,16 +153,8 @@ final class AppTest extends TestCase
         $this->app->prepareRoutes();
     }
 
-    public function testRunEmptyConsole() : void
-    {
-        Stdout::init();
-        $this->app->runCli();
-        self::assertSame('', Stdout::getContents());
-    }
-
     public function testRunCli() : void
     {
-        App::config()->set('console', ['enabled' => true]);
         Stdout::init();
         $this->app->runCli();
         self::assertStringContainsString('Commands', Stdout::getContents());
@@ -170,7 +162,6 @@ final class AppTest extends TestCase
 
     public function testRunCliWithDeferred() : void
     {
-        App::config()->set('console', ['enabled' => true]);
         $var = null;
         Stdout::init();
         $this->app->runCli(static function ($app) use (&$var) : void {

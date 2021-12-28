@@ -9,7 +9,6 @@
  */
 return [
     'default' => [
-        'enabled' => false,
         'language_instance' => 'default',
         'locator_instance' => 'default',
     ],

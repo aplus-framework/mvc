@@ -119,10 +119,6 @@ class App
 
     public function runCli(callable $deferred = null) : void
     {
-        $config = static::config()->get('console');
-        if ( ! isset($config['enabled']) || $config['enabled'] !== true) {
-            return;
-        }
         $this->setRequiredCliVars();
         $this->prepareToRun($deferred);
         static::console()->run();
