@@ -10,6 +10,7 @@
 namespace Tests\MVC;
 
 use Framework\Config\Config;
+use Framework\Language\Language;
 
 class AppMock extends \Framework\MVC\App
 {
@@ -30,5 +31,10 @@ class AppMock extends \Framework\MVC\App
     public static function setConfigProperty(?Config $config) : void
     {
         static::$config = $config;
+    }
+
+    public static function negotiateLanguage(Language $language, string $requestInstance = 'default') : string
+    {
+        return parent::negotiateLanguage($language, $requestInstance);
     }
 }

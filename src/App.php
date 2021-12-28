@@ -394,15 +394,9 @@ class App
         if (isset($config['supported'])) {
             $service->setSupportedLocales($config['supported']);
         }
-        if (isset($config['negotiate'])
-            && $config['negotiate'] === true
-            && ! static::isCli()
-        ) {
+        if (isset($config['negotiate']) && $config['negotiate'] === true) {
             $service->setCurrentLocale(
-                static::request($config['request_instance'] ?? 'default')
-                    ->negotiateLanguage(
-                        $service->getSupportedLocales()
-                    )
+                static::negotiateLanguage($service, $config['request_instance'] ?? 'default')
             );
         }
         if (isset($config['fallback_level'])) {
@@ -423,6 +417,26 @@ class App
         }
         $service->addDirectory(__DIR__ . '/Languages');
         return static::setService('language', $service, $instance);
+    }
+
+    protected static function negotiateLanguage(Language $language, string $requestInstance = 'default') : string
+    {
+        if (static::isCli()) {
+            $supported = \array_map('\strtolower', $language->getSupportedLocales());
+            $lang = \getenv('LANG');
+            if ($lang) {
+                $lang = \explode('.', $lang, 2);
+                $lang = \strtolower($lang[0]);
+                $lang = \strtr($lang, ['_' => '-']);
+                if (\in_array($lang, $supported, true)) {
+                    return $lang;
+                }
+            }
+            return $language->getDefaultLocale();
+        }
+        return static::request($requestInstance)->negotiateLanguage(
+            $language->getSupportedLocales()
+        );
     }
 
     /**

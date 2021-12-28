@@ -290,4 +290,26 @@ final class AppTest extends TestCase
             $timestamp
         );
     }
+
+    public function testNegotiateLanguage() : void
+    {
+        $language = new Language('es');
+        $language->setSupportedLocales([
+            'en',
+            'es',
+            'pt-br',
+        ]);
+        self::assertSame('es', App::negotiateLanguage($language));
+        \putenv('LANG=pt_BR.UTF-8');
+        self::assertSame('pt-br', App::negotiateLanguage($language));
+        \putenv('LANG=jp_JP.UTF-8');
+        self::assertSame('es', App::negotiateLanguage($language));
+        App::setIsCli(false);
+        self::assertSame('en', App::negotiateLanguage($language));
+        $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'pt-BR,es;q=0.8,en;q=0.5,en-US;q=0.3';
+        self::assertSame('pt-br', App::negotiateLanguage($language));
+        App::removeService('request');
+        $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'jp,es;q=0.8,en;q=0.5,en-US;q=0.3';
+        self::assertSame('es', App::negotiateLanguage($language));
+    }
 }
