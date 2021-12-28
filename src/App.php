@@ -105,6 +105,11 @@ class App
         if ($deferred !== null) {
             $deferred($this);
         }
+        $options['router'] ??= 'default';
+        if ($options['router'] !== false) {
+            return static::router($options['router']);
+        }
+        return null;
     }
 
     public function runHttp(callable $deferred = null) : void
@@ -299,6 +304,32 @@ class App
             unset($class);
         }
         return static::setService('console', $service, $instance);
+    }
+
+    public static function exceptions(string $instance = 'default') : ExceptionHandler
+    {
+        $service = static::getService('exceptions', $instance);
+        if ($service) {
+            return $service;
+        }
+        $config = static::config()->get('exceptions');
+        $environment = $config['environment'] ?? ExceptionHandler::PRODUCTION;
+        $logger = null;
+        if (isset($config['logger_instance'])) {
+            $logger = static::logger($config['logger_instance']);
+        }
+        $service = new ExceptionHandler(
+            $environment,
+            $logger,
+            static::language($config['language_instance'] ?? 'default')
+        );
+        if (isset($config['views_dir'])) {
+            $service->setViewsDir($config['views_dir']);
+        }
+        if (isset($config['initialize']) && $config['initialize'] === true) {
+            $service->initialize($config['handle_errors'] ?? true);
+        }
+        return static::setService('exceptions', $service, $instance);
     }
 
     /**

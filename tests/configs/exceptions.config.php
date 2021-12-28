@@ -13,6 +13,7 @@ return [
     'default' => [
         'environment' => ExceptionHandler::PRODUCTION,
         'views_dir' => __DIR__ . '/../Views',
+        'initialize' => true,
         'logger_instance' => 'default',
         'language_instance' => 'default',
     ],
