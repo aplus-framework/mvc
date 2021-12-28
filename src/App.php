@@ -210,7 +210,7 @@ class App
      * @param string $name
      * @param string|null $instance Instance name or null to remove all
      */
-    public static function removeService(string $name, ?string $instance) : void
+    public static function removeService(string $name, ?string $instance = 'default') : void
     {
         if ($instance === null) {
             unset(static::$services[$name]);

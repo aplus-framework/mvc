@@ -64,7 +64,7 @@ final class AppTest extends TestCase
         self::assertNull(App::getService('foo'));
         App::setService('foo', new \stdClass());
         self::assertInstanceOf(\stdClass::class, App::getService('foo'));
-        App::removeService('foo', 'default');
+        App::removeService('foo');
         self::assertNull(App::getService('foo'));
         App::setService('foo', new \stdClass());
         App::setService('foo', new \stdClass(), 'other');
