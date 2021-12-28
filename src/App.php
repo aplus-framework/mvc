@@ -49,14 +49,14 @@ class App
     /**
      * Initialize the App.
      *
-     * @param Config $config
+     * @param Config|null $config
      */
-    public function __construct(Config $config)
+    public function __construct(Config $config = null)
     {
         if (isset(static::$config)) {
             throw new LogicException('App already initialized');
         }
-        static::$config = $config;
+        static::$config = $config ?? new Config();
     }
 
     /**
