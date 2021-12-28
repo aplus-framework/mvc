@@ -257,10 +257,15 @@ class App
             return $service;
         }
         $config = static::config()->get('cache', $instance);
+        $logger = null;
+        if (isset($config['logger_instance'])) {
+            $logger = static::logger($config['logger_instance']);
+        }
         $service = new $config['class'](
-            $config['configs'],
-            $config['prefix'],
-            $config['serializer']
+            $config['configs'] ?? [],
+            $config['prefix'] ?? null,
+            $config['serializer'] ?? Cache::SERIALIZER_PHP,
+            $logger
         );
         return static::setService('cache', $service, $instance);
     }
@@ -316,8 +321,12 @@ class App
         $config = static::config()->get('anti-csrf', $instance);
         static::session($config['session_instance'] ?? 'default');
         $service = new AntiCSRF(static::request($config['request_instance'] ?? 'default'));
-        $service->setTokenName($config['token_name']);
-        $config['enabled'] ? $service->enable() : $service->disable();
+        if (isset($config['token_name'])) {
+            $service->setTokenName($config['token_name']);
+        }
+        if (isset($config['enabled']) && $config['enabled'] === false) {
+            $service->disable();
+        }
         return static::setService('anti-csrf', $service, $instance);
     }
 
@@ -453,7 +462,7 @@ class App
         $config = static::config()->get('logger', $instance);
         return static::setService(
             'logger',
-            new Logger($config['directory'], $config['level']),
+            new Logger($config['directory'], $config['level'] ?? Logger::DEBUG),
             $instance
         );
     }
@@ -594,7 +603,9 @@ class App
         }
         $service = new View();
         $config = static::config()->get('view', $instance);
-        $service->setBaseDir($config['base_dir']);
+        if (isset($config['base_dir'])) {
+            $service->setBaseDir($config['base_dir']);
+        }
         if (isset($config['extension'])) {
             $service->setExtension($config['extension']);
         }

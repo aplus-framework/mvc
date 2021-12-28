@@ -9,7 +9,7 @@
  */
 return [
     'default' => [
-        'enabled' => true,
+        'enabled' => false,
         'token_name' => 'csrf_token',
     ],
 ];
