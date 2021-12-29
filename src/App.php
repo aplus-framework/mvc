@@ -30,6 +30,7 @@ use Framework\Session\Session;
 use Framework\Validation\Validation;
 use LogicException;
 use ReflectionClass;
+use ReflectionException;
 
 /**
  * Class App.
@@ -255,7 +256,7 @@ class App
      *
      * @param string $instance
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      *
      * @return Console
      */
@@ -270,19 +271,45 @@ class App
             static::language($config['language_instance'] ?? 'default')
         );
         $locator = static::locator($config['locator_instance'] ?? 'default');
-        foreach ($locator->getFiles('Commands') as $file) {
-            $className = $locator->getClassName($file);
-            if (empty($className)) {
-                continue;
+        if (isset($config['find_in_namespaces']) && $config['find_in_namespaces'] === true) {
+            foreach ($locator->getFiles('Commands') as $file) {
+                static::addCommand($file, $service, $locator);
             }
-            $class = new ReflectionClass($className); // @phpstan-ignore-line
-            if ( ! $class->isInstantiable() || ! $class->isSubclassOf(Command::class)) {
-                continue;
+        }
+        if (isset($config['directories'])) {
+            foreach ($config['directories'] as $dir) {
+                foreach ($locator->listFiles($dir) as $file) {
+                    static::addCommand($file, $service, $locator);
+                }
             }
-            $service->addCommand(new $className($service));
-            unset($class);
         }
         return static::setService('console', $service, $instance);
+    }
+
+    /**
+     * @param string $file
+     * @param Console $console
+     * @param Locator $locator
+     *
+     * @throws ReflectionException
+     *
+     * @return bool
+     */
+    protected static function addCommand(string $file, Console $console, Locator $locator) : bool
+    {
+        $className = $locator->getClassName($file);
+        if ($className === null) {
+            return false;
+        }
+        if ( ! \class_exists($className)) {
+            Isolation::require($file);
+        }
+        $class = new ReflectionClass($className); // @phpstan-ignore-line
+        if ($class->isInstantiable() && $class->isSubclassOf(Command::class)) {
+            $console->addCommand($className);
+            return true;
+        }
+        return false;
     }
 
     public static function exceptions(string $instance = 'default') : ExceptionHandler
