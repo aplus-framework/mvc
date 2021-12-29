@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+use Framework\Language\Language;
+
 return [
     'default' => [
         'default' => 'en',
@@ -15,8 +17,9 @@ return [
             'es',
             'pt-br',
         ],
-        'fallback_level' => 2,
+        'fallback_level' => Language::FALLBACK_DEFAULT,
         'directories' => null,
         'negotiate' => true,
+        'find_in_namespaces' => true,
     ],
 ];

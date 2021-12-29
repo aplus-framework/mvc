@@ -408,8 +408,8 @@ class App
         if (isset($config['fallback_level'])) {
             $service->setFallbackLevel($config['fallback_level']);
         }
-        if ( ! isset($config['directories'])) {
-            $config['directories'] = [];
+        $config['directories'] ??= [];
+        if (isset($config['find_in_namespaces']) && $config['find_in_namespaces'] === true) {
             foreach (static::autoloader($config['autoloader_instance'] ?? 'default')
                 ->getNamespaces() as $directory) {
                 $directory .= 'Languages';
