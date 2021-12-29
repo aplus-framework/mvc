@@ -332,7 +332,8 @@ class App
         if (isset($config['views_dir'])) {
             $service->setViewsDir($config['views_dir']);
         }
-        if (isset($config['initialize']) && $config['initialize'] === true) {
+        $config['initialize'] ??= true;
+        if ($config['initialize'] === true) {
             $service->initialize($config['handle_errors'] ?? true);
         }
         return static::setService('exceptions', $service, $instance);
