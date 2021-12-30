@@ -12,6 +12,11 @@
  */
 return [
     'default' => [
+        'auto_options' => true,
+        'auto_methods' => true,
+        'placeholders' => [
+            'foo' => '(.*)',
+        ],
         'files' => [
             __DIR__ . '/routes.php',
         ],

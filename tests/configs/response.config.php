@@ -12,6 +12,15 @@
  */
 return [
     'default' => [
+        'headers' => [
+            'X-Version' => '3.6.9',
+        ],
+        'auto_etag' => true,
+        'auto_language' => true,
+        'cache' => [
+            'seconds' => 60,
+            'public' => true,
+        ],
         'request_instance' => 'default',
     ],
 ];

@@ -9,6 +9,8 @@
  */
 return [
     'default' => [
+        'register' => true,
+        'extensions' => '.php',
         'classes' => [],
         'namespaces' => [
             'Tests\\MVC' => dirname(__DIR__),

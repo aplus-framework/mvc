@@ -283,4 +283,10 @@ final class AppTest extends TestCase
         $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'jp,es;q=0.8,en;q=0.5,en-US;q=0.3';
         self::assertSame('es', App::negotiateLanguage($language));
     }
+
+    public function testResponse() : void
+    {
+        App::config()->add('response', ['cache' => false]);
+        self::assertSame(0, App::response()->getCacheSeconds());
+    }
 }

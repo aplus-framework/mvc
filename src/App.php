@@ -213,8 +213,8 @@ class App
         if ($service) {
             return $service;
         }
-        $service = new Autoloader();
         $config = static::config()->get('autoloader', $instance);
+        $service = new Autoloader($config['register'] ?? true, $config['extensions'] ?? '.php');
         if (isset($config['namespaces'])) {
             $service->setNamespaces($config['namespaces']);
         }
@@ -529,10 +529,19 @@ class App
             return $service;
         }
         $config = static::config()->get('router', $instance);
-        $router = static::setService('router', new Router(
+        $service = static::setService('router', new Router(
             static::response($config['response_instance'] ?? 'default'),
             static::language($config['language_instance'] ?? 'default')
         ), $instance);
+        if (isset($config['auto_options']) && $config['auto_options'] === true) {
+            $service->setAutoOptions();
+        }
+        if (isset($config['auto_methods']) && $config['auto_methods'] === true) {
+            $service->setAutoMethods();
+        }
+        if ( ! empty($config['placeholders'])) {
+            $service->addPlaceholder($config['placeholders']);
+        }
         if (isset($config['files'])) {
             foreach ($config['files'] as $file) {
                 if ( ! \is_file($file)) {
@@ -541,7 +550,7 @@ class App
                 Isolation::require($file);
             }
         }
-        return $router;
+        return $service;
     }
 
     /**
@@ -579,11 +588,22 @@ class App
             return $service;
         }
         $config = static::config()->get('response', $instance);
-        return static::setService(
-            'response',
-            new Response(static::request($config['request_instance'] ?? 'default')),
-            $instance
-        );
+        $service = new Response(static::request($config['request_instance'] ?? 'default'));
+        if ( ! empty($config['headers'])) {
+            $service->setHeaders($config['headers']);
+        }
+        if (isset($config['auto_etag']) && $config['auto_etag'] === true) {
+            $service->setAutoEtag();
+        }
+        if (isset($config['auto_language']) && $config['auto_language'] === true) {
+            $service->setContentLanguage(static::language()->getCurrentLocale());
+        }
+        if (isset($config['cache'])) {
+            $config['cache'] === false
+                ? $service->setNoCache()
+                : $service->setCache($config['cache']['seconds'], $config['cache']['public'] ?? false);
+        }
+        return static::setService('response', $service, $instance);
     }
 
     /**
@@ -654,14 +674,8 @@ class App
         if ($service) {
             return $service;
         }
-        $service = new View();
         $config = static::config()->get('view', $instance);
-        if (isset($config['base_dir'])) {
-            $service->setBaseDir($config['base_dir']);
-        }
-        if (isset($config['extension'])) {
-            $service->setExtension($config['extension']);
-        }
+        $service = new View($config['base_dir'] ?? null, $config['extension'] ?? '.php');
         if (isset($config['layout_prefix'])) {
             $service->setLayoutPrefix($config['layout_prefix']);
         }
