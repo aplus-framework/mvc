@@ -1,0 +1,70 @@
+<?php
+/*
+ * This file is part of Aplus Framework MVC Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace PHPSTORM_META;
+
+registerArgumentsSet(
+    'service_names',
+    'anti-csrf',
+    'autoloader',
+    'cache',
+    'console',
+    'database',
+    'exceptions',
+    'language',
+    'locator',
+    'logger',
+    'mailer',
+    'request',
+    'response',
+    'router',
+    'session',
+    'validation',
+    'view',
+);
+expectedArguments(
+    \Framework\Config\Config::get(),
+    0,
+    argumentsSet('service_names')
+);
+expectedArguments(
+    \Framework\Config\Config::set(),
+    0,
+    argumentsSet('service_names')
+);
+expectedArguments(
+    \Framework\Config\Config::add(),
+    0,
+    argumentsSet('service_names')
+);
+expectedArguments(
+    \Framework\Config\Config::getInstances(),
+    0,
+    argumentsSet('service_names')
+);
+expectedArguments(
+    \Framework\Config\Config::load(),
+    0,
+    argumentsSet('service_names')
+);
+expectedArguments(
+    \Framework\MVC\App::getService(),
+    0,
+    argumentsSet('service_names')
+);
+expectedArguments(
+    \Framework\MVC\App::setService(),
+    0,
+    argumentsSet('service_names')
+);
+expectedArguments(
+    \Framework\MVC\App::removeService(),
+    0,
+    argumentsSet('service_names')
+);
