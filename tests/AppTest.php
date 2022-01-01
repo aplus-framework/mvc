@@ -45,6 +45,21 @@ final class AppTest extends TestCase
         $this->app = new App(new Config(__DIR__ . '/configs', [], '.config.php'));
     }
 
+    public function testInitialization() : void
+    {
+        App::setConfigProperty(null);
+        new App(new Config());
+        App::setConfigProperty(null);
+        new App([]);
+        App::setConfigProperty(null);
+        new App(__DIR__ . '/configs');
+        App::setConfigProperty(null);
+        new App();
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('App already initialized');
+        new App();
+    }
+
     public function testCall() : void
     {
         $this->app->setRequiredCliVars(); // @phpstan-ignore-line
@@ -173,13 +188,6 @@ final class AppTest extends TestCase
         $this->app->runHttp(['router' => false]);
         \ob_end_clean();
         self::assertFalse(App::response()->isSent());
-    }
-
-    public function testAppAlreadyInitialized() : void
-    {
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('App already initialized');
-        (new App(new Config(__DIR__ . '/configs')));
     }
 
     public function testAppIsAlreadyRunning() : void

@@ -50,14 +50,17 @@ class App
     /**
      * Initialize the App.
      *
-     * @param Config|null $config
+     * @param array<string,mixed>|Config|string|null $config
      */
-    public function __construct(Config $config = null)
+    public function __construct(Config | array | string $config = null)
     {
         if (isset(static::$config)) {
             throw new LogicException('App already initialized');
         }
-        static::$config = $config ?? new Config();
+        if ( ! $config instanceof Config) {
+            $config = new Config($config);
+        }
+        static::$config = $config;
     }
 
     /**

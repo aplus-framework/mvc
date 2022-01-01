@@ -14,7 +14,10 @@ use Framework\Language\Language;
 
 class AppMock extends \Framework\MVC\App
 {
-    public function __construct(Config $config)
+    /**
+     * @param array<string,mixed>|Config|string|null $config
+     */
+    public function __construct(Config | array | string | null $config = null)
     {
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
         $_SERVER['REQUEST_METHOD'] = 'GET';
