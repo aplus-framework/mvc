@@ -28,6 +28,7 @@ use Framework\Language\Language;
 use Framework\Log\Logger;
 use Framework\Routing\Router;
 use Framework\Session\Session;
+use Framework\Validation\FilesValidator;
 use Framework\Validation\Validation;
 use LogicException;
 use ReflectionClass;
@@ -659,7 +660,10 @@ class App
         return static::setService(
             'validation',
             new Validation(
-                $config['validators'] ?? null,
+                $config['validators'] ?? [
+                    Validator::class,
+                    FilesValidator::class,
+                ],
                 static::language($config['language_instance'] ?? 'default')
             ),
             $instance
