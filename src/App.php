@@ -598,8 +598,11 @@ class App
         if ( ! empty($config['headers'])) {
             $service->setHeaders($config['headers']);
         }
-        if (isset($config['auto_etag']) && $config['auto_etag'] === true) {
-            $service->setAutoEtag();
+        if ( ! empty($config['auto_etag'])) {
+            $service->setAutoEtag(
+                $config['auto_etag']['active'] ?? true,
+                $config['auto_etag']['hash_algo'] ?? null
+            );
         }
         if (isset($config['auto_language']) && $config['auto_language'] === true) {
             $service->setContentLanguage(static::language()->getCurrentLocale());
