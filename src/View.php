@@ -36,6 +36,7 @@ class View
     protected array $openBlocks = [];
     protected ?string $layout = null;
     protected bool $layoutUsePrefix = true;
+    protected bool $cancelNextBlock = false;
 
     public function __construct(string $baseDir = null, string $extension = '.php')
     {
@@ -195,15 +196,24 @@ class View
         return $contents;
     }
 
-    public function block(string $name) : static
+    public function block(string $name, bool $overwrite = true) : static
     {
-        $this->openBlocks[] = $name;
         \ob_start();
+        if ($overwrite === false && $this->hasBlock($name)) {
+            $this->cancelNextBlock = true;
+            return $this;
+        }
+        $this->openBlocks[] = $name;
         return $this;
     }
 
     public function endBlock() : static
     {
+        if ($this->cancelNextBlock) {
+            $this->cancelNextBlock = false;
+            \ob_get_clean();
+            return $this;
+        }
         if (empty($this->openBlocks)) {
             throw new LogicException('Trying to end a view block when none is open');
         }
