@@ -218,9 +218,17 @@ class View
         return $this;
     }
 
-    public function renderBlock(string $name) : string
+    public function renderBlock(string $name) : ?string
     {
-        return $this->blocks[$name] ?? '';
+        if ( ! $this->hasBlock($name)) {
+            $trace = \debug_backtrace()[0];
+            \trigger_error(
+                'Trying to render block "' . $name . '" that is not set in '
+                . $trace['file'] . ' on  line ' . $trace['line'],
+                \E_USER_WARNING
+            );
+        }
+        return $this->blocks[$name] ?? null;
     }
 
     public function hasBlock(string $name) : bool
@@ -231,8 +239,10 @@ class View
     public function removeBlock(string $name) : static
     {
         if ( ! $this->hasBlock($name)) {
+            $trace = \debug_backtrace()[0];
             \trigger_error(
-                'Trying to remove a block that is not set: ' . $name,
+                'Trying to remove block "' . $name . '" that is not set in '
+                . $trace['file'] . ' on  line ' . $trace['line'],
                 \E_USER_WARNING
             );
         }
