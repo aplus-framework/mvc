@@ -37,6 +37,7 @@ class View
     protected ?string $layout = null;
     protected bool $layoutUsePrefix = true;
     protected bool $cancelNextBlock = false;
+    protected ?string $extendsWithBlock;
 
     public function __construct(string $baseDir = null, string $extension = '.php')
     {
@@ -191,6 +192,10 @@ class View
         }
         $this->layout = null;
         $this->layoutUsePrefix = true;
+        if (isset($this->extendsWithBlock)) {
+            unset($this->extendsWithBlock);
+            $this->endBlock();
+        }
         $contents = $this->render($view, $variables);
         \ob_end_clean();
         return $contents;
@@ -274,10 +279,14 @@ class View
         return null;
     }
 
-    public function extends(string $layout) : static
+    public function extends(string $layout, string $openBlock = null) : static
     {
         $this->layout = $layout;
         $this->layoutUsePrefix = true;
+        if ($openBlock !== null) {
+            $this->extendsWithBlock = $openBlock;
+            $this->block($openBlock);
+        }
         return $this;
     }
 
