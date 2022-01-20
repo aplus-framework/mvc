@@ -89,16 +89,62 @@ final class ViewTest extends TestCase
         echo 'bar';
         $this->view->endBlock();
         self::assertSame('bar', $this->view->renderBlock('foo'));
+        self::assertTrue($this->view->hasBlock('foo'));
         $this->view->removeBlock('foo');
-        self::assertSame('', $this->view->renderBlock('foo'));
+        self::assertFalse($this->view->hasBlock('foo'));
     }
 
-    public function testBlockNotFound() : void
+    public function testCurrentBlock() : void
     {
-        self::assertSame('', $this->view->renderBlock('foo'));
+        self::assertNull($this->view->currentBlock());
+        $this->view->block('foo');
+        self::assertSame('foo', $this->view->currentBlock());
+        $this->view->endBlock();
+        self::assertNull($this->view->currentBlock());
+        $this->view->block('bar');
+        self::assertSame('bar', $this->view->currentBlock());
+        $this->view->block('baz');
+        self::assertSame('baz', $this->view->currentBlock());
+        $this->view->endBlock();
+        self::assertSame('bar', $this->view->currentBlock());
+        $this->view->endBlock();
+        self::assertNull($this->view->currentBlock());
+    }
+
+    public function testBlockOverwrite() : void
+    {
+        $this->view->block('foo');
+        echo 'foo';
+        $this->view->endBlock();
+        self::assertSame('foo', $this->view->renderBlock('foo'));
+        $this->view->block('foo', false);
+        echo 'bar';
+        $this->view->endBlock();
+        self::assertSame('foo', $this->view->renderBlock('foo'));
+        $this->view->block('foo', true);
+        echo 'bar';
+        $this->view->endBlock();
+        self::assertSame('bar', $this->view->renderBlock('foo'));
+    }
+
+    public function testRemoveBlockWarning() : void
+    {
         $this->expectWarning();
-        $this->expectWarningMessage('Trying to remove a block that is not set: foo');
+        $this->expectWarningMessage(
+            'Trying to remove block "foo" that is not set in ' . __FILE__
+            . ' on  line ' . (__LINE__ + 2)
+        );
         $this->view->removeBlock('foo');
+    }
+
+    public function testRenderBlockWarning() : void
+    {
+        $this->expectWarning();
+        $this->expectWarningMessage(
+            'Trying to render block "foo" that is not set in ' . __FILE__
+            . ' on  line ' . (__LINE__ + 2)
+        );
+        $this->view->renderBlock('foo');
     }
 
     public function testEndBlockWhenNoneIsOpen() : void
@@ -182,6 +228,16 @@ final class ViewTest extends TestCase
         self::assertSame('foo/bar/', $this->view->getLayoutPrefix());
         $this->view->setLayoutPrefix('');
         self::assertSame('', $this->view->getLayoutPrefix());
+    }
+
+    public function testExtendsOpenBlock() : void
+    {
+        $contents = $this->view->render('extendsBlock');
+        self::assertStringContainsString(
+            'extends and open block',
+            $contents
+        );
+        self::assertStringContainsString('Foo', $contents);
     }
 
     public function testInclude() : void
