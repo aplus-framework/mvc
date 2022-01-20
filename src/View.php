@@ -266,6 +266,14 @@ class View
             && \in_array($name, $this->openBlocks, true);
     }
 
+    public function currentBlock() : ?string
+    {
+        if ($this->openBlocks) {
+            return $this->openBlocks[\array_key_last($this->openBlocks)];
+        }
+        return null;
+    }
+
     public function extends(string $layout) : static
     {
         $this->layout = $layout;
