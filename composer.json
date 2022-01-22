@@ -49,7 +49,7 @@
         "aplus/config": "^2.1",
         "aplus/database": "^2.10",
         "aplus/date": "^1.4",
-        "aplus/debug": "^2.2",
+        "aplus/debug": "^2.3",
         "aplus/email": "^2.2",
         "aplus/http": "^4.5",
         "aplus/language": "^1.7",
