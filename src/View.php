@@ -10,6 +10,7 @@
 namespace Framework\MVC;
 
 use Framework\Helpers\Isolation;
+use Framework\MVC\Debug\ViewCollector;
 use InvalidArgumentException;
 use LogicException;
 
@@ -38,6 +39,9 @@ class View
     protected bool $layoutUsePrefix = true;
     protected bool $cancelNextBlock = false;
     protected ?string $extendsWithBlock;
+    protected ViewCollector $debugCollector;
+    protected string $currentView;
+    protected string $currentLayout;
 
     public function __construct(string $baseDir = null, string $extension = '.php')
     {
@@ -163,20 +167,51 @@ class View
      */
     public function render(string $view, array $variables = []) : string
     {
-        $view = $this->getFilepath($view);
+        $debug = isset($this->debugCollector);
+        $contents = '';
+        if ($debug) {
+            $start = \microtime(true);
+            $type = isset($this->currentLayout) ? 'Layout' : 'View';
+            $contents .= '<!-- ' . $type . ' ' . $view . ' start -->';
+        }
+        $this->currentView = $view;
+        $viewFile = $this->getFilepath($view);
         $variables['view'] = $this;
         \ob_start();
-        Isolation::require($view, $variables);
+        Isolation::require($viewFile, $variables);
         if ($this->layout !== null) {
-            return $this->renderLayout($this->layout, $variables);
+            $contents .= $this->renderLayout($this->layout, $variables);
+            if ($debug) {
+                $contents .= '<!-- ' . $type . ' ' . $view . ' end -->'; // @phpstan-ignore-line
+                $this->setDebugData($view, $start, $viewFile, $type); // @phpstan-ignore-line
+            }
+            return $contents;
         }
-        $contents = \ob_get_clean();
-        if ($contents === false) {
+        $buffer = \ob_get_clean();
+        if ($buffer === false) {
             App::logger()->error(
-                'View::render could not get ob contents of "' . $view . '"'
+                'View::render could not get ob contents of "' . $viewFile . '"'
             );
         }
-        return (string) $contents;
+        $contents .= $buffer;
+        if ($debug) {
+            $contents .= '<!-- ' . $type . ' ' . $view . ' end -->'; // @phpstan-ignore-line
+            $this->setDebugData($view, $start, $viewFile, $type); // @phpstan-ignore-line
+        }
+        return $contents;
+    }
+
+    protected function setDebugData(string $file, float $start, string $filepath, string $type) : static
+    {
+        $end = \microtime(true);
+        $this->debugCollector->addData([
+            'start' => $start,
+            'end' => $end,
+            'file' => $file,
+            'filepath' => $filepath,
+            'type' => $type,
+        ]);
+        return $this;
     }
 
     /**
@@ -187,6 +222,7 @@ class View
      */
     protected function renderLayout(string $view, array $variables) : string
     {
+        $this->currentLayout = $view;
         if ($this->layoutUsePrefix) {
             $view = $this->getLayoutPrefix() . $view;
         }
@@ -207,6 +243,9 @@ class View
         if ($overwrite === false && $this->hasBlock($name)) {
             $this->cancelNextBlock = true;
             return $this;
+        }
+        if (isset($this->debugCollector)) {
+            echo '<!-- Block ' . $this->currentView . ':' . $name . ' start -->';
         }
         $this->openBlocks[] = $name;
         return $this;
@@ -230,6 +269,10 @@ class View
             );
         }
         $this->blocks[$endedBlock] = (string) $contents;
+        if (isset($this->debugCollector)) {
+            $this->blocks[$endedBlock] .= '<!-- Block ' . $this->currentView
+                . ':' . $endedBlock . ' end -->';
+        }
         return $this;
     }
 
@@ -323,6 +366,13 @@ class View
     public function includeWithoutPrefix(string $view, array $variables = []) : static
     {
         echo $this->render($view, $variables);
+        return $this;
+    }
+
+    public function setDebugCollector(ViewCollector $debugCollector) : static
+    {
+        $this->debugCollector = $debugCollector;
+        $this->debugCollector->setView($this);
         return $this;
     }
 }
