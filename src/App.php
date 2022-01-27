@@ -13,21 +13,33 @@ use BadMethodCallException;
 use Framework\Autoload\Autoloader;
 use Framework\Autoload\Locator;
 use Framework\Cache\Cache;
+use Framework\Cache\Debug\CacheCollector;
 use Framework\CLI\Command;
 use Framework\CLI\Console;
 use Framework\Config\Config;
 use Framework\Database\Database;
+use Framework\Database\Debug\DatabaseCollector;
+use Framework\Debug\Debugger;
 use Framework\Debug\ExceptionHandler;
+use Framework\Email\Debug\EmailCollector;
 use Framework\Email\Mailer;
 use Framework\Email\SMTP;
 use Framework\Helpers\Isolation;
 use Framework\HTTP\AntiCSRF;
+use Framework\HTTP\Debug\HTTPCollector;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
+use Framework\Language\Debug\LanguageCollector;
 use Framework\Language\Language;
+use Framework\Log\Debug\LogCollector;
 use Framework\Log\Logger;
+use Framework\MVC\Debug\AppCollector;
+use Framework\MVC\Debug\ViewCollector;
+use Framework\Routing\Debug\RoutingCollector;
 use Framework\Routing\Router;
+use Framework\Session\Debug\SessionCollector;
 use Framework\Session\Session;
+use Framework\Validation\Debug\ValidationCollector;
 use Framework\Validation\FilesValidator;
 use Framework\Validation\Validation;
 use LogicException;
@@ -48,6 +60,7 @@ class App
     protected static bool $isRunning = false;
     protected static ?Config $config;
     protected static ?bool $isCli = null;
+    protected static AppCollector $debugCollector;
 
     /**
      * Initialize the App.
@@ -134,6 +147,14 @@ class App
         }
     }
 
+    public function setDebugCollector(AppCollector $debugCollector) : static
+    {
+        static::$debugCollector = $debugCollector;
+        static::$debugCollector->setApp($this);
+        static::debugger()->addCollector(static::$debugCollector, 'App');
+        return $this;
+    }
+
     /**
      * Set default super-global vars required by some services.
      *
@@ -218,6 +239,25 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setAutoloader($instance);
+            $end = \microtime(true);
+            $service->setDebugCollector(name: $instance);
+            static::debugger()->addCollector($service->getDebugCollector(), 'Autoload');
+            static::$debugCollector->addData([
+                'service' => 'autoloader',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setAutoloader($instance);
+    }
+
+    protected static function setAutoloader(string $instance) : Autoloader
+    {
         $config = static::config()->get('autoloader', $instance);
         $service = new Autoloader($config['register'] ?? true, $config['extensions'] ?? '.php');
         if (isset($config['namespaces'])) {
@@ -242,6 +282,26 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setCache($instance);
+            $end = \microtime(true);
+            $collector = new CacheCollector($instance);
+            $service->setDebugCollector($collector);
+            static::debugger()->addCollector($collector, 'Cache');
+            static::$debugCollector->addData([
+                'service' => 'cache',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setCache($instance);
+    }
+
+    protected static function setCache(string $instance) : Cache
+    {
         $config = static::config()->get('cache', $instance);
         $logger = null;
         if (isset($config['logger_instance'])) {
@@ -317,6 +377,15 @@ class App
         return false;
     }
 
+    public static function debugger(string $instance = 'default') : Debugger
+    {
+        $service = static::getService('debugger', $instance);
+        if ($service) {
+            return $service;
+        }
+        return static::setService('debugger', new Debugger(), $instance);
+    }
+
     public static function exceptions(string $instance = 'default') : ExceptionHandler
     {
         $service = static::getService('exceptions', $instance);
@@ -382,6 +451,26 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setDatabase($instance);
+            $end = \microtime(true);
+            $collector = new DatabaseCollector($instance);
+            $service->setDebugCollector($collector);
+            static::debugger()->addCollector($collector, 'Database');
+            static::$debugCollector->addData([
+                'service' => 'database',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setDatabase($instance);
+    }
+
+    protected static function setDatabase(string $instance) : Database
+    {
         $config = static::config()->get('database', $instance);
         $logger = null;
         if (isset($config['logger_instance'])) {
@@ -407,6 +496,26 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setMailer($instance);
+            $end = \microtime(true);
+            $collector = new EmailCollector($instance);
+            $service->setDebugCollector($collector);
+            static::debugger()->addCollector($collector, 'Email');
+            static::$debugCollector->addData([
+                'service' => 'mailer',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setMailer($instance);
+    }
+
+    protected static function setMailer(string $instance) : Mailer
+    {
         $config = static::config()->get('mailer', $instance);
         $class = $config['class'] ?? SMTP::class;
         return static::setService(
@@ -429,6 +538,26 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setLanguage($instance);
+            $end = \microtime(true);
+            $collector = new LanguageCollector($instance);
+            $collector->setLanguage($service);
+            static::debugger()->addCollector($collector, 'Language');
+            static::$debugCollector->addData([
+                'service' => 'language',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setLanguage($instance);
+    }
+
+    protected static function setLanguage(string $instance) : Language
+    {
         $config = static::config()->get('language', $instance);
         $service = new Language($config['default'] ?? 'en');
         if (isset($config['supported'])) {
@@ -513,6 +642,26 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setLogger($instance);
+            $end = \microtime(true);
+            $collector = new LogCollector($instance);
+            $service->setDebugCollector($collector);
+            static::debugger()->addCollector($collector, 'Log');
+            static::$debugCollector->addData([
+                'service' => 'logger',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setLogger($instance);
+    }
+
+    protected static function setLogger(string $instance) : Logger
+    {
         $config = static::config()->get('logger', $instance);
         return static::setService(
             'logger',
@@ -534,7 +683,38 @@ class App
         if ($service) {
             return $service;
         }
-        $config = static::config()->get('router', $instance);
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $config = (array) static::config()->get('router', $instance);
+            $service = static::setRouter($instance, $config);
+            $collector = new RoutingCollector($instance);
+            $service->setDebugCollector($collector);
+            if (isset($config['files'])) {
+                static::requireRouterFiles($config['files']);
+            }
+            $end = \microtime(true);
+            static::debugger()->addCollector($collector, 'Routing');
+            static::$debugCollector->addData([
+                'service' => 'router',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setRouter($instance);
+    }
+
+    /**
+     * @param string $instance
+     * @param array<mixed>|null $config
+     *
+     * @return Router
+     */
+    protected static function setRouter(string $instance, array $config = null) : Router
+    {
+        $requireFiles = $config === null;
+        $config ??= static::config()->get('router', $instance);
         $service = static::setService('router', new Router(
             static::response($config['response_instance'] ?? 'default'),
             static::language($config['language_instance'] ?? 'default')
@@ -548,15 +728,23 @@ class App
         if ( ! empty($config['placeholders'])) {
             $service->addPlaceholder($config['placeholders']);
         }
-        if (isset($config['files'])) {
-            foreach ($config['files'] as $file) {
-                if ( ! \is_file($file)) {
-                    throw new LogicException('Invalid router file: ' . $file);
-                }
-                Isolation::require($file);
-            }
+        if ($requireFiles && isset($config['files'])) {
+            static::requireRouterFiles($config['files']);
         }
         return $service;
+    }
+
+    /**
+     * @param array<string> $files
+     */
+    protected static function requireRouterFiles(array $files) : void
+    {
+        foreach ($files as $file) {
+            if ( ! \is_file($file)) {
+                throw new LogicException('Invalid router file: ' . $file);
+            }
+            Isolation::require($file);
+        }
     }
 
     /**
@@ -572,6 +760,26 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setRequest($instance);
+            $end = \microtime(true);
+            $collector = new HTTPCollector($instance);
+            $collector->setRequest($service);
+            static::debugger()->addCollector($collector, 'HTTP');
+            static::$debugCollector->addData([
+                'service' => 'request',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setRequest($instance);
+    }
+
+    protected static function setRequest(string $instance) : Request
+    {
         $config = static::config()->get('request', $instance);
         return static::setService(
             'request',
@@ -593,6 +801,30 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setResponse($instance);
+            $end = \microtime(true);
+            $collection = static::debugger()->getCollection('HTTP');
+            foreach ($collection->getCollectors() as $collector) {
+                if ($collector->getName() === $instance) {
+                    $service->setDebugCollector($collector); // @phpstan-ignore-line
+                    break;
+                }
+            }
+            static::$debugCollector->addData([
+                'service' => 'response',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setResponse($instance);
+    }
+
+    protected static function setResponse(string $instance) : Response
+    {
         $config = static::config()->get('response', $instance);
         $service = new Response(static::request($config['request_instance'] ?? 'default'));
         if ( ! empty($config['headers'])) {
@@ -628,6 +860,26 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setSession($instance);
+            $end = \microtime(true);
+            $collector = new SessionCollector($instance);
+            $service->setDebugCollector($collector);
+            static::debugger()->addCollector($collector, 'Session');
+            static::$debugCollector->addData([
+                'service' => 'session',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setSession($instance);
+    }
+
+    protected static function setSession(string $instance) : Session
+    {
         $config = static::config()->get('session', $instance);
         if (isset($config['save_handler']['class'])) {
             $logger = null;
@@ -659,6 +911,26 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setValidation($instance);
+            $end = \microtime(true);
+            $collector = new ValidationCollector($instance);
+            $service->setDebugCollector($collector);
+            static::debugger()->addCollector($collector, 'Validation');
+            static::$debugCollector->addData([
+                'service' => 'validation',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setValidation($instance);
+    }
+
+    protected static function setValidation(string $instance) : Validation
+    {
         $config = static::config()->get('validation', $instance);
         return static::setService(
             'validation',
@@ -686,6 +958,26 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setView($instance);
+            $end = \microtime(true);
+            $collector = new ViewCollector($instance);
+            $service->setDebugCollector($collector);
+            static::debugger()->addCollector($collector, 'View');
+            static::$debugCollector->addData([
+                'service' => 'view',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setView($instance);
+    }
+
+    protected static function setView(string $instance) : View
+    {
         $config = static::config()->get('view', $instance);
         $service = new View($config['base_dir'] ?? null, $config['extension'] ?? '.php');
         if (isset($config['layout_prefix'])) {
@@ -718,5 +1010,10 @@ class App
     public static function setIsCli(bool $is) : void
     {
         static::$isCli = $is;
+    }
+
+    public static function isDebugging() : bool
+    {
+        return isset(static::$debugCollector);
     }
 }
