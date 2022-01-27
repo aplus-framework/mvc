@@ -249,9 +249,11 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * @param array<string,string> $data
+     * @template T
      *
-     * @return array<string,mixed>
+     * @param array<string,T> $data
+     *
+     * @return array<string,T>
      */
     protected function filterAllowedFields(array $data) : array
     {
@@ -458,9 +460,11 @@ abstract class Model implements ModelInterface
     /**
      * Convert data to array and filter allowed columns.
      *
-     * @param array<string,mixed>|Entity|stdClass $data
+     * @template T
      *
-     * @return array<string,mixed> The allowed columns
+     * @param array<string,T>|Entity|stdClass $data
+     *
+     * @return array<string,T> The allowed columns
      */
     protected function prepareData(array | Entity | stdClass $data) : array
     {
