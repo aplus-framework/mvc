@@ -44,8 +44,12 @@ class ViewCollector extends Collector
         if ( ! $this->hasData()) {
             return '<p>No view has been rendered.</p>';
         }
+        $data = $this->getData();
+        \usort($data, static function ($d1, $d2) {
+            return $d1['start'] <=> $d2['start'];
+        });
         \ob_start();
-        $count = \count($this->getData()); ?>
+        $count = \count($data); ?>
         <p>Total of <?= $count ?> rendered view file<?= $count > 1 ? 's' : '' ?>.</p>
         <table>
             <thead>
@@ -57,12 +61,12 @@ class ViewCollector extends Collector
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($this->getData() as $index => $data): ?>
-                <tr title="<?= \htmlentities($data['filepath']) ?>">
+            <?php foreach ($data as $index => $item): ?>
+                <tr title="<?= \htmlentities($item['filepath']) ?>">
                     <td><?= $index + 1 ?></td>
-                    <td><?= \htmlentities($data['file']) ?></td>
-                    <td><?= \htmlentities($data['type']) ?></td>
-                    <td><?= \round($data['end'] - $data['start'], 6) ?></td>
+                    <td><?= \htmlentities($item['file']) ?></td>
+                    <td><?= \htmlentities($item['type']) ?></td>
+                    <td><?= \round($item['end'] - $item['start'], 6) ?></td>
                 </tr>
             <?php endforeach ?>
             </tbody>
