@@ -63,6 +63,30 @@ class AppCollector extends Collector
         return $this;
     }
 
+    public function getActivities() : array
+    {
+        $activities = [];
+        $activities[] = [
+            'collector' => $this->getName(),
+            'class' => static::class,
+            'description' => 'Runtime',
+            'start' => $this->startTime,
+            'end' => $this->endTime,
+        ];
+        foreach ($this->getServices() as $service => $data) {
+            foreach ($data as $item) {
+                $activities[] = [
+                    'collector' => $this->getName(),
+                    'class' => static::class,
+                    'description' => 'Load service ' . $service . ':' . $item['name'],
+                    'start' => $item['start'],
+                    'end' => $item['end'],
+                ];
+            }
+        }
+        return $activities;
+    }
+
     public function getContents() : string
     {
         if ( ! isset($this->endTime)) {
