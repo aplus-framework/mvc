@@ -621,6 +621,11 @@ auto_etag
 auto_language
 """""""""""""
 
+language_instance
+"""""""""""""""""
+
+A `Language Service`_ instance name.
+
 cache
 """""
 

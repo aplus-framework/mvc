@@ -351,9 +351,11 @@ class App
             return $service;
         }
         $config = static::config()->get('console', $instance);
-        $service = new Console(
-            static::language($config['language_instance'] ?? 'default')
-        );
+        $language = null;
+        if (isset($config['language_instance'])) {
+            $language = static::language($config['language_instance']);
+        }
+        $service = new Console($language);
         $locator = static::locator($config['locator_instance'] ?? 'default');
         if (isset($config['find_in_namespaces']) && $config['find_in_namespaces'] === true) {
             foreach ($locator->getFiles('Commands') as $file) {
@@ -417,11 +419,11 @@ class App
         if (isset($config['logger_instance'])) {
             $logger = static::logger($config['logger_instance']);
         }
-        $service = new ExceptionHandler(
-            $environment,
-            $logger,
-            static::language($config['language_instance'] ?? 'default')
-        );
+        $language = null;
+        if (isset($config['language_instance'])) {
+            $language = static::language($config['language_instance']);
+        }
+        $service = new ExceptionHandler($environment, $logger, $language);
         if (isset($config['views_dir'])) {
             $service->setViewsDir($config['views_dir']);
         }
@@ -734,9 +736,13 @@ class App
     {
         $requireFiles = $config === null;
         $config ??= static::config()->get('router', $instance);
+        $language = null;
+        if (isset($config['language_instance'])) {
+            $language = static::language($config['language_instance']);
+        }
         $service = static::setService('router', new Router(
             static::response($config['response_instance'] ?? 'default'),
-            static::language($config['language_instance'] ?? 'default')
+            $language
         ), $instance);
         if (isset($config['auto_options']) && $config['auto_options'] === true) {
             $service->setAutoOptions();
@@ -856,7 +862,9 @@ class App
             );
         }
         if (isset($config['auto_language']) && $config['auto_language'] === true) {
-            $service->setContentLanguage(static::language()->getCurrentLocale());
+            $service->setContentLanguage(
+                static::language($config['language_instance'] ?? 'default')->getCurrentLocale()
+            );
         }
         if (isset($config['cache'])) {
             $config['cache'] === false
@@ -951,6 +959,10 @@ class App
     protected static function setValidation(string $instance) : Validation
     {
         $config = static::config()->get('validation', $instance);
+        $language = null;
+        if (isset($config['language_instance'])) {
+            $language = static::language($config['language_instance']);
+        }
         return static::setService(
             'validation',
             new Validation(
@@ -958,7 +970,7 @@ class App
                     Validator::class,
                     FilesValidator::class,
                 ],
-                static::language($config['language_instance'] ?? 'default')
+                $language
             ),
             $instance
         );
