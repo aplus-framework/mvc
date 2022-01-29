@@ -171,6 +171,19 @@ final class AppTest extends TestCase
         self::assertTrue(App::response()->isSent());
     }
 
+    public function testRunHttpWithOptions() : void
+    {
+        App::setIsCli(false);
+        \ob_start();
+        $this->app->runHttp([
+            'autoloader' => 'default',
+            'exceptions' => 'default',
+            'router' => 'default',
+        ]);
+        \ob_end_clean();
+        self::assertTrue(App::response()->isSent());
+    }
+
     public function testRunHttpWithInvalidRouterFile() : void
     {
         $file = __DIR__ . '/foobar.php';

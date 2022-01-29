@@ -116,7 +116,10 @@ class App
             throw new LogicException('App is already running');
         }
         static::$isRunning = true;
-        $options['autoloader'] ??= 'default';
+        if ( ! isset($options['autoloader'])) {
+            $configs = static::config()->getInstances('autoloader');
+            $options['autoloader'] = isset($configs['default']) ? 'default' : false;
+        }
         if ($options['autoloader'] !== false) {
             static::autoloader($options['autoloader']);
         }
