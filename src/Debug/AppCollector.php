@@ -10,6 +10,7 @@
 namespace Framework\MVC\Debug;
 
 use Framework\Debug\Collector;
+use Framework\Debug\Debugger;
 use Framework\MVC\App;
 use ReflectionClass;
 use ReflectionMethod;
@@ -101,7 +102,7 @@ class AppCollector extends Collector
         </p>
         <p>
             <strong>Memory:</strong> <?=
-            $this->convertSize($this->endMemory - $this->startMemory) ?>
+            Debugger::convertSize($this->endMemory - $this->startMemory) ?>
         </p>
         <h1>Services</h1>
         <h2>Loaded Service Instances</h2>
@@ -110,13 +111,6 @@ class AppCollector extends Collector
         <?php
         echo $this->renderAvailableServices();
         return \ob_get_clean(); // @phpstan-ignore-line
-    }
-
-    protected function convertSize(float | int $size) : string
-    {
-        $unit = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
-        $index = \floor(\log($size, 1024));
-        return \round($size / (1024 ** $index), 3) . ' ' . $unit[$index];
     }
 
     protected function renderLoadedServices() : string
