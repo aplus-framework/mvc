@@ -123,7 +123,15 @@ class App
         if ($options['autoloader'] !== false) {
             static::autoloader($options['autoloader']);
         }
-        $options['exceptions'] ??= 'default';
+        if ( ! isset($options['exceptions'])) {
+            $options['exceptions'] = 'default';
+            $configs = static::config()->getInstances('exceptions');
+            if ( ! isset($configs['default']) && isset(static::$debugCollector)) {
+                static::config()->set('exceptions', [
+                    'environment' => ExceptionHandler::DEVELOPMENT,
+                ]);
+            }
+        }
         if ($options['exceptions'] !== false) {
             static::exceptions($options['exceptions']);
         }
