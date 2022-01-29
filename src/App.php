@@ -66,9 +66,13 @@ class App
      * Initialize the App.
      *
      * @param array<string,mixed>|Config|string|null $config
+     * @param bool $debug
      */
-    public function __construct(Config | array | string $config = null)
+    public function __construct(Config | array | string $config = null, bool $debug = false)
     {
+        if ($debug) {
+            $this->debugStart();
+        }
         if (isset(static::$config)) {
             throw new LogicException('App already initialized');
         }
@@ -91,6 +95,14 @@ class App
         }
         $class = static::class;
         throw new BadMethodCallException("Call to undefined method {$class}::{$method}()");
+    }
+
+    protected function debugStart() : void
+    {
+        static::$debugCollector = new AppCollector();
+        static::$debugCollector->setStartTime()->setStartMemory();
+        static::$debugCollector->setApp($this);
+        static::debugger()->addCollector(static::$debugCollector, 'App');
     }
 
     /**
@@ -132,6 +144,21 @@ class App
         $router->match()
             ->run($response->getRequest(), $response)
             ->send();
+        if (isset(static::$debugCollector)) {
+            $this->debugEnd($router);
+        }
+    }
+
+    protected function debugEnd(Router $router) : void
+    {
+        static::$debugCollector->setEndTime()->setEndMemory();
+        $response = $router->getResponse();
+        if ( ! $response->hasDownload()
+            && ! $response->getRequest()->isAjax()
+            && \str_contains($response->getHeader('Content-Type'), 'text/html')
+        ) {
+            echo static::debugger()->renderDebugbar();
+        }
     }
 
     /**
@@ -145,14 +172,6 @@ class App
         if ($options['console'] !== false) {
             static::console($options['console'])->run();
         }
-    }
-
-    public function setDebugCollector(AppCollector $debugCollector) : static
-    {
-        static::$debugCollector = $debugCollector;
-        static::$debugCollector->setApp($this);
-        static::debugger()->addCollector(static::$debugCollector, 'App');
-        return $this;
     }
 
     /**
