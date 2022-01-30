@@ -10,7 +10,6 @@
 namespace Framework\MVC\Debug;
 
 use Framework\Debug\Collector;
-use Framework\MVC\View;
 
 /**
  * Class ViewCollector.
@@ -19,11 +18,19 @@ use Framework\MVC\View;
  */
 class ViewCollector extends Collector
 {
-    protected View $view;
+    /**
+     * @var array<string,mixed>
+     */
+    protected array $config;
 
-    public function setView(View $view) : static
+    /**
+     * @param array<string,mixed> $config
+     *
+     * @return static
+     */
+    public function setConfig(array $config) : static
     {
-        $this->view = $view;
+        $this->config = $config;
         return $this;
     }
 
@@ -44,13 +51,30 @@ class ViewCollector extends Collector
 
     public function getContents() : string
     {
-        if ( ! isset($this->view)) {
-            return '<p>A View instance has not been set on this collector.</p>';
-        }
-        \ob_start(); ?>
+        \ob_start();
+        if (isset($this->config['baseDir'])): ?>
+            <p><strong>Base Directory:</strong> <?= \htmlentities($this->config['baseDir']) ?></p>
+        <?php
+        endif;
+        if (isset($this->config['extension'])): ?>
+            <p><strong>Extension:</strong> <?= \htmlentities($this->config['extension']) ?></p>
+        <?php
+        endif;
+        if (isset($this->config['layoutPrefix']) && $this->config['layoutPrefix'] !== ''): ?>
+            <p><strong>Layout Prefix:</strong> <?= \htmlentities($this->config['layoutPrefix']) ?>
+            </p>
+        <?php
+        endif;
+        if (isset($this->config['includePrefix']) && $this->config['includePrefix'] !== ''): ?>
+            <p><strong>Include Prefix:</strong> <?= \htmlentities($this->config['includePrefix']) ?>
+            </p>
+        <?php
+        endif ?>
         <h1>Rendered Views</h1>
         <?php
-        echo $this->renderRenderedViews();
+        echo $this->hasData()
+            ? $this->renderRenderedViews()
+            : '<p>No view has been rendered.</p>';
         return \ob_get_clean(); // @phpstan-ignore-line
     }
 

@@ -372,7 +372,12 @@ class View
     public function setDebugCollector(ViewCollector $debugCollector) : static
     {
         $this->debugCollector = $debugCollector;
-        $this->debugCollector->setView($this);
+        $this->debugCollector->setConfig([
+            'baseDir' => $this->getBaseDir(),
+            'extension' => $this->getExtension(),
+            'layoutPrefix' => $this->getLayoutPrefix(),
+            'includePrefix' => $this->getIncludePrefix(),
+        ]);
         return $this;
     }
 }
