@@ -30,11 +30,11 @@ class ViewCollector extends Collector
     public function getActivities() : array
     {
         $activities = [];
-        foreach ($this->getData() as $data) {
+        foreach ($this->getSortedData() as $index => $data) {
             $activities[] = [
                 'collector' => $this->getName(),
                 'class' => static::class,
-                'description' => 'Render view ' . $data['file'],
+                'description' => 'Render view ' . $index + 1,
                 'start' => $data['start'],
                 'end' => $data['end'],
             ];
@@ -59,10 +59,7 @@ class ViewCollector extends Collector
         if ( ! $this->hasData()) {
             return '<p>No view has been rendered.</p>';
         }
-        $data = $this->getData();
-        \usort($data, static function ($d1, $d2) {
-            return $d1['start'] <=> $d2['start'];
-        });
+        $data = $this->getSortedData();
         \ob_start();
         $count = \count($data); ?>
         <p>Total of <?= $count ?> rendered view file<?= $count > 1 ? 's' : '' ?>.</p>
@@ -88,5 +85,17 @@ class ViewCollector extends Collector
         </table>
         <?php
         return \ob_get_clean(); // @phpstan-ignore-line
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    protected function getSortedData() : array
+    {
+        $data = $this->getData();
+        \usort($data, static function ($d1, $d2) {
+            return $d1['start'] <=> $d2['start'];
+        });
+        return $data;
     }
 }
