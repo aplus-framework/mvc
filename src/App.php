@@ -575,7 +575,7 @@ class App
             $service = static::setLanguage($instance);
             $end = \microtime(true);
             $collector = new LanguageCollector($instance);
-            $collector->setLanguage($service);
+            $service->setDebugCollector($collector);
             static::debugger()->addCollector($collector, 'Language');
             static::$debugCollector->addData([
                 'service' => 'language',
