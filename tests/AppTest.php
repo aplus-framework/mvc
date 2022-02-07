@@ -310,4 +310,33 @@ final class AppTest extends TestCase
         App::config()->add('response', ['cache' => false]);
         self::assertSame(0, App::response()->getCacheSeconds());
     }
+
+    public function testDebug() : void
+    {
+        App::setConfigProperty(null);
+        App::setIsCli(false);
+        $app = new App(
+            new Config(__DIR__ . '/configs', [], '.config.php'),
+            true
+        );
+        self::assertTrue(App::isDebugging());
+        App::antiCsrf();
+        App::autoloader();
+        App::cache();
+        App::database();
+        App::language();
+        App::locator();
+        App::logger();
+        App::mailer();
+        App::request();
+        App::response();
+        App::router();
+        App::session();
+        App::validation();
+        App::view();
+        \ob_start();
+        $app->runHttp();
+        $contents = \ob_get_clean();
+        self::assertStringContainsString('debugbar', $contents); // @phpstan-ignore-line
+    }
 }

@@ -16,14 +16,18 @@ class AppMock extends \Framework\MVC\App
 {
     /**
      * @param array<string,mixed>|Config|string|null $config
+     * @param bool $debug
      */
-    public function __construct(Config | array | string | null $config = null)
-    {
+    public function __construct(
+        Config | array | string | null $config = null,
+        bool $debug = false
+    ) {
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['HTTP_HOST'] = 'localhost:8080';
         $_SERVER['REQUEST_URI'] = '/contact';
-        parent::__construct($config);
+        parent::__construct($config, $debug);
     }
 
     public static function setConfigProperty(?Config $config) : void
