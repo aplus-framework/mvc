@@ -817,11 +817,11 @@ class App
     protected static function setRequest(string $instance) : Request
     {
         $config = static::config()->get('request', $instance);
-        return static::setService(
-            'request',
-            new Request($config['allowed_hosts'] ?? null),
-            $instance
-        );
+        $service = new Request($config['allowed_hosts'] ?? null);
+        if (isset($config['force_https']) && $config['force_https'] === true) {
+            $service->forceHttps();
+        }
+        return static::setService('request', $service, $instance);
     }
 
     /**
