@@ -282,7 +282,7 @@ class View
             $trace = \debug_backtrace()[0];
             \trigger_error(
                 'Trying to render block "' . $name . '" that is not set in '
-                . $trace['file'] . ' on  line ' . $trace['line'],
+                . $trace['file'] . ' on  line ' . $trace['line'], // @phpstan-ignore-line
                 \E_USER_WARNING
             );
         }
@@ -300,7 +300,7 @@ class View
             $trace = \debug_backtrace()[0];
             \trigger_error(
                 'Trying to remove block "' . $name . '" that is not set in '
-                . $trace['file'] . ' on  line ' . $trace['line'],
+                . $trace['file'] . ' on  line ' . $trace['line'], // @phpstan-ignore-line
                 \E_USER_WARNING
             );
         }

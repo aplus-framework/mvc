@@ -41,7 +41,7 @@ class ViewCollector extends Collector
             $activities[] = [
                 'collector' => $this->getName(),
                 'class' => static::class,
-                'description' => 'Render view ' . $index + 1,
+                'description' => 'Render view ' . ($index + 1),
                 'start' => $data['start'],
                 'end' => $data['end'],
             ];

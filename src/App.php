@@ -54,7 +54,7 @@ use ReflectionException;
 class App
 {
     /**
-     * @var array<string,array>
+     * @var array<string,array<string,mixed>>
      */
     protected static array $services = [];
     protected static bool $isRunning = false;
@@ -929,6 +929,7 @@ class App
                 $logger
             );
         }
+        // @phpstan-ignore-next-line
         $service = new Session($config['options'] ?? [], $saveHandler ?? null);
         if (isset($config['auto_start']) && $config['auto_start'] === true) {
             $service->start();

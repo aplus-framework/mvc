@@ -122,7 +122,7 @@ abstract class Model implements ModelInterface
      *
      * @see Validation::setRules
      *
-     * @var array<string,array|string>
+     * @var array<string,array<string>|string>
      */
     protected array $validationRules;
     /**
@@ -335,7 +335,7 @@ abstract class Model implements ModelInterface
      * @param int $page The current page
      * @param int $perPage Items per page
      *
-     * @return array<int,array|Entity|stdClass>
+     * @return array<int,array<mixed>|Entity|stdClass>
      */
     public function paginate(int $page, int $perPage = 10) : array
     {
@@ -442,7 +442,7 @@ abstract class Model implements ModelInterface
         if ($returnType === 'object' || $returnType === 'stdClass') {
             return (object) $data;
         }
-        return new $returnType($data);
+        return new $returnType($data); // @phpstan-ignore-line
     }
 
     /**
@@ -669,7 +669,7 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * @return array<string,array|string>
+     * @return array<string,array<string>|string>
      */
     protected function getValidationRules() : array
     {

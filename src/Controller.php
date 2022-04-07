@@ -63,7 +63,7 @@ abstract class Controller extends RouteActions
         $this->request = $request;
         $this->response = $response;
         if (isset($this->modelClass)) {
-            $this->model = new $this->modelClass();
+            $this->model = new $this->modelClass(); // @phpstan-ignore-line
         }
     }
 
@@ -88,7 +88,7 @@ abstract class Controller extends RouteActions
      * Validate data.
      *
      * @param array<string,mixed> $data The data to be validated
-     * @param array<string,array|string> $rules An associative array with field
+     * @param array<string,array<string>|string> $rules An associative array with field
      * as keys and values as rules
      * @param array<string,string> $labels An associative array with fields as
      * keys and label as values
