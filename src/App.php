@@ -454,11 +454,11 @@ class App
      */
     public static function antiCsrf(string $instance = 'default') : AntiCSRF
     {
-        $service = static::getService('anti-csrf', $instance);
+        $service = static::getService('antiCsrf', $instance);
         if ($service) {
             return $service;
         }
-        $config = static::config()->get('anti-csrf', $instance);
+        $config = static::config()->get('antiCsrf', $instance);
         static::session($config['session_instance'] ?? 'default');
         $service = new AntiCSRF(static::request($config['request_instance'] ?? 'default'));
         if (isset($config['token_name'])) {
@@ -467,7 +467,7 @@ class App
         if (isset($config['enabled']) && $config['enabled'] === false) {
             $service->disable();
         }
-        return static::setService('anti-csrf', $service, $instance);
+        return static::setService('antiCsrf', $service, $instance);
     }
 
     /**
