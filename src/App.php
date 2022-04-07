@@ -123,17 +123,17 @@ class App
         if ($options['autoloader'] !== false) {
             static::autoloader($options['autoloader']);
         }
-        if ( ! isset($options['exceptions'])) {
-            $options['exceptions'] = 'default';
-            $configs = static::config()->getInstances('exceptions');
+        if ( ! isset($options['exceptionHandler'])) {
+            $options['exceptionHandler'] = 'default';
+            $configs = static::config()->getInstances('exceptionHandler');
             if ( ! isset($configs['default']) && isset(static::$debugCollector)) {
-                static::config()->set('exceptions', [
+                static::config()->set('exceptionHandler', [
                     'environment' => ExceptionHandler::DEVELOPMENT,
                 ]);
             }
         }
-        if ($options['exceptions'] !== false) {
-            static::exceptions($options['exceptions']);
+        if ($options['exceptionHandler'] !== false) {
+            static::exceptionHandler($options['exceptionHandler']);
         }
         $options['router'] ??= 'default';
         if ($options['router'] !== false) {
@@ -418,13 +418,13 @@ class App
         return static::setService('debugger', new Debugger(), $instance);
     }
 
-    public static function exceptions(string $instance = 'default') : ExceptionHandler
+    public static function exceptionHandler(string $instance = 'default') : ExceptionHandler
     {
-        $service = static::getService('exceptions', $instance);
+        $service = static::getService('exceptionHandler', $instance);
         if ($service) {
             return $service;
         }
-        $config = static::config()->get('exceptions');
+        $config = static::config()->get('exceptionHandler');
         $environment = $config['environment'] ?? ExceptionHandler::PRODUCTION;
         $logger = null;
         if (isset($config['logger_instance'])) {
@@ -442,7 +442,7 @@ class App
         if ($config['initialize'] === true) {
             $service->initialize($config['handle_errors'] ?? true);
         }
-        return static::setService('exceptions', $service, $instance);
+        return static::setService('exceptionHandler', $service, $instance);
     }
 
     /**

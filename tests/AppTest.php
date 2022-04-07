@@ -101,8 +101,8 @@ final class AppTest extends TestCase
         self::assertInstanceOf(Cache::class, App::cache());
         self::assertInstanceOf(Console::class, App::console());
         self::assertInstanceOf(Console::class, App::console());
-        self::assertInstanceOf(ExceptionHandler::class, App::exceptions());
-        self::assertInstanceOf(ExceptionHandler::class, App::exceptions());
+        self::assertInstanceOf(ExceptionHandler::class, App::exceptionHandler());
+        self::assertInstanceOf(ExceptionHandler::class, App::exceptionHandler());
         self::assertInstanceOf(AntiCSRF::class, App::antiCsrf());
         self::assertInstanceOf(AntiCSRF::class, App::antiCsrf());
         self::assertInstanceOf(Console::class, App::console());
