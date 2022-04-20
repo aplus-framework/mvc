@@ -11,11 +11,11 @@
  * @see App::mailer()
  */
 
-use Framework\Email\SMTP;
+use Framework\Email\Mailers\SMTPMailer;
 
 return [
     'default' => [
-        'class' => SMTP::class,
+        'class' => SMTPMailer::class,
         'config' => [
             'server' => 'localhost',
             'port' => 587,
