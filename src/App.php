@@ -406,7 +406,7 @@ class App
         }
         $class = new ReflectionClass($className); // @phpstan-ignore-line
         if ($class->isInstantiable() && $class->isSubclassOf(Command::class)) {
-            $console->addCommand($className);
+            $console->addCommand($className); // @phpstan-ignore-line
             return true;
         }
         return false;

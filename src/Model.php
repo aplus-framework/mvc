@@ -581,7 +581,7 @@ abstract class Model implements ModelInterface
         if ($this->isCacheActive()) {
             $this->updateCachedRow($id);
         }
-        return $affectedRows;
+        return $affectedRows; // @phpstan-ignore-line
     }
 
     /**
@@ -616,7 +616,7 @@ abstract class Model implements ModelInterface
         if ($this->isCacheActive()) {
             $this->updateCachedRow($id);
         }
-        return $affectedRows;
+        return $affectedRows; // @phpstan-ignore-line
     }
 
     /**
@@ -639,7 +639,7 @@ abstract class Model implements ModelInterface
                 $this->getCacheKey([$this->getPrimaryKey() => $id])
             );
         }
-        return $affectedRows;
+        return $affectedRows; // @phpstan-ignore-line
     }
 
     protected function getValidation() : Validation
