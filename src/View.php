@@ -189,7 +189,7 @@ class View
         }
         $buffer = \ob_get_clean();
         if ($buffer === false) {
-            App::logger()->error(
+            App::logger()->logError(
                 'View::render could not get ob contents of "' . $viewFile . '"'
             );
         }
@@ -264,7 +264,7 @@ class View
         $endedBlock = \array_pop($this->openBlocks);
         $contents = \ob_get_clean();
         if ($contents === false) {
-            App::logger()->error(
+            App::logger()->logError(
                 'View::endBlock could not get ob contents of "' . $endedBlock . '"'
             );
         }

@@ -34,6 +34,8 @@ use Framework\Language\Debug\LanguageCollector;
 use Framework\Language\Language;
 use Framework\Log\Debug\LogCollector;
 use Framework\Log\Logger;
+use Framework\Log\Loggers\MultiFileLogger;
+use Framework\Log\LogLevel;
 use Framework\MVC\Debug\AppCollector;
 use Framework\MVC\Debug\ViewCollector;
 use Framework\Routing\Debug\RoutingCollector;
@@ -701,9 +703,14 @@ class App
     protected static function setLogger(string $instance) : Logger
     {
         $config = static::config()->get('logger', $instance);
+        $class = $config['class'] ?? MultiFileLogger::class;
         return static::setService(
             'logger',
-            new Logger($config['directory'], $config['level'] ?? Logger::DEBUG),
+            new $class(
+                $config['destination'],
+                $config['level'] ?? LogLevel::DEBUG,
+                $config['config'] ?? [],
+            ),
             $instance
         );
     }

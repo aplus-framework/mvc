@@ -7,11 +7,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use Framework\Log\Logger;
+use Framework\Log\Loggers\MultiFileLogger;
+use Framework\Log\LogLevel;
 
 return [
     'default' => [
-        'directory' => sys_get_temp_dir(),
-        'level' => Logger::DEBUG,
+        'class' => MultiFileLogger::class,
+        'destination' => sys_get_temp_dir(),
+        'level' => LogLevel::DEBUG,
     ],
 ];
