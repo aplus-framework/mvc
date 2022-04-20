@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use Framework\Language\Language;
+use Framework\Language\FallbackLevel;
 
 return [
     'default' => [
@@ -17,7 +17,7 @@ return [
             'es',
             'pt-br',
         ],
-        'fallback_level' => Language::FALLBACK_DEFAULT,
+        'fallback_level' => FallbackLevel::default,
         'directories' => null,
         'negotiate' => true,
         'find_in_namespaces' => true,
