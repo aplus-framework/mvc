@@ -610,10 +610,12 @@ class App
         $config['directories'] ??= [];
         if (isset($config['find_in_namespaces']) && $config['find_in_namespaces'] === true) {
             foreach (static::autoloader($config['autoloader_instance'] ?? 'default')
-                ->getNamespaces() as $directory) {
-                $directory .= 'Languages';
-                if (\is_dir($directory)) {
-                    $config['directories'][] = $directory;
+                ->getNamespaces() as $directories) {
+                foreach ($directories as $directory) {
+                    $directory .= 'Languages';
+                    if (\is_dir($directory)) {
+                        $config['directories'][] = $directory;
+                    }
                 }
             }
         }

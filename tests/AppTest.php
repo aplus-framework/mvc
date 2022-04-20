@@ -141,7 +141,7 @@ final class AppTest extends TestCase
             ],
         ]);
         self::assertSame([
-            __NAMESPACE__ => __DIR__ . '/',
+            __NAMESPACE__ => [__DIR__ . \DIRECTORY_SEPARATOR],
         ], App::autoloader()->getNamespaces());
         self::assertSame([
             __CLASS__ => __FILE__,
