@@ -436,8 +436,11 @@ class App
             $language = static::language($config['language_instance']);
         }
         $service = new ExceptionHandler($environment, $logger, $language);
-        if (isset($config['views_dir'])) {
-            $service->setViewsDir($config['views_dir']);
+        if (isset($config['development_view'])) {
+            $service->setDevelopmentView($config['development_view']);
+        }
+        if (isset($config['production_view'])) {
+            $service->setProductionView($config['production_view']);
         }
         $config['initialize'] ??= true;
         if ($config['initialize'] === true) {
