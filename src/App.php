@@ -14,6 +14,7 @@ use Framework\Autoload\Autoloader;
 use Framework\Autoload\Locator;
 use Framework\Cache\Cache;
 use Framework\Cache\Debug\CacheCollector;
+use Framework\Cache\Serializer;
 use Framework\CLI\Command;
 use Framework\CLI\Console;
 use Framework\Config\Config;
@@ -340,7 +341,7 @@ class App
         $service = new $config['class'](
             $config['configs'] ?? [],
             $config['prefix'] ?? null,
-            $config['serializer'] ?? Cache::SERIALIZER_PHP,
+            $config['serializer'] ?? Serializer::PHP,
             $logger
         );
         return static::setService('cache', $service, $instance);

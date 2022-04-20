@@ -7,8 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use Framework\Cache\Cache;
 use Framework\Cache\FilesCache;
+use Framework\Cache\Serializer;
 
 return [
     'default' => [
@@ -17,7 +17,7 @@ return [
             'directory' => getenv('GITHUB_ACTION') ? getenv('RUNNER_TEMP') : sys_get_temp_dir(),
         ],
         'prefix' => null,
-        'serializer' => Cache::SERIALIZER_PHP,
+        'serializer' => Serializer::PHP,
         'logger_instance' => 'default',
     ],
 ];
