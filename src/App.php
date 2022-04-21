@@ -9,7 +9,6 @@
  */
 namespace Framework\MVC;
 
-use BadMethodCallException;
 use Framework\Autoload\Autoloader;
 use Framework\Autoload\Locator;
 use Framework\Cache\Cache;
@@ -64,6 +63,15 @@ class App
     protected static ?Config $config;
     protected static ?bool $isCli = null;
     protected static AppCollector $debugCollector;
+    /**
+     * @var array<string,mixed>
+     */
+    protected static array $defaultServerVars = [
+        'REQUEST_METHOD' => 'GET',
+        'REQUEST_URI' => '/',
+        'SERVER_PROTOCOL' => 'HTTP/1.1',
+        'HTTP_HOST' => 'localhost',
+    ];
 
     /**
      * Initialize the App.
@@ -161,25 +169,8 @@ class App
 
     public function runCli() : void
     {
-        $this->setRequiredCliVars();
         $this->prepareToRun();
         static::console()->run();
-    }
-
-    /**
-     * Set default super-global vars required by some services.
-     *
-     * For example: To load Routes with Router, a Request instance is required
-     * and it requires some $_SERVER vars to be initialized.
-     *
-     * @return void
-     */
-    protected function setRequiredCliVars() : void
-    {
-        $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['HTTP_HOST'] = 'localhost';
-        $_SERVER['REQUEST_URI'] = '/';
     }
 
     /**
@@ -893,6 +884,15 @@ class App
     protected static function setRequest(string $instance) : Request
     {
         $config = static::config()->get('request', $instance);
+        if (static::isCli()) {
+            $vars = \array_replace(
+                static::$defaultServerVars,
+                $config['default_server_vars'] ?? []
+            );
+            foreach ($vars as $key => $value) {
+                $_SERVER[$key] = $value;
+            }
+        }
         $service = new Request($config['allowed_hosts'] ?? null);
         if (isset($config['force_https']) && $config['force_https'] === true) {
             $service->forceHttps();
