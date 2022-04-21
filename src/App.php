@@ -481,6 +481,23 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setAntiCsrf($instance);
+            $end = \microtime(true);
+            static::$debugCollector->addData([
+                'service' => 'antiCsrf',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setAntiCsrf($instance);
+    }
+
+    protected static function setAntiCsrf(string $instance) : AntiCSRF
+    {
         $config = static::config()->get('antiCsrf', $instance);
         static::session($config['session_instance'] ?? 'default');
         $service = new AntiCSRF(static::request($config['request_instance'] ?? 'default'));
