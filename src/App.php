@@ -167,6 +167,11 @@ class App
         }
     }
 
+    public function run() : void
+    {
+        static::isCli() ? $this->runCli() : $this->runHttp();
+    }
+
     public function runCli() : void
     {
         $this->prepareToRun();

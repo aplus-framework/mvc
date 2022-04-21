@@ -155,6 +155,28 @@ final class AppTest extends TestCase
         self::assertTrue(App::response()->isSent());
     }
 
+    public function testAutoRunCli() : void
+    {
+        App::setIsCli(true);
+        Stdout::init();
+        \ob_start();
+        $this->app->run();
+        \ob_end_clean();
+        self::assertFalse(App::response()->isSent());
+        self::assertStringContainsString('Commands', Stdout::getContents());
+    }
+
+    public function testAutoRunHttp() : void
+    {
+        App::setIsCli(false);
+        Stdout::init();
+        \ob_start();
+        $this->app->run();
+        \ob_end_clean();
+        self::assertTrue(App::response()->isSent());
+        self::assertStringNotContainsString('Commands', Stdout::getContents());
+    }
+
     public function testRunHttpWithInvalidRouterFile() : void
     {
         $file = __DIR__ . '/foobar.php';
