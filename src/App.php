@@ -678,6 +678,23 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setLocator($instance);
+            $end = \microtime(true);
+            static::$debugCollector->addData([
+                'service' => 'locator',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setLocator($instance);
+    }
+
+    protected static function setLocator(string $instance) : Locator
+    {
         $config = static::config()->get('locator', $instance);
         return static::setService(
             'locator',
