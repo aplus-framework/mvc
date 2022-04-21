@@ -418,6 +418,23 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setDebugger($instance);
+            $end = \microtime(true);
+            static::$debugCollector->addData([
+                'service' => 'debugger',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setDebugger($instance);
+    }
+
+    protected static function setDebugger(string $instance) : Debugger
+    {
         return static::setService('debugger', new Debugger(), $instance);
     }
 
