@@ -60,15 +60,6 @@ final class AppTest extends TestCase
         new App();
     }
 
-    public function testCall() : void
-    {
-        $this->app->setRequiredCliVars(); // @phpstan-ignore-line
-        self::assertSame('/', $_SERVER['REQUEST_URI']);
-        $this->expectException(\BadMethodCallException::class);
-        $this->expectExceptionMessage('Call to undefined method ' . $this->app::class . '::foo()');
-        $this->app->foo(); // @phpstan-ignore-line
-    }
-
     public function testConfigInstance() : void
     {
         self::assertInstanceOf(Config::class, App::config());
