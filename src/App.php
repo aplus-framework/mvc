@@ -364,6 +364,23 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setConsole($instance);
+            $end = \microtime(true);
+            static::$debugCollector->addData([
+                'service' => 'console',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setConsole($instance);
+    }
+
+    protected static function setConsole(string $instance) : Console
+    {
         $config = static::config()->get('console', $instance);
         $language = null;
         if (isset($config['language_instance'])) {

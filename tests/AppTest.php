@@ -323,6 +323,7 @@ final class AppTest extends TestCase
         App::antiCsrf();
         App::autoloader();
         App::cache();
+        App::console();
         App::database();
         App::language();
         App::locator();
