@@ -155,31 +155,11 @@ final class AppTest extends TestCase
         self::assertStringContainsString('Commands', Stdout::getContents());
     }
 
-    public function testRunCliWithConsoleDisabled() : void
-    {
-        Stdout::init();
-        $this->app->runCli(['console' => false]);
-        self::assertSame('', Stdout::getContents());
-    }
-
     public function testRunHttp() : void
     {
         App::setIsCli(false);
         \ob_start();
         $this->app->runHttp();
-        \ob_end_clean();
-        self::assertTrue(App::response()->isSent());
-    }
-
-    public function testRunHttpWithOptions() : void
-    {
-        App::setIsCli(false);
-        \ob_start();
-        $this->app->runHttp([
-            'autoloader' => 'default',
-            'exceptions' => 'default',
-            'router' => 'default',
-        ]);
         \ob_end_clean();
         self::assertTrue(App::response()->isSent());
     }
@@ -192,15 +172,6 @@ final class AppTest extends TestCase
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Invalid router file: ' . $file);
         $this->app->runHttp();
-    }
-
-    public function testRunHttpWithRouterDisabled() : void
-    {
-        App::setIsCli(false);
-        \ob_start();
-        $this->app->runHttp(['router' => false]);
-        \ob_end_clean();
-        self::assertFalse(App::response()->isSent());
     }
 
     public function testAppIsAlreadyRunning() : void

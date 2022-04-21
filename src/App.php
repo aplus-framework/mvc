@@ -109,51 +109,50 @@ class App
     }
 
     /**
-     * @param array<string,mixed> $options
+     * @param string $name
      *
-     * @return Router|null
+     * @return array<string,array<string,mixed>>|null
      */
-    protected function prepareToRun(array $options = []) : ?Router
+    protected function loadConfigs(string $name) : array | null
+    {
+        $config = static::config();
+        try {
+            $config->load($name);
+        } catch (\LogicException) {
+        }
+        return $config->getInstances($name);
+    }
+
+    protected function prepareToRun() : Router
     {
         if (static::$isRunning) {
             throw new LogicException('App is already running');
         }
         static::$isRunning = true;
-        if ( ! isset($options['autoloader'])) {
-            $configs = static::config()->getInstances('autoloader');
-            $options['autoloader'] = isset($configs['default']) ? 'default' : false;
+        $config = static::config();
+        $autoloaderConfigs = $config->getInstances('autoloader');
+        $exceptionHandlerConfigs = $config->getInstances('exceptionHandler');
+        if ($config->getDir() !== null) {
+            $autoloaderConfigs ??= $this->loadConfigs('autoloader');
+            $exceptionHandlerConfigs ??= $this->loadConfigs('exceptionHandler');
         }
-        if ($options['autoloader'] !== false) {
-            static::autoloader($options['autoloader']);
+        if ($autoloaderConfigs) {
+            static::autoloader();
         }
-        if ( ! isset($options['exceptionHandler'])) {
-            $options['exceptionHandler'] = 'default';
-            $configs = static::config()->getInstances('exceptionHandler');
-            if ( ! isset($configs['default']) && isset(static::$debugCollector)) {
-                static::config()->set('exceptionHandler', [
-                    'environment' => ExceptionHandler::DEVELOPMENT,
-                ]);
-            }
+        if ( ! isset($exceptionHandlerConfigs['default']) && isset(static::$debugCollector)) {
+            $config->set('exceptionHandler', [
+                'environment' => ExceptionHandler::DEVELOPMENT,
+            ]);
         }
-        if ($options['exceptionHandler'] !== false) {
-            static::exceptionHandler($options['exceptionHandler']);
+        if ($exceptionHandlerConfigs) {
+            static::exceptionHandler();
         }
-        $options['router'] ??= 'default';
-        if ($options['router'] !== false) {
-            return static::router($options['router']);
-        }
-        return null;
+        return static::router();
     }
 
-    /**
-     * @param array<string,mixed> $options
-     */
-    public function runHttp(array $options = []) : void
+    public function runHttp() : void
     {
-        $router = $this->prepareToRun($options);
-        if ($router === null) {
-            return;
-        }
+        $router = $this->prepareToRun();
         $response = $router->getResponse();
         $router->match()
             ->run($response->getRequest(), $response)
@@ -175,17 +174,11 @@ class App
         }
     }
 
-    /**
-     * @param array<string,mixed> $options
-     */
-    public function runCli(array $options = []) : void
+    public function runCli() : void
     {
         $this->setRequiredCliVars();
-        $this->prepareToRun($options);
-        $options['console'] ??= 'default';
-        if ($options['console'] !== false) {
-            static::console($options['console'])->run();
-        }
+        $this->prepareToRun();
+        static::console()->run();
     }
 
     /**
