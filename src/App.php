@@ -427,6 +427,23 @@ class App
         if ($service) {
             return $service;
         }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setExceptionHandler($instance);
+            $end = \microtime(true);
+            static::$debugCollector->addData([
+                'service' => 'exceptionHandler',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setExceptionHandler($instance);
+    }
+
+    protected static function setExceptionHandler(string $instance) : ExceptionHandler
+    {
         $config = static::config()->get('exceptionHandler');
         $environment = $config['environment'] ?? ExceptionHandler::PRODUCTION;
         $logger = null;
