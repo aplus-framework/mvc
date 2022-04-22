@@ -91,6 +91,9 @@ class App
             $config = new Config($config);
         }
         static::$config = $config;
+        if ($debug) {
+            static::debugger()->addCollector(static::$debugCollector, 'App');
+        }
     }
 
     protected function debugStart() : void
@@ -98,7 +101,6 @@ class App
         static::$debugCollector = new AppCollector();
         static::$debugCollector->setStartTime()->setStartMemory();
         static::$debugCollector->setApp($this);
-        static::debugger()->addCollector(static::$debugCollector, 'App');
     }
 
     /**
@@ -426,7 +428,15 @@ class App
 
     protected static function setDebugger(string $instance) : Debugger
     {
-        return static::setService('debugger', new Debugger(), $instance);
+        $config = static::config()->get('debugger');
+        $service = new Debugger();
+        if (isset($config['debugbar_view'])) {
+            $service->setDebugbarView($config['debugbar_view']);
+        }
+        if (isset($config['options'])) {
+            $service->setOptions($config['options']);
+        }
+        return static::setService('debugger', $service, $instance);
     }
 
     public static function exceptionHandler(string $instance = 'default') : ExceptionHandler

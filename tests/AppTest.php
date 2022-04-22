@@ -17,6 +17,7 @@ use Framework\CLI\Streams\Stdout;
 use Framework\Config\Config;
 use Framework\Database\Database;
 use Framework\Database\Definition\Table\TableDefinition;
+use Framework\Debug\Debugger;
 use Framework\Debug\ExceptionHandler;
 use Framework\Email\Mailer;
 use Framework\HTTP\AntiCSRF;
@@ -99,6 +100,8 @@ final class AppTest extends TestCase
         self::assertInstanceOf(Console::class, App::console());
         self::assertInstanceOf(Database::class, App::database());
         self::assertInstanceOf(Database::class, App::database());
+        self::assertInstanceOf(Debugger::class, App::debugger());
+        self::assertInstanceOf(Debugger::class, App::debugger());
         self::assertInstanceOf(Language::class, App::language());
         self::assertInstanceOf(Language::class, App::language());
         self::assertInstanceOf(Locator::class, App::locator());
@@ -309,6 +312,7 @@ final class AppTest extends TestCase
         App::cache();
         App::console();
         App::database();
+        App::debugger();
         App::language();
         App::locator();
         App::logger();
