@@ -896,17 +896,22 @@ class App
         return static::setRequest($instance);
     }
 
+    /**
+     * @param array<string,mixed> $vars
+     */
+    protected static function setServerVars(array $vars = []) : void
+    {
+        $vars = \array_replace(static::$defaultServerVars, $vars);
+        foreach ($vars as $key => $value) {
+            $_SERVER[$key] ??= $value;
+        }
+    }
+
     protected static function setRequest(string $instance) : Request
     {
         $config = static::config()->get('request', $instance);
         if (static::isCli()) {
-            $vars = \array_replace(
-                static::$defaultServerVars,
-                $config['default_server_vars'] ?? []
-            );
-            foreach ($vars as $key => $value) {
-                $_SERVER[$key] = $value;
-            }
+            static::setServerVars($config['server_vars'] ?? []);
         }
         $service = new Request($config['allowed_hosts'] ?? null);
         if (isset($config['force_https']) && $config['force_https'] === true) {

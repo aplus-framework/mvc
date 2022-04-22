@@ -152,6 +152,7 @@ final class AppTest extends TestCase
     public function testRunHttp() : void
     {
         App::setIsCli(false);
+        App::setServerVars();
         \ob_start();
         $this->app->runHttp();
         \ob_end_clean();
@@ -172,6 +173,7 @@ final class AppTest extends TestCase
     public function testAutoRunHttp() : void
     {
         App::setIsCli(false);
+        App::setServerVars();
         Stdout::init();
         \ob_start();
         $this->app->run();
@@ -185,6 +187,7 @@ final class AppTest extends TestCase
         $file = __DIR__ . '/foobar.php';
         App::config()->add('router', ['files' => [$file]]);
         App::setIsCli(false);
+        App::setServerVars();
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Invalid router file: ' . $file);
         $this->app->runHttp();
@@ -284,6 +287,7 @@ final class AppTest extends TestCase
         \putenv('LANG=jp_JP.UTF-8');
         self::assertSame('es', App::negotiateLanguage($language));
         App::setIsCli(false);
+        App::setServerVars();
         self::assertSame('en', App::negotiateLanguage($language));
         $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'pt-BR,es;q=0.8,en;q=0.5,en-US;q=0.3';
         self::assertSame('pt-br', App::negotiateLanguage($language));
@@ -302,6 +306,9 @@ final class AppTest extends TestCase
     {
         App::setConfigProperty(null);
         App::setIsCli(false);
+        App::setServerVars([
+            'REMOTE_ADDR' => '127.0.0.1',
+        ]);
         $app = new App(
             new Config(__DIR__ . '/configs', [], '.config.php'),
             true
