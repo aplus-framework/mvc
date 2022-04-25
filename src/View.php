@@ -353,7 +353,22 @@ class View
      */
     public function include(string $view, array $variables = []) : static
     {
-        echo $this->render($this->getIncludePrefix() . $view, $variables);
+        $view = $this->getIncludePrefix() . $view;
+        $debug = isset($this->debugCollector);
+        $contents = '';
+        if ($debug) {
+            $start = \microtime(true);
+            $contents .= '<!-- Include ' . $view . ' start -->';
+        }
+        $viewFile = $this->getFilepath($view);
+        \ob_start();
+        Isolation::require($viewFile, $variables);
+        $contents .= \ob_get_clean();
+        if ($debug) {
+            $contents .= '<!-- Include ' . $view . ' end -->';
+            $this->setDebugData($view, $start, $viewFile, 'Include'); // @phpstan-ignore-line
+        }
+        echo $contents;
         return $this;
     }
 
