@@ -17,7 +17,7 @@ return [
             'directory' => getenv('GITHUB_ACTION') ? getenv('RUNNER_TEMP') : sys_get_temp_dir(),
         ],
         'prefix' => null,
-        'serializer' => Serializer::PHP,
+        'serializer' => 'php', //Serializer::PHP,
         'logger_instance' => 'default',
     ],
 ];

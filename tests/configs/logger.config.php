@@ -14,6 +14,6 @@ return [
     'default' => [
         'class' => MultiFileLogger::class,
         'destination' => sys_get_temp_dir(),
-        'level' => LogLevel::DEBUG,
+        'level' => 0, //LogLevel::DEBUG,
     ],
 ];

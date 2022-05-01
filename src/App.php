@@ -30,6 +30,7 @@ use Framework\HTTP\Debug\HTTPCollector;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Language\Debug\LanguageCollector;
+use Framework\Language\FallbackLevel;
 use Framework\Language\Language;
 use Framework\Log\Debug\LogCollector;
 use Framework\Log\Logger;
@@ -316,10 +317,14 @@ class App
         if (isset($config['logger_instance'])) {
             $logger = static::logger($config['logger_instance']);
         }
+        $config['serializer'] ??= Serializer::PHP;
+        if (\is_string($config['serializer'])) {
+            $config['serializer'] = Serializer::from($config['serializer']);
+        }
         $service = new $config['class'](
             $config['configs'] ?? [],
             $config['prefix'] ?? null,
-            $config['serializer'] ?? Serializer::PHP,
+            $config['serializer'],
             $logger
         );
         return static::setService('cache', $service, $instance);
@@ -659,6 +664,9 @@ class App
             );
         }
         if (isset($config['fallback_level'])) {
+            if (\is_int($config['fallback_level'])) {
+                $config['fallback_level'] = FallbackLevel::from($config['fallback_level']);
+            }
             $service->setFallbackLevel($config['fallback_level']);
         }
         $config['directories'] ??= [];
@@ -773,11 +781,15 @@ class App
     {
         $config = static::config()->get('logger', $instance);
         $class = $config['class'] ?? MultiFileLogger::class;
+        $config['level'] ??= LogLevel::DEBUG;
+        if (\is_int($config['level'])) {
+            $config['level'] = LogLevel::from($config['level']);
+        }
         return static::setService(
             'logger',
             new $class(
                 $config['destination'],
-                $config['level'] ?? LogLevel::DEBUG,
+                $config['level'],
                 $config['config'] ?? [],
             ),
             $instance

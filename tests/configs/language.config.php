@@ -17,7 +17,7 @@ return [
             'es',
             'pt-br',
         ],
-        'fallback_level' => FallbackLevel::default,
+        'fallback_level' => 2, //FallbackLevel::default,
         'directories' => null,
         'negotiate' => true,
         'find_in_namespaces' => true,
