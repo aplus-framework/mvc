@@ -23,25 +23,19 @@ class View
 {
     protected ?string $baseDir = null;
     protected string $extension;
-    protected string $layoutPrefix = '';
-    protected string $includePrefix = '';
-    /**
-     * The blocks with names as keys and output buffer contents as values.
-     *
-     * @var array<string,string>
-     */
-    protected array $blocks = [];
+    protected string $layout;
     /**
      * @var array<int,string>
      */
     protected array $openBlocks = [];
-    protected ?string $layout = null;
-    protected bool $layoutUsePrefix = true;
-    protected bool $cancelNextBlock = false;
-    protected ?string $extendsWithBlock;
-    protected ViewCollector $debugCollector;
+    /**
+     * @var array<string,string>
+     */
+    protected array $blocks;
     protected string $currentView;
-    protected string $currentLayout;
+    protected ViewCollector $debugCollector;
+    protected string $layoutPrefix = '';
+    protected string $includePrefix = '';
 
     public function __construct(string $baseDir = null, string $extension = '.php')
     {
@@ -69,7 +63,7 @@ class View
         if ( ! $real || ! \is_dir($real)) {
             throw new InvalidArgumentException("View base dir is not a valid directory: {$baseDir} ");
         }
-        $this->baseDir = \rtrim($real, \DIRECTORY_SEPARATOR) . \DIRECTORY_SEPARATOR;
+        $this->baseDir = \rtrim($real, '\\/ ') . \DIRECTORY_SEPARATOR;
         return $this;
     }
 
@@ -140,7 +134,7 @@ class View
         if ($path) {
             return $path;
         }
-        throw new InvalidArgumentException("Namespaced view path does not match a file: {$view} ");
+        throw new InvalidArgumentException("Namespaced view path does not match a file: {$view}");
     }
 
     protected function getFilepath(string $view) : string
@@ -151,52 +145,38 @@ class View
         $view = $this->getBaseDir() . $view . $this->getExtension();
         $real = \realpath($view);
         if ( ! $real || ! \is_file($real)) {
-            throw new InvalidArgumentException("View path does not match a file: {$view} ");
+            throw new InvalidArgumentException("View path does not match a file: {$view}");
         }
         if ($this->getBaseDir() && ! \str_starts_with($real, $this->getBaseDir())) {
-            throw new InvalidArgumentException("View path out of base directory: {$real} ");
+            throw new InvalidArgumentException("View path out of base directory: {$real}");
         }
         return $real;
     }
 
     /**
      * @param string $view
-     * @param array<string,mixed> $variables
+     * @param array<string,mixed> $data
      *
      * @return string
      */
-    public function render(string $view, array $variables = []) : string
+    public function render(string $view, array $data = []) : string
     {
         $debug = isset($this->debugCollector);
-        $contents = '';
         if ($debug) {
             $start = \microtime(true);
-            $type = isset($this->currentLayout) ? 'Layout' : 'View';
-            $contents .= '<!-- ' . $type . ' ' . $view . ' start -->';
         }
         $this->currentView = $view;
-        $viewFile = $this->getFilepath($view);
-        $variables['view'] = $this;
-        \ob_start();
-        Isolation::require($viewFile, $variables);
-        if ($this->layout !== null) {
-            $contents .= $this->renderLayout($this->layout, $variables);
-            if ($debug) {
-                $contents .= '<!-- ' . $type . ' ' . $view . ' end -->'; // @phpstan-ignore-line
-                $this->setDebugData($view, $start, $viewFile, $type); // @phpstan-ignore-line
-            }
-            return $contents;
+        $contents = $this->getContents($view, $data);
+        if (isset($this->layout)) {
+            $layout = $this->layout;
+            unset($this->layout);
+            $contents = $this->render($layout, $data);
         }
-        $buffer = \ob_get_clean();
-        if ($buffer === false) {
-            App::logger()->logError(
-                'View::render could not get ob contents of "' . $viewFile . '"'
-            );
-        }
-        $contents .= $buffer;
         if ($debug) {
-            $contents .= '<!-- ' . $type . ' ' . $view . ' end -->'; // @phpstan-ignore-line
-            $this->setDebugData($view, $start, $viewFile, $type); // @phpstan-ignore-line
+            $this->setDebugData($view, $start, $this->currentView, 'Render');
+            $contents = '<!-- Render start: ' . $view . ' -->'
+                . \PHP_EOL . $contents . \PHP_EOL
+                . '<!-- Render end: ' . $view . ' -->';
         }
         return $contents;
     }
@@ -214,79 +194,65 @@ class View
         return $this;
     }
 
-    /**
-     * @param string $view
-     * @param array<string,mixed> $variables
-     *
-     * @return string
-     */
-    protected function renderLayout(string $view, array $variables) : string
+    public function extends(string $layout) : static
     {
-        $this->currentLayout = $view;
-        if ($this->layoutUsePrefix) {
-            $view = $this->getLayoutPrefix() . $view;
-        }
-        $this->layout = null;
-        $this->layoutUsePrefix = true;
-        if (isset($this->extendsWithBlock)) {
-            unset($this->extendsWithBlock);
-            $this->endBlock();
-        }
-        $contents = $this->render($view, $variables);
-        \ob_end_clean();
-        return $contents;
+        $this->layout = $this->getLayoutPrefix() . $layout;
+        return $this;
     }
 
-    public function block(string $name, bool $overwrite = true) : static
+    public function extendsWithoutPrefix(string $layout) : static
     {
-        \ob_start();
-        if ($overwrite === false && $this->hasBlock($name)) {
-            $this->cancelNextBlock = true;
-            return $this;
-        }
-        if (isset($this->debugCollector)) {
-            echo '<!-- Block ' . $this->currentView . ':' . $name . ' start -->';
-        }
+        $this->layout = $layout;
+        return $this;
+    }
+
+    public function inLayout(string $layout) : bool
+    {
+        return isset($this->layout) && $this->layout === $layout;
+    }
+
+    public function block(string $name) : static
+    {
         $this->openBlocks[] = $name;
+        \ob_start();
+        if (isset($this->debugCollector)) {
+            if (isset($this->currentView)) {
+                $name = $this->currentView . '::' . $name;
+            }
+            echo \PHP_EOL . '<!-- Block start: ' . $name . ' -->' . \PHP_EOL;
+        }
         return $this;
     }
 
     public function endBlock() : static
     {
-        if ($this->cancelNextBlock) {
-            $this->cancelNextBlock = false;
-            \ob_get_clean();
-            return $this;
-        }
         if (empty($this->openBlocks)) {
             throw new LogicException('Trying to end a view block when none is open');
         }
-        $endedBlock = \array_pop($this->openBlocks);
-        $contents = \ob_get_clean();
-        if ($contents === false) {
-            App::logger()->logError(
-                'View::endBlock could not get ob contents of "' . $endedBlock . '"'
-            );
-        }
-        $this->blocks[$endedBlock] = (string) $contents;
+        $name = \array_pop($this->openBlocks);
         if (isset($this->debugCollector)) {
-            $this->blocks[$endedBlock] .= '<!-- Block ' . $this->currentView
-                . ':' . $endedBlock . ' end -->';
+            $block = $name;
+            if (isset($this->currentView)) {
+                $block = $this->currentView . '::' . $name;
+            }
+            echo \PHP_EOL . '<!-- Block end: ' . $block . ' -->' . \PHP_EOL;
+        }
+        $contents = \ob_get_clean();
+        if ( ! isset($this->blocks[$name])) {
+            $this->blocks[$name] = $contents; // @phpstan-ignore-line
         }
         return $this;
     }
 
     public function renderBlock(string $name) : ?string
     {
-        if ( ! $this->hasBlock($name)) {
-            $trace = \debug_backtrace()[0];
-            \trigger_error(
-                'Trying to render block "' . $name . '" that is not set in '
-                . $trace['file'] . ' on  line ' . $trace['line'], // @phpstan-ignore-line
-                \E_USER_WARNING
-            );
-        }
         return $this->blocks[$name] ?? null;
+    }
+
+    public function removeBlock(string $name) : static
+    {
+        unset($this->blocks[$name]);
+        return $this;
     }
 
     public function hasBlock(string $name) : bool
@@ -294,24 +260,9 @@ class View
         return isset($this->blocks[$name]);
     }
 
-    public function removeBlock(string $name) : static
-    {
-        if ( ! $this->hasBlock($name)) {
-            $trace = \debug_backtrace()[0];
-            \trigger_error(
-                'Trying to remove block "' . $name . '" that is not set in '
-                . $trace['file'] . ' on  line ' . $trace['line'], // @phpstan-ignore-line
-                \E_USER_WARNING
-            );
-        }
-        unset($this->blocks[$name]);
-        return $this;
-    }
-
     public function inBlock(string $name) : bool
     {
-        return ! empty($this->openBlocks)
-            && \in_array($name, $this->openBlocks, true);
+        return $this->currentBlock() === $name;
     }
 
     public function currentBlock() : ?string
@@ -322,77 +273,62 @@ class View
         return null;
     }
 
-    public function extends(string $layout, string $openBlock = null) : static
-    {
-        $this->layout = $layout;
-        $this->layoutUsePrefix = true;
-        if ($openBlock !== null) {
-            $this->extendsWithBlock = $openBlock;
-            $this->block($openBlock);
-        }
-        return $this;
-    }
-
-    public function extendsWithoutPrefix(string $layout) : static
-    {
-        $this->layout = $layout;
-        $this->layoutUsePrefix = false;
-        return $this;
-    }
-
-    public function isExtending(string $layout) : bool
-    {
-        return $this->layout === $layout;
-    }
-
     /**
      * @param string $view
-     * @param array<string,mixed> $variables
+     * @param array<string,mixed> $data
      *
-     * @return static
+     * @return string
      */
-    public function include(string $view, array $variables = []) : static
+    public function include(string $view, array $data = []) : string
     {
         $view = $this->getIncludePrefix() . $view;
-        $debug = isset($this->debugCollector);
-        $contents = '';
-        if ($debug) {
-            $start = \microtime(true);
-            $contents .= '<!-- Include ' . $view . ' start -->';
+        $contents = $this->getContents($view, $data);
+        if (isset($this->debugCollector)) {
+            return $this->involveInclude($view, $contents);
         }
-        $viewFile = $this->getFilepath($view);
-        \ob_start();
-        Isolation::require($viewFile, $variables);
-        $contents .= \ob_get_clean();
-        if ($debug) {
-            $contents .= '<!-- Include ' . $view . ' end -->';
-            $this->setDebugData($view, $start, $viewFile, 'Include'); // @phpstan-ignore-line
-        }
-        echo $contents;
-        return $this;
+        return $contents;
+    }
+
+    protected function involveInclude(string $view, string $contents) : string
+    {
+        return \PHP_EOL . '<!-- Include start: ' . $view . ' -->'
+            . \PHP_EOL . $contents . \PHP_EOL
+            . '<!-- Include end: ' . $view . ' -->' . \PHP_EOL;
     }
 
     /**
      * @param string $view
-     * @param array<string,mixed> $variables
+     * @param array<string,mixed> $data
      *
-     * @return static
+     * @return string
      */
-    public function includeWithoutPrefix(string $view, array $variables = []) : static
+    public function includeWithoutPrefix(string $view, array $data = []) : string
     {
-        echo $this->render($view, $variables);
-        return $this;
+        $contents = $this->getContents($view, $data);
+        if (isset($this->debugCollector)) {
+            return $this->involveInclude($view, $contents);
+        }
+        return $contents;
+    }
+
+    /**
+     * @param string $view
+     * @param array<string,mixed> $data
+     *
+     * @return string
+     */
+    protected function getContents(string $view, array $data) : string
+    {
+        $data['view'] = $this;
+        \ob_start();
+        Isolation::require($this->getFilepath($view), $data);
+        return \ob_get_clean(); // @phpstan-ignore-line
     }
 
     public function setDebugCollector(ViewCollector $debugCollector) : static
     {
         $this->debugCollector = $debugCollector;
-        $this->debugCollector->setConfig([
-            'baseDir' => $this->getBaseDir(),
-            'extension' => $this->getExtension(),
-            'layoutPrefix' => $this->getLayoutPrefix(),
-            'includePrefix' => $this->getIncludePrefix(),
-        ]);
+        $this->debugCollector->setView($this);
         return $this;
     }
 }

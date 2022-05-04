@@ -9,142 +9,230 @@
  */
 namespace Tests\MVC;
 
-use Framework\Config\Config;
+use Framework\MVC\App;
+use Framework\MVC\Debug\ViewCollector;
 use Framework\MVC\View;
 use PHPUnit\Framework\TestCase;
-use Tests\MVC\AppMock as App;
 
-/**
- * Class ViewTest.
- *
- * @runTestsInSeparateProcesses
- */
 final class ViewTest extends TestCase
 {
-    protected View $view;
-    protected string $baseDir = __DIR__ . '/Views/';
+    protected ViewMock $view;
 
     protected function setUp() : void
     {
-        $this->view = new View($this->baseDir);
+        $this->view = new ViewMock(__DIR__ . '/Views');
+    }
+
+    public function testBaseDir() : void
+    {
+        $dir = \realpath(__DIR__ . '/Views') . \DIRECTORY_SEPARATOR;
+        self::assertSame($dir, $this->view->getBaseDir());
+        $this->view->setBaseDir($dir);
+        self::assertSame($dir, $this->view->getBaseDir());
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'View base dir is not a valid directory: /foo/bar'
+        );
+        $this->view->setBaseDir('/foo/bar');
+    }
+
+    public function testBaseDirNotSet() : void
+    {
+        $view = new View();
+        self::assertNull($view->getBaseDir());
+    }
+
+    public function testExtension() : void
+    {
+        self::assertSame('.php', $this->view->getExtension());
+        $this->view->setExtension('.phtml');
+        self::assertSame('.phtml', $this->view->getExtension());
+    }
+
+    public function testLayoutPrefix() : void
+    {
+        self::assertSame('', $this->view->getLayoutPrefix());
+        $this->view->setLayoutPrefix('');
+        self::assertSame('', $this->view->getLayoutPrefix());
+        $this->view->setLayoutPrefix('/_layouts/');
+        self::assertSame('_layouts/', $this->view->getLayoutPrefix());
+    }
+
+    public function testIncludePrefix() : void
+    {
+        self::assertSame('', $this->view->getIncludePrefix());
+        $this->view->setIncludePrefix('');
+        self::assertSame('', $this->view->getIncludePrefix());
+        $this->view->setIncludePrefix('/_includes/');
+        self::assertSame('_includes/', $this->view->getIncludePrefix());
+    }
+
+    protected function setApp() : App
+    {
+        return new App([
+            'autoloader' => [
+                'default' => [
+                    'namespaces' => [
+                        'App\Views' => __DIR__ . '/Views',
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testNamespacedFilepath() : void
+    {
+        $this->setApp();
+        self::assertSame(
+            __DIR__ . '/Views/home/index.php',
+            $this->view->getNamespacedFilepath('App\Views/home/index')
+        );
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Namespaced view path does not match a file: Foo\bar'
+        );
+        $this->view->getNamespacedFilepath('Foo\bar');
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testGetFilepath() : void
+    {
+        $this->setApp();
+        self::assertSame(
+            __DIR__ . '/Views/welcome.php',
+            $this->view->getFilepath('\App\Views/welcome')
+        );
+        self::assertSame(
+            __DIR__ . '/Views/home/index.php',
+            $this->view->getFilepath('\App\Views/home/index')
+        );
+        self::assertSame(
+            __DIR__ . '/Views/welcome.php',
+            $this->view->getFilepath('welcome')
+        );
+        self::assertSame(
+            __DIR__ . '/Views/home/index.php',
+            $this->view->getFilepath('home/index')
+        );
+    }
+
+    public function testFilepathIsNotFile() : void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $view = __DIR__ . '/Views/home';
+        $this->expectExceptionMessage(
+            "View path does not match a file: {$view}"
+        );
+        $this->view->getFilepath('home');
+    }
+
+    public function testFilepathOutOfBaseDir() : void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $real = __DIR__ . '/ViewMock.php';
+        $this->expectExceptionMessage(
+            "View path out of base directory: {$real}"
+        );
+        $this->view->getFilepath('../ViewMock');
     }
 
     public function testRender() : void
     {
-        self::assertSame(
-            "<h1>Block</h1>\n",
-            $this->view->render('include/block')
-        );
-        self::assertSame(
-            "<div>xxx</div>\n",
-            $this->view->render('foo', ['contents' => 'xxx'])
+        self::assertStringContainsString(
+            '<h1>Welcome</h1>',
+            $this->view->render('welcome')
         );
     }
 
-    public function testRenderNamespacedView() : void
+    public function testRenderLayout() : void
     {
-        (new App(new Config(__DIR__ . '/configs', [], '.config.php')));
-        App::autoloader()->setNamespace('Tests\MVC', __DIR__);
+        $contents = $this->view->render('home/index');
         self::assertSame(
-            "<h1>Block</h1>\n",
-            $this->view->render('\Tests\MVC\Views\include/block')
+            <<<EOL
+                <h1>Layout Default</h1>
+                <h2>Home Index</h2>
+                <div>Foo bar baz</div>
+                <footer>Footer</footer>\n
+                EOL,
+            $contents
         );
+    }
+
+    public function testRenderLayoutWithPrefix() : void
+    {
+        $this->view->setLayoutPrefix('_layouts')
+            ->setIncludePrefix('_includes');
+        $contents = $this->view->render('home/with-prefix');
         self::assertSame(
-            "<div>ns</div>\n",
-            $this->view->render('\Tests\MVC\Views\foo', ['contents' => 'ns'])
+            <<<EOL
+                <h1>Layout Default</h1>
+                <h2>Home Index</h2>
+                <div>Foo bar baz</div>
+                <footer>Footer</footer>\n
+                EOL,
+            $contents
         );
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Namespaced view path does not match a file: \\Foo\\bar');
-        $this->view->render('\\Foo\\bar');
     }
 
-    public function testFileNotFound() : void
+    public function testRenderLayoutWithoutPrefix() : void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("View path does not match a file: {$this->baseDir}foo/bar");
-        $this->view->render('foo/bar');
+        $this->view->setLayoutPrefix('_layouts')
+            ->setIncludePrefix('_includes');
+        $contents = $this->view->render('home/without-prefix');
+        self::assertSame(
+            <<<EOL
+                <h1>Layout Default</h1>
+                <h2>Home Index</h2>
+                <div>Foo bar baz</div>
+                <footer>Footer</footer>\n
+                EOL,
+            $contents
+        );
     }
 
-    public function testFileOutOfBaseDir() : void
+    public function testInBlockInLayout() : void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'View path out of base directory: ' . __FILE__
-        );
-        $this->view->render('../ViewTest');
-    }
-
-    public function testBasePathIsNotADirectory() : void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'View base dir is not a valid directory: ' . __FILE__
-        );
-        $this->view->setBaseDir(__FILE__);
+        $this->view->setLayoutPrefix('_layouts');
+        $this->view->render('in-block-in-layout', [
+            'testCase' => $this,
+        ]);
     }
 
     public function testBlock() : void
     {
-        $this->view->block('foo');
-        echo 'bar';
+        $this->view->block('contents');
+        self::assertFalse($this->view->hasBlock('contents'));
+        self::assertTrue($this->view->inBlock('contents'));
+        self::assertSame('contents', $this->view->currentBlock());
+        echo 'Block Contents';
+        echo $this->view->renderBlock('contents');
         $this->view->endBlock();
-        self::assertSame('bar', $this->view->renderBlock('foo'));
-        self::assertTrue($this->view->hasBlock('foo'));
-        $this->view->removeBlock('foo');
-        self::assertFalse($this->view->hasBlock('foo'));
-    }
-
-    public function testCurrentBlock() : void
-    {
-        self::assertNull($this->view->currentBlock());
+        self::assertTrue($this->view->hasBlock('contents'));
+        self::assertFalse($this->view->inBlock('contents'));
+        self::assertSame(
+            'Block Contents',
+            $this->view->renderBlock('contents')
+        );
         $this->view->block('foo');
+        echo 'Foo ';
+        echo $this->view->renderBlock('contents');
+        self::assertFalse($this->view->hasBlock('foo'));
+        self::assertTrue($this->view->hasBlock('contents'));
+        self::assertTrue($this->view->inBlock('foo'));
+        self::assertFalse($this->view->inBlock('contents'));
         self::assertSame('foo', $this->view->currentBlock());
         $this->view->endBlock();
-        self::assertNull($this->view->currentBlock());
-        $this->view->block('bar');
-        self::assertSame('bar', $this->view->currentBlock());
-        $this->view->block('baz');
-        self::assertSame('baz', $this->view->currentBlock());
-        $this->view->endBlock();
-        self::assertSame('bar', $this->view->currentBlock());
-        $this->view->endBlock();
-        self::assertNull($this->view->currentBlock());
-    }
-
-    public function testBlockOverwrite() : void
-    {
-        $this->view->block('foo');
-        echo 'foo';
-        $this->view->endBlock();
-        self::assertSame('foo', $this->view->renderBlock('foo'));
-        $this->view->block('foo', false);
-        echo 'bar';
-        $this->view->endBlock();
-        self::assertSame('foo', $this->view->renderBlock('foo'));
-        $this->view->block('foo', true);
-        echo 'bar';
-        $this->view->endBlock();
-        self::assertSame('bar', $this->view->renderBlock('foo'));
-    }
-
-    public function testRemoveBlockWarning() : void
-    {
-        $this->expectWarning();
-        $this->expectWarningMessage(
-            'Trying to remove block "foo" that is not set in ' . __FILE__
-            . ' on  line ' . (__LINE__ + 2)
+        self::assertSame(
+            'Foo Block Contents',
+            $this->view->renderBlock('foo')
         );
         $this->view->removeBlock('foo');
-    }
-
-    public function testRenderBlockWarning() : void
-    {
-        $this->expectWarning();
-        $this->expectWarningMessage(
-            'Trying to render block "foo" that is not set in ' . __FILE__
-            . ' on  line ' . (__LINE__ + 2)
-        );
-        $this->view->renderBlock('foo');
+        self::assertNull($this->view->renderBlock('foo'));
     }
 
     public function testEndBlockWhenNoneIsOpen() : void
@@ -154,132 +242,74 @@ final class ViewTest extends TestCase
         $this->view->endBlock();
     }
 
-    public function testBlockWasNotEnded() : void
+    public function testDestructWhenBlockIsOpen() : void
     {
         $this->view->block('foo');
-        $this->view->block('bar');
         \ob_end_clean();
+        $this->view->block('bar');
         \ob_end_clean();
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage(
-            "Trying to destruct a View instance while the following blocks stayed open: 'foo', 'bar'"
+            'Trying to destruct a View instance while the following blocks stayed open: ' .
+            "'foo', 'bar'"
         );
         unset($this->view);
     }
 
-    public function testLayout() : void
+    protected function setDebugCollector() : void
     {
-        $html = <<<'EOL'
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <title>Layout & Blocks</title>
-            </head>
-            <body>
-                <div>CONTENTS - Natan Felles >'"</div>
-                <script>
-                    console.log('Oi')
-                </script>
-            </body>
-            </html>
-
-            EOL;
-        $this->view->setLayoutPrefix('layouts');
-        self::assertFalse($this->view->isExtending('default'));
-        self::assertSame($html, $this->view->render('home', [
-            'name' => 'Natan Felles >\'"',
-            'title' => 'Layout & Blocks',
-            'testCase' => $this,
-        ]));
+        $collector = new ViewCollector();
+        $this->view->setDebugCollector($collector);
     }
 
-    public function testLayoutWithoutPrefix() : void
+    public function testDebugBlock() : void
     {
-        $html = <<<'EOL'
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <title>Layout & Blocks</title>
-            </head>
-            <body>
-                <div>CONTENTS - Natan Felles >'"</div>
-                <script>
-                    console.log('Oi')
-                </script>
-            </body>
-            </html>
-
-            EOL;
-        $this->view->setLayoutPrefix('layouts');
-        self::assertFalse($this->view->isExtending('default'));
-        self::assertSame($html, $this->view->render('noprefix', [
-            'name' => 'Natan Felles >\'"',
-            'title' => 'Layout & Blocks',
-            'testCase' => $this,
-        ]));
-    }
-
-    public function testLayoutPrefix() : void
-    {
-        self::assertSame('', $this->view->getLayoutPrefix());
-        $this->view->setLayoutPrefix('foo');
-        self::assertSame('foo/', $this->view->getLayoutPrefix());
-        $this->view->setLayoutPrefix('/foo/bar/');
-        self::assertSame('foo/bar/', $this->view->getLayoutPrefix());
-        $this->view->setLayoutPrefix('');
-        self::assertSame('', $this->view->getLayoutPrefix());
-    }
-
-    public function testExtendsOpenBlock() : void
-    {
-        $contents = $this->view->render('extendsBlock');
+        $this->setDebugCollector();
+        $contents = $this->view->render('home/index');
         self::assertStringContainsString(
-            'extends and open block',
+            '<!-- Block start: home/index::contents -->',
             $contents
         );
-        self::assertStringContainsString('Foo', $contents);
+        self::assertStringContainsString(
+            '<!-- Block end: home/index::contents -->',
+            $contents
+        );
     }
 
-    public function testInclude() : void
+    public function testDebugInclude() : void
     {
-        $html = "<h1>Block</h1>\n";
-        $this->view->setIncludePrefix('include');
-        \ob_start();
-        $this->view->include('block');
-        $contents = \ob_get_clean();
-        self::assertSame($html, $contents);
-        $html = "<h1>Block</h1>\nFoo Bar";
-        $this->view->setIncludePrefix('include');
-        \ob_start();
-        $this->view->include('block', ['data' => 'Foo Bar']);
-        $contents = \ob_get_clean();
-        self::assertSame($html, $contents);
+        $this->setDebugCollector();
+        $contents = $this->view->render('home/index');
+        self::assertStringContainsString(
+            '<!-- Include start: _includes/footer -->',
+            $contents
+        );
+        self::assertStringContainsString(
+            '<!-- Include end: _includes/footer -->',
+            $contents
+        );
+        $contents = $this->view->render('home/without-prefix');
+        self::assertStringContainsString(
+            '<!-- Include start: _includes/footer -->',
+            $contents
+        );
+        self::assertStringContainsString(
+            '<!-- Include end: _includes/footer -->',
+            $contents
+        );
     }
 
-    public function testIncludeWithoutPrefix() : void
+    public function testDebugRender() : void
     {
-        $html = "<h1>Block</h1>\n";
-        $this->view->setIncludePrefix('include');
-        \ob_start();
-        $this->view->includeWithoutPrefix('include/block');
-        $contents = \ob_get_clean();
-        self::assertSame($html, $contents);
-        $html = "<h1>Block</h1>\nFoo Bar";
-        $this->view->setIncludePrefix('include');
-        \ob_start();
-        $this->view->includeWithoutPrefix('include/block', ['data' => 'Foo Bar']);
-        $contents = \ob_get_clean();
-        self::assertSame($html, $contents);
-    }
-
-    public function testIncludePrefix() : void
-    {
-        self::assertSame('', $this->view->getIncludePrefix());
-        $this->view->setIncludePrefix('foo');
-        self::assertSame('foo/', $this->view->getIncludePrefix());
-        $this->view->setIncludePrefix('/foo/bar/');
-        self::assertSame('foo/bar/', $this->view->getIncludePrefix());
-        $this->view->setIncludePrefix('');
-        self::assertSame('', $this->view->getIncludePrefix());
+        $this->setDebugCollector();
+        $contents = $this->view->render('home/index');
+        self::assertStringContainsString(
+            '<!-- Render start: home/index -->',
+            $contents
+        );
+        self::assertStringContainsString(
+            '<!-- Render end: home/index -->',
+            $contents
+        );
     }
 }
