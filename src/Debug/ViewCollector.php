@@ -10,6 +10,7 @@
 namespace Framework\MVC\Debug;
 
 use Framework\Debug\Collector;
+use Framework\MVC\View;
 
 /**
  * Class ViewCollector.
@@ -18,19 +19,11 @@ use Framework\Debug\Collector;
  */
 class ViewCollector extends Collector
 {
-    /**
-     * @var array<string,mixed>
-     */
-    protected array $config;
+    protected View $view;
 
-    /**
-     * @param array<string,mixed> $config
-     *
-     * @return static
-     */
-    public function setConfig(array $config) : static
+    public function setView(View $view) : static
     {
-        $this->config = $config;
+        $this->view = $view;
         return $this;
     }
 
@@ -51,30 +44,30 @@ class ViewCollector extends Collector
 
     public function getContents() : string
     {
+        $baseDir = $this->view->getBaseDir();
+        $extension = $this->view->getExtension();
+        $layoutPrefix = $this->view->getLayoutPrefix();
+        $includePrefix = $this->view->getIncludePrefix();
         \ob_start();
-        if (isset($this->config['baseDir'])): ?>
-            <p><strong>Base Directory:</strong> <?= \htmlentities($this->config['baseDir']) ?></p>
+        if (isset($baseDir)): ?>
+            <p><strong>Base Directory:</strong> <?= \htmlentities($baseDir) ?></p>
         <?php
-        endif;
-        if (isset($this->config['extension'])): ?>
-            <p><strong>Extension:</strong> <?= \htmlentities($this->config['extension']) ?></p>
+        endif; ?>
+        <p><strong>Extension:</strong> <?= \htmlentities($extension) ?></p>
         <?php
-        endif;
-        if (isset($this->config['layoutPrefix']) && $this->config['layoutPrefix'] !== ''): ?>
-            <p><strong>Layout Prefix:</strong> <?= \htmlentities($this->config['layoutPrefix']) ?>
+        if ($layoutPrefix !== ''): ?>
+            <p><strong>Layout Prefix:</strong> <?= \htmlentities($layoutPrefix) ?>
             </p>
         <?php
         endif;
-        if (isset($this->config['includePrefix']) && $this->config['includePrefix'] !== ''): ?>
-            <p><strong>Include Prefix:</strong> <?= \htmlentities($this->config['includePrefix']) ?>
+        if ($includePrefix !== ''): ?>
+            <p><strong>Include Prefix:</strong> <?= \htmlentities($includePrefix) ?>
             </p>
         <?php
         endif ?>
         <h1>Rendered Views</h1>
         <?php
-        echo $this->hasData()
-            ? $this->renderRenderedViews()
-            : '<p>No view has been rendered.</p>';
+        echo $this->renderRenderedViews();
         return \ob_get_clean(); // @phpstan-ignore-line
     }
 
