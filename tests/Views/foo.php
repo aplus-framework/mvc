@@ -1,1 +1,6 @@
-<div><?= $contents; // @phpstan-ignore-line?></div>
+<?php
+/**
+ * @var string $contents
+ */
+?>
+<div><?= $contents ?></div>
