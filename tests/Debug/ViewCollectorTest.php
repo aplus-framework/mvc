@@ -14,6 +14,9 @@ use Framework\MVC\Debug\ViewCollector;
 use Framework\MVC\View;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @runTestsInSeparateProcesses
+ */
 final class ViewCollectorTest extends TestCase
 {
     protected Debugger $debugger;
