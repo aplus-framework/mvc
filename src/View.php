@@ -24,6 +24,7 @@ class View
     protected ?string $baseDir = null;
     protected string $extension;
     protected string $layout;
+    protected ?string $openBlock;
     /**
      * @var array<int,string>
      */
@@ -194,9 +195,13 @@ class View
         return $this;
     }
 
-    public function extends(string $layout) : static
+    public function extends(string $layout, string $openBlock = null) : static
     {
         $this->layout = $this->getLayoutPrefix() . $layout;
+        $this->openBlock = $openBlock;
+        if ($openBlock !== null) {
+            $this->block($openBlock);
+        }
         return $this;
     }
 
@@ -322,6 +327,10 @@ class View
         $data['view'] = $this;
         \ob_start();
         Isolation::require($this->getFilepath($view), $data);
+        if (isset($this->openBlock)) {
+            $this->openBlock = null;
+            $this->endBlock();
+        }
         return \ob_get_clean(); // @phpstan-ignore-line
     }
 
