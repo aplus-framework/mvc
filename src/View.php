@@ -37,6 +37,7 @@ class View
     protected ViewCollector $debugCollector;
     protected string $layoutPrefix = '';
     protected string $includePrefix = '';
+    protected bool $inInclude = false;
 
     public function __construct(string $baseDir = null, string $extension = '.php')
     {
@@ -287,7 +288,9 @@ class View
     public function include(string $view, array $data = []) : string
     {
         $view = $this->getIncludePrefix() . $view;
+        $this->inInclude = true;
         $contents = $this->getContents($view, $data);
+        $this->inInclude = false;
         if (isset($this->debugCollector)) {
             return $this->involveInclude($view, $contents);
         }
@@ -309,7 +312,9 @@ class View
      */
     public function includeWithoutPrefix(string $view, array $data = []) : string
     {
+        $this->inInclude = true;
         $contents = $this->getContents($view, $data);
+        $this->inInclude = false;
         if (isset($this->debugCollector)) {
             return $this->involveInclude($view, $contents);
         }
@@ -327,7 +332,7 @@ class View
         $data['view'] = $this;
         \ob_start();
         Isolation::require($this->getFilepath($view), $data);
-        if (isset($this->openBlock)) {
+        if (isset($this->openBlock) && ! $this->inInclude) {
             $this->openBlock = null;
             $this->endBlock();
         }
