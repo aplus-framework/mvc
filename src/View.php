@@ -175,7 +175,7 @@ class View
             $contents = $this->render($layout, $data);
         }
         if ($debug) {
-            $this->setDebugData($view, $start, $this->currentView, 'Render');
+            $this->setDebugData($view, $start, 'Render');
             $contents = '<!-- Render start: ' . $view . ' -->'
                 . \PHP_EOL . $contents . \PHP_EOL
                 . '<!-- Render end: ' . $view . ' -->';
@@ -183,14 +183,14 @@ class View
         return $contents;
     }
 
-    protected function setDebugData(string $file, float $start, string $filepath, string $type) : static
+    protected function setDebugData(string $file, float $start, string $type) : static
     {
         $end = \microtime(true);
         $this->debugCollector->addData([
             'start' => $start,
             'end' => $end,
             'file' => $file,
-            'filepath' => $filepath,
+            'filepath' => $this->getFilepath($file),
             'type' => $type,
         ]);
         return $this;
@@ -288,13 +288,10 @@ class View
     public function include(string $view, array $data = []) : string
     {
         $view = $this->getIncludePrefix() . $view;
-        $this->inInclude = true;
-        $contents = $this->getContents($view, $data);
-        $this->inInclude = false;
         if (isset($this->debugCollector)) {
-            return $this->involveInclude($view, $contents);
+            return $this->getIncludeContentsWithDebug($view, $data);
         }
-        return $contents;
+        return $this->getIncludeContents($view, $data);
     }
 
     protected function involveInclude(string $view, string $contents) : string
@@ -312,12 +309,39 @@ class View
      */
     public function includeWithoutPrefix(string $view, array $data = []) : string
     {
+        if (isset($this->debugCollector)) {
+            return $this->getIncludeContentsWithDebug($view, $data);
+        }
+        return $this->getIncludeContents($view, $data);
+    }
+
+    /**
+     * @param string $view
+     * @param array<string,mixed> $data
+     *
+     * @return string
+     */
+    protected function getIncludeContentsWithDebug(string $view, array $data = []) : string
+    {
+        $start = \microtime(true);
         $this->inInclude = true;
         $contents = $this->getContents($view, $data);
         $this->inInclude = false;
-        if (isset($this->debugCollector)) {
-            return $this->involveInclude($view, $contents);
-        }
+        $this->setDebugData($view, $start, 'include');
+        return $this->involveInclude($view, $contents);
+    }
+
+    /**
+     * @param string $view
+     * @param array<string,mixed> $data
+     *
+     * @return string
+     */
+    protected function getIncludeContents(string $view, array $data = []) : string
+    {
+        $this->inInclude = true;
+        $contents = $this->getContents($view, $data);
+        $this->inInclude = false;
         return $contents;
     }
 

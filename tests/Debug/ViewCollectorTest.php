@@ -65,9 +65,10 @@ final class ViewCollectorTest extends TestCase
         self::assertStringContainsString('Rendered Views', $contents);
         self::assertStringNotContainsString('No view has been rendered', $contents);
         self::assertStringContainsString('home/index', $contents);
+        self::assertStringContainsString('_includes/footer', $contents);
         self::assertStringContainsString('_layouts/default', $contents);
         self::assertStringContainsString(
-            'Total of 2 rendered view files',
+            'Total of 3 rendered view files',
             $contents
         );
     }
