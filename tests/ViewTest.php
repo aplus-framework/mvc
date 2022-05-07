@@ -149,6 +149,18 @@ final class ViewTest extends TestCase
         );
     }
 
+    public function testExtendsWithOpenBlock() : void
+    {
+        $contents = $this->view->render('open-block');
+        self::assertSame(
+            <<<EOL
+                <h1>Layout Default</h1>
+                <h2>Open Block</h2>\n
+                EOL,
+            $contents
+        );
+    }
+
     public function testRenderLayout() : void
     {
         $contents = $this->view->render('home/index');
