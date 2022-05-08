@@ -338,4 +338,33 @@ final class ViewTest extends TestCase
             $contents
         );
     }
+
+    public function testDebugComments() : void
+    {
+        $this->view->setDebugCollector(new ViewCollector())
+            ->setLayoutPrefix('_layouts')
+            ->setIncludePrefix('_includes');
+        $contents = $this->view->render('comments');
+        self::assertSame(
+            <<<'EOL'
+                <!-- Render start: comments -->
+                <!-- Layout start: _layouts/default -->
+                <h1>Layout Default</h1>
+
+                <!-- Block start: comments::contents -->
+                CONTENTS
+
+                <!-- Include start: _includes/footer -->
+                <footer>Footer</footer>
+
+                <!-- Include end: _includes/footer -->
+
+                <!-- Block end: comments::contents -->
+
+                <!-- Layout end: _layouts/default -->
+                <!-- Render end: comments -->
+                EOL,
+            $contents
+        );
+    }
 }
