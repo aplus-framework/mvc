@@ -30,6 +30,10 @@ class View
      */
     protected array $openBlocks = [];
     /**
+     * @var array<int,string>
+     */
+    protected array $layoutsOpen = [];
+    /**
      * @var array<string,string>
      */
     protected array $blocks;
@@ -172,13 +176,20 @@ class View
         if (isset($this->layout)) {
             $layout = $this->layout;
             unset($this->layout);
+            $this->layoutsOpen[] = $layout;
             $contents = $this->render($layout, $data);
         }
         if ($debug) {
-            $this->setDebugData($view, $start, 'Render');
-            $contents = '<!-- Render start: ' . $view . ' -->'
+            $type = 'render';
+            if ($this->layoutsOpen) {
+                \array_shift($this->layoutsOpen);
+                $type = 'layout';
+            }
+            $this->setDebugData($view, $start, $type);
+            $type = \ucfirst($type);
+            $contents = '<!-- ' . $type . ' start: ' . $view . ' -->'
                 . \PHP_EOL . $contents . \PHP_EOL
-                . '<!-- Render end: ' . $view . ' -->';
+                . '<!-- ' . $type . ' end: ' . $view . ' -->';
         }
         return $contents;
     }
