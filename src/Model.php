@@ -144,6 +144,12 @@ abstract class Model implements ModelInterface
      * @var Pager
      */
     protected Pager $pager;
+    /**
+     * Default pager view.
+     *
+     * @var string
+     */
+    protected string $pagerView;
     protected bool $cacheActive = false;
     protected string $cacheInstance = 'default';
     protected int $cacheTtl = 60;
@@ -355,6 +361,9 @@ abstract class Model implements ModelInterface
             $this->count(),
             App::language($this->getLanguageInstance())
         );
+        if (isset($this->pagerView)) {
+            $this->pager->setDefaultView($this->pagerView);
+        }
         return $data;
     }
 

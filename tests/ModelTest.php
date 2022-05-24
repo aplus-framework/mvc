@@ -190,6 +190,21 @@ final class ModelTest extends ModelTestCase
         );
     }
 
+    public function testPagerView() : void
+    {
+        $this->model->paginate(1);
+        self::assertSame(
+            'pagination',
+            $this->model->getPager()->getDefaultView()
+        );
+        $this->model->pagerView = 'bootstrap';
+        $this->model->paginate(1);
+        self::assertSame(
+            'bootstrap',
+            $this->model->getPager()->getDefaultView()
+        );
+    }
+
     public function testMakePageLimitAndOffset() : void
     {
         self::assertSame([10, null], $this->model->makePageLimitAndOffset(0));
