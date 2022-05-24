@@ -586,10 +586,10 @@ abstract class Model implements ModelInterface
      * @param int|string $id
      * @param array<string,float|int|string|null>|Entity|stdClass $data
      *
-     * @return false|int The number of affected rows as int or false if
+     * @return false|int|string The number of affected rows or false if
      * validation fails
      */
-    public function update(int | string $id, array | Entity | stdClass $data) : false | int
+    public function update(int | string $id, array | Entity | stdClass $data) : false | int | string
     {
         $this->checkPrimaryKey($id);
         $data = $this->prepareData($data);
@@ -608,7 +608,7 @@ abstract class Model implements ModelInterface
         if ($this->isCacheActive()) {
             $this->updateCachedRow($id);
         }
-        return $affectedRows; // @phpstan-ignore-line
+        return $affectedRows;
     }
 
     /**
@@ -651,9 +651,9 @@ abstract class Model implements ModelInterface
      *
      * @param int|string $id
      *
-     * @return false|int The number of affected rows
+     * @return false|int|string The number of affected rows
      */
-    public function delete(int | string $id) : false | int
+    public function delete(int | string $id) : false | int | string
     {
         $this->checkPrimaryKey($id);
         $affectedRows = $this->getDatabaseForWrite()
@@ -666,7 +666,7 @@ abstract class Model implements ModelInterface
                 $this->getCacheKey([$this->getPrimaryKey() => $id])
             );
         }
-        return $affectedRows; // @phpstan-ignore-line
+        return $affectedRows;
     }
 
     protected function getValidation() : Validation

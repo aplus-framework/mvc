@@ -44,18 +44,18 @@ interface ModelInterface
      * @param int|string $id
      * @param array<string,float|int|string|null>|Entity|stdClass $data
      *
-     * @return false|int The number of updated items as int or false if it could
+     * @return false|int|string The number of updated items or false if it could
      * not be updated
      */
-    public function update(int | string $id, array | Entity | stdClass $data) : false | int;
+    public function update(int | string $id, array | Entity | stdClass $data) : false | int | string;
 
     /**
      * Delete based on id.
      *
      * @param int|string $id
      *
-     * @return false|int The number of deleted items or false if it could not be
+     * @return false|int|string The number of deleted items or false if it could not be
      * deleted
      */
-    public function delete(int | string $id) : false | int;
+    public function delete(int | string $id) : false | int | string;
 }
