@@ -366,12 +366,23 @@ abstract class Model implements ModelInterface
             $perPage,
             $this->count(),
             App::language($this->getLanguageInstance()),
-            $this->pagerUrl ?? null
+            $this->getPagerUrl()
         );
-        if (isset($this->pagerView)) {
-            $this->pager->setDefaultView($this->pagerView);
+        $pagerView = $this->getPagerView();
+        if (isset($pagerView)) {
+            $this->pager->setDefaultView($pagerView);
         }
         return $data;
+    }
+
+    protected function getPagerUrl() : ?string
+    {
+        return $this->pagerUrl ?? null;
+    }
+
+    protected function getPagerView() : ?string
+    {
+        return $this->pagerView ?? null;
     }
 
     /**
