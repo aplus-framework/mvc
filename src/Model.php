@@ -456,6 +456,30 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * Find all rows with limit and offset.
+     *
+     * @param int|null $limit
+     * @param int|null $offset
+     *
+     * @return array<int,array<mixed>|Entity|stdClass>
+     */
+    public function findAll(int $limit = null, int $offset = null) : array
+    {
+        $data = $this->getDatabaseForRead()
+            ->select()
+            ->from($this->getTable());
+        if ($limit !== null) {
+            $data->limit($limit, $offset);
+        }
+        $data = $data->run()->fetchArrayAll();
+        foreach ($data as &$row) {
+            $row = $this->makeEntity($row);
+        }
+        unset($row);
+        return $data;
+    }
+
+    /**
      * @param array<string,float|int|string|null> $data
      *
      * @return array<string,float|int|string|null>|Entity|stdClass
