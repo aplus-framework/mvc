@@ -21,6 +21,7 @@ class ModelMock extends Model
     public array $validationMessages = [];
     public bool $protectPrimaryKey = true;
     public string $pagerView;
+    public string $pagerUrl;
 
     /**
      * @param int $page

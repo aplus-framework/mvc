@@ -190,6 +190,21 @@ final class ModelTest extends ModelTestCase
         );
     }
 
+    public function testPagerUrl() : void
+    {
+        $this->model->paginate(5);
+        self::assertSame(
+            'http://localhost:8080/contact?page=5',
+            $this->model->getPager()->getCurrentPageUrl()
+        );
+        $this->model->pagerUrl = 'http://domain.tld/posts';
+        $this->model->paginate(5);
+        self::assertSame(
+            'http://domain.tld/posts?page=5',
+            $this->model->getPager()->getCurrentPageUrl()
+        );
+    }
+
     public function testPagerView() : void
     {
         $this->model->paginate(1);
