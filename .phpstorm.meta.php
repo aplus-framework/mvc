@@ -11,12 +11,13 @@ namespace PHPSTORM_META;
 
 registerArgumentsSet(
     'service_names',
-    'anti-csrf',
+    'antiCsrf',
     'autoloader',
     'cache',
     'console',
     'database',
-    'exceptions',
+    'debugger',
+    'exceptionHandler',
     'language',
     'locator',
     'logger',
