@@ -17,6 +17,7 @@ use Framework\CLI\Streams\Stdout;
 use Framework\Config\Config;
 use Framework\Database\Database;
 use Framework\Database\Definition\Table\TableDefinition;
+use Framework\Database\Extra\Migrator;
 use Framework\Debug\Debugger;
 use Framework\Debug\ExceptionHandler;
 use Framework\Email\Mailer;
@@ -110,6 +111,8 @@ final class AppTest extends TestCase
         self::assertInstanceOf(Logger::class, App::logger());
         self::assertInstanceOf(Mailer::class, App::mailer());
         self::assertInstanceOf(Mailer::class, App::mailer());
+        self::assertInstanceOf(Migrator::class, App::migrator());
+        self::assertInstanceOf(Migrator::class, App::migrator());
         self::assertInstanceOf(Request::class, App::request());
         self::assertInstanceOf(Request::class, App::request());
         self::assertInstanceOf(Response::class, App::response());
@@ -324,6 +327,7 @@ final class AppTest extends TestCase
         App::locator();
         App::logger();
         App::mailer();
+        App::migrator();
         App::request();
         App::response();
         App::router();

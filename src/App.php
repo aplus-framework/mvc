@@ -19,6 +19,7 @@ use Framework\CLI\Console;
 use Framework\Config\Config;
 use Framework\Database\Database;
 use Framework\Database\Debug\DatabaseCollector;
+use Framework\Database\Extra\Migrator;
 use Framework\Debug\Debugger;
 use Framework\Debug\ExceptionHandler;
 use Framework\Email\Debug\EmailCollector;
@@ -616,6 +617,48 @@ class App
         return static::setService(
             'mailer',
             new $class($config['config']),
+            $instance
+        );
+    }
+
+    /**
+     * Get a Migrator service.
+     *
+     * @param string $instance
+     *
+     * @return Migrator
+     */
+    public static function migrator(string $instance = 'default') : Migrator
+    {
+        $service = static::getService('migrator', $instance);
+        if ($service) {
+            return $service;
+        }
+        if (isset(static::$debugCollector)) {
+            $start = \microtime(true);
+            $service = static::setMigrator($instance);
+            $end = \microtime(true);
+            static::$debugCollector->addData([
+                'service' => 'migrator',
+                'instance' => $instance,
+                'start' => $start,
+                'end' => $end,
+            ]);
+            return $service;
+        }
+        return static::setMigrator($instance);
+    }
+
+    protected static function setMigrator(string $instance) : Migrator
+    {
+        $config = static::config()->get('migrator', $instance);
+        return static::setService(
+            'migrator',
+            new Migrator(
+                static::database($config['database_instance'] ?? 'default'),
+                $config['directories'],
+                $config['table'] ?? 'Migrations',
+            ),
             $instance
         );
     }

@@ -22,6 +22,7 @@ registerArgumentsSet(
     'locator',
     'logger',
     'mailer',
+    'migrator',
     'request',
     'response',
     'router',
