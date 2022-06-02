@@ -304,9 +304,11 @@ Built-in services:
 - `Autoloader Service`_
 - `Cache Service`_
 - `Console Service`_
+- `Debugger Service`_
 - `Anti-CSRF Service`_
 - `Database Service`_
 - `Mailer Service`_
+- `Migrator Service`_
 - `Language Service`_
 - `Locator Service`_
 - `Logger Service`_
@@ -401,6 +403,25 @@ locator_instance
 
 A `Locator Service`_ instance name.
 
+Debugger Service
+^^^^^^^^^^^^^^^^
+
+Gets an instance of
+`Framework\Debug\Debugger <https://docs.aplus-framework.com/classes/Framework-Debug-Debugger.html>`_.
+
+.. code-block:: php
+
+    App::debugger()
+
+Debugger Config Options
+***********************
+
+debugbar_view
+"""""""""""""
+
+options
+"""""""
+
 Anti-CSRF Service
 ^^^^^^^^^^^^^^^^^
 
@@ -469,6 +490,30 @@ class
 
 config
 """"""
+
+Migrator Service
+^^^^^^^^^^^^^^^^
+
+Gets an instance of
+`Framework\Database\Extra\Migrator <https://docs.aplus-framework.com/classes/Framework-Database-Extra-Migrator.html>`_.
+
+.. code-block:: php
+
+    App::migrator()
+
+Migrator Config Options
+***********************
+
+database_instance
+"""""""""""""""""
+
+A `Database Service`_ instance name.
+
+directories
+"""""""""""
+
+table
+"""""
 
 Language Service
 ^^^^^^^^^^^^^^^^
