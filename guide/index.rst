@@ -301,23 +301,52 @@ App services can be extended. See `Extending`_.
 
 Built-in services:
 
+- `Anti-CSRF Service`_
 - `Autoloader Service`_
 - `Cache Service`_
 - `Console Service`_
 - `Debugger Service`_
-- `Anti-CSRF Service`_
 - `Database Service`_
 - `Mailer Service`_
 - `Migrator Service`_
 - `Language Service`_
 - `Locator Service`_
 - `Logger Service`_
-- `Router Service`_
 - `Request Service`_
 - `Response Service`_
+- `Router Service`_
 - `Session Service`_
 - `Validation Service`_
 - `View Service`_
+
+Anti-CSRF Service
+^^^^^^^^^^^^^^^^^
+
+Gets an instance of
+`Framework\HTTP\AntiCSRF <https://docs.aplus-framework.com/classes/Framework-HTTP-AntiCSRF.html>`_.
+
+.. code-block:: php
+
+    App::antiCsrf()
+
+Anti-CSRF Config Options
+************************
+
+enabled
+"""""""
+
+token_name
+""""""""""
+
+session_instance
+""""""""""""""""
+
+A `Session Service`_ instance name.
+
+request_instance
+""""""""""""""""
+
+A `Request Service`_ instance name.
 
 Autoloader Service
 ^^^^^^^^^^^^^^^^^^
@@ -421,35 +450,6 @@ debugbar_view
 
 options
 """""""
-
-Anti-CSRF Service
-^^^^^^^^^^^^^^^^^
-
-Gets an instance of
-`Framework\HTTP\AntiCSRF <https://docs.aplus-framework.com/classes/Framework-HTTP-AntiCSRF.html>`_.
-
-.. code-block:: php
-
-    App::antiCsrf()
-
-Anti-CSRF Config Options
-************************
-
-enabled
-"""""""
-
-token_name
-""""""""""
-
-session_instance
-""""""""""""""""
-
-A `Session Service`_ instance name.
-
-request_instance
-""""""""""""""""
-
-A `Request Service`_ instance name.
 
 Database Service
 ^^^^^^^^^^^^^^^^
@@ -593,41 +593,6 @@ directory
 level
 """""
 
-Router Service
-^^^^^^^^^^^^^^
-
-Gets an instance of
-`Framework\Routing\Router <https://docs.aplus-framework.com/classes/Framework-Routing-Router.html>`_.
-
-.. code-block:: php
-
-    App::router()
-
-Router Config Options
-*********************
-
-files
-"""""
-
-placeholders
-""""""""""""
-
-auto_options
-""""""""""""
-
-auto_methods
-""""""""""""
-
-response_instance
-"""""""""""""""""
-
-The `Response Service`_ instance name.
-
-language_instance
-"""""""""""""""""
-
-A `Language Service`_ instance name.
-
 Request Service
 ^^^^^^^^^^^^^^^
 
@@ -678,6 +643,41 @@ request_instance
 """"""""""""""""
 
 A `Request Service`_ instance name.
+
+Router Service
+^^^^^^^^^^^^^^
+
+Gets an instance of
+`Framework\Routing\Router <https://docs.aplus-framework.com/classes/Framework-Routing-Router.html>`_.
+
+.. code-block:: php
+
+    App::router()
+
+Router Config Options
+*********************
+
+files
+"""""
+
+placeholders
+""""""""""""
+
+auto_options
+""""""""""""
+
+auto_methods
+""""""""""""
+
+response_instance
+"""""""""""""""""
+
+The `Response Service`_ instance name.
+
+language_instance
+"""""""""""""""""
+
+A `Language Service`_ instance name.
 
 Session Service
 ^^^^^^^^^^^^^^^
