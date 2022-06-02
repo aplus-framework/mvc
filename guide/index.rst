@@ -181,6 +181,8 @@ This is the **api/UsersController.php** example:
     namespace Api;
 
     use Framework\HTTP\Response;
+    use Framework\HTTP\ResponseHeader;
+    use Framework\HTTP\Status;
     use Framework\MVC\App;
     use Framework\MVC\Controller;
 
@@ -195,7 +197,7 @@ This is the **api/UsersController.php** example:
             ]);
             if ($errors) {
                 return $this->response
-                    ->setStatus(Response::CODE_BAD_REQUEST)
+                    ->setStatus(Status::BAD_REQUEST)
                     ->setJson([
                         'errors' => $errors,
                     ]);
@@ -208,9 +210,9 @@ This is the **api/UsersController.php** example:
                 'email' => $data['email'],
             ];
             return $this->response
-                ->setStatus(Response::CODE_CREATED)
+                ->setStatus(Status::CREATED)
                 ->setHeader(
-                    Response::HEADER_LOCATION,
+                    ResponseHeader::LOCATION,
                     App::router()->getNamedRoute('api.users.show')
                         ->getUrl(pathArgs: [$user['id']])
                 )->setJson($user);
