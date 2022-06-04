@@ -1001,6 +1001,265 @@ Entities
 Views
 -----
 
+To obtain a View instance, the class can be instantiated individually, as shown
+in the example below:
+
+.. code-block:: php
+
+    use Framework\MVC\View;
+
+    $baseDir = __DIR__ . '/views';
+    $extension = '.php';
+    $view = new View($baseDir, $extension);
+
+Or getting an instance of the ``view`` service in the App class:
+
+.. code-block:: php
+
+    use Framework\MVC\App;
+
+    $view = App::view();
+
+With the View instantiated, we can render files.
+
+The file below will be used on the home page and is located at
+**views/home/index.php**:
+
+.. code-block:: php
+
+    <h1><?= $title ?></h1>
+    <p><?= $description ?></p>
+
+Returning to the main file, we pass the data to the file to be rendered:
+
+.. code-block:: php
+
+    $file = 'home/index';
+    $data = [
+        'title' => 'Welcome!',
+        'description' => 'Welcome to Aplus MVC.',
+    ];
+    echo $view->render($file, $data);
+
+And the output will be like this:
+
+.. code-block:: html
+
+    <h1>Welcome!</h1>
+    <p>Welcome to Aplus MVC.</p>
+
+Extending Layouts
+#################
+
+The View has a basic layout system that other view files can extend.
+
+Let's see the layout file **views/_layouts/default.php** below:
+
+.. code-block:: php
+
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title><?= $title ?></title>
+    </head>
+    <body>
+    <?= $view->renderBlock('contents') ?>
+    </body>
+    </html>
+
+Then, in the view that will be rendered by the ``render`` method, the file
+``_layouts/default`` sets the content inside the ``contents`` block:
+
+**views/home/index.php**
+
+.. code-block:: php
+
+    <?php
+    $view->extends('_layouts/default');
+    $view->block('contents');
+    ?>
+    <h1><?= $title ?></h1>
+    <p><?= $description ?></p>
+    <?php
+    $view->endBlock();
+
+If you want to extend views always from the same directory, you can set the
+layout prefix:
+
+.. code-block:: php
+
+    $view->setLayoutPrefix('_layouts');
+
+This will make it unnecessary to type the entire path. See the example below:
+
+.. code-block:: diff
+
+    - $view->extends('_layout/default');
+    + $view->extends('default');
+
+When working with only one file that extends a layout, it is possible to
+set the default block name in the second argument of ``extends``.
+
+Let's see how to extend the default layout and capture the content in the file
+**views/home/index.php**:
+
+.. code-block:: php
+
+    <?php
+    $view->extends('default', 'contents');
+    ?>
+    <h1><?= $title ?></h1>
+    <p><?= $description ?></p>
+
+So the rendered HTML file will look like this:
+
+.. code-block:: html
+
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Welcome!</title>
+    </head>
+    <body>
+    <h1>Welcome!</h1>
+    <p>Welcome to Aplus MVC.</p>
+    </body>
+    </html>
+
+View Includes
+#############
+
+It is often common to have parts of the layout that are repeated. Like for example,
+a header, a footer, a sidebar.
+
+These files are called **includes**.
+
+Let's see an example of include with a navigation bar in the file
+**views/_includes/navbar.php**:
+
+.. code-block:: php
+
+    <div class="navbar">
+    <ul>
+        <li<?= $active === 'home' ? ' class="active"' : ''?>>
+            <a href="/">Home</a>
+        </li>
+        <li<?= $active === 'contact' ? ' class="active"' : ''?>>
+            <a href="/contact">Contact</a>
+        </li>
+    </ul>
+    </div>
+
+This navbar will appear in several layouts, including the default one.
+
+Let's see below how to make it appear in views that extend the layout
+**views/_layouts/default.php**:
+
+.. code-block:: php
+
+    <body>
+    <?= $view->include('_includes/navbar') ?>
+    <h1><?= $title ?></h1>
+
+As with layouts, you can set the includes path prefix:
+
+.. code-block:: php
+
+    $view->setIncludePrefix('_includes');
+
+Once the includes path is set, it is no longer necessary to include it
+in the include method call:
+
+.. code-block:: diff
+
+    - $view->include('_includes/navbar');
+    + $view->include('navbar');
+
+The call in the default layout will be like this:
+
+.. code-block:: php
+
+    <body>
+    <?= $view->include('navbar') ?>
+    <h1><?= $title ?></h1>
+
+When necessary, you can pass an array of data to the include.
+
+Let's see how to pass the variable ``active`` with the value ``home``:
+
+.. code-block:: php
+
+    <body>
+    <?= $view->include('navbar', ['active' => 'home']) ?>
+    <h1><?= $title ?></h1>
+
+When rendered, the include will show the ``active`` class on the Home line in the
+navbar:
+
+.. code-block:: html
+
+    <div class="navbar">
+    <ul>
+        <li class="active">
+            <a href="/">Home</a>
+        </li>
+        <li>
+            <a href="/contact">Contact</a>
+        </li>
+    </ul>
+    </div>
+
+View Blocks
+###########
+
+Below we will see how to create a block called ``contents`` and another
+called ``scripts`` in the **views/home/index.php** file:
+
+.. code-block:: php
+
+    <?php
+    $view->extends('default');
+    
+    $view->block('contents');
+    ?>
+    <h1><?= $title ?></h1>
+    <p><?= $description ?></p>
+    <?php
+    $view->endBlock();
+
+    $view->block('scripts');
+    ?>
+    <script>
+        console.log('Hello!');
+    </script>
+    <?php
+    $view->endBlock();
+
+In the **views/_layouts/default.php** file we can render the two blocks:
+
+.. code-block:: php
+
+    <body>
+    <?= $view->renderBlock('contents') ?>
+    <?= $view->renderBlock('scripts') ?>
+    </body>
+
+And the output will be like this:
+
+.. code-block:: html
+
+    <body>
+    <h1>Welcome!</h1>
+    <p>Welcome to Aplus MVC.</p>
+    <script>
+        console.log('Hello!');
+    </script>
+    </body>
+
 Controllers
 -----------
 
