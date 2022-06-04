@@ -337,18 +337,22 @@ Anti-CSRF Config Options
 enabled
 """""""
 
+Set ``true`` to enable and ``false`` to disable. By default it is enabled.
+
 token_name
 """"""""""
+
+Sets the token name. The default is ``csrf_token``.
 
 session_instance
 """"""""""""""""
 
-A `Session Service`_ instance name.
+Set the `Session Service`_ instance name. The default is ``default``.
 
 request_instance
 """"""""""""""""
 
-A `Request Service`_ instance name.
+Set the `Request Service`_ instance name. The default is ``default``.
 
 Autoloader Service
 ^^^^^^^^^^^^^^^^^^
@@ -366,14 +370,23 @@ Autoloader Config Options
 register
 """"""""
 
+Set ``true`` to register as an autoload function or ``false`` to disable. The
+default is to leave it enabled.
+
 extensions
 """"""""""
+
+A comma-separated list of extensions. The default is ``.php``.
 
 namespaces
 """"""""""
 
+Sets the mapping from namespaces to directories. By default it is not set.
+
 classes
 """""""
+
+Sets the mapping of classes to files. By default it is not set.
 
 Cache Service
 ^^^^^^^^^^^^^
@@ -391,19 +404,33 @@ Cache Config Options
 class
 """""
 
+The Fully Qualified Class Name of a class that extends ``Framework\Cache\Cache``.
+
+There is no default value, it must be set.
+
 configs
 """""""
+
+The configurations passed to the class. By default it is an empty array.
 
 prefix
 """"""
 
+A prefix for the name of cache items. By default nothing is set.
+
 serializer
 """"""""""
+
+Sets the serializer with a value from the enum Framework\Cache\Serializer,
+which can be a case of the enum or a string.
+
+The default value is ``Framework\Cache\Serializer::PHP``.
 
 logger_instance
 """""""""""""""
 
-A `Logger Service`_ instance name.
+Set the `Logger Service`_ instance name. If not set, the Logger instance will
+not be set in the Cache class.
 
 Console Service
 ^^^^^^^^^^^^^^^
@@ -421,18 +448,25 @@ Console Config Options
 directories
 """""""""""
 
+Sets an array of directories where commands will be looked for. By default there
+is no directory.
+
 find_in_namespaces
 """"""""""""""""""
+
+Set ``true`` to find commands in all Commands subdirectories of all namespaces.
+The default is not to find in namespaces.
 
 language_instance
 """""""""""""""""
 
-A `Language Service`_ instance name.
+Set a `Language Service`_ instance name. If not set, the Language instance will
+not be set in the Console class.
 
 locator_instance
 """"""""""""""""
 
-A `Locator Service`_ instance name.
+Set the `Locator Service`_ instance name. By default it is ``default``.
 
 Debugger Service
 ^^^^^^^^^^^^^^^^
@@ -450,8 +484,13 @@ Debugger Config Options
 debugbar_view
 """""""""""""
 
+Sets the path of a file to be used instead of the debugbar view. The default is
+to use the original.
+
 options
 """""""
+
+Sets an array of options for the Debugger. The default is to set nothing.
 
 Database Service
 ^^^^^^^^^^^^^^^^
@@ -469,10 +508,17 @@ Database Config Options
 config
 """"""
 
+Set an array of configurations. Usually just the ``username``, the ``password``
+and the ``schema``.
+
+The complete list of configurations can be seen
+`here <https://docs.aplus-framework.com/guides/libraries/database/index.html#connection>`_.
+
 logger_instance
 """""""""""""""
 
-A `Logger Service`_ instance name.
+Set the `Logger Service`_ instance name. If not set, the Logger instance will
+not be set in the Database class.
 
 Mailer Service
 ^^^^^^^^^^^^^^
@@ -490,8 +536,18 @@ Mailer Config Options
 class
 """""
 
+Sets the Fully Qualified Class Name of a child class of Framework\Email\Mailer.
+
+The default is ``Framework\Email\Mailers\SMTPMailer``.
+
 config
 """"""
+
+Set an array with Mailer settings. Normally you just set the ``username``, the
+``password``, the ``host`` and the ``port``.
+
+The complete list of configurations can be seen
+`here <https://docs.aplus-framework.com/guides/libraries/email/index.html#mailer-connection>`_.
 
 Migrator Service
 ^^^^^^^^^^^^^^^^
@@ -509,13 +565,17 @@ Migrator Config Options
 database_instance
 """""""""""""""""
 
-A `Database Service`_ instance name.
+Set the `Database Service`_ instance name. The default is ``default``.
 
 directories
 """""""""""
 
+Sets an array of directories that contain Migrations files. It must be set.
+
 table
 """""
+
+The name of the migrations table. The default name is ``Migrations``.
 
 Language Service
 ^^^^^^^^^^^^^^^^
@@ -533,30 +593,47 @@ Language Config Options
 default
 """""""
 
+Sets the default language code. The default is ``en``.
+
 supported
 """""""""
+
+Set an array with supported languages. The default is to set none.
 
 negotiate
 """""""""
 
+Set ``true`` to negotiate the locale on the command line or HTTP request.
+
 request_instance
 """"""""""""""""
 
-A `Request Service`_ instance name.
+Set the `Request Service`_ instance name to negotiate the current locale. The
+default is ``default``.
 
 fallback_level
 """"""""""""""
 
+Sets the Fallback Level to a Framework\Language\FallbackLevel enum case or an
+integer. The default is to set none.
+
 directories
 """""""""""
+
+Sets directories that contain subdirectories with the locale and language files.
+The default is to set none.
 
 find_in_namespaces
 """"""""""""""""""
 
+If set to ``true`` it will cause subdirectories called Language to be searched
+in all namespaces and added to Language directories.
+
 autoloader_instance
 """""""""""""""""""
 
-A `Autoloader Service`_ instance name.
+Sets the `Autoloader Service`_ instance name of the autoloader used to find in
+namespaces.
 
 Locator Service
 ^^^^^^^^^^^^^^^
@@ -574,7 +651,7 @@ Locator Config Options
 autoloader_instance
 """""""""""""""""""
 
-A `Autoloader Service`_ instance name.
+The `Autoloader Service`_ instance name. The default is ``default``.
 
 Logger Service
 ^^^^^^^^^^^^^^
@@ -589,11 +666,30 @@ Gets an instance of
 Logger Config Options
 *********************
 
-directory
-"""""""""
+class
+"""""
+
+A Fully Qualified Class Name of a child class of Framework\Log\Logger.
+
+The default is ``Framework\Log\Logger\MultiFileLogger``.
+
+destination
+"""""""""""
+
+Set the destination where the logs will be stored or sent. It must be set
+according to the class used.
 
 level
 """""
+
+Sets the level of logs with a case of Framework\Log\LogLevel or an integer. If
+none is set, the ``DEBUG`` level will be used.
+
+config
+""""""
+
+Sets an array with extra configurations for the class. The default is to pass an
+empty array.
 
 Request Service
 ^^^^^^^^^^^^^^^
@@ -608,8 +704,15 @@ Gets an instance of
 Request Config Options
 **********************
 
+server_vars
+"""""""""""
+
+An array of values to be set in the $_SERVER superglobal on the command line.
+
 allowed_hosts
 """""""""""""
+
+Sets an array of allowed hosts. The default is ``null`` so any host is allowed.
 
 Response Service
 ^^^^^^^^^^^^^^^^
@@ -627,24 +730,38 @@ Response Config Options
 headers
 """""""
 
+Sets an array where the keys are the name and the values are the header values.
+The default is to set none.
+
 auto_etag
 """""""""
+
+``true`` arrow to enable ETag auto-negotiation on all responses. It can also be
+an array with the keys ``active`` and ``hash_algo``.
 
 auto_language
 """""""""""""
 
+Set ``true`` to set the Content-Language header to the current locale. The
+default is no set.
+
 language_instance
 """""""""""""""""
 
-A `Language Service`_ instance name.
+Set `Language Service`_ instance name of the Language used in **auto_language**.
 
 cache
 """""
 
+Set ``false`` to set Cache-Control to ``no-cache`` or an array with key ``seconds``
+to set cache seconds and optionally ``public`` to true or false to ``private``.
+
+The default is not to set these settings.
+
 request_instance
 """"""""""""""""
 
-A `Request Service`_ instance name.
+Set the `Request Service`_ instance name. The default is ``default``.
 
 Router Service
 ^^^^^^^^^^^^^^
@@ -662,24 +779,37 @@ Router Config Options
 files
 """""
 
+Sets an array with the path of files that will be inserted to serve the routes.
+The default is to set none.
+
 placeholders
 """"""""""""
+
+A custom placeholder array. Where the key is the placeholder and the value is
+the pattern. The default is to set none.
 
 auto_options
 """"""""""""
 
+If set to ``true`` it enables the feature to automatically respond to OPTIONS
+requests. The default is no set.
+
 auto_methods
 """"""""""""
+
+If set to ``true`` it enables the feature to respond with the status 405 Method
+Not Allowed and the Allow header containing valid methods. The default is no set.
 
 response_instance
 """""""""""""""""
 
-The `Response Service`_ instance name.
+Set the `Response Service`_ instance name. The default value is ``default``.
 
 language_instance
 """""""""""""""""
 
-A `Language Service`_ instance name.
+Set a `Language Service`_ instance name. If not set, the Language instance will
+not be passed.
 
 Session Service
 ^^^^^^^^^^^^^^^
@@ -697,16 +827,27 @@ Session Config Options
 save_handler
 """"""""""""
 
+Optional. Sets an array containing the ``class`` key with the Fully Qualified
+Class Name of a child class of Framework\Session\SaveHandler. And also the
+``config`` key with the configurations passed to the SaveHandler.
+
 options
 """""""
+
+Sets an array with the options to be passed in the construction of the Session
+class.
 
 auto_start
 """"""""""
 
+Set to ``true`` to automatically start the session when the service is called.
+The default is not to start.
+
 logger_instance
 """""""""""""""
 
-A `Logger Service`_ instance name.
+Set the `Logger Service`_ instance name. If not set, the Logger instance will
+not be set in the save handler.
 
 Validation Service
 ^^^^^^^^^^^^^^^^^^
@@ -724,10 +865,14 @@ Validation Config Options
 validators
 """"""""""
 
+Sets an array of Validators. The default is an array with the Validator from the
+mvc package and the FilesValidator from the Validation package.
+
 language_instance
 """""""""""""""""
 
-A `Language Service`_ instance name.
+Set the `Language Service`_ instance name. The default is not to set an
+instance of Language.
 
 View Service
 ^^^^^^^^^^^^
@@ -745,14 +890,23 @@ View Config Options
 base_dir
 """"""""
 
+Sets the base directory from which views will be loaded. The default is to not
+set any directories.
+
 extension
 """""""""
+
+Sets the extension of view files. The default is ``.php``.
 
 layout_prefix
 """""""""""""
 
+Sets the layout prefix. The default is to set none.
+
 include_prefix
 """"""""""""""
+
+Set the includes prefix. The default is to set none.
 
 Extending
 #########
