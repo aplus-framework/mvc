@@ -38,7 +38,7 @@ abstract class Controller extends RouteActions
      * If this property is set, the $model property will be set with a new
      * instance of this FQCN in the Controller constructor.
      *
-     * @var string
+     * @var class-string<ModelInterface>
      */
     protected string $modelClass;
     /**
@@ -63,7 +63,7 @@ abstract class Controller extends RouteActions
         $this->request = $request;
         $this->response = $response;
         if (isset($this->modelClass)) {
-            $this->model = new $this->modelClass(); // @phpstan-ignore-line
+            $this->model = new $this->modelClass();
         }
     }
 
