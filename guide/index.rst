@@ -1263,5 +1263,225 @@ And the output will be like this:
 Controllers
 -----------
 
+The abstract class **Framework\MVC\Controller** extends the class
+**Framework\Routing\RouteActions**, inheriting the characteristics necessary
+for your methods to be used as route actions.
+
+Below we see an example with the **Home** class and the ``index`` action method
+returning a string that will be appended to the HTTP Response body:
+
+.. code-block:: php
+
+    use Framework\MVC\Controller;
+
+    class Home extends Controller
+    {
+        public function index() : string
+        {
+            return 'Home page.'
+        }
+    }
+
+Render Views
+############
+
+Instead of building all the page content inside the ``index`` method, you can
+use the ``render`` method, with the name of the file that will be rendered,
+building the HTML page as a view.
+
+In this case, we render the ``home/index`` view:
+
+.. code-block:: php
+
+    use Framework\MVC\Controller;
+
+    class Home extends Controller
+    {
+        public function index() : string
+        {
+            return $this->render('home/index');
+        }
+    }
+
+Validate Data
+#############
+
+When necessary, you can validate data using the ``validate`` method.
+
+In it, it is possible to put the data that will be validated, the rules, and,
+optionally, the labels, the messages and the name of the validation service
+instance, which by default is ``default``.
+
+In the example below we highlight the ``create`` method, which can be called by
+the HTTP POST method to create a contact message.
+
+Note that the rules are set and then the POST data is validated, returning an
+array with the errors and showing them on the screen in a list or an empty array,
+showing that no validation errors occurred and the message that was created
+successfully:
+
+.. code-block:: php
+
+    use Framework\MVC\Controller;
+
+    class Contact extends Controller
+    {
+        public function index() : string
+        {
+            return $this->render('contact/index');
+        }
+
+        public function create() : void
+        {
+            $rules = [
+                'name' => 'required|minLength:5|maxLength:32',
+                'email' => 'required|email',
+                'message' => 'required|minLength:10|maxLength:1000',
+            ];
+            $errors =  $this->validate($this->request->getPost(), $rules);
+            if ($errors) {
+                echo '<h2>Validation Errors</h2>';
+                echo '<ul>';
+                foreach($errors as $error) {
+                    echo '<li>' . $error . '</li>';
+                }
+                echo '<ul>';
+                return;
+            }
+            echo '<h2>Contact Successful Created</h2>';
+        }
+    }
+
+HTTP Request and Response
+#########################
+
+The Controller has instances of the two HTTP messages, the Request and the
+Response, accessible through properties that can be called directly.
+
+Let's see below how to use Request to get the current URL as a string and put it
+in the Response body:
+
+.. code-block:: php
+
+    use Framework\HTTP\Response;
+    use Framework\MVC\Controller;
+
+    class Home extends Controller
+    {
+        public function index() : Response
+        {
+            $url = (string) $this->request->getUrl();
+            return $this->response->setBody(
+                'Current URL is: ' . $url
+            );
+        }
+    }
+
+The example above is simple, but $request and $response are powerful, having
+numerous useful methods for working on HTTP interactions.
+
+Model Instance
+##############
+
+Often, a controller works with a specific model and through the $modelClass
+property it is possible to set the Fully Qualified Class Name of a
+``ModelInterface`` child class so that an instance of it is automatically loaded,
+in all requests, in the construction of the controller.
+
+Let's see below that $modelClass receives the name of the ``App\Models\UsersModel``
+class and in the ``show`` method the direct call to the $model property is used,
+which has the instance of ``App\Models\UsersModel``:
+
+.. code-block:: php
+
+    use App\Models\UsersModel;
+    use Framework\MVC\Controller;
+
+    class Users extends Controller
+    {
+        protected string $modelClass = UsersModel::class;
+
+        public function show(int $id) : string
+        {
+            $user = $this->model->find($id);
+            return $this->render('users/show', [
+                'user' => $user,
+            ]);
+        }
+    }
+
+JSON Responses
+##############
+
+As with the Framework\Routing\RouteActions class, the controller action methods
+can return an array, stdClass, or JsonSerializable instance so that the Response
+is automatically set with the JSON Content-Type and the message body as well.
+
+In the example below, we see how to get the users of a page, with an array
+returned from the model's ``paginate`` method, and then returned to be
+JSON-encoded and added to the Response body:
+
+.. code-block:: php
+
+    use App\Models\UsersModel;
+    use Framework\MVC\Controller;
+
+    class Users extends Controller
+    {
+        protected string $modelClass = UsersModel::class;
+
+        public function index() : array
+        {
+            $page = $this->request->getGet('page')
+            $users = $this->model->paginate($page);
+            return $users;
+        }
+    }
+
+Before and After Actions
+########################
+
+Every controller has two methods inherited from Framework\Routing\RouteActions
+that can be used to prepare configurations, filter input data, and also to
+finalize configurations and filter output data.
+
+They are ``beforeAction`` and ``afterAction``.
+
+Let's look at a simple example to validate a user's access to a dashboard's pages.
+
+We create the **AdminController** class and put a check in it to see if the
+``user_id`` is set in the session. If not, the page will be redirected to the
+location ``/login``. Otherwise, access to the action method is released and
+the user can access the admin area:
+
+.. code-block:: php
+
+    use Framework\MVC\App;
+    use Framework\MVC\Controller;
+
+    abstract class AdminController extends Controller
+    {
+        protected function beforeAction(string $method, array $arguments) : mixed
+        {
+            if ( ! App::session()->has('user_id')) {
+                return $this->response->redirect('/login');
+            }
+            return null;
+        }
+    }
+
+Below, the Dashboard methods will only be executed if ``beforeAction`` returns
+``null`` in the parent class, AdminController:
+
+.. code-block:: php
+
+    final class Dashboard extends AdminController
+    {
+        public function index() : string
+        {
+            return 'You are in Admin Area!';
+        }
+    }
+
 Conclusion
 ----------
