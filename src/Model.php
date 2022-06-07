@@ -70,7 +70,7 @@ abstract class Model implements ModelInterface
      *
      * @var string
      */
-    protected string $returnType = 'stdClass';
+    protected string $returnType = stdClass::class;
     /**
      * Allowed columns for INSERT and UPDATE.
      *
@@ -490,7 +490,7 @@ abstract class Model implements ModelInterface
         if ($returnType === 'array') {
             return $data;
         }
-        if ($returnType === 'object' || $returnType === 'stdClass') {
+        if ($returnType === 'object' || $returnType === stdClass::class) {
             return (object) $data;
         }
         return new $returnType($data); // @phpstan-ignore-line
