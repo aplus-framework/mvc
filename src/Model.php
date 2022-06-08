@@ -14,6 +14,7 @@ use DateTimeZone;
 use Exception;
 use Framework\Cache\Cache;
 use Framework\Database\Database;
+use Framework\Language\Language;
 use Framework\Pagination\Pager;
 use Framework\Validation\FilesValidator;
 use Framework\Validation\Validation;
@@ -251,6 +252,11 @@ abstract class Model implements ModelInterface
         return $this->languageInstance;
     }
 
+    protected function getLanguage() : Language
+    {
+        return App::language($this->getLanguageInstance());
+    }
+
     protected function checkPrimaryKey(int | string $id) : void
     {
         if (empty($id)) {
@@ -365,7 +371,7 @@ abstract class Model implements ModelInterface
             $page,
             $perPage,
             $this->count(),
-            App::language($this->getLanguageInstance()),
+            $this->getLanguage(),
             $this->getPagerUrl()
         );
         $pagerView = $this->getPagerView();
@@ -697,7 +703,7 @@ abstract class Model implements ModelInterface
     {
         return $this->validation ??= (new Validation(
             $this->getValidationValidators(),
-            App::language($this->getLanguageInstance())
+            $this->getLanguage()
         ))->setRules($this->getValidationRules())
             ->setLabels($this->getValidationLabels())
             ->setMessages($this->getValidationMessages());
