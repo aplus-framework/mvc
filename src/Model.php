@@ -291,7 +291,7 @@ abstract class Model implements ModelInterface
      *
      * @return Database
      */
-    protected function getDatabaseForRead() : Database
+    protected function getDatabaseToRead() : Database
     {
         return App::database($this->getConnectionRead());
     }
@@ -301,7 +301,7 @@ abstract class Model implements ModelInterface
      *
      * @return Database
      */
-    protected function getDatabaseForWrite() : Database
+    protected function getDatabaseToWrite() : Database
     {
         return App::database($this->getConnectionWrite());
     }
@@ -313,7 +313,7 @@ abstract class Model implements ModelInterface
      */
     public function count() : int
     {
-        $result = $this->getDatabaseForRead()
+        $result = $this->getDatabaseToRead()
             ->select()
             ->expressions([
                 'count' => static function () : string {
@@ -357,7 +357,7 @@ abstract class Model implements ModelInterface
      */
     public function paginate(int $page, int $perPage = 10) : array
     {
-        $data = $this->getDatabaseForRead()
+        $data = $this->getDatabaseToRead()
             ->select()
             ->from($this->getTable())
             ->limit(...$this->makePageLimitAndOffset($page, $perPage))
@@ -427,7 +427,7 @@ abstract class Model implements ModelInterface
      */
     protected function findRow(int | string $id) : array | null
     {
-        return $this->getDatabaseForRead()
+        return $this->getDatabaseToRead()
             ->select()
             ->from($this->getTable())
             ->whereEqual($this->getPrimaryKey(), $id)
@@ -471,7 +471,7 @@ abstract class Model implements ModelInterface
      */
     public function findAll(int $limit = null, int $offset = null) : array
     {
-        $data = $this->getDatabaseForRead()
+        $data = $this->getDatabaseToRead()
             ->select()
             ->from($this->getTable());
         if ($limit !== null) {
@@ -542,7 +542,7 @@ abstract class Model implements ModelInterface
      */
     protected function getTimestamp() : string
     {
-        $timezone = $this->getDatabaseForWrite()->getConfig()['timezone'] ?? '+00:00';
+        $timezone = $this->getDatabaseToWrite()->getConfig()['timezone'] ?? '+00:00';
         $timezone = new DateTimeZone($timezone);
         $datetime = new DateTime('now', $timezone);
         return $datetime->format($this->getTimestampFormat());
@@ -567,7 +567,7 @@ abstract class Model implements ModelInterface
             $data[$this->getFieldCreated()] ??= $timestamp;
             $data[$this->getFieldUpdated()] ??= $timestamp;
         }
-        $database = $this->getDatabaseForWrite();
+        $database = $this->getDatabaseToWrite();
         $insertId = $database->insert()->into($this->getTable())->set($data)->run()
             ? $database->insertId()
             : false;
@@ -629,7 +629,7 @@ abstract class Model implements ModelInterface
         if ($this->isAutoTimestamps()) {
             $data[$this->getFieldUpdated()] ??= $this->getTimestamp();
         }
-        $affectedRows = $this->getDatabaseForWrite()
+        $affectedRows = $this->getDatabaseToWrite()
             ->update()
             ->table($this->getTable())
             ->set($data)
@@ -665,7 +665,7 @@ abstract class Model implements ModelInterface
             $data[$this->getFieldCreated()] ??= $timestamp;
             $data[$this->getFieldUpdated()] ??= $timestamp;
         }
-        $affectedRows = $this->getDatabaseForWrite()
+        $affectedRows = $this->getDatabaseToWrite()
             ->replace()
             ->into($this->getTable())
             ->set($data)
@@ -686,7 +686,7 @@ abstract class Model implements ModelInterface
     public function delete(int | string $id) : false | int | string
     {
         $this->checkPrimaryKey($id);
-        $affectedRows = $this->getDatabaseForWrite()
+        $affectedRows = $this->getDatabaseToWrite()
             ->delete()
             ->from($this->getTable())
             ->whereEqual($this->getPrimaryKey(), $id)
