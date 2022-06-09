@@ -995,6 +995,478 @@ Tip: Use a smart IDE. Aplus loves it. Be happy.
 Models
 ------
 
+Models represent tables in databases. They have basic CRUD (create, read, update
+and delete) methods, with validation, localization and performance
+optimization with caching and separation of read and write data.
+
+To create a model that represents a table, just create a class that extends the
+**Framework\MVC\Model** class.
+
+.. code-block:: php
+
+    use Framework\MVC\Model;
+
+    class Users extends Model
+    {
+    }
+
+The example above is very simple, but with it it would be possible to read data
+in the **Users** table.
+
+Table Name
+##########
+
+The table name can be set in the ``$table`` property.
+
+.. code-block:: php
+
+    protected string $table;
+
+If the name is not set the first time the ``getTable`` method is called, the
+table name will automatically be set to the class name. For example, if the
+class is called **App\Models\PostsModel**, the table name will be **Posts**.
+
+Database Connections
+####################
+
+Each model allows two database connections, one for reading and one for writing.
+
+The connections are obtained through the ``Framework\MVC\App::database`` method
+and the name of the instances must be defined in the model.
+
+To set the name of the read connection instance, use the ``$connectionRead``
+property.
+
+.. code-block:: php
+
+    protected string $connectionRead = 'default';
+
+The name of the connection can be obtained through the ``getConnectionRead``
+method and the instance of **Framework\Database\Database** can be obtained
+through the ``getDatabaseToRead`` method.
+
+The name of the write connection, by default, is also ``default``. But it can
+be modified through the ``$connectionWrite`` property.
+
+.. code-block:: php
+
+    protected string $connectionWrite = 'default';
+
+The name of the write connection can be taken by the ``getConnectionWrite``
+method and the instance by ``getDatabaseToWrite``.
+
+Primary Key
+###########
+
+To work with a model, it is necessary that its database table has an
+auto-incrementing Primary Key, because it is through it that data is found by
+the ``find`` method, and rows are also updated and deleted.
+
+By default, the name of the primary key is ``id``, as in the example below:
+
+.. code-block:: php
+
+    protected string $primaryKey = 'id';
+
+It can be obtained with the ``getPrimaryKey`` method.
+
+The primary key field is protected by default, preventing it from being changed
+in write methods such as ``create``, ``update`` and ``replace``:
+
+.. code-block:: php
+
+    protected bool $protectPrimaryKey = true;
+
+You can check if the primary key is being protected by the
+``isProtectPrimaryKey`` method.
+
+If it is protected, but allowed in `Allowed Fields`_, an exception will be
+thrown saying that the primary key field is protected and cannot be changed by
+writing methods.
+
+Allowed Fields
+##############
+
+To manipulate a table making changes it is required that the fields allowed for
+writing are set, otherwise a **LogicException** will be thrown.
+
+Using the ``$allowedFields`` property, you can set an array with the names of
+the allowed fields:
+
+.. code-block:: php
+
+    protected array $allowedFields = [
+        'name',
+        'email',
+    ];
+
+This list can be obtained with the ``getAllowedFields`` method.
+
+Note that the data is filtered on write operations, removing all disallowed
+fields.
+
+Return Type
+###########
+
+When reading data, by default the rows are converted into ``stdClass`` objects,
+making it easier to work with object orientation.
+
+But, the ``$returnType`` property can also be set as ``array`` (making the
+returned rows an associative array) or as a class-string of a child class of
+**Framework\MVC\Entity**.
+
+.. code-block:: php
+
+    protected string $returnType = stdClass::class;
+
+The return type can be obtained with the ``getReturnType`` method.
+
+Results are automatically converted to the return type in the ``find``,
+``findAll`` and ``paginate`` methods.
+
+Automatic Timestamps
+####################
+
+With models it is possible to save the creation and update dates of rows
+automatically.
+
+To do this, just set the ``$autoTimestamps`` property to true:
+
+.. code-block:: php
+
+    protected bool $autoTimestamps = false;
+
+To find out if automatic timestamps are enabled, you can use the
+``isAutoTimestamps`` method.
+
+By default, the name of the field with the row creation timestamp is
+``createdAt`` and the field with the update timestamp is called ``updatedAt``.
+
+Both fields can be changed via the ``$fieldCreated`` and ``$fieldUpdated``
+properties:
+
+.. code-block:: php
+
+    protected string $fieldCreated = 'createdAt';
+    protected string $fieldUpdated = 'updatedAt';
+
+To get the name of the automatic timestamp fields you can use the
+``getFieldCreated`` and ``getFieldUpdated`` methods.
+
+The timestamp format can also be customized. The default is like the example
+below:
+
+.. code-block:: php
+
+    protected string $timestampFormat = 'Y-m-d H:i:s';
+
+And, the format can be obtained through the ``getTimestampFormat`` method.
+
+The timestamps are generated using the timezone of the write connection and,
+if it is not set, it uses UTC.
+
+A timestamp formatted in ``$timestampFormat`` can be obtained with the
+``getTimestamp`` method.
+
+When the fields of ``$fieldCreated`` or ``$fieldUpdated`` are set to
+``$allowedFields`` they will not be removed by filtering, and you can set
+custom values.
+
+Validation
+##########
+
+When one of the ``create``, ``update`` or ``replace`` methods is called for the
+first time, the ``$validation`` property will receive an instance of
+**Framework\Validation\Validation** for exclusive use in the model, which can be
+obtained by the ``getValidation`` method.
+
+To make changes it is required that the validation rules are set, otherwise a
+**RuntimeException** will be thrown saying that the rules were not set.
+
+You can set the rules in the ``$validationRules`` property:
+
+.. code-block:: php
+
+    protected array $validationRules = [
+        'name' => 'minLength:5|maxLength:32',
+        'email' => 'email',
+    ];
+
+Or returning in the ``getValidationRules`` method.
+
+Validators can also be customized. By default, the ones used are
+**Framework\MVC\Validator** and **Framework\Validation\FilesValidator**:
+
+.. code-block:: php
+
+    protected array $validationValidators = [
+        Validator::class,
+        FilesValidator::class,
+    ];
+
+The list of validators can be obtained using the ``getValidationValidators``
+method.
+
+The labels with the name of the fields in the error messages can also be
+customized, being set in the ``$validationLabels`` property:
+
+.. code-block:: php
+
+    protected array $validationLabels;
+
+Or through the ``getValidationLabels`` method, as in the example below, setting
+the labels in the current language:
+
+.. code-block:: php
+
+    protected function getValidationLabels() : array
+    {
+        return $this->validationLabels ??= [
+            'name' => $this->getLanguage()->render('users', 'name'),
+            'email' => $this->getLanguage()->render('users', 'email'),
+        ];
+    }
+
+The same goes for setting custom error messages. They can be set in the
+``$validationMessages`` property:
+
+.. code-block:: php
+
+    protected array $validationMessages;
+
+And obtained by the ``getValidationMessages`` method.
+
+When ``create``, ``update`` or ``replace`` return ``false``, errors can be
+retrieved via the ``getErrors`` method.
+
+Pagination
+##########
+
+Using the ``paginate`` method, you can perform a basic pagination with all the
+data in a table.
+
+Below, we take the first 30 items from the table:
+
+.. code-block:: php
+
+    $page = 1;
+    $perPage = 30;
+    $data = $model->paginate($page, $perPage); // array
+
+After calling the ``paginate`` method, the ``$pager`` property will have an
+instance of the **Framework\Pagination\Pager** class, which can be obtained by
+the ``getPager`` method.
+
+So you can render the pagination wherever you need it, like in the HTTP Link
+header or as HTML in views:
+
+.. code-block:: php
+
+    echo $model->getPager()->render('bootstrap');
+
+In the ``$pagerView`` property you can define the default Pager view:
+
+.. code-block:: php
+
+    protected string $pagerView = 'bootstrap';
+
+So this view will always render by default:
+
+.. code-block:: php
+
+    echo $model->getPager()->render();
+
+Also, it is possible to set the Pager URL in the ``$pagerUrl`` property, which
+is unnecessary in HTTP requests, but required in the command line.
+
+Cache
+#####
+
+The model has a cache system that works with individual results. For example,
+once the ``$cacheActive`` property is set to ``true``, when obtaining a row
+via the ``find`` method, the result will be stored in the cache and will be
+available directly from it for the duration of the Time To Live, defined in the
+``$cacheTtl`` property.
+
+When an item is updated via the ``update`` method, the cached item will also be
+updated.
+
+When an item is deleted from the database, it is also deleted from the cache.
+
+With the active caching system it reduces the load on the database server, as
+the rows are obtained from files or directly from memory.
+
+Below is the example with the cache inactive. To activate it, just set the value
+to ``true``.
+
+.. code-block:: php
+
+    protected bool $cacheActive = false;
+
+Whenever you want to know if the cache is active, you can use the
+``isCacheActive`` method.
+
+And the name of the service instance obtained through the method
+``Framework\MVC\App::cache`` can be set as in the property below:
+
+.. code-block:: php
+
+    protected string $cacheInstance = 'default';
+
+Whenever it is necessary to get the name of the cache instance, you can use the
+``getCacheInstance`` method and to get the object instance of the
+**Framework\Cache\Cache** class, you can use the ``getCache`` method.
+
+The default Time To Live value for each item is 60 seconds, as shown below:
+
+.. code-block:: php
+
+    protected int $cacheTtl = 60;
+
+This value can be obtained through the ``getCacheTtl`` method.
+
+Language
+########
+
+Some features, such as validation, on labels and error messages, or pagination
+need an instance of **Framework\Language\Language** to locate the displayed
+texts.
+
+The name of the instance defined in the ``$languageInstance`` property is
+obtained through the service available in the ``Framework\MVC\App::language``
+method, and can be obtained through the ``getLanguage`` method.
+
+The default instance is ``default``, as shown below:
+
+.. code-block:: php
+
+    protected string $languageInstance = 'default';
+
+CRUD
+####
+
+The model has methods to work with basic CRUD operations, which are:
+
+- `Create`_
+- `Read`_
+- `Update`_
+- `Delete`_
+
+Create
+******
+
+The ``create`` method inserts a new row and returns the LAST_INSERT_ID() on
+success or ``false`` if validation fails:
+
+.. code-block:: php
+    
+    $data = [
+        'name' => 'John Doe',
+        'email' => 'johndoe@domain.tld',
+    ];
+    $id = $model->create($data); // Insert ID or false
+
+If it returns ``false``, it is possible to get the errors through the
+``getErrors`` method:
+
+.. code-block:: php
+
+    if ($id === false) {
+        $errors = $model->getErrors();
+    }
+
+Read
+****
+
+The ``find`` method finds a row based on the Primary Key and returns the row
+with the type set in the ``$returnType`` property or ``null`` if the row is not
+found.
+
+.. code-block:: php
+
+    $id = 1;
+    $row = $model->find($id);
+
+It is also possible to find all rows, with limit and offset, by returning an
+array with items in the ``$returnType``.
+
+.. code-block:: php
+
+    $limit = 10;
+    $offset = 20;
+    $rows = $model->findAll($limit, $offset);
+
+Update
+******
+
+The ``update`` method updates based on the Primary Key and returns the number
+of rows affected or ``false`` if validation fails.
+
+.. code-block:: php
+
+    $id = 1;
+    $data = [
+        'name' => 'Johnny Doe',
+    ];
+    $affectedRows = $model->update($id, $data);
+
+Delete
+******
+
+The ``delete`` method deletes based on the Primary Key and returns the number
+of affected rows:
+
+.. code-block:: php
+
+    $id = 1;
+    $affectedRows = $model->delete($id);
+
+Extra
+*****
+
+The Model has some extra methods for doing common operations:
+
+Count
+"""""
+
+A basic function to count all rows in the table.
+
+.. code-block:: php
+
+    $count = $model->count();
+
+Replace
+"""""""
+
+Replace based on Primary Key and return the number of affected rows or ``false``
+if validation fails.
+
+.. code-block:: php
+
+    $id = 1;
+    $data = [
+        'name' => 'John Morgan',
+        'email' => 'johndoe@domain.tld',
+    ];
+    $affectedRows = $model->replace($id, $data);
+
+Save
+""""
+
+Save a row. Updates if the Primary Key field is present, otherwise inserts a
+new row.
+
+Returns the number of rows affected in updates as an integer. The
+LAST_INSERT_ID(), in inserts. Or ``false`` if validation fails.
+
+.. code-block:: php
+
+    $data = [
+        'id' => 1,
+        'email' => 'john@domain.tld',
+    ];
+    $result = $model->save($data);
+
 Entities
 ########
 
@@ -1345,7 +1817,7 @@ successfully:
                 foreach($errors as $error) {
                     echo '<li>' . $error . '</li>';
                 }
-                echo '<ul>';
+                echo '</ul>';
                 return;
             }
             echo '<h2>Contact Successful Created</h2>';
