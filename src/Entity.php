@@ -53,7 +53,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
      *
      * @throws OutOfBoundsException If property is not defined
      */
-    public function __set(string $property, $value) : void
+    public function __set(string $property, mixed $value) : void
     {
         $method = $this->renderMethodName('set', $property);
         if (\method_exists($this, $method)) {
@@ -86,11 +86,6 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         throw new OutOfBoundsException("Property not defined: {$property}");
     }
 
-    /*public function __toString() : string
-    {
-        return $this->toScalarJSON($this->toArray());
-    }*/
-
     /**
      * Used to initialize settings, set custom properties, etc.
      * Called in the constructor just after the properties be populated.
@@ -109,12 +104,12 @@ abstract class Entity implements \JsonSerializable //, \Stringable
     {
         static $properties;
         if (isset($properties[$property])) {
-            return "{$type}{$properties[$property]}";
+            return $type . $properties[$property];
         }
         $name = \ucwords($property, '_');
         $name = \strtr($name, ['_' => '']);
         $properties[$property] = $name;
-        return "{$type}{$name}";
+        return $type . $name;
     }
 
     /**
