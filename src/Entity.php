@@ -9,6 +9,9 @@
  */
 namespace Framework\MVC;
 
+use DateTime;
+use DateTimeInterface;
+use DateTimeZone;
 use Framework\Date\Date;
 use Framework\HTTP\URL;
 use JsonException;
@@ -218,9 +221,16 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         static::$jsonVars = \array_keys(\get_object_vars($this));
         // @phpstan-ignore-next-line
         $data = \json_decode(\json_encode($this, $this->jsonOptions()), true, 512, $this->jsonOptions());
-        foreach ($data as &$value) {
+        foreach ($data as $property => &$value) {
             if (\is_array($value)) {
                 $value = \json_encode($value, $this->jsonOptions());
+                continue;
+            }
+            $type = \get_debug_type($this->{$property});
+            if (\is_subclass_of($type, DateTimeInterface::class)) {
+                $datetime = DateTime::createFromFormat(DateTimeInterface::ATOM, $value);
+                $datetime->setTimezone(new DateTimeZone('UTC')); // @phpstan-ignore-line
+                $value = $datetime->format('Y-m-d H:i:s'); // @phpstan-ignore-line
             }
         }
         unset($value);

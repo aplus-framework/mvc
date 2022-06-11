@@ -144,7 +144,7 @@ final class EntityTest extends TestCase
             'int' => 3,
             'string' => 'foo',
             'stdClass' => '[]',
-            'date' => '2021-09-15T15:47:08+00:00',
+            'date' => '2021-09-15 15:47:08',
             'url' => 'https://foo.com/',
             'mixed' => null,
             'id' => null,
