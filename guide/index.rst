@@ -9,6 +9,7 @@ Aplus Framework MVC (Model-View-Controller) Library.
 - `Installation`_
 - `App`_
 - `Models`_
+- `Entities`_
 - `Views`_
 - `Controllers`_
 - `Conclusion`_
@@ -1468,7 +1469,197 @@ LAST_INSERT_ID(), in inserts. Or ``false`` if validation fails.
     $result = $model->save($data);
 
 Entities
+--------
+
+Entities represent rows in a database table. They can be used as a `Return Type`_
+in models.
+
+Let's see the entity **User** below:
+
+.. code-block:: php
+
+    use Framework\Date\Date;
+    use Framework\HTTP\URL;
+    use Framework\MVC\Entity;
+
+    class User extends Entity
+    {
+        protected int $id;
+        protected string $name;
+        protected string $email;
+        protected string $passwordHash;
+        protected URL $url;
+        protected Date $createdAt;
+        protected Date $updatedAt;
+    }
+
+And, it can be instantiated as follows:
+
+.. code-block:: php
+
+    $user = new User([
+        'id' => 1,
+        'name' => 'John Doe',
+    ]);
+
+Populate
 ########
+
+The array keys will be set as the property name with their respective values in
+the ``populate`` method.
+
+If a setter method exists for the property, it will be called. For example, if
+there is a ``setId`` method, it will be called to set the ``id`` property. If
+the ``setId`` method does not exist, it will try to set the property, if it
+exists, otherwise it will throw an exception saying that the property is not
+defined. If set, it will attempt to set the value to the property's type,
+casting type with the `Type Hints`_ methods.
+
+Init
+####
+
+The init method is used to initialize settings, set custom properties, etc.
+Called in the constructor just after the properties are populated.
+
+.. code-block:: php
+
+    protected URL $url;
+    protected string $name;
+
+    protected function init() : void
+    {
+        $this->name = $this->firstname . ' ' . $this->lastname;
+        $this->url = new URL('https://domain.tld/users/' . $this->id);        
+    }
+
+Magic Isset and Unset
+#####################
+
+To check if a property is set:
+
+.. code-block:: php
+
+    $isSet = isset($user->id); // bool
+
+To remove a property:
+
+.. code-block:: php
+
+    unset($user->id);
+
+Magic Getters
+#############
+
+Properties can be called directly. But first, it is always checked if there is
+a getter for it and if there is, it will be used:
+
+.. code-block:: php
+
+    $id = $user->id; // 1
+    $id = $user->getId(); // 1
+
+Magic Setters
+#############
+
+Properties can be set directly. But before that, it is always checked if there
+is a setter for it and if there is, the value will be set through it:
+
+.. code-block:: php
+
+    $user->id = 3;
+    $user->setId(3);
+
+Type Hints
+**********
+
+It is common to need to convert types when setting property. For example,
+setting a URL string to be converted as an object of the Framework\HTTP\URL
+class.
+
+Before a property is set, the Entity class checks the property's type and checks
+the value's type. Then, try to convert the value to the property's type through
+3 methods.
+
+Each method must return the value in the converted type or null, indicating that
+the conversion was not performed.
+
+Type Hint Custom
+""""""""""""""""
+
+The ``typeHintCustom`` method must be overridden to make custom type changes.
+
+Type Hint Native
+""""""""""""""""
+
+The ``typeHintNative`` method converts to native PHP types, which are:
+``array``, ``bool``, ``float``, ``int``, ``string`` and ``stdClass``.
+
+Type Hint Aplus
+"""""""""""""""
+
+The ``typeHintAplus`` method converts to Aplus Framework class types, which are:
+``Framework\Date\Date`` and ``Framework\HTTP\URL``.
+
+To Model
+########
+
+Through the ``toModel`` method, the object is transformed into an associative
+array ready to be written to the database.
+
+Conversion to array can be done directly, as below:
+
+.. code-block:: php
+
+    $data = $user->toModel(); // Associative array
+
+Or passed directly to one of a model's methods.
+
+Let's see how to create a row using the variable ``$user``, which is an entity:
+
+.. code-block:: php
+
+    $id = $model->create($user); // Insert ID or false
+
+JSON Encoding
+#############
+
+When working with APIs, it may be necessary to convert an Entity to a JSON
+object.
+
+To set which properties will be JSON-encoded just list them in the static
+property ``$jsonVars``:
+
+.. code-block:: php
+
+    class User extends Entity
+    {
+        protected static array $jsonVars = [
+            'id',
+            'name',
+            'url',
+            'createdAt',
+        ];
+    }
+
+Once this is done, the entity can be encoded. Let's see in the following
+example:
+
+.. code-block:: php
+
+    echo json_encode($user, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES); // string
+
+And then the JSON object:
+
+.. code-block:: json
+
+    {
+        "id": 1,
+        "name": "John Doe",
+        "url": "https://domain.tld/users/1",
+        "createdAt": "2022-06-10T18:36:52-03:00"
+    }
+
+Note that the ``url`` and ``createdAt`` property objects have been serialized.
 
 Views
 -----
