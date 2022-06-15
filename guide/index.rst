@@ -1646,7 +1646,7 @@ example:
 
 .. code-block:: php
 
-    echo json_encode($user, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES); // string
+    echo json_encode($user, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
 And then the JSON object:
 
@@ -2148,3 +2148,14 @@ Below, the Dashboard methods will only be executed if ``beforeAction`` returns
 
 Conclusion
 ----------
+
+Aplus MVC Library is an easy-to-use tool for, beginners and experienced, PHP developers. 
+It is perfect to create simple, fast and powerful MVC applications. 
+The more you use it, the more you will learn.
+
+.. note::
+    Did you find something wrong? 
+    Be sure to let us know about it with an
+    `issue <https://gitlab.com/aplus-framework/libraries/mvc/issues>`_. 
+    Thank you!
+
