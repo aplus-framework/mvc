@@ -812,7 +812,7 @@ abstract class Model implements ModelInterface
         foreach ($fields as $field => $value) {
             $suffix[] = $field . '=' . $value;
         }
-        $suffix = \implode(';;', $suffix);
-        return 'Cache:' . static::class . '::' . $suffix;
+        $suffix = \implode(';', $suffix);
+        return 'Model:' . static::class . '::' . $suffix;
     }
 }
