@@ -338,13 +338,30 @@ abstract class Model implements ModelInterface
     #[Pure]
     protected function makePageLimitAndOffset(int $page, int $perPage = 10) : array
     {
-        $page = (int) \abs($page);
-        $perPage = (int) \abs($perPage);
+        $page = $this->sanitizePageNumber($page);
+        $perPage = $this->sanitizePageNumber($perPage);
         $page = $page <= 1 ? null : $page * $perPage - $perPage;
+        if ($page > \PHP_INT_MAX) {
+            $page = \PHP_INT_MAX;
+        }
+        if ($perPage === \PHP_INT_MAX && $page !== null) {
+            $page = \PHP_INT_MAX;
+        }
         return [
             $perPage,
             $page,
         ];
+    }
+
+    protected function sanitizePageNumber(int $number) : int
+    {
+        if ($number < 0) {
+            if ($number === \PHP_INT_MIN) {
+                $number++;
+            }
+            $number *= -1;
+        }
+        return $number;
     }
 
     /**

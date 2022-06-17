@@ -243,6 +243,46 @@ final class ModelTest extends ModelTestCase
         self::assertSame([20, 20], $this->model->makePageLimitAndOffset(2, 20));
         // @phpstan-ignore-next-line
         self::assertSame([20, 40], $this->model->makePageLimitAndOffset('-3', '-20'));
+        self::assertSame(
+            [\PHP_INT_MAX, null],
+            $this->model->makePageLimitAndOffset(0, \PHP_INT_MAX)
+        );
+        self::assertSame(
+            [\PHP_INT_MAX, null],
+            $this->model->makePageLimitAndOffset(0, \PHP_INT_MIN)
+        );
+        self::assertSame(
+            [\PHP_INT_MAX, null],
+            $this->model->makePageLimitAndOffset(1, \PHP_INT_MAX)
+        );
+        self::assertSame(
+            [\PHP_INT_MAX, null],
+            $this->model->makePageLimitAndOffset(1, \PHP_INT_MIN)
+        );
+        self::assertSame(
+            [\PHP_INT_MAX, \PHP_INT_MAX],
+            $this->model->makePageLimitAndOffset(2, \PHP_INT_MAX)
+        );
+        self::assertSame(
+            [\PHP_INT_MAX, \PHP_INT_MAX],
+            $this->model->makePageLimitAndOffset(2, \PHP_INT_MIN)
+        );
+        self::assertSame(
+            [\PHP_INT_MAX, \PHP_INT_MAX],
+            $this->model->makePageLimitAndOffset(3, \PHP_INT_MAX)
+        );
+        self::assertSame(
+            [\PHP_INT_MAX, \PHP_INT_MAX],
+            $this->model->makePageLimitAndOffset(3, \PHP_INT_MIN)
+        );
+        self::assertSame(
+            [\PHP_INT_MAX, \PHP_INT_MAX],
+            $this->model->makePageLimitAndOffset(\PHP_INT_MAX, \PHP_INT_MAX)
+        );
+        self::assertSame(
+            [\PHP_INT_MAX, \PHP_INT_MAX],
+            $this->model->makePageLimitAndOffset(\PHP_INT_MIN, \PHP_INT_MIN)
+        );
     }
 
     public function testValidation() : void
