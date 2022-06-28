@@ -377,7 +377,7 @@ class App
         }
         if (isset($config['directories'])) {
             foreach ($config['directories'] as $dir) {
-                foreach ($locator->listFiles($dir) as $file) {
+                foreach ((array) $locator->listFiles($dir) as $file) {
                     static::addCommand($file, $service, $locator);
                 }
             }

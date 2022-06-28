@@ -11,6 +11,7 @@ return [
     'default' => [
         'directories' => [
             __DIR__,
+            '/unknown',
         ],
         'find_in_namespaces' => true,
         'language_instance' => 'default',
