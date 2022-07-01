@@ -310,6 +310,7 @@ Built-in services:
 - `Console Service`_
 - `Debugger Service`_
 - `Database Service`_
+- `Exception Handler Service`_
 - `Mailer Service`_
 - `Migrator Service`_
 - `Language Service`_
@@ -520,6 +521,60 @@ logger_instance
 
 Set the `Logger Service`_ instance name. If not set, the Logger instance will
 not be set in the Database class.
+
+Exception Handler Service
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Gets an instance of
+`Framework\Debug\ExceptionHandler <https://docs.aplus-framework.com/classes/Framework-Debug-ExceptionHandler.html>`_.
+
+.. code-block:: php
+
+    App::exceptionHandler()
+
+Exception Handler Config Options
+********************************
+
+environment
+"""""""""""
+
+Set the environment, default is **production**. Use the ``ExceptionHandler::DEVELOPMENT``
+or ``ExceptionHandler::PRODUCTION`` constants.
+
+logger_instance
+"""""""""""""""
+
+Set the `Logger Service`_ instance name. If not set, the Logger instance will
+not be set in the ExceptionHandler class.
+
+language_instance
+"""""""""""""""""
+
+Set a `Language Service`_ instance name. If not set, the Language instance will
+not be passed.
+
+development_view
+""""""""""""""""
+
+Set the file path to a view when in the development environment.
+
+production_view
+"""""""""""""""
+
+Set the file path to a view when in the production environment.
+
+initialize
+""""""""""
+
+Set if it is to initialize by setting the class as exception handler. The
+default value is ``true``. 
+
+handle_errors
+"""""""""""""
+
+If initialize is ``true``, this option defines whether to set the class as an
+error handler. The default value is ``true``.
+
 
 Mailer Service
 ^^^^^^^^^^^^^^
