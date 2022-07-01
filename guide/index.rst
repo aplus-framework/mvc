@@ -308,14 +308,14 @@ Built-in services:
 - `Autoloader Service`_
 - `Cache Service`_
 - `Console Service`_
-- `Debugger Service`_
 - `Database Service`_
+- `Debugger Service`_
 - `Exception Handler Service`_
-- `Mailer Service`_
-- `Migrator Service`_
 - `Language Service`_
 - `Locator Service`_
 - `Logger Service`_
+- `Mailer Service`_
+- `Migrator Service`_
 - `Request Service`_
 - `Response Service`_
 - `Router Service`_
@@ -470,30 +470,6 @@ locator_instance
 
 Set the `Locator Service`_ instance name. By default it is ``default``.
 
-Debugger Service
-^^^^^^^^^^^^^^^^
-
-Gets an instance of
-`Framework\Debug\Debugger <https://docs.aplus-framework.com/classes/Framework-Debug-Debugger.html>`_.
-
-.. code-block:: php
-
-    App::debugger()
-
-Debugger Config Options
-***********************
-
-debugbar_view
-"""""""""""""
-
-Sets the path of a file to be used instead of the debugbar view. The default is
-to use the original.
-
-options
-"""""""
-
-Sets an array of options for the Debugger. The default is to set nothing.
-
 Database Service
 ^^^^^^^^^^^^^^^^
 
@@ -521,6 +497,30 @@ logger_instance
 
 Set the `Logger Service`_ instance name. If not set, the Logger instance will
 not be set in the Database class.
+
+Debugger Service
+^^^^^^^^^^^^^^^^
+
+Gets an instance of
+`Framework\Debug\Debugger <https://docs.aplus-framework.com/classes/Framework-Debug-Debugger.html>`_.
+
+.. code-block:: php
+
+    App::debugger()
+
+Debugger Config Options
+***********************
+
+debugbar_view
+"""""""""""""
+
+Sets the path of a file to be used instead of the debugbar view. The default is
+to use the original.
+
+options
+"""""""
+
+Sets an array of options for the Debugger. The default is to set nothing.
 
 Exception Handler Service
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -574,64 +574,6 @@ handle_errors
 
 If initialize is ``true``, this option defines whether to set the class as an
 error handler. The default value is ``true``.
-
-
-Mailer Service
-^^^^^^^^^^^^^^
-
-Gets an instance of
-`Framework\Email\Mailer <https://docs.aplus-framework.com/classes/Framework-Email-Mailer.html>`_.
-
-.. code-block:: php
-
-    App::mailer()
-
-Mailer Config Options
-*********************
-
-class
-"""""
-
-Sets the Fully Qualified Class Name of a child class of Framework\Email\Mailer.
-
-The default is ``Framework\Email\Mailers\SMTPMailer``.
-
-config
-""""""
-
-Set an array with Mailer settings. Normally you just set the ``username``, the
-``password``, the ``host`` and the ``port``.
-
-The complete list of configurations can be seen
-`here <https://docs.aplus-framework.com/guides/libraries/email/index.html#mailer-connection>`_.
-
-Migrator Service
-^^^^^^^^^^^^^^^^
-
-Gets an instance of
-`Framework\Database\Extra\Migrator <https://docs.aplus-framework.com/classes/Framework-Database-Extra-Migrator.html>`_.
-
-.. code-block:: php
-
-    App::migrator()
-
-Migrator Config Options
-***********************
-
-database_instance
-"""""""""""""""""
-
-Set the `Database Service`_ instance name. The default is ``default``.
-
-directories
-"""""""""""
-
-Sets an array of directories that contain Migrations files. It must be set.
-
-table
-"""""
-
-The name of the migrations table. The default name is ``Migrations``.
 
 Language Service
 ^^^^^^^^^^^^^^^^
@@ -746,6 +688,63 @@ config
 
 Sets an array with extra configurations for the class. The default is to pass an
 empty array.
+
+Mailer Service
+^^^^^^^^^^^^^^
+
+Gets an instance of
+`Framework\Email\Mailer <https://docs.aplus-framework.com/classes/Framework-Email-Mailer.html>`_.
+
+.. code-block:: php
+
+    App::mailer()
+
+Mailer Config Options
+*********************
+
+class
+"""""
+
+Sets the Fully Qualified Class Name of a child class of Framework\Email\Mailer.
+
+The default is ``Framework\Email\Mailers\SMTPMailer``.
+
+config
+""""""
+
+Set an array with Mailer settings. Normally you just set the ``username``, the
+``password``, the ``host`` and the ``port``.
+
+The complete list of configurations can be seen
+`here <https://docs.aplus-framework.com/guides/libraries/email/index.html#mailer-connection>`_.
+
+Migrator Service
+^^^^^^^^^^^^^^^^
+
+Gets an instance of
+`Framework\Database\Extra\Migrator <https://docs.aplus-framework.com/classes/Framework-Database-Extra-Migrator.html>`_.
+
+.. code-block:: php
+
+    App::migrator()
+
+Migrator Config Options
+***********************
+
+database_instance
+"""""""""""""""""
+
+Set the `Database Service`_ instance name. The default is ``default``.
+
+directories
+"""""""""""
+
+Sets an array of directories that contain Migrations files. It must be set.
+
+table
+"""""
+
+The name of the migrations table. The default name is ``Migrations``.
 
 Request Service
 ^^^^^^^^^^^^^^^
