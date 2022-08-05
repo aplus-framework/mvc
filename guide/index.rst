@@ -886,6 +886,10 @@ Optional. Sets an array containing the ``class`` key with the Fully Qualified
 Class Name of a child class of Framework\Session\SaveHandler. And also the
 ``config`` key with the configurations passed to the SaveHandler.
 
+If the ``class`` is an instance of Framework\Session\SaveHandlers\DatabaseHandler
+it is possible to set the instance of a `Database Service`_ through the key 
+``database_instance``.
+
 options
 """""""
 

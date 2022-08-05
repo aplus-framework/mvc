@@ -57,7 +57,7 @@
         "aplus/log": "^3.0",
         "aplus/pagination": "^3.0",
         "aplus/routing": "^3.0",
-        "aplus/session": "^3.0",
+        "aplus/session": "^3.1",
         "aplus/validation": "^2.0"
     },
     "require-dev": {

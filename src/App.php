@@ -42,6 +42,7 @@ use Framework\MVC\Debug\ViewCollector;
 use Framework\Routing\Debug\RoutingCollector;
 use Framework\Routing\Router;
 use Framework\Session\Debug\SessionCollector;
+use Framework\Session\SaveHandlers\DatabaseHandler;
 use Framework\Session\Session;
 use Framework\Validation\Debug\ValidationCollector;
 use Framework\Validation\FilesValidator;
@@ -1090,6 +1091,13 @@ class App
                 $config['save_handler']['config'] ?? [],
                 $logger
             );
+            if ($saveHandler instanceof DatabaseHandler
+                && isset($config['save_handler']['database_instance'])
+            ) {
+                $saveHandler->setDatabase(
+                    static::database($config['save_handler']['database_instance'])
+                );
+            }
         }
         // @phpstan-ignore-next-line
         $service = new Session($config['options'] ?? [], $saveHandler ?? null);

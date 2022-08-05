@@ -28,6 +28,7 @@ use Framework\Language\Language;
 use Framework\Log\Logger;
 use Framework\MVC\View;
 use Framework\Routing\Router;
+use Framework\Session\SaveHandlers\DatabaseHandler;
 use Framework\Session\Session;
 use Framework\Validation\Validation;
 use PHPUnit\Framework\TestCase;
@@ -239,17 +240,11 @@ final class AppTest extends TestCase
      */
     public function testSessionWithDatabaseHandler() : void
     {
-        App::database()->dropTable('Sessions')->ifExists()->run();
-        App::database()->createTable('Sessions')
-            ->definition(static function (TableDefinition $definition) : void {
-                $definition->column('id')->varchar(128)->primaryKey();
-                $definition->column('data')->blob();
-                $definition->column('timestamp')->timestamp();
-            })->run();
+        $this->prepareDatabaseSessions();
         $config = App::database()->getConfig();
         App::config()->add('session', [
             'save_handler' => [
-                'class' => \Framework\Session\SaveHandlers\DatabaseHandler::class,
+                'class' => DatabaseHandler::class,
                 'config' => [
                     'table' => 'Sessions',
                     'host' => $config['host'],
@@ -259,6 +254,23 @@ final class AppTest extends TestCase
                 ],
             ],
         ]);
+        $this->doDatabaseSessionTests();
+    }
+
+    protected function prepareDatabaseSessions() : void
+    {
+        $database = App::database();
+        $database->dropTable('Sessions')->ifExists()->run();
+        $database->createTable('Sessions')
+            ->definition(static function (TableDefinition $definition) : void {
+                $definition->column('id')->varchar(128)->primaryKey();
+                $definition->column('data')->blob();
+                $definition->column('timestamp')->timestamp();
+            })->run();
+    }
+
+    protected function doDatabaseSessionTests() : void
+    {
         self::assertInstanceOf(Session::class, App::session());
         App::session()->start();
         App::session()->foo = 'Foo'; // @phpstan-ignore-line
@@ -270,10 +282,26 @@ final class AppTest extends TestCase
             ->run()
             ->fetch()
             ->timestamp;
+        $config = App::database()->getConfig();
         self::assertSame(
             (new \DateTime('now', new \DateTimeZone($config['timezone'])))->format('Y-m-d H:i:s'),
             $timestamp
         );
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testSessionWithDatabaseHandlerWithDatabaseInstance() : void
+    {
+        $this->prepareDatabaseSessions();
+        App::config()->add('session', [
+            'save_handler' => [
+                'class' => DatabaseHandler::class,
+                'database_instance' => 'default',
+            ],
+        ]);
+        $this->doDatabaseSessionTests();
     }
 
     public function testNegotiateLanguage() : void
