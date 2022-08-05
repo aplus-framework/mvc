@@ -208,11 +208,13 @@ class App
     /**
      * Set a service.
      *
+     * @template T
+     *
      * @param string $name
-     * @param mixed $service
+     * @param T $service
      * @param string $instance
      *
-     * @return mixed
+     * @return T
      */
     public static function setService(
         string $name,
@@ -322,6 +324,9 @@ class App
         if (\is_string($config['serializer'])) {
             $config['serializer'] = Serializer::from($config['serializer']);
         }
+        /**
+         * @var Cache $service
+         */
         $service = new $config['class'](
             $config['configs'] ?? [],
             $config['prefix'] ?? null,
@@ -613,6 +618,9 @@ class App
     protected static function setMailer(string $instance) : Mailer
     {
         $config = static::config()->get('mailer', $instance);
+        /**
+         * @var class-string<Mailer> $class
+         */
         $class = $config['class'] ?? SMTPMailer::class;
         return static::setService(
             'mailer',
@@ -823,6 +831,9 @@ class App
     protected static function setLogger(string $instance) : Logger
     {
         $config = static::config()->get('logger', $instance);
+        /**
+         * @var class-string<Logger> $class
+         */
         $class = $config['class'] ?? MultiFileLogger::class;
         $config['level'] ??= LogLevel::DEBUG;
         if (\is_int($config['level'])) {
