@@ -191,6 +191,7 @@ class AppCollector extends Collector
                 'removeService',
                 'isCli',
                 'setIsCli',
+                'isDebugging',
             ], true)) {
                 continue;
             }
