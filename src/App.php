@@ -155,7 +155,7 @@ class App
         $router->match()
             ->run($response->getRequest(), $response)
             ->send();
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $this->debugEnd($router);
         }
     }
@@ -253,7 +253,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setAutoloader($instance);
             $end = \microtime(true);
@@ -296,7 +296,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setCache($instance);
             $end = \microtime(true);
@@ -352,7 +352,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setConsole($instance);
             $end = \microtime(true);
@@ -423,7 +423,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setDebugger($instance);
             $end = \microtime(true);
@@ -457,7 +457,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setExceptionHandler($instance);
             $end = \microtime(true);
@@ -511,7 +511,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setAntiCsrf($instance);
             $end = \microtime(true);
@@ -553,7 +553,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setDatabase($instance);
             $end = \microtime(true);
@@ -598,7 +598,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setMailer($instance);
             $end = \microtime(true);
@@ -643,7 +643,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setMigrator($instance);
             $end = \microtime(true);
@@ -685,7 +685,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setLanguage($instance);
             $end = \microtime(true);
@@ -773,7 +773,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setLocator($instance);
             $end = \microtime(true);
@@ -811,7 +811,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setLogger($instance);
             $end = \microtime(true);
@@ -864,7 +864,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $config = (array) static::config()->get('router', $instance);
             $service = static::setRouter($instance, $config);
@@ -945,7 +945,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setRequest($instance);
             $end = \microtime(true);
@@ -1000,7 +1000,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setResponse($instance);
             $end = \microtime(true);
@@ -1061,7 +1061,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setSession($instance);
             $end = \microtime(true);
@@ -1120,7 +1120,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setValidation($instance);
             $end = \microtime(true);
@@ -1171,7 +1171,7 @@ class App
         if ($service) {
             return $service;
         }
-        if (isset(static::$debugCollector)) {
+        if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setView($instance);
             $end = \microtime(true);
