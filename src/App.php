@@ -259,12 +259,7 @@ class App
             $end = \microtime(true);
             $service->setDebugCollector(name: $instance);
             static::debugger()->addCollector($service->getDebugCollector(), 'Autoload');
-            static::$debugCollector->addData([
-                'service' => 'autoloader',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('autoloader', $instance, $start, $end);
             return $service;
         }
         return static::setAutoloader($instance);
@@ -303,12 +298,7 @@ class App
             $collector = new CacheCollector($instance);
             $service->setDebugCollector($collector);
             static::debugger()->addCollector($collector, 'Cache');
-            static::$debugCollector->addData([
-                'service' => 'cache',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('cache', $instance, $start, $end);
             return $service;
         }
         return static::setCache($instance);
@@ -356,12 +346,7 @@ class App
             $start = \microtime(true);
             $service = static::setConsole($instance);
             $end = \microtime(true);
-            static::$debugCollector->addData([
-                'service' => 'console',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('console', $instance, $start, $end);
             return $service;
         }
         return static::setConsole($instance);
@@ -427,12 +412,7 @@ class App
             $start = \microtime(true);
             $service = static::setDebugger($instance);
             $end = \microtime(true);
-            static::$debugCollector->addData([
-                'service' => 'debugger',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('debugger', $instance, $start, $end);
             return $service;
         }
         return static::setDebugger($instance);
@@ -461,12 +441,7 @@ class App
             $start = \microtime(true);
             $service = static::setExceptionHandler($instance);
             $end = \microtime(true);
-            static::$debugCollector->addData([
-                'service' => 'exceptionHandler',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('exceptionHandler', $instance, $start, $end);
             return $service;
         }
         return static::setExceptionHandler($instance);
@@ -515,12 +490,7 @@ class App
             $start = \microtime(true);
             $service = static::setAntiCsrf($instance);
             $end = \microtime(true);
-            static::$debugCollector->addData([
-                'service' => 'antiCsrf',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('antiCsrf', $instance, $start, $end);
             return $service;
         }
         return static::setAntiCsrf($instance);
@@ -560,12 +530,7 @@ class App
             $collector = new DatabaseCollector($instance);
             $service->setDebugCollector($collector);
             static::debugger()->addCollector($collector, 'Database');
-            static::$debugCollector->addData([
-                'service' => 'database',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('database', $instance, $start, $end);
             return $service;
         }
         return static::setDatabase($instance);
@@ -605,12 +570,7 @@ class App
             $collector = new EmailCollector($instance);
             $service->setDebugCollector($collector);
             static::debugger()->addCollector($collector, 'Email');
-            static::$debugCollector->addData([
-                'service' => 'mailer',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('mailer', $instance, $start, $end);
             return $service;
         }
         return static::setMailer($instance);
@@ -647,12 +607,7 @@ class App
             $start = \microtime(true);
             $service = static::setMigrator($instance);
             $end = \microtime(true);
-            static::$debugCollector->addData([
-                'service' => 'migrator',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('migrator', $instance, $start, $end);
             return $service;
         }
         return static::setMigrator($instance);
@@ -692,12 +647,7 @@ class App
             $collector = new LanguageCollector($instance);
             $service->setDebugCollector($collector);
             static::debugger()->addCollector($collector, 'Language');
-            static::$debugCollector->addData([
-                'service' => 'language',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('language', $instance, $start, $end);
             return $service;
         }
         return static::setLanguage($instance);
@@ -777,12 +727,7 @@ class App
             $start = \microtime(true);
             $service = static::setLocator($instance);
             $end = \microtime(true);
-            static::$debugCollector->addData([
-                'service' => 'locator',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('locator', $instance, $start, $end);
             return $service;
         }
         return static::setLocator($instance);
@@ -818,12 +763,7 @@ class App
             $collector = new LogCollector($instance);
             $service->setDebugCollector($collector);
             static::debugger()->addCollector($collector, 'Log');
-            static::$debugCollector->addData([
-                'service' => 'logger',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('logger', $instance, $start, $end);
             return $service;
         }
         return static::setLogger($instance);
@@ -875,12 +815,7 @@ class App
             }
             $end = \microtime(true);
             static::debugger()->addCollector($collector, 'Routing');
-            static::$debugCollector->addData([
-                'service' => 'router',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('router', $instance, $start, $end);
             return $service;
         }
         return static::setRouter($instance);
@@ -952,12 +887,7 @@ class App
             $collector = new HTTPCollector($instance);
             $collector->setRequest($service);
             static::debugger()->addCollector($collector, 'HTTP');
-            static::$debugCollector->addData([
-                'service' => 'request',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('request', $instance, $start, $end);
             return $service;
         }
         return static::setRequest($instance);
@@ -1011,12 +941,7 @@ class App
                     break;
                 }
             }
-            static::$debugCollector->addData([
-                'service' => 'response',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('response', $instance, $start, $end);
             return $service;
         }
         return static::setResponse($instance);
@@ -1068,12 +993,7 @@ class App
             $collector = new SessionCollector($instance);
             $service->setDebugCollector($collector);
             static::debugger()->addCollector($collector, 'Session');
-            static::$debugCollector->addData([
-                'service' => 'session',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('session', $instance, $start, $end);
             return $service;
         }
         return static::setSession($instance);
@@ -1127,12 +1047,7 @@ class App
             $collector = new ValidationCollector($instance);
             $service->setDebugCollector($collector);
             static::debugger()->addCollector($collector, 'Validation');
-            static::$debugCollector->addData([
-                'service' => 'validation',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('validation', $instance, $start, $end);
             return $service;
         }
         return static::setValidation($instance);
@@ -1178,12 +1093,7 @@ class App
             $collector = new ViewCollector($instance);
             $service->setDebugCollector($collector);
             static::debugger()->addCollector($collector, 'View');
-            static::$debugCollector->addData([
-                'service' => 'view',
-                'instance' => $instance,
-                'start' => $start,
-                'end' => $end,
-            ]);
+            static::addDebugData('view', $instance, $start, $end);
             return $service;
         }
         return static::setView($instance);
@@ -1228,5 +1138,19 @@ class App
     public static function isDebugging() : bool
     {
         return isset(static::$debugCollector);
+    }
+
+    protected static function addDebugData(
+        string $service,
+        string $instance,
+        float $start,
+        float $end
+    ) : void {
+        static::$debugCollector->addData([
+            'service' => $service,
+            'instance' => $instance,
+            'start' => $start,
+            'end' => $end,
+        ]);
     }
 }
