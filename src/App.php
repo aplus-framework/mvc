@@ -137,7 +137,7 @@ class App
         if ($autoloaderConfigs) {
             static::autoloader();
         }
-        if ( ! isset($exceptionHandlerConfigs['default']) && isset(static::$debugCollector)) {
+        if ( ! isset($exceptionHandlerConfigs['default']) && static::isDebugging()) {
             $config->set('exceptionHandler', [
                 'environment' => ExceptionHandler::DEVELOPMENT,
             ]);
