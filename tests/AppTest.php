@@ -327,6 +327,16 @@ final class AppTest extends TestCase
         self::assertSame('es', App::negotiateLanguage($language));
     }
 
+    public function testServerVarsWithRequest() : void
+    {
+        self::assertSame('127.0.0.1', App::request()->getIp());
+        self::assertSame('HTTP/1.1', App::request()->getProtocol());
+        self::assertSame('GET', App::request()->getMethod());
+        self::assertSame('localhost', App::request()->getHeader('Host'));
+        self::assertSame('Foo', App::request()->getHeader('Foo'));
+        self::assertSame('http://localhost/', (string) App::request()->getUrl());
+    }
+
     public function testResponse() : void
     {
         App::config()->add('response', ['cache' => false]);
@@ -338,7 +348,7 @@ final class AppTest extends TestCase
         App::setConfigProperty(null);
         App::setIsCli(false);
         App::setServerVars([
-            'REMOTE_ADDR' => '127.0.0.1',
+            'REMOTE_ADDR' => '192.168.0.2',
         ]);
         $app = new App(
             new Config(__DIR__ . '/configs', [], '.config.php'),
@@ -364,7 +374,8 @@ final class AppTest extends TestCase
         App::view();
         \ob_start();
         $app->runHttp();
-        $contents = \ob_get_clean();
-        self::assertStringContainsString('debugbar', $contents); // @phpstan-ignore-line
+        $contents = (string) \ob_get_clean();
+        self::assertStringContainsString('debugbar', $contents);
+        self::assertStringContainsString('192.168.0.2', $contents);
     }
 }

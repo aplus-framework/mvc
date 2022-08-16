@@ -11,5 +11,8 @@ return [
     'default' => [
         'allowed_hosts' => null,
         'force_https' => false,
+        'server_vars' => [
+            'HTTP_FOO' => 'Foo',
+        ],
     ],
 ];
