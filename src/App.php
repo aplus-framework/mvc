@@ -70,6 +70,7 @@ class App
      * @var array<string,mixed>
      */
     protected static array $defaultServerVars = [
+        'REMOTE_ADDR' => '127.0.0.1',
         'REQUEST_METHOD' => 'GET',
         'REQUEST_URI' => '/',
         'SERVER_PROTOCOL' => 'HTTP/1.1',
