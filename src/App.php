@@ -59,7 +59,7 @@ use ReflectionException;
 class App
 {
     /**
-     * @var array<string,array<string,mixed>>
+     * @var array<string,array<string,object>>
      */
     protected static array $services = [];
     protected static bool $isRunning = false;
@@ -199,9 +199,9 @@ class App
      * @param string $name
      * @param string $instance
      *
-     * @return mixed The service instance or null
+     * @return object|null The service instance or null
      */
-    public static function getService(string $name, string $instance = 'default') : mixed
+    public static function getService(string $name, string $instance = 'default') : ?object
     {
         return static::$services[$name][$instance] ?? null;
     }
@@ -209,7 +209,7 @@ class App
     /**
      * Set a service.
      *
-     * @template T
+     * @template T of object
      *
      * @param string $name
      * @param T $service
@@ -219,9 +219,9 @@ class App
      */
     public static function setService(
         string $name,
-        mixed $service,
+        object $service,
         string $instance = 'default'
-    ) : mixed {
+    ) : object {
         return static::$services[$name][$instance] = $service;
     }
 
@@ -251,7 +251,7 @@ class App
     {
         $service = static::getService('autoloader', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -289,7 +289,7 @@ class App
     {
         $service = static::getService('cache', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -340,7 +340,7 @@ class App
     {
         $service = static::getService('console', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -406,7 +406,7 @@ class App
     {
         $service = static::getService('debugger', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -435,7 +435,7 @@ class App
     {
         $service = static::getService('exceptionHandler', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -484,7 +484,7 @@ class App
     {
         $service = static::getService('antiCsrf', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -521,7 +521,7 @@ class App
     {
         $service = static::getService('database', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -561,7 +561,7 @@ class App
     {
         $service = static::getService('mailer', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -601,7 +601,7 @@ class App
     {
         $service = static::getService('migrator', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -638,7 +638,7 @@ class App
     {
         $service = static::getService('language', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -721,7 +721,7 @@ class App
     {
         $service = static::getService('locator', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -754,7 +754,7 @@ class App
     {
         $service = static::getService('logger', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -802,7 +802,7 @@ class App
     {
         $service = static::getService('router', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -878,7 +878,7 @@ class App
     {
         $service = static::getService('request', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -928,7 +928,7 @@ class App
     {
         $service = static::getService('response', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -984,7 +984,7 @@ class App
     {
         $service = static::getService('session', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -1038,7 +1038,7 @@ class App
     {
         $service = static::getService('validation', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
@@ -1084,7 +1084,7 @@ class App
     {
         $service = static::getService('view', $instance);
         if ($service) {
-            return $service;
+            return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
             $start = \microtime(true);
