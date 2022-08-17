@@ -769,6 +769,12 @@ allowed_hosts
 
 Sets an array of allowed hosts. The default is ``null`` so any host is allowed.
 
+force_https
+"""""""""""
+
+Set ``true`` to automatically redirect to the HTTPS version of the current URL. 
+By default it is not set.
+
 Response Service
 ^^^^^^^^^^^^^^^^
 
