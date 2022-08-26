@@ -127,7 +127,7 @@ final class EntityTest extends TestCase
             '{}',
             \json_encode($this->entity)
         );
-        $this->entity::$jsonVars = ['array', 'int', 'url', 'stdClass'];
+        EntityMock::setJsonVars(['array', 'int', 'url', 'stdClass']);
         self::assertSame(
             '{"array":[],"int":3,"url":"https:\/\/foo.com\/","stdClass":{}}',
             \json_encode($this->entity)
@@ -152,5 +152,13 @@ final class EntityTest extends TestCase
             'createdAt' => null,
             'updatedAt' => null,
         ], $this->entity->toModel());
+    }
+
+    public function testJsonVars() : void
+    {
+        $vars = ['id', 'data'];
+        self::assertEmpty(EntityMock::getJsonVars());
+        EntityMock::setJsonVars($vars);
+        self::assertSame($vars, EntityMock::getJsonVars());
     }
 }

@@ -27,7 +27,7 @@ use stdClass;
 abstract class Entity implements \JsonSerializable //, \Stringable
 {
     /**
-     * @var array<int,string>
+     * @var array<string>
      */
     protected static array $jsonVars = [];
 
@@ -217,8 +217,8 @@ abstract class Entity implements \JsonSerializable //, \Stringable
      */
     public function toModel() : array
     {
-        $jsonVars = static::$jsonVars;
-        static::$jsonVars = \array_keys(\get_object_vars($this));
+        $jsonVars = static::getJsonVars();
+        static::setJsonVars(\array_keys(\get_object_vars($this)));
         // @phpstan-ignore-next-line
         $data = \json_decode(\json_encode($this, $this->jsonOptions()), true, 512, $this->jsonOptions());
         foreach ($data as $property => &$value) {
@@ -234,19 +234,35 @@ abstract class Entity implements \JsonSerializable //, \Stringable
             }
         }
         unset($value);
-        static::$jsonVars = $jsonVars;
+        static::setJsonVars($jsonVars);
         return $data;
     }
 
     public function jsonSerialize() : stdClass
     {
-        if (empty(static::$jsonVars)) {
+        if ( ! static::getJsonVars()) {
             return new stdClass();
         }
-        $allowed = \array_flip(static::$jsonVars);
+        $allowed = \array_flip(static::getJsonVars());
         $filtered = \array_intersect_key(\get_object_vars($this), $allowed);
         $allowed = \array_intersect_key($allowed, $filtered);
         $ordered = \array_replace($allowed, $filtered);
         return (object) $ordered;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public static function getJsonVars() : array
+    {
+        return static::$jsonVars;
+    }
+
+    /**
+     * @param array<string> $vars
+     */
+    public static function setJsonVars(array $vars) : void
+    {
+        static::$jsonVars = $vars;
     }
 }
