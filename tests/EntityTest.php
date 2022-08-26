@@ -51,6 +51,23 @@ final class EntityTest extends TestCase
         self::assertSame(URL::class, \get_debug_type($this->entity->url));
     }
 
+    public function testPopulateWithSetter() : void
+    {
+        $entity = new EntityMock([
+            'id' => 1,
+        ]);
+        self::assertSame(1001, $entity->id); // @phpstan-ignore-line
+    }
+
+    public function testPopulateWithPropertyNotDefined() : void
+    {
+        $this->expectException(\OutOfBoundsException::class);
+        $this->expectExceptionMessage('Property not defined: foo');
+        new EntityMock([
+            'foo' => 'Foo',
+        ]);
+    }
+
     public function testTypeHintArrayString() : void
     {
         $entity = new EntityMock([
@@ -108,10 +125,12 @@ final class EntityTest extends TestCase
 
     public function testMagicSetAndGet() : void
     {
-        $class = new stdClass();
-        self::assertNotSame($class, $this->entity->stdClass);
-        $this->entity->stdClass = $class;
-        self::assertSame($class, $this->entity->stdClass);
+        $this->entity->id = 1; // @phpstan-ignore-line
+        self::assertSame(1001, $this->entity->id); // @phpstan-ignore-line
+        self::assertSame(1001, $this->entity->getId());
+        $this->entity->setId(3);
+        self::assertSame(1003, $this->entity->id); // @phpstan-ignore-line
+        self::assertSame(1003, $this->entity->getId());
     }
 
     public function testIssetAndUnset() : void

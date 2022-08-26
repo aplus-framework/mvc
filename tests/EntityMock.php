@@ -43,4 +43,15 @@ class EntityMock extends Entity
     protected $data; // @phpstan-ignore-line
     protected $createdAt; // @phpstan-ignore-line
     protected $updatedAt; // @phpstan-ignore-line
+
+    public function setId(mixed $id) : static
+    {
+        $this->id = $id + 1000;
+        return $this;
+    }
+
+    public function getId() : mixed
+    {
+        return $this->id;
+    }
 }
