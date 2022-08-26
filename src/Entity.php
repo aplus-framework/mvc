@@ -208,6 +208,11 @@ abstract class Entity implements \JsonSerializable //, \Stringable
             | \JSON_PRESERVE_ZERO_FRACTION | \JSON_THROW_ON_ERROR;
     }
 
+    protected function timezone() : DateTimeZone
+    {
+        return new DateTimeZone('+00:00');
+    }
+
     /**
      * Convert the Entity to an associative array accepted by Model methods.
      *
@@ -229,7 +234,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
             $type = \get_debug_type($this->{$property});
             if (\is_subclass_of($type, DateTimeInterface::class)) {
                 $datetime = DateTime::createFromFormat(DateTimeInterface::ATOM, $value);
-                $datetime->setTimezone(new DateTimeZone('UTC')); // @phpstan-ignore-line
+                $datetime->setTimezone($this->timezone()); // @phpstan-ignore-line
                 $value = $datetime->format('Y-m-d H:i:s'); // @phpstan-ignore-line
             }
         }
