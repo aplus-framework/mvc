@@ -8,6 +8,7 @@ Aplus Framework MVC (Model-View-Controller) Library.
 
 - `Installation`_
 - `App`_
+- `Services`_
 - `Models`_
 - `Entities`_
 - `Views`_
