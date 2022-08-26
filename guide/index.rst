@@ -336,6 +336,19 @@ Gets an instance of
 Anti-CSRF Config Options
 ************************
 
+.. code-block:: php
+
+    [
+        'antiCsrf' => [
+            'default' => [
+                'enabled' => true,
+                'token_name' => 'csrf_token',
+                'session_instance' => 'default',
+                'request_instance' => 'default',
+            ],
+        ],
+    ]
+
 enabled
 """""""
 
@@ -368,6 +381,19 @@ Gets an instance of
 
 Autoloader Config Options
 *************************
+
+.. code-block:: php
+
+    [
+        'autoloader' => [
+            'default' => [
+                'register' => true,
+                'extensions' => '.php',
+                'namespaces' => null,
+                'classes' => null,
+            ],
+        ],
+    ]
 
 register
 """"""""
@@ -402,6 +428,20 @@ Gets an instance of
 
 Cache Config Options
 ********************
+
+.. code-block:: php
+
+    [
+        'cache' => [
+            'default' => [
+                'class' => ???, // Must be set
+                'configs' => [],
+                'prefix' => null,
+                'serializer' => Framework\Cache\Serializer::PHP,
+                'logger_instance' => 'default',
+            ],
+        ],
+    ]
 
 class
 """""
@@ -447,6 +487,19 @@ Gets an instance of
 Console Config Options
 **********************
 
+.. code-block:: php
+
+    [
+        'console' => [
+            'default' => [
+                'directories' => null,
+                'find_in_namespaces' => false,
+                'language_instance' => 'default',
+                'locator_instance' => 'default',
+            ],
+        ],
+    ]
+
 directories
 """""""""""
 
@@ -483,6 +536,17 @@ Gets an instance of
 Database Config Options
 ***********************
 
+.. code-block:: php
+
+    [
+        'database' => [
+            'default' => [
+                'config' => ???, // Must be set
+                'logger_instance' => 'default',
+            ],
+        ],
+    ]
+
 config
 """"""
 
@@ -511,6 +575,17 @@ Gets an instance of
 Debugger Config Options
 ***********************
 
+.. code-block:: php
+
+    [
+        'debugger' => [
+            'default' => [
+                'debugbar_view' => null,
+                'options' => null,
+            ],
+        ],
+    ]
+
 debugbar_view
 """""""""""""
 
@@ -534,6 +609,22 @@ Gets an instance of
 
 Exception Handler Config Options
 ********************************
+
+.. code-block:: php
+
+    [
+        'exceptionHandler' => [
+            'default' => [
+                'environment' => Framework\Debug\ExceptionHandler::PRODUCTION,
+                'logger_instance' => 'default',
+                'language_instance' => 'default',
+                'development_view' => null,
+                'production_view' => null,
+                'initialize' => true,
+                'handle_errors' => true,
+            ],
+        ],
+    ]
 
 environment
 """""""""""
@@ -587,6 +678,23 @@ Gets an instance of
 
 Language Config Options
 ***********************
+
+.. code-block:: php
+
+    [
+        'language' => [
+            'default' => [
+                'default' => 'en',
+                'supported' => null,
+                'negotiate' => false,
+                'request_instance' => 'default',
+                'fallback_level' => Framework\Language\FallbackLevel::none,
+                'directories' => [],
+                'find_in_namespaces' => false,
+                'autoloader_instance' => 'default',
+            ],
+        ],
+    ]
 
 default
 """""""
@@ -646,6 +754,16 @@ Gets an instance of
 Locator Config Options
 **********************
 
+.. code-block:: php
+
+    [
+        'locator' => [
+            'default' => [
+                'autoloader_instance' => 'default',
+            ],
+        ],
+    ]
+
 autoloader_instance
 """""""""""""""""""
 
@@ -663,6 +781,19 @@ Gets an instance of
 
 Logger Config Options
 *********************
+
+.. code-block:: php
+
+    [
+        'logger' => [
+            'default' => [
+                'class' => Framework\Log\Logger\MultiFileLogger::class,
+                'destination' => ???, // Must be set
+                'level' => Framework\Log\LogLevel::DEBUG,
+                'config' => [],
+            ],
+        ],
+    ]
 
 class
 """""
@@ -702,6 +833,17 @@ Gets an instance of
 Mailer Config Options
 *********************
 
+.. code-block:: php
+
+    [
+        'mailer' => [
+            'default' => [
+                'class' => Framework\Email\Mailers\SMTPMailer::class,
+                'config' => ???, // Must be set
+            ],
+        ],
+    ]
+
 class
 """""
 
@@ -731,6 +873,18 @@ Gets an instance of
 Migrator Config Options
 ***********************
 
+.. code-block:: php
+
+    [
+        'migrator' => [
+            'default' => [
+                'database_instance' => 'default',
+                'directories' => ???, // Must be set
+                'table' => 'Migrations',
+            ],
+        ],
+    ]
+
 database_instance
 """""""""""""""""
 
@@ -758,6 +912,18 @@ Gets an instance of
 
 Request Config Options
 **********************
+
+.. code-block:: php
+
+    [
+        'request' => [
+            'default' => [
+                'server_vars' => [],
+                'allowed_hosts' => null,
+                'force_https' => false,
+            ],
+        ],
+    ]
 
 server_vars
 """""""""""
@@ -788,6 +954,21 @@ Gets an instance of
 Response Config Options
 ***********************
 
+.. code-block:: php
+
+    [
+        'response' => [
+            'default' => [
+                'headers' => [],
+                'auto_etag' => false,
+                'auto_language' => false,
+                'language_instance' => 'default',
+                'cache' => null,
+                'request_instance' => 'default',
+            ],
+        ],
+    ]
+
 headers
 """""""
 
@@ -797,7 +978,7 @@ The default is to set none.
 auto_etag
 """""""""
 
-``true`` arrow to enable ETag auto-negotiation on all responses. It can also be
+``true`` allow to enable ETag auto-negotiation on all responses. It can also be
 an array with the keys ``active`` and ``hash_algo``.
 
 auto_language
@@ -836,6 +1017,21 @@ Gets an instance of
 
 Router Config Options
 *********************
+
+.. code-block:: php
+
+    [
+        'router' => [
+            'default' => [
+                'files' => [],
+                'placeholders' => [],
+                'auto_options' => null,
+                'auto_methods' => null,
+                'response_instance' => 'default',
+                'language_instance' => 'default',
+            ],
+        ],
+    ]
 
 files
 """""
@@ -885,6 +1081,22 @@ Gets an instance of
 Session Config Options
 **********************
 
+.. code-block:: php
+
+    [
+        'session' => [
+            'default' => [
+                'save_handler' => [
+                    'class' => null,
+                    'config' => [],
+                ],
+                'options' => [],
+                'auto_start' => null,
+                'logger_instance' => 'default',
+            ],
+        ],
+    ]
+
 save_handler
 """"""""""""
 
@@ -927,6 +1139,20 @@ Gets an instance of
 Validation Config Options
 *************************
 
+.. code-block:: php
+
+    [
+        'validation' => [
+            'default' => [
+                'validators' => [
+                    Framework\MVC\Validator::class,
+                    Framework\Validation\FilesValidator::class,
+                ],
+                'language_instance' => 'default',
+            ],
+        ],
+    ]
+
 validators
 """"""""""
 
@@ -951,6 +1177,19 @@ Gets an instance of
 
 View Config Options
 *******************
+
+.. code-block:: php
+
+    [
+        'view' => [
+            'default' => [
+                'base_dir' => ???, // Must be set
+                'extension' => '.php',
+                'layout_prefix' => null,
+                'include_prefix' => null,
+            ],
+        ],
+    ]
 
 base_dir
 """"""""
