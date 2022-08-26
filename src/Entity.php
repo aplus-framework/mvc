@@ -67,7 +67,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
             $this->{$property} = $value;
             return;
         }
-        throw new OutOfBoundsException("Property not defined: {$property}");
+        throw $this->propertyNotDefined($property);
     }
 
     /**
@@ -86,7 +86,12 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         if (\property_exists($this, $property)) {
             return $this->{$property};
         }
-        throw new OutOfBoundsException("Property not defined: {$property}");
+        throw $this->propertyNotDefined($property);
+    }
+
+    protected function propertyNotDefined(string $property) : OutOfBoundsException
+    {
+        return new OutOfBoundsException('Property not defined: ' . $property);
     }
 
     /**
@@ -133,8 +138,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
     protected function setProperty(string $name, mixed $value) : void
     {
         if ( ! \property_exists($this, $name)) {
-            $this->{$name} = $value;
-            return;
+            throw $this->propertyNotDefined($name);
         }
         if ($value !== null) {
             $rp = new ReflectionProperty($this, $name);
