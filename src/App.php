@@ -122,21 +122,24 @@ class App
         return $config->getInstances($name);
     }
 
-    protected function prepareToRun() : Router
+    protected function loadAutoloader() : void
     {
-        if (static::$isRunning) {
-            throw new LogicException('App is already running');
-        }
-        static::$isRunning = true;
         $config = static::config();
         $autoloaderConfigs = $config->getInstances('autoloader');
-        $exceptionHandlerConfigs = $config->getInstances('exceptionHandler');
         if ($config->getDir() !== null) {
             $autoloaderConfigs ??= $this->loadConfigs('autoloader');
-            $exceptionHandlerConfigs ??= $this->loadConfigs('exceptionHandler');
         }
-        if ($autoloaderConfigs) {
+        if (isset($autoloaderConfigs['default'])) {
             static::autoloader();
+        }
+    }
+
+    protected function loadExceptionHandler() : void
+    {
+        $config = static::config();
+        $exceptionHandlerConfigs = $config->getInstances('exceptionHandler');
+        if ($config->getDir() !== null) {
+            $exceptionHandlerConfigs ??= $this->loadConfigs('exceptionHandler');
         }
         if ( ! isset($exceptionHandlerConfigs['default'])) {
             $environment = static::isDebugging()
@@ -150,6 +153,16 @@ class App
         if (isset($exceptionHandlerConfigs['default'])) {
             static::exceptionHandler();
         }
+    }
+
+    protected function prepareToRun() : Router
+    {
+        if (static::$isRunning) {
+            throw new LogicException('App is already running');
+        }
+        static::$isRunning = true;
+        $this->loadAutoloader();
+        $this->loadExceptionHandler();
         return static::router();
     }
 
