@@ -138,12 +138,16 @@ class App
         if ($autoloaderConfigs) {
             static::autoloader();
         }
-        if ( ! isset($exceptionHandlerConfigs['default']) && static::isDebugging()) {
+        if ( ! isset($exceptionHandlerConfigs['default'])) {
+            $environment = static::isDebugging()
+                ? ExceptionHandler::DEVELOPMENT
+                : ExceptionHandler::PRODUCTION;
             $config->set('exceptionHandler', [
-                'environment' => ExceptionHandler::DEVELOPMENT,
+                'environment' => $environment,
             ]);
+            $exceptionHandlerConfigs = $config->getInstances('exceptionHandler');
         }
-        if ($exceptionHandlerConfigs) {
+        if (isset($exceptionHandlerConfigs['default'])) {
             static::exceptionHandler();
         }
         return static::router();

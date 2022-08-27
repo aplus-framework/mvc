@@ -396,7 +396,7 @@ final class AppTest extends TestCase
         self::assertStringContainsString('192.168.0.2', $contents);
     }
 
-    public function testRunWithExceptionHandlerDebugging() : void
+    public function testRunDebuggingWithExceptionHandlerOnDevelopment() : void
     {
         App::setConfigProperty(null);
         App::setIsCli(false);
@@ -415,5 +415,26 @@ final class AppTest extends TestCase
             App::config()->get('exceptionHandler')['environment']
         );
         self::assertStringContainsString('debugbar', $contents);
+    }
+
+    public function testRunDebuggingWithExceptionHandlerOnProduction() : void
+    {
+        App::setConfigProperty(null);
+        App::setIsCli(false);
+        App::setServerVars();
+        $app = new App(
+            new Config(__DIR__ . '/configs', [], '.config.php'),
+            false
+        );
+        App::config()->set('exceptionHandler', [], 'not-exist');
+        self::assertNull(App::config()->get('exceptionHandler'));
+        \ob_start();
+        $app->runHttp();
+        $contents = (string) \ob_get_clean();
+        self::assertSame(
+            ExceptionHandler::PRODUCTION,
+            App::config()->get('exceptionHandler')['environment']
+        );
+        self::assertStringNotContainsString('debugbar', $contents);
     }
 }
