@@ -124,7 +124,7 @@ class AppCollector extends Collector
             return '<p>No service instance has been loaded.</p>';
         }
         \ob_start(); ?>
-        <p>Total of <?= $total ?> service instances loaded.</p>
+        <p>Total of <?= $total ?> service instance<?= $total !== 1 ? 's' : '' ?> loaded.</p>
         <table>
             <thead>
             <tr>

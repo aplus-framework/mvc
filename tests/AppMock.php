@@ -11,12 +11,18 @@ namespace Tests\MVC;
 
 use Framework\Config\Config;
 use Framework\Language\Language;
+use Framework\MVC\Debug\AppCollector;
 
 class AppMock extends \Framework\MVC\App
 {
     public function loadConfigs(string $name) : array | null
     {
         return parent::loadConfigs($name);
+    }
+
+    public static function setDebugCollector(AppCollector $debugCollector) : void
+    {
+        static::$debugCollector = $debugCollector;
     }
 
     public static function setServerVars(array $vars = []) : void
@@ -32,5 +38,9 @@ class AppMock extends \Framework\MVC\App
     public static function negotiateLanguage(Language $language, string $requestInstance = 'default') : string
     {
         return parent::negotiateLanguage($language, $requestInstance);
+    }
+
+    public static function notService(mixed $instance = 'default') : void
+    {
     }
 }
