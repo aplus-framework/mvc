@@ -63,6 +63,12 @@ final class AppTest extends TestCase
         new App();
     }
 
+    public function testLoadConfigs() : void
+    {
+        self::assertIsArray($this->app->loadConfigs('autoloader'));
+        self::assertNull($this->app->loadConfigs('foobar'));
+    }
+
     public function testConfigInstance() : void
     {
         self::assertInstanceOf(Config::class, App::config());
@@ -337,6 +343,17 @@ final class AppTest extends TestCase
         self::assertSame('http://localhost/', (string) App::request()->getUrl());
     }
 
+    public function testRequestWithForceHttps() : void
+    {
+        App::config()->add('request', [
+            'force_https' => true,
+            'server_vars' => [
+                'HTTPS' => 'on',
+            ],
+        ]);
+        self::assertSame('https', App::request()->getUrl()->getScheme());
+    }
+
     public function testResponse() : void
     {
         App::config()->add('response', ['cache' => false]);
@@ -377,5 +394,26 @@ final class AppTest extends TestCase
         $contents = (string) \ob_get_clean();
         self::assertStringContainsString('debugbar', $contents);
         self::assertStringContainsString('192.168.0.2', $contents);
+    }
+
+    public function testRunWithExceptionHandlerDebugging() : void
+    {
+        App::setConfigProperty(null);
+        App::setIsCli(false);
+        App::setServerVars();
+        $app = new App(
+            new Config(__DIR__ . '/configs', [], '.config.php'),
+            true
+        );
+        App::config()->set('exceptionHandler', [], 'not-exist');
+        self::assertNull(App::config()->get('exceptionHandler'));
+        \ob_start();
+        $app->runHttp();
+        $contents = (string) \ob_get_clean();
+        self::assertSame(
+            ExceptionHandler::DEVELOPMENT,
+            App::config()->get('exceptionHandler')['environment']
+        );
+        self::assertStringContainsString('debugbar', $contents);
     }
 }
