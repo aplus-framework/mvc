@@ -155,7 +155,7 @@ class App
         }
     }
 
-    protected function prepareToRun() : Router
+    protected function prepareToRun() : void
     {
         if (static::$isRunning) {
             throw new LogicException('App is already running');
@@ -163,25 +163,25 @@ class App
         static::$isRunning = true;
         $this->loadAutoloader();
         $this->loadExceptionHandler();
-        return static::router();
     }
 
     public function runHttp() : void
     {
-        $router = $this->prepareToRun();
+        $this->prepareToRun();
+        $router = static::router();
         $response = $router->getResponse();
         $router->match()
             ->run($response->getRequest(), $response)
             ->send();
         if (static::isDebugging()) {
-            $this->debugEnd($router);
+            $this->debugEnd();
         }
     }
 
-    protected function debugEnd(Router $router) : void
+    protected function debugEnd() : void
     {
         static::$debugCollector->setEndTime()->setEndMemory();
-        $response = $router->getResponse();
+        $response = static::router()->getResponse();
         if ( ! $response->hasDownload()
             && ! $response->getRequest()->isAjax()
             && \str_contains($response->getHeader('Content-Type'), 'text/html')
