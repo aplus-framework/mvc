@@ -103,4 +103,12 @@ final class ModelCacheTest extends ModelTestCase
         self::assertSame(1, $this->model->delete(1));
         self::assertNull($this->model->find(1));
     }
+
+    public function testUpdateCacheRow() : void
+    {
+        self::assertIsObject($this->model->find(1));
+        $this->model->delete(1);
+        $this->model->updateCachedRow(1);
+        self::assertNull($this->model->find(1));
+    }
 }

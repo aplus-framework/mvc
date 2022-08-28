@@ -10,6 +10,7 @@
 namespace Tests\MVC;
 
 use Framework\MVC\App;
+use Tests\MVC\Models\FooBarModel;
 
 /**
  * Class ModelTest.
@@ -332,5 +333,12 @@ final class ModelTest extends ModelTestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Validation rules are not set');
         $this->model->create(['data' => 'foo']);
+    }
+
+    public function testGetTable() : void
+    {
+        $model = new FooBarModel();
+        self::assertSame('FooBar', $model->getTable());
+        self::assertSame('FooBar', $model->getTable());
     }
 }

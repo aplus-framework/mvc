@@ -20,4 +20,9 @@ class ModelCacheMock extends Model
         'data' => 'minLength:3',
     ];
     protected bool $cacheActive = true;
+
+    public function updateCachedRow(int | string $id) : void
+    {
+        parent::updateCachedRow($id);
+    }
 }
