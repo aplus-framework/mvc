@@ -9,6 +9,8 @@
  */
 namespace Tests\MVC;
 
+use Framework\MVC\App;
+
 /**
  * Class ModelTest.
  *
@@ -94,6 +96,31 @@ final class ModelTest extends ModelTestCase
         $this->expectException(\mysqli_sql_exception::class);
         $this->expectExceptionMessage("Unknown column 'not-exists' in 'field list'");
         $this->model->create(['not-exists' => 'Value']);
+    }
+
+    public function testCreateExceptionDuplicateEntry() : void
+    {
+        $this->model->allowedFields = ['id', 'data'];
+        $this->model->protectPrimaryKey = false;
+        $id = $this->model->create(['id' => 3, 'data' => 'foo']);
+        self::assertSame(3, $id);
+        $this->expectException(\mysqli_sql_exception::class);
+        $this->expectExceptionMessage("Duplicate entry '3' for key 'PRIMARY'");
+        $this->model->create(['id' => 3, 'data' => 'foo']);
+    }
+
+    public function testCreateExceptionDuplicateEntryWithReportOff() : void
+    {
+        App::removeService('database');
+        $config = App::config()->get('database');
+        $config['config']['report'] = \MYSQLI_REPORT_OFF;
+        App::config()->set('database', $config);
+        $this->model->allowedFields = ['id', 'data'];
+        $this->model->protectPrimaryKey = false;
+        $id = $this->model->create(['id' => 3, 'data' => 'foo']);
+        self::assertSame(3, $id);
+        $id = $this->model->create(['id' => 3, 'data' => 'foo']);
+        self::assertFalse($id);
     }
 
     public function testUpdate() : void

@@ -585,7 +585,11 @@ abstract class Model implements ModelInterface
             $data[$this->getFieldUpdated()] ??= $timestamp;
         }
         $database = $this->getDatabaseToWrite();
-        $insertId = $database->insert()->into($this->getTable())->set($data)->run()
+        $affectedRows = $database->insert()
+            ->into($this->getTable())
+            ->set($data)
+            ->run();
+        $insertId = $affectedRows > 0 // $affectedRows is -1 if fail with MYSQLI_REPORT_OFF
             ? $database->insertId()
             : false;
         if ($insertId && $this->isCacheActive()) {
