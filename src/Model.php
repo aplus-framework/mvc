@@ -549,20 +549,29 @@ abstract class Model implements ModelInterface
     /**
      * Used to auto set the timestamp fields.
      *
-     * By default, get the timezone from database write connection config. As
-     * fallback, uses the UTC timezone.
-     *
-     * @throws Exception if database config has a bad timezone or a DateTime
-     * error occur
+     * @throws Exception if a DateTime error occur
      *
      * @return string The timestamp in the $timestampFormat property format
      */
     protected function getTimestamp() : string
     {
+        return (new DateTime('now', $this->timezone()))->format(
+            $this->getTimestampFormat()
+        );
+    }
+
+    /**
+     * Get the timezone from database write connection config. As fallback, uses
+     * the UTC timezone.
+     *
+     * @throws Exception if database config has a bad timezone
+     *
+     * @return DateTimeZone
+     */
+    protected function timezone() : DateTimeZone
+    {
         $timezone = $this->getDatabaseToWrite()->getConfig()['timezone'] ?? '+00:00';
-        $timezone = new DateTimeZone($timezone);
-        $datetime = new DateTime('now', $timezone);
-        return $datetime->format($this->getTimestampFormat());
+        return new DateTimeZone($timezone);
     }
 
     /**
