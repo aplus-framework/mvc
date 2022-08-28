@@ -43,6 +43,7 @@
     "require": {
         "php": ">=8.1",
         "ext-json": "*",
+        "ext-mysqli": "*",
         "aplus/autoload": "^2.0",
         "aplus/cache": "^3.0",
         "aplus/cli": "^2.0",
@@ -61,7 +62,6 @@
         "aplus/validation": "^2.0"
     },
     "require-dev": {
-        "ext-mysqli": "*",
         "ext-xdebug": "*",
         "aplus/coding-standard": "^1.12",
         "ergebnis/composer-normalize": "^2.25",
