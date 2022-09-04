@@ -29,7 +29,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
     /**
      * @var array<string>
      */
-    protected static array $jsonVars = [];
+    protected array $_jsonVars = [];
 
     /**
      * @param array<string,mixed> $properties
@@ -226,8 +226,8 @@ abstract class Entity implements \JsonSerializable //, \Stringable
      */
     public function toModel() : array
     {
-        $jsonVars = static::getJsonVars();
-        static::setJsonVars(\array_keys(\get_object_vars($this)));
+        $jsonVars = $this->getJsonVars();
+        $this->setJsonVars(\array_keys($this->getObjectVars()));
         // @phpstan-ignore-next-line
         $data = \json_decode(\json_encode($this, $this->jsonOptions()), true, 512, $this->jsonOptions());
         foreach ($data as $property => &$value) {
@@ -243,35 +243,50 @@ abstract class Entity implements \JsonSerializable //, \Stringable
             }
         }
         unset($value);
-        static::setJsonVars($jsonVars);
+        $this->setJsonVars($jsonVars);
         return $data;
     }
 
     public function jsonSerialize() : stdClass
     {
-        if ( ! static::getJsonVars()) {
+        if ( ! $this->getJsonVars()) {
             return new stdClass();
         }
-        $allowed = \array_flip(static::getJsonVars());
-        $filtered = \array_intersect_key(\get_object_vars($this), $allowed);
+        $allowed = \array_flip($this->getJsonVars());
+        $filtered = \array_intersect_key($this->getObjectVars(), $allowed);
         $allowed = \array_intersect_key($allowed, $filtered);
         $ordered = \array_replace($allowed, $filtered);
         return (object) $ordered;
     }
 
     /**
+     * @return array<string,mixed>
+     */
+    protected function getObjectVars() : array
+    {
+        $result = [];
+        foreach (\get_object_vars($this) as $key => $value) {
+            if ( ! \str_starts_with($key, '_')) {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
+    }
+
+    /**
      * @return array<string>
      */
-    public static function getJsonVars() : array
+    public function getJsonVars() : array
     {
-        return static::$jsonVars;
+        return $this->_jsonVars;
     }
 
     /**
      * @param array<string> $vars
      */
-    public static function setJsonVars(array $vars) : void
+    public function setJsonVars(array $vars) : static
     {
-        static::$jsonVars = $vars;
+        $this->_jsonVars = $vars;
+        return $this;
     }
 }

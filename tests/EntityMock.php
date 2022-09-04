@@ -29,7 +29,7 @@ use stdClass;
  */
 class EntityMock extends Entity
 {
-    public static array $jsonVars = [];
+    public array $_jsonVars = [];
     protected array $array; // @phpstan-ignore-line
     protected bool $bool;
     protected float $float;
