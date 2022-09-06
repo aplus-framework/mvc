@@ -1930,14 +1930,14 @@ JSON Encoding
 When working with APIs, it may be necessary to convert an Entity to a JSON
 object.
 
-To set which properties will be JSON-encoded just list them in the static
-property ``$jsonVars``:
+To set which properties will be JSON-encoded just list them in the property
+``$_jsonVars``:
 
 .. code-block:: php
 
     class User extends Entity
     {
-        protected static array $jsonVars = [
+        protected array $_jsonVars = [
             'id',
             'name',
             'url',
