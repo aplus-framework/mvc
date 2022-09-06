@@ -13,6 +13,7 @@
     </rule>
     <!-- controversial -->
     <rule ref="rulesets/controversial.xml">
+        <exclude name="CamelCasePropertyName"/>
         <exclude name="Superglobals"/>
     </rule>
     <!-- design -->
