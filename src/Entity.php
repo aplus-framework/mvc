@@ -26,10 +26,13 @@ use stdClass;
  */
 abstract class Entity implements \JsonSerializable //, \Stringable
 {
+    protected int $_jsonOptions = \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE
+    | \JSON_PRESERVE_ZERO_FRACTION | \JSON_THROW_ON_ERROR;
     /**
      * @var array<string>
      */
     protected array $_jsonVars = [];
+    protected string $_timezone = '+00:00';
 
     /**
      * @param array<string,mixed> $properties
@@ -208,13 +211,12 @@ abstract class Entity implements \JsonSerializable //, \Stringable
 
     protected function jsonOptions() : int
     {
-        return \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE
-            | \JSON_PRESERVE_ZERO_FRACTION | \JSON_THROW_ON_ERROR;
+        return $this->_jsonOptions;
     }
 
     protected function timezone() : DateTimeZone
     {
-        return new DateTimeZone('+00:00');
+        return new DateTimeZone($this->_timezone);
     }
 
     /**
