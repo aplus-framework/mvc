@@ -184,7 +184,10 @@ class App
         $response = static::router()->getResponse();
         if ( ! $response->hasDownload()
             && ! $response->getRequest()->isAjax()
-            && \str_contains($response->getHeader('Content-Type'), 'text/html')
+            && \str_contains(
+                (string) $response->getHeader('Content-Type'),
+                'text/html'
+            )
         ) {
             echo static::debugger()->renderDebugbar();
         }
