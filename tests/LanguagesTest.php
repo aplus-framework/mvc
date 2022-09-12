@@ -41,6 +41,7 @@ final class LanguagesTest extends TestCase
     /**
      * @param array<int,string> $rules
      * @param string $file
+     *
      * @dataProvider languageProvider
      */
     public function testKeys(array $rules, string $file) : void
