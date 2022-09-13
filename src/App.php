@@ -59,14 +59,40 @@ use ReflectionException;
 class App
 {
     /**
+     * Array with keys with names of services and their values have arrays where
+     * the keys are the names of the instances and the values are the objects.
+     *
      * @var array<string,array<string,object>>
      */
     protected static array $services = [];
+    /**
+     * Tells if the App is running.
+     *
+     * @var bool
+     */
     protected static bool $isRunning = false;
+    /**
+     * The Config instance.
+     *
+     * @var Config|null
+     */
     protected static ?Config $config;
+    /**
+     * Tells if the request is by command line. Updating directly makes it
+     * possible to run tests simulating HTTP or CLI.
+     *
+     * @var bool|null
+     */
     protected static ?bool $isCli = null;
+    /**
+     * The App collector instance that is set when in debug mode.
+     *
+     * @var AppCollector
+     */
     protected static AppCollector $debugCollector;
     /**
+     * Variables set in the $_SERVER super-global in command-line requests.
+     *
      * @var array<string,mixed>
      */
     protected static array $defaultServerVars = [
@@ -80,8 +106,8 @@ class App
     /**
      * Initialize the App.
      *
-     * @param array<string,mixed>|Config|string|null $config
-     * @param bool $debug
+     * @param array<string,mixed>|Config|string|null $config The config
+     * @param bool $debug Set true to enable debug mode. False to disable.
      */
     public function __construct(Config | array | string $config = null, bool $debug = false)
     {
@@ -100,6 +126,9 @@ class App
         }
     }
 
+    /**
+     * Start debugging the App.
+     */
     protected function debugStart() : void
     {
         static::$debugCollector = new AppCollector();
@@ -108,9 +137,11 @@ class App
     }
 
     /**
-     * @param string $name
+     * Load service configs catching exceptions.
      *
-     * @return array<string,array<string,mixed>>|null
+     * @param string $name The service name
+     *
+     * @return array<string,array<string,mixed>>|null The service configs or null
      */
     protected function loadConfigs(string $name) : array | null
     {
@@ -122,6 +153,9 @@ class App
         return $config->getInstances($name);
     }
 
+    /**
+     * Make sure to load the autoloader service if its default config is set.
+     */
     protected function loadAutoloader() : void
     {
         $config = static::config();
@@ -134,6 +168,9 @@ class App
         }
     }
 
+    /**
+     * Make sure to load the exceptionHandler service if its default config is set.
+     */
     protected function loadExceptionHandler() : void
     {
         $config = static::config();
@@ -155,6 +192,9 @@ class App
         }
     }
 
+    /**
+     * Prepare the App to run via CLI or HTTP.
+     */
     protected function prepareToRun() : void
     {
         if (static::$isRunning) {
@@ -165,6 +205,9 @@ class App
         $this->loadExceptionHandler();
     }
 
+    /**
+     * Run the App on HTTP requests.
+     */
     public function runHttp() : void
     {
         $this->prepareToRun();
@@ -178,6 +221,11 @@ class App
         }
     }
 
+    /**
+     * Ends the debugging of the App and prints the debugbar if there is no
+     * download file, if the request is not via AJAX and the Content-Type is
+     * text/html.
+     */
     protected function debugEnd() : void
     {
         static::$debugCollector->setEndTime()->setEndMemory();
@@ -193,11 +241,18 @@ class App
         }
     }
 
+    /**
+     * Detects if the request is via command-line and runs as a CLI request,
+     * otherwise runs as HTTP.
+     */
     public function run() : void
     {
         static::isCli() ? $this->runCli() : $this->runHttp();
     }
 
+    /**
+     * Run the App on CLI requests.
+     */
     public function runCli() : void
     {
         $this->prepareToRun();
@@ -217,10 +272,10 @@ class App
     /**
      * Get a service.
      *
-     * @param string $name
-     * @param string $instance
+     * @param string $name Service name
+     * @param string $instance Service instance name
      *
-     * @return object|null The service instance or null
+     * @return object|null The service object or null
      */
     public static function getService(string $name, string $instance = 'default') : ?object
     {
@@ -232,11 +287,11 @@ class App
      *
      * @template T of object
      *
-     * @param string $name
-     * @param T $service
-     * @param string $instance
+     * @param string $name Service name
+     * @param T $service Service object
+     * @param string $instance Service instance name
      *
-     * @return T
+     * @return T The service object
      */
     public static function setService(
         string $name,
@@ -247,10 +302,10 @@ class App
     }
 
     /**
-     * Remove a service.
+     * Remove services.
      *
-     * @param string $name
-     * @param string|null $instance Instance name or null to remove all
+     * @param string $name Service name
+     * @param string|null $instance Service instance name or null to remove all instances
      */
     public static function removeService(string $name, ?string $instance = 'default') : void
     {
@@ -262,9 +317,9 @@ class App
     }
 
     /**
-     * Get the Autoloader service.
+     * Get a autoloader service.
      *
-     * @param string $instance
+     * @param string $instance The autoloader instance name
      *
      * @return Autoloader
      */
@@ -286,6 +341,13 @@ class App
         return static::setAutoloader($instance);
     }
 
+    /**
+     * Set a autoloader service.
+     *
+     * @param string $instance The autoloader instance name
+     *
+     * @return Autoloader
+     */
     protected static function setAutoloader(string $instance) : Autoloader
     {
         $config = static::config()->get('autoloader', $instance);
@@ -300,9 +362,9 @@ class App
     }
 
     /**
-     * Get a Cache service.
+     * Get a cache service.
      *
-     * @param string $instance
+     * @param string $instance The cache instance name
      *
      * @return Cache
      */
@@ -325,6 +387,13 @@ class App
         return static::setCache($instance);
     }
 
+    /**
+     * Set a cache service.
+     *
+     * @param string $instance The cache instance name
+     *
+     * @return Cache
+     */
     protected static function setCache(string $instance) : Cache
     {
         $config = static::config()->get('cache', $instance);
@@ -349,9 +418,9 @@ class App
     }
 
     /**
-     * Get the Console service.
+     * Get a console service.
      *
-     * @param string $instance
+     * @param string $instance The console instance name
      *
      * @throws ReflectionException
      *
@@ -373,6 +442,15 @@ class App
         return static::setConsole($instance);
     }
 
+    /**
+     * Set a console service.
+     *
+     * @param string $instance The console instance name
+     *
+     * @throws ReflectionException
+     *
+     * @return Console
+     */
     protected static function setConsole(string $instance) : Console
     {
         $config = static::config()->get('console', $instance);
@@ -398,13 +476,15 @@ class App
     }
 
     /**
-     * @param string $file
-     * @param Console $console
-     * @param Locator $locator
+     * Detects if the file has a command and adds it to the console.
+     *
+     * @param string $file The file to get the command class
+     * @param Console $console The console to add the class
+     * @param Locator $locator The locator to get the class name in the file
      *
      * @throws ReflectionException
      *
-     * @return bool
+     * @return bool True if the command was added. If not, it's false.
      */
     protected static function addCommand(string $file, Console $console, Locator $locator) : bool
     {
@@ -423,6 +503,13 @@ class App
         return false;
     }
 
+    /**
+     * Get a debugger service.
+     *
+     * @param string $instance The debugger instance name
+     *
+     * @return Debugger
+     */
     public static function debugger(string $instance = 'default') : Debugger
     {
         $service = static::getService('debugger', $instance);
@@ -439,6 +526,13 @@ class App
         return static::setDebugger($instance);
     }
 
+    /**
+     * Set a debugger service.
+     *
+     * @param string $instance The debugger instance name
+     *
+     * @return Debugger
+     */
     protected static function setDebugger(string $instance) : Debugger
     {
         $config = static::config()->get('debugger');
@@ -452,6 +546,13 @@ class App
         return static::setService('debugger', $service, $instance);
     }
 
+    /**
+     * Get a exceptionHandler service.
+     *
+     * @param string $instance The exceptionHandler instance name
+     *
+     * @return ExceptionHandler
+     */
     public static function exceptionHandler(string $instance = 'default') : ExceptionHandler
     {
         $service = static::getService('exceptionHandler', $instance);
@@ -468,6 +569,13 @@ class App
         return static::setExceptionHandler($instance);
     }
 
+    /**
+     * Set a exceptionHandler service.
+     *
+     * @param string $instance The exceptionHandler instance name
+     *
+     * @return ExceptionHandler
+     */
     protected static function setExceptionHandler(string $instance) : ExceptionHandler
     {
         $config = static::config()->get('exceptionHandler');
@@ -495,9 +603,9 @@ class App
     }
 
     /**
-     * Get the CSRF service.
+     * Get a antiCsrf service.
      *
-     * @param string $instance
+     * @param string $instance The antiCsrf instance name
      *
      * @return AntiCSRF
      */
@@ -517,6 +625,13 @@ class App
         return static::setAntiCsrf($instance);
     }
 
+    /**
+     * Set a antiCsrf service.
+     *
+     * @param string $instance The antiCsrf instance name
+     *
+     * @return AntiCSRF
+     */
     protected static function setAntiCsrf(string $instance) : AntiCSRF
     {
         $config = static::config()->get('antiCsrf', $instance);
@@ -532,9 +647,9 @@ class App
     }
 
     /**
-     * Get a Database service.
+     * Get a database service.
      *
-     * @param string $instance
+     * @param string $instance The database instance name
      *
      * @return Database
      */
@@ -557,6 +672,13 @@ class App
         return static::setDatabase($instance);
     }
 
+    /**
+     * Set a database service.
+     *
+     * @param string $instance The database instance name
+     *
+     * @return Database
+     */
     protected static function setDatabase(string $instance) : Database
     {
         $config = static::config()->get('database', $instance);
@@ -572,9 +694,9 @@ class App
     }
 
     /**
-     * Get a Mailer service.
+     * Get a mailer service.
      *
-     * @param string $instance
+     * @param string $instance The mailer instance name
      *
      * @return Mailer
      */
@@ -597,6 +719,13 @@ class App
         return static::setMailer($instance);
     }
 
+    /**
+     * Set a mailer service.
+     *
+     * @param string $instance The mailer instance name
+     *
+     * @return Mailer
+     */
     protected static function setMailer(string $instance) : Mailer
     {
         $config = static::config()->get('mailer', $instance);
@@ -612,9 +741,9 @@ class App
     }
 
     /**
-     * Get a Migrator service.
+     * Get a migrator service.
      *
-     * @param string $instance
+     * @param string $instance The migrator instance name
      *
      * @return Migrator
      */
@@ -634,6 +763,13 @@ class App
         return static::setMigrator($instance);
     }
 
+    /**
+     * Set a migrator service.
+     *
+     * @param string $instance The migrator instance name
+     *
+     * @return Migrator
+     */
     protected static function setMigrator(string $instance) : Migrator
     {
         $config = static::config()->get('migrator', $instance);
@@ -649,9 +785,9 @@ class App
     }
 
     /**
-     * Get the Language service.
+     * Get a language service.
      *
-     * @param string $instance
+     * @param string $instance The language instance name
      *
      * @return Language
      */
@@ -674,6 +810,13 @@ class App
         return static::setLanguage($instance);
     }
 
+    /**
+     * Set a language service.
+     *
+     * @param string $instance The language instance name
+     *
+     * @return Language
+     */
     protected static function setLanguage(string $instance) : Language
     {
         $config = static::config()->get('language', $instance);
@@ -711,6 +854,14 @@ class App
         return static::setService('language', $service, $instance);
     }
 
+    /**
+     * Negotiates the language either via the command line or over HTTP.
+     *
+     * @param Language $language The current Language instance
+     * @param string $requestInstance The name of the Request instance to be used
+     *
+     * @return string The negotiated language
+     */
     protected static function negotiateLanguage(Language $language, string $requestInstance = 'default') : string
     {
         if (static::isCli()) {
@@ -732,9 +883,9 @@ class App
     }
 
     /**
-     * Get the Locator service.
+     * Get a locator service.
      *
-     * @param string $instance
+     * @param string $instance The locator instance name
      *
      * @return Locator
      */
@@ -754,6 +905,13 @@ class App
         return static::setLocator($instance);
     }
 
+    /**
+     * Set a locator service.
+     *
+     * @param string $instance The locator instance name
+     *
+     * @return Locator
+     */
     protected static function setLocator(string $instance) : Locator
     {
         $config = static::config()->get('locator', $instance);
@@ -765,9 +923,9 @@ class App
     }
 
     /**
-     * Get the Logger service.
+     * Get a logger service.
      *
-     * @param string $instance
+     * @param string $instance The logger instance name
      *
      * @return Logger
      */
@@ -790,6 +948,13 @@ class App
         return static::setLogger($instance);
     }
 
+    /**
+     * Set a logger service.
+     *
+     * @param string $instance The logger instance name
+     *
+     * @return Logger
+     */
     protected static function setLogger(string $instance) : Logger
     {
         $config = static::config()->get('logger', $instance);
@@ -813,9 +978,9 @@ class App
     }
 
     /**
-     * Get the Router service.
+     * Get a router service.
      *
-     * @param string $instance
+     * @param string $instance The router instance name
      *
      * @return Router
      */
@@ -843,8 +1008,10 @@ class App
     }
 
     /**
-     * @param string $instance
-     * @param array<mixed>|null $config
+     * Set a router service.
+     *
+     * @param string $instance The router instance name
+     * @param array<mixed>|null $config The router instance configs or null
      *
      * @return Router
      */
@@ -876,7 +1043,9 @@ class App
     }
 
     /**
-     * @param array<string> $files
+     * Load files that set the routes.
+     *
+     * @param array<string> $files The path of the router files
      */
     protected static function requireRouterFiles(array $files) : void
     {
@@ -889,9 +1058,9 @@ class App
     }
 
     /**
-     * Get the Request service.
+     * Get a request service.
      *
-     * @param string $instance
+     * @param string $instance The request instance name
      *
      * @return Request
      */
@@ -915,6 +1084,9 @@ class App
     }
 
     /**
+     * Overrides variables to be set in the $_SERVER super-global when the
+     * request is made via the command line.
+     *
      * @param array<string,mixed> $vars
      */
     protected static function setServerVars(array $vars = []) : void
@@ -925,6 +1097,13 @@ class App
         }
     }
 
+    /**
+     * Set a request service.
+     *
+     * @param string $instance The request instance name
+     *
+     * @return Request
+     */
     protected static function setRequest(string $instance) : Request
     {
         $config = static::config()->get('request', $instance);
@@ -939,9 +1118,9 @@ class App
     }
 
     /**
-     * Get the Response service.
+     * Get a response service.
      *
-     * @param string $instance
+     * @param string $instance The response instance name
      *
      * @return Response
      */
@@ -968,6 +1147,13 @@ class App
         return static::setResponse($instance);
     }
 
+    /**
+     * Set a response service.
+     *
+     * @param string $instance The response instance name
+     *
+     * @return Response
+     */
     protected static function setResponse(string $instance) : Response
     {
         $config = static::config()->get('response', $instance);
@@ -995,9 +1181,9 @@ class App
     }
 
     /**
-     * Get the Session service.
+     * Get a session service.
      *
-     * @param string $instance
+     * @param string $instance The session instance name
      *
      * @return Session
      */
@@ -1020,6 +1206,13 @@ class App
         return static::setSession($instance);
     }
 
+    /**
+     * Set a session service.
+     *
+     * @param string $instance The session instance name
+     *
+     * @return Session
+     */
     protected static function setSession(string $instance) : Session
     {
         $config = static::config()->get('session', $instance);
@@ -1049,9 +1242,9 @@ class App
     }
 
     /**
-     * Get a Validation service.
+     * Get a validation service.
      *
-     * @param string $instance
+     * @param string $instance The validation instance name
      *
      * @return Validation
      */
@@ -1074,6 +1267,13 @@ class App
         return static::setValidation($instance);
     }
 
+    /**
+     * Set a validation service.
+     *
+     * @param string $instance The validation instance name
+     *
+     * @return Validation
+     */
     protected static function setValidation(string $instance) : Validation
     {
         $config = static::config()->get('validation', $instance);
@@ -1095,9 +1295,9 @@ class App
     }
 
     /**
-     * Get a View service.
+     * Get a view service.
      *
-     * @param string $instance
+     * @param string $instance The view instance name
      *
      * @return View
      */
@@ -1120,6 +1320,13 @@ class App
         return static::setView($instance);
     }
 
+    /**
+     * Set a view service.
+     *
+     * @param string $instance The view instance name
+     *
+     * @return View
+     */
     protected static function setView(string $instance) : View
     {
         $config = static::config()->get('view', $instance);
@@ -1134,7 +1341,7 @@ class App
     }
 
     /**
-     * Tell if is a command-line request.
+     * Tell if it is a command-line request.
      *
      * @return bool
      */
@@ -1147,7 +1354,7 @@ class App
     }
 
     /**
-     * Set if is a CLI request. Used for tests.
+     * Set if it is a CLI request. Used for testing.
      *
      * @param bool $is
      */
@@ -1156,11 +1363,24 @@ class App
         static::$isCli = $is;
     }
 
+    /**
+     * Tell if the App is in debug mode.
+     *
+     * @return bool
+     */
     public static function isDebugging() : bool
     {
         return isset(static::$debugCollector);
     }
 
+    /**
+     * Add services data to the debug collector.
+     *
+     * @param string $service Service name
+     * @param string $instance Service instance name
+     * @param float $start Microtime right before setting up the service
+     * @param float $end Microtime right after setting up the service
+     */
     protected static function addDebugData(
         string $service,
         string $instance,
