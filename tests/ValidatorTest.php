@@ -14,6 +14,9 @@ use Framework\Database\Definition\Table\TableDefinition;
 use PHPUnit\Framework\TestCase;
 use Tests\MVC\AppMock as App;
 
+/**
+ * @runTestsInSeparateProcesses
+ */
 final class ValidatorTest extends TestCase
 {
     protected function setUp() : void
@@ -30,38 +33,112 @@ final class ValidatorTest extends TestCase
         App::database()->insert()->into('Users')->values(2, 'bar')->run();
     }
 
-    /**
-     * @runInSeparateProcess
-     */
-    public function testValidator() : void
+    public function testUniqueNoDataValue() : void
     {
         $validation = App::validation();
-        $validation->setRule('id', 'notUnique:Users,id,default');
-        $status = $validation->validate(['id' => 1]);
-        self::assertTrue($status);
-        $status = $validation->validate(['id' => 2]);
-        self::assertTrue($status);
-        $status = $validation->validate(['id' => 3]);
-        self::assertFalse($status);
-        self::assertSame(
-            'The id field is not registered.',
-            $validation->getError('id')
+        $validation->setRule('username', 'unique:Users');
+        self::assertFalse($validation->validate([]));
+        self::assertArrayHasKey('username', $validation->getErrors());
+    }
+
+    public function testNotUniqueNoDataValue() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('username', 'notUnique:Users');
+        self::assertTrue($validation->validate([]));
+        self::assertArrayNotHasKey('username', $validation->getErrors());
+    }
+
+    public function testUnique() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('username', 'unique:Users');
+        $data = [
+            'username' => 'foo',
+        ];
+        self::assertFalse($validation->validate($data));
+        self::assertArrayHasKey('username', $validation->getErrors());
+    }
+
+    public function testNotUnique() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('username', 'notUnique:Users');
+        $data = [
+            'username' => 'foo',
+        ];
+        self::assertTrue($validation->validate($data));
+        self::assertArrayNotHasKey('username', $validation->getErrors());
+    }
+
+    public function testUniqueWithTableColumn() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('username', 'unique:Users.username');
+        $data = [
+            'username' => 'foo',
+        ];
+        self::assertFalse($validation->validate($data));
+        self::assertArrayHasKey('username', $validation->getErrors());
+    }
+
+    public function testNotUniqueWithTableColumn() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('username', 'notUnique:Users.username');
+        $data = [
+            'username' => 'foo',
+        ];
+        self::assertTrue($validation->validate($data));
+        self::assertArrayNotHasKey('username', $validation->getErrors());
+    }
+
+    public function testUniqueIgnoring() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('username', 'unique:Users,id,1');
+        $data = [
+            'username' => 'foo',
+        ];
+        self::assertTrue($validation->validate($data));
+    }
+
+    public function testNotUniqueIgnoring() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('username', 'notUnique:Users,id,1');
+        $data = [
+            'username' => 'foo',
+        ];
+        self::assertFalse($validation->validate($data));
+        self::assertArrayHasKey('username', $validation->getErrors());
+    }
+
+    public function testUniqueWithoutConnection() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('username', 'unique:Users,id,1,');
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage(
+            'The connection parameter must be set to be able to connect the database'
         );
-        $status = $validation->validate([]);
-        self::assertFalse($status);
-        self::assertSame(
-            'The id field is not registered.',
-            $validation->getError('id')
+        $data = [
+            'username' => 'foo',
+        ];
+        $validation->validate($data);
+    }
+
+    public function testNotUniqueWithoutConnection() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('username', 'notUnique:Users,id,1,');
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage(
+            'The connection parameter must be set to be able to connect the database'
         );
-        $validation->setRule('id', 'notUnique:Users');
-        $status = $validation->validate(['id' => 1]);
-        self::assertTrue($status);
-        $validation->setRule('id', 'unique:Users,,default');
-        $status = $validation->validate(['id' => 1]);
-        self::assertFalse($status);
-        self::assertSame(
-            'The id field has already been registered.',
-            $validation->getError('id')
-        );
+        $data = [
+            'username' => 'foo',
+        ];
+        $validation->validate($data);
     }
 }

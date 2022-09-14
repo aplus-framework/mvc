@@ -9,6 +9,8 @@
  */
 namespace Framework\MVC;
 
+use LogicException;
+
 /**
  * Class Validator.
  *
@@ -21,8 +23,9 @@ class Validator extends \Framework\Validation\Validator
      *
      * @param string $field
      * @param array<string,mixed> $data
-     * @param string $table
-     * @param string|null $column
+     * @param string $tableColumn
+     * @param string $ignoreColumn
+     * @param string $ignoreValue
      * @param string $connection
      *
      * @return bool
@@ -30,34 +33,32 @@ class Validator extends \Framework\Validation\Validator
     public static function notUnique(
         string $field,
         array $data,
-        string $table,
-        string $column = null,
+        string $tableColumn,
+        string $ignoreColumn = '',
+        string $ignoreValue = '',
         string $connection = 'default'
     ) : bool {
-        $value = static::getData($field, $data);
-        if ($value === null) {
-            return false;
-        }
-        if ($column === null || $column === '') {
-            $column = $field;
-        }
-        // @phpstan-ignore-next-line
-        return App::database($connection)
-            ->select()
-            ->expressions(['count' => static fn () => 'COUNT(*)'])
-            ->from($table)
-            ->whereEqual($column, $value)
-            ->limit(1)
-            ->run()->fetch()->count > 0;
+        return ! static::unique(
+            $field,
+            $data,
+            $tableColumn,
+            $ignoreColumn,
+            $ignoreValue,
+            $connection
+        );
     }
 
     /**
      * Validates database table unique value.
      *
+     * You can ignore rows where a column has a certain value.
+     * Useful when updating a row in the database.
+     *
      * @param string $field
      * @param array<string,mixed> $data
-     * @param string $table
-     * @param string|null $column
+     * @param string $tableColumn
+     * @param string $ignoreColumn
+     * @param string $ignoreValue
      * @param string $connection
      *
      * @return bool
@@ -65,10 +66,32 @@ class Validator extends \Framework\Validation\Validator
     public static function unique(
         string $field,
         array $data,
-        string $table,
-        string $column = null,
+        string $tableColumn,
+        string $ignoreColumn = '',
+        string $ignoreValue = '',
         string $connection = 'default'
     ) : bool {
-        return ! static::notUnique($field, $data, $table, $column, $connection);
+        $value = static::getData($field, $data);
+        if ($value === null) {
+            return false;
+        }
+        [$table, $column] = \array_pad(\explode('.', $tableColumn, 2), 2, '');
+        if ($column === '') {
+            $column = $field;
+        }
+        if ($connection === '') {
+            throw new LogicException(
+                'The connection parameter must be set to be able to connect the database'
+            );
+        }
+        $statement = App::database($connection)
+            ->select()
+            ->expressions(['count' => static fn () => 'COUNT(*)'])
+            ->from($table)
+            ->whereEqual($column, $value);
+        if ($ignoreColumn !== '') {
+            $statement->whereNotEqual($ignoreColumn, $ignoreValue);
+        }
+        return $statement->limit(1)->run()->fetch()->count < 1; // @phpstan-ignore-line
     }
 }
