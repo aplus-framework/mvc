@@ -25,7 +25,7 @@ class Validator extends \Framework\Validation\Validator
      * @param array<string,mixed> $data
      * @param string $tableColumn
      * @param string $ignoreColumn
-     * @param string $ignoreValue
+     * @param int|string $ignoreValue
      * @param string $connection
      *
      * @return bool
@@ -35,7 +35,7 @@ class Validator extends \Framework\Validation\Validator
         array $data,
         string $tableColumn,
         string $ignoreColumn = '',
-        string $ignoreValue = '',
+        int | string $ignoreValue = '',
         string $connection = 'default'
     ) : bool {
         return ! static::unique(
@@ -58,7 +58,7 @@ class Validator extends \Framework\Validation\Validator
      * @param array<string,mixed> $data
      * @param string $tableColumn
      * @param string $ignoreColumn
-     * @param string $ignoreValue
+     * @param int|string $ignoreValue
      * @param string $connection
      *
      * @return bool
@@ -68,13 +68,14 @@ class Validator extends \Framework\Validation\Validator
         array $data,
         string $tableColumn,
         string $ignoreColumn = '',
-        string $ignoreValue = '',
+        int | string $ignoreValue = '',
         string $connection = 'default'
     ) : bool {
         $value = static::getData($field, $data);
         if ($value === null) {
             return false;
         }
+        $ignoreValue = (string) $ignoreValue;
         [$table, $column] = \array_pad(\explode('.', $tableColumn, 2), 2, '');
         if ($column === '') {
             $column = $field;
@@ -89,7 +90,7 @@ class Validator extends \Framework\Validation\Validator
             ->expressions(['count' => static fn () => 'COUNT(*)'])
             ->from($table)
             ->whereEqual($column, $value);
-        if ($ignoreColumn !== '') {
+        if ($ignoreColumn !== '' && ! \preg_match('#^{(\w+)}$#', $ignoreValue)) {
             $statement->whereNotEqual($ignoreColumn, $ignoreValue);
         }
         return $statement->limit(1)->run()->fetch()->count < 1; // @phpstan-ignore-line
