@@ -532,21 +532,6 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * Convert data to array and filter allowed columns.
-     *
-     * @template T
-     *
-     * @param array<string,T>|Entity|stdClass $data
-     *
-     * @return array<string,T> The allowed columns
-     */
-    protected function prepareData(array | Entity | stdClass $data) : array
-    {
-        $data = $this->makeArray($data);
-        return $this->filterAllowedFields($data);
-    }
-
-    /**
      * Used to auto set the timestamp fields.
      *
      * @throws Exception if a DateTime error occur
@@ -584,10 +569,11 @@ abstract class Model implements ModelInterface
      */
     public function create(array | Entity | stdClass $data) : false | int | string
     {
-        $data = $this->prepareData($data);
+        $data = $this->makeArray($data);
         if ($this->getValidation()->validate($data) === false) {
             return false;
         }
+        $data = $this->filterAllowedFields($data);
         if ($this->isAutoTimestamps()) {
             $timestamp = $this->getTimestamp();
             $data[$this->getFieldCreated()] ??= $timestamp;
@@ -652,10 +638,12 @@ abstract class Model implements ModelInterface
     public function update(int | string $id, array | Entity | stdClass $data) : false | int | string
     {
         $this->checkPrimaryKey($id);
-        $data = $this->prepareData($data);
+        $data = $this->makeArray($data);
+        $data[$this->getPrimaryKey()] = $id;
         if ($this->getValidation()->validateOnly($data) === false) {
             return false;
         }
+        $data = $this->filterAllowedFields($data);
         if ($this->isAutoTimestamps()) {
             $data[$this->getFieldUpdated()] ??= $this->getTimestamp();
         }
@@ -685,11 +673,13 @@ abstract class Model implements ModelInterface
     public function replace(int | string $id, array | Entity | stdClass $data) : false | int | string
     {
         $this->checkPrimaryKey($id);
-        $data = $this->prepareData($data);
+        $data = $this->makeArray($data);
         $data[$this->getPrimaryKey()] = $id;
         if ($this->getValidation()->validate($data) === false) {
             return false;
         }
+        $data = $this->filterAllowedFields($data);
+        $data[$this->getPrimaryKey()] = $id;
         if ($this->isAutoTimestamps()) {
             $timestamp = $this->getTimestamp();
             $data[$this->getFieldCreated()] ??= $timestamp;
