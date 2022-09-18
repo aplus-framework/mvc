@@ -16,6 +16,7 @@ use Framework\Cache\Cache;
 use Framework\Database\Database;
 use Framework\Language\Language;
 use Framework\Pagination\Pager;
+use Framework\Validation\Debug\ValidationCollector;
 use Framework\Validation\FilesValidator;
 use Framework\Validation\Validation;
 use InvalidArgumentException;
@@ -721,12 +722,23 @@ abstract class Model implements ModelInterface
 
     protected function getValidation() : Validation
     {
-        return $this->validation ??= (new Validation(
+        if (isset($this->validation)) {
+            return $this->validation;
+        }
+        $this->validation = new Validation(
             $this->getValidationValidators(),
             $this->getLanguage()
-        ))->setRules($this->getValidationRules())
+        );
+        $this->validation->setRules($this->getValidationRules())
             ->setLabels($this->getValidationLabels())
             ->setMessages($this->getValidationMessages());
+        if (App::isDebugging()) {
+            $name = 'model ' . static::class;
+            $collector = new ValidationCollector($name);
+            App::debugger()->addCollector($collector, 'Validation');
+            $this->validation->setDebugCollector($collector);
+        }
+        return $this->validation;
     }
 
     /**

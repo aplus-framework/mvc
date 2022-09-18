@@ -327,6 +327,16 @@ final class ModelTest extends ModelTestCase
         self::assertArrayHasKey('data', $this->model->getErrors());
     }
 
+    public function testValidationWhenAppIsDebugging() : void
+    {
+        AppMock::setConfigProperty(null);
+        new AppMock([], true);
+        $model = new ModelMock();
+        self::assertNull(AppMock::debugger()->getCollection('Validation'));
+        $model->getValidation();
+        self::assertNotNull(AppMock::debugger()->getCollection('Validation'));
+    }
+
     public function testCreateWithValidationRulesNotSet() : void
     {
         unset($this->model->validationRules);
