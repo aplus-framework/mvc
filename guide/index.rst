@@ -920,7 +920,7 @@ Request Config Options
         'request' => [
             'default' => [
                 'server_vars' => [],
-                'allowed_hosts' => null,
+                'allowed_hosts' => [],
                 'force_https' => false,
             ],
         ],
@@ -934,7 +934,7 @@ An array of values to be set in the $_SERVER superglobal on the command line.
 allowed_hosts
 """""""""""""
 
-Sets an array of allowed hosts. The default is ``null`` so any host is allowed.
+Sets an array of allowed hosts. The default is an empty array, so any host is allowed.
 
 force_https
 """""""""""
