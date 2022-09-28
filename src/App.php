@@ -1110,7 +1110,7 @@ class App
         if (static::isCli()) {
             static::setServerVars($config['server_vars'] ?? []);
         }
-        $service = new Request($config['allowed_hosts'] ?? null);
+        $service = new Request($config['allowed_hosts'] ?? []);
         if (isset($config['force_https']) && $config['force_https'] === true) {
             $service->forceHttps();
         }

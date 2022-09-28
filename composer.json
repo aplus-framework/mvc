@@ -53,7 +53,7 @@
         "aplus/date": "^2.0",
         "aplus/debug": "^3.2",
         "aplus/email": "^3.0",
-        "aplus/http": "^5.0",
+        "aplus/http": "^5.2",
         "aplus/language": "^3.0",
         "aplus/log": "^3.0",
         "aplus/pagination": "^3.1",

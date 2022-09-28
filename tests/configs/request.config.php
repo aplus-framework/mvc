@@ -9,7 +9,7 @@
  */
 return [
     'default' => [
-        'allowed_hosts' => null,
+        'allowed_hosts' => [],
         'force_https' => false,
         'server_vars' => [
             'HTTP_FOO' => 'Foo',
