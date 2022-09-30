@@ -30,6 +30,11 @@ registerArgumentsSet(
     'validation',
     'view',
 );
+registerArgumentsSet(
+    'rules',
+    'notUnique',
+    'unique',
+);
 expectedArguments(
     \Framework\Config\Config::get(),
     0,
@@ -90,3 +95,23 @@ override(\Framework\MVC\App::getService(), map([
     'validation' => \Framework\Validation\Validation::class,
     'view' => \Framework\MVC\View::class,
 ]));
+expectedArguments(
+    \Framework\Validation\Validation::getMessage(),
+    1,
+    argumentsSet('rules')
+);
+expectedArguments(
+    \Framework\Validation\Validation::isRuleAvailable(),
+    0,
+    argumentsSet('rules')
+);
+expectedArguments(
+    \Framework\Validation\Validation::setMessage(),
+    1,
+    argumentsSet('rules')
+);
+expectedArguments(
+    \Framework\Validation\Validation::setRule(),
+    1,
+    argumentsSet('rules')
+);
