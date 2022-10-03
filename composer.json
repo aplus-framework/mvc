@@ -70,12 +70,6 @@
         "phpstan/phpstan": "^1.8",
         "phpunit/phpunit": "^9.5"
     },
-    "suggest": {
-        "aplus/coding-standard": "Aplus Framework Coding Standard Library",
-        "aplus/dev-commands": "Aplus Framework Dev Commands Library",
-        "aplus/front": "Aplus Framework Front Library",
-        "aplus/testing": "Aplus Framework Testing Library"
-    },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "autoload": {
