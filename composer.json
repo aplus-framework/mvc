@@ -48,18 +48,18 @@
         "aplus/cache": "^3.0",
         "aplus/cli": "^2.3",
         "aplus/config": "^3.0",
-        "aplus/database": "^3.1",
+        "aplus/database": "^3.2",
         "aplus/database-extra": "^3.0",
         "aplus/date": "^2.0",
-        "aplus/debug": "^3.2",
-        "aplus/email": "^3.0",
+        "aplus/debug": "^3.3",
+        "aplus/email": "^3.1",
         "aplus/http": "^5.2",
         "aplus/language": "^3.0",
         "aplus/log": "^3.0",
-        "aplus/pagination": "^3.1",
+        "aplus/pagination": "^3.2",
         "aplus/routing": "^3.4",
         "aplus/session": "^3.2",
-        "aplus/validation": "^2.0"
+        "aplus/validation": "^2.1"
     },
     "require-dev": {
         "ext-xdebug": "*",
