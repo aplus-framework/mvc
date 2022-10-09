@@ -22,7 +22,7 @@ The installation of this library can be done with Composer:
 
 .. code-block::
 
-    composer require aplus/mvc:dev-master
+    composer require aplus/mvc
 
 App
 ---
