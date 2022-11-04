@@ -412,7 +412,7 @@ final class AppTest extends TestCase
         $contents = (string) \ob_get_clean();
         self::assertSame(
             ExceptionHandler::DEVELOPMENT,
-            App::config()->get('exceptionHandler')['environment']
+            App::config()->get('exceptionHandler')['environment'] // @phpstan-ignore-line
         );
         self::assertStringContainsString('debugbar', $contents);
     }
@@ -433,7 +433,7 @@ final class AppTest extends TestCase
         $contents = (string) \ob_get_clean();
         self::assertSame(
             ExceptionHandler::PRODUCTION,
-            App::config()->get('exceptionHandler')['environment']
+            App::config()->get('exceptionHandler')['environment'] // @phpstan-ignore-line
         );
         self::assertStringNotContainsString('debugbar', $contents);
     }
