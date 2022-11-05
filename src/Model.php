@@ -389,22 +389,27 @@ abstract class Model implements ModelInterface
             $row = $this->makeEntity($row);
         }
         unset($row);
-        $this->pager = new Pager(
-            $page,
-            $perPage,
-            $this->count(),
-            $this->getLanguage(),
-            $this->getPagerUrl()
-        );
-        $pagerView = $this->getPagerView();
-        if (isset($pagerView)) {
-            $this->pager->setDefaultView($pagerView);
-        }
-        $pagerQuery = $this->getPagerQuery();
-        if (isset($pagerQuery)) {
-            $this->pager->setQuery($pagerQuery);
-        }
+        $this->setPager(new Pager($page, $perPage, $this->count()));
         return $data;
+    }
+
+    protected function setPager(Pager $pager) : static
+    {
+        $pager->setLanguage($this->getLanguage());
+        $temp = $this->getPagerQuery();
+        if (isset($temp)) {
+            $pager->setQuery($temp);
+        }
+        $temp = $this->getPagerUrl();
+        if (isset($temp)) {
+            $pager->setUrl($temp);
+        }
+        $temp = $this->getPagerView();
+        if (isset($temp)) {
+            $pager->setDefaultView($temp);
+        }
+        $this->pager = $pager;
+        return $this;
     }
 
     protected function getPagerUrl() : ?string
