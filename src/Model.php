@@ -393,6 +393,13 @@ abstract class Model implements ModelInterface
         return $data;
     }
 
+    /**
+     * Set the Pager.
+     *
+     * @param Pager $pager
+     *
+     * @return static
+     */
     protected function setPager(Pager $pager) : static
     {
         $pager->setLanguage($this->getLanguage());
@@ -412,23 +419,42 @@ abstract class Model implements ModelInterface
         return $this;
     }
 
+    /**
+     * Get the custom URL to be used in the Pager.
+     *
+     * @return string|null
+     */
     protected function getPagerUrl() : ?string
     {
         return $this->pagerUrl ?? null;
     }
 
+    /**
+     * Get the custom view to be used in the Pager.
+     *
+     * @return string|null
+     */
     protected function getPagerView() : ?string
     {
         return $this->pagerView ?? null;
     }
 
+    /**
+     * Get the custom query to be used in the Pager.
+     *
+     * @return string|null
+     */
     protected function getPagerQuery() : ?string
     {
         return $this->pagerQuery ?? null;
     }
 
     /**
-     * Allowed only after call the paginate method.
+     * Get the Pager.
+     *
+     * Allowed only after calling a method that sets the Pager.
+     *
+     * @see Model::paginate()
      *
      * @return Pager
      */
