@@ -262,6 +262,16 @@ final class ModelTest extends ModelTestCase
         );
     }
 
+    public function testPagerQuery() : void
+    {
+        $this->model->pagerQuery = 'p';
+        $this->model->paginate(5);
+        self::assertSame(
+            'http://localhost:8080/contact?p=5',
+            $this->model->getPager()->getCurrentPageUrl()
+        );
+    }
+
     public function testMakePageLimitAndOffset() : void
     {
         self::assertSame([10, null], $this->model->makePageLimitAndOffset(0));

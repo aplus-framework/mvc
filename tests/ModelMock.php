@@ -22,6 +22,7 @@ class ModelMock extends Model
     public bool $protectPrimaryKey = true;
     public string $pagerView;
     public string $pagerUrl;
+    public string $pagerQuery;
 
     /**
      * @param int $page

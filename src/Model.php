@@ -153,6 +153,10 @@ abstract class Model implements ModelInterface
      */
     protected string $pagerView;
     /**
+     * @var string
+     */
+    protected string $pagerQuery;
+    /**
      * Pager URL.
      *
      * @var string
@@ -396,6 +400,10 @@ abstract class Model implements ModelInterface
         if (isset($pagerView)) {
             $this->pager->setDefaultView($pagerView);
         }
+        $pagerQuery = $this->getPagerQuery();
+        if (isset($pagerQuery)) {
+            $this->pager->setQuery($pagerQuery);
+        }
         return $data;
     }
 
@@ -407,6 +415,11 @@ abstract class Model implements ModelInterface
     protected function getPagerView() : ?string
     {
         return $this->pagerView ?? null;
+    }
+
+    protected function getPagerQuery() : ?string
+    {
+        return $this->pagerQuery ?? null;
     }
 
     /**
