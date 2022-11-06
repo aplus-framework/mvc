@@ -184,12 +184,13 @@ abstract class Model implements ModelInterface
         return $this->connectionWrite;
     }
 
-    #[Pure]
     protected function getTable() : string
     {
-        if (isset($this->table)) {
-            return $this->table;
-        }
+        return $this->table ??= $this->makeTableName();
+    }
+
+    protected function makeTableName() : string
+    {
         $class = static::class;
         $pos = \strrpos($class, '\\');
         if ($pos) {
@@ -198,7 +199,7 @@ abstract class Model implements ModelInterface
         if (\str_ends_with($class, 'Model')) {
             $class = \substr($class, 0, -5);
         }
-        return $this->table = $class;
+        return $class;
     }
 
     #[Pure]
