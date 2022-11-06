@@ -23,6 +23,7 @@ class ModelMock extends Model
     public string $pagerView;
     public string $pagerUrl;
     public string $pagerQuery;
+    public array $pagerAllowedQueries;
 
     /**
      * @param int $page
