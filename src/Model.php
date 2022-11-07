@@ -191,15 +191,15 @@ abstract class Model implements ModelInterface
 
     protected function makeTableName() : string
     {
-        $class = static::class;
-        $pos = \strrpos($class, '\\');
+        $name = static::class;
+        $pos = \strrpos($name, '\\');
         if ($pos) {
-            $class = \substr($class, $pos + 1);
+            $name = \substr($name, $pos + 1);
         }
-        if (\str_ends_with($class, 'Model')) {
-            $class = \substr($class, 0, -5);
+        if (\str_ends_with($name, 'Model')) {
+            $name = \substr($name, 0, -5);
         }
-        return $class;
+        return $name;
     }
 
     #[Pure]
