@@ -1337,6 +1337,9 @@ class App
         if (isset($config['include_prefix'])) {
             $service->setIncludePrefix($config['include_prefix']);
         }
+        if (isset($config['show_debug_comments']) && $config['show_debug_comments'] === false) {
+            $service->disableDebugComments();
+        }
         return static::setService('view', $service, $instance);
     }
 

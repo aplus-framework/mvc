@@ -367,4 +367,31 @@ final class ViewTest extends TestCase
             $contents
         );
     }
+
+    public function testDebugCommentsDisabled() : void
+    {
+        $this->view->setDebugCollector(new ViewCollector())
+            ->disableDebugComments()
+            ->setLayoutPrefix('_layouts')
+            ->setIncludePrefix('_includes');
+        $contents = $this->view->render('comments');
+        self::assertSame(
+            <<<'EOL'
+                <h1>Layout Default</h1>
+                CONTENTS
+                <footer>Footer</footer>
+
+                EOL,
+            $contents
+        );
+    }
+
+    public function testEnableAndDisableDebugComments() : void
+    {
+        self::assertTrue($this->view->isShowingDebugComments());
+        $this->view->disableDebugComments();
+        self::assertFalse($this->view->isShowingDebugComments());
+        $this->view->enableDebugComments();
+        self::assertTrue($this->view->isShowingDebugComments());
+    }
 }

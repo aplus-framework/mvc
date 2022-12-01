@@ -42,6 +42,7 @@ class View
     protected string $layoutPrefix = '';
     protected string $includePrefix = '';
     protected bool $inInclude = false;
+    protected bool $showDebugComments = true;
 
     public function __construct(string $baseDir = null, string $extension = '.php')
     {
@@ -187,9 +188,11 @@ class View
             }
             $this->setDebugData($view, $start, $type);
             $type = \ucfirst($type);
-            $contents = '<!-- ' . $type . ' start: ' . $view . ' -->'
-                . \PHP_EOL . $contents . \PHP_EOL
-                . '<!-- ' . $type . ' end: ' . $view . ' -->';
+            if ($this->isShowingDebugComments()) {
+                $contents = '<!-- ' . $type . ' start: ' . $view . ' -->'
+                    . \PHP_EOL . $contents . \PHP_EOL
+                    . '<!-- ' . $type . ' end: ' . $view . ' -->';
+            }
         }
         return $contents;
     }
@@ -232,7 +235,7 @@ class View
     {
         $this->openBlocks[] = $name;
         \ob_start();
-        if (isset($this->debugCollector)) {
+        if (isset($this->debugCollector) && $this->isShowingDebugComments()) {
             if (isset($this->currentView)) {
                 $name = $this->currentView . '::' . $name;
             }
@@ -247,7 +250,7 @@ class View
             throw new LogicException('Trying to end a view block when none is open');
         }
         $name = \array_pop($this->openBlocks);
-        if (isset($this->debugCollector)) {
+        if (isset($this->debugCollector) && $this->isShowingDebugComments()) {
             $block = $name;
             if (isset($this->currentView)) {
                 $block = $this->currentView . '::' . $name;
@@ -339,6 +342,9 @@ class View
         $contents = $this->getContents($view, $data);
         $this->inInclude = false;
         $this->setDebugData($view, $start, 'include');
+        if ( ! $this->isShowingDebugComments()) {
+            return $contents;
+        }
         return $this->involveInclude($view, $contents);
     }
 
@@ -378,6 +384,23 @@ class View
     {
         $this->debugCollector = $debugCollector;
         $this->debugCollector->setView($this);
+        return $this;
+    }
+
+    public function isShowingDebugComments() : bool
+    {
+        return $this->showDebugComments;
+    }
+
+    public function enableDebugComments() : static
+    {
+        $this->showDebugComments = true;
+        return $this;
+    }
+
+    public function disableDebugComments() : static
+    {
+        $this->showDebugComments = false;
         return $this;
     }
 }

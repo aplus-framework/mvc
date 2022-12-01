@@ -1188,6 +1188,7 @@ View Config Options
                 'extension' => '.php',
                 'layout_prefix' => null,
                 'include_prefix' => null,
+                'show_debug_comments' => true,
             ],
         ],
     ]
@@ -1212,6 +1213,11 @@ include_prefix
 """"""""""""""
 
 Set the includes prefix. The default is to set none.
+
+show_debug_comments
+"""""""""""""""""""
+
+Set to ``false`` to disable HTML comments when in debug mode.
 
 Extending
 #########

@@ -13,5 +13,6 @@ return [
         'extension' => '.php',
         'layout_prefix' => '',
         'include_prefix' => '',
+        'show_debug_comments' => false,
     ],
 ];
