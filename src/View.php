@@ -387,17 +387,38 @@ class View
         return $this;
     }
 
+    /**
+     * Tells if it is showing debug comments when in debug mode.
+     *
+     * @since 3.2
+     *
+     * @return bool
+     */
     public function isShowingDebugComments() : bool
     {
         return $this->showDebugComments;
     }
 
+    /**
+     * Enable debug comments when in debug mode.
+     *
+     * @since 3.2
+     *
+     * @return static
+     */
     public function enableDebugComments() : static
     {
         $this->showDebugComments = true;
         return $this;
     }
 
+    /**
+     * Disable debug comments when in debug mode.
+     *
+     * @since 3.2
+     *
+     * @return static
+     */
     public function disableDebugComments() : static
     {
         $this->showDebugComments = false;
