@@ -33,6 +33,14 @@ final class ValidatorTest extends TestCase
         App::database()->insert()->into('Users')->values(2, 'bar')->run();
     }
 
+    public function testExistNoDataValue() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('username', 'exist:Users');
+        self::assertFalse($validation->validate([]));
+        self::assertArrayHasKey('username', $validation->getErrors());
+    }
+
     public function testUniqueNoDataValue() : void
     {
         $validation = App::validation();
@@ -47,6 +55,22 @@ final class ValidatorTest extends TestCase
         $validation->setRule('username', 'notUnique:Users');
         self::assertTrue($validation->validate([]));
         self::assertArrayNotHasKey('username', $validation->getErrors());
+    }
+
+    public function testExist() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('username', 'exist:Users');
+        $data = [
+            'username' => 'foo',
+        ];
+        self::assertTrue($validation->validate($data));
+        self::assertEmpty($validation->getErrors());
+        $data = [
+            'username' => 'bazz',
+        ];
+        self::assertFalse($validation->validate($data));
+        self::assertArrayHasKey('username', $validation->getErrors());
     }
 
     public function testUnique() : void
@@ -69,6 +93,22 @@ final class ValidatorTest extends TestCase
         ];
         self::assertTrue($validation->validate($data));
         self::assertArrayNotHasKey('username', $validation->getErrors());
+    }
+
+    public function testExistWithTableColumn() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('user', 'exist:Users.username');
+        $data = [
+            'user' => 'foo',
+        ];
+        self::assertTrue($validation->validate($data));
+        self::assertEmpty($validation->getErrors());
+        $data = [
+            'user' => 'bazz',
+        ];
+        self::assertFalse($validation->validate($data));
+        self::assertArrayHasKey('user', $validation->getErrors());
     }
 
     public function testUniqueWithTableColumn() : void
@@ -112,6 +152,20 @@ final class ValidatorTest extends TestCase
         ];
         self::assertFalse($validation->validate($data));
         self::assertArrayHasKey('username', $validation->getErrors());
+    }
+
+    public function testExistWithoutConnection() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('username', 'exist:Users,');
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage(
+            'The connection parameter must be set to be able to connect the database'
+        );
+        $data = [
+            'username' => 'foo',
+        ];
+        $validation->validate($data);
     }
 
     public function testUniqueWithoutConnection() : void

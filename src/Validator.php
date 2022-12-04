@@ -95,4 +95,45 @@ class Validator extends \Framework\Validation\Validator
         }
         return $statement->limit(1)->run()->fetch()->count < 1; // @phpstan-ignore-line
     }
+
+    /**
+     * Validates value exists in database table.
+     *
+     * @since 3.3
+     *
+     * @param string $field
+     * @param array<string,mixed> $data
+     * @param string $tableColumn
+     * @param string $connection
+     *
+     * @return bool
+     */
+    public static function exist(
+        string $field,
+        array $data,
+        string $tableColumn,
+        string $connection = 'default'
+    ) : bool {
+        $value = static::getData($field, $data);
+        if ($value === null) {
+            return false;
+        }
+        [$table, $column] = \array_pad(\explode('.', $tableColumn, 2), 2, '');
+        if ($column === '') {
+            $column = $field;
+        }
+        if ($connection === '') {
+            throw new LogicException(
+                'The connection parameter must be set to be able to connect the database'
+            );
+        }
+        return App::database($connection) // @phpstan-ignore-line
+            ->select()
+            ->expressions(['count' => static fn () => 'COUNT(*)'])
+            ->from($table)
+            ->whereEqual($column, $value)
+            ->limit(1)
+            ->run()
+            ->fetch()->count > 0;
+    }
 }

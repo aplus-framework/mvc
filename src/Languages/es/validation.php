@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 return [
+    'exist' => 'El campo {field} no existe.',
     'notUnique' => 'El campo {field} no está registrado.',
     'unique' => 'El campo {field} ya se ha registrado. ',
 ];

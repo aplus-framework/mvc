@@ -32,6 +32,7 @@ registerArgumentsSet(
 );
 registerArgumentsSet(
     'rules',
+    'exist',
     'notUnique',
     'unique',
 );
