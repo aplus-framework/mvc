@@ -11,6 +11,7 @@ Aplus Framework MVC (Model-View-Controller) Library.
 - `Services`_
 - `Models`_
 - `Entities`_
+- `Validator`_
 - `Views`_
 - `Controllers`_
 - `Conclusion`_
@@ -1157,7 +1158,7 @@ Validation Config Options
 validators
 """"""""""
 
-Sets an array of Validators. The default is an array with the Validator from the
+Sets an array of Validators. The default is an array with the `Validator`_ from the
 mvc package and the FilesValidator from the Validation package.
 
 language_instance
@@ -1970,6 +1971,59 @@ And then the JSON object:
     }
 
 Note that the ``url`` and ``createdAt`` property objects have been serialized.
+
+Validator
+---------
+
+The **Framework\MVC\Validator** class has additional rules that work, for example,
+using database connections.
+
+The following rules can be used alongside the
+`default validation rules <https://docs.aplus-framework.com/guides/libraries/validation/index.html#available-rules>`_:
+
+- `exist`_
+- `unique`_
+
+exist
+#####
+
+Requires that a value exists in the database.
+
+.. code-block:: php
+
+    exist:$tableColumn
+    exist:$tableColumn,$connection
+
+The rule has two parameters: ``$tableColumn`` and ``$connection``.
+
+``$tableColumn`` is the table name and, optionally, the column name separated by
+a dot. If the column is not defined, the field name will be used as the column name.
+
+``$connection`` is the name of the database connection. The default is ``default``.
+
+unique
+######
+
+Requires that a value is not registered in the database.
+
+.. code-block:: php
+
+    unique:$tableColumn
+    unique:$tableColumn,$ignoreColumn,$ignoreValue
+    unique:$tableColumn,$ignoreColumn,$ignoreValue,$connection
+
+The rule has four parameters: ``$tableColumn``, ``$ignoreColumn``,
+``$ignoreValue`` and ``$connection``.
+
+``$tableColumn`` is the table name and, optionally, the column name separated by
+a dot. If the column is not defined, the field name will be used as the column name.
+
+``$ignoreColumn`` is the name of the column to ignore if the value is already
+registered. Usually when updating data.
+
+``$ignoreValue`` is the value to be ignored in the ``$ignoreColumn``.
+
+``$connection`` is the name of the database connection. The default is ``default``.
 
 Views
 -----
