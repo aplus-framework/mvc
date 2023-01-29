@@ -13,8 +13,6 @@ jobs:
 
     strategy:
       fail-fast: true
-      matrix:
-        php: ['8.1']
 
     services:
       mariadb:
@@ -36,16 +34,16 @@ jobs:
         ports:
           - 6379:6379
 
-    name: PHP ${{ matrix.php }}
+    name: PHP 8.1
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: 8.1
           tools: composer
           coverage: xdebug
 
@@ -84,4 +82,54 @@ jobs:
           cp build/coverage/clover.xml build/logs/clover.xml
           composer global require php-coveralls/php-coveralls
           php-coveralls --coverage_clover=build/logs/clover.xml -v
-        if: matrix.php == '8.1'
+
+  tests-last:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 10
+
+    strategy:
+      fail-fast: true
+
+    services:
+      mariadb:
+        image: mariadb
+        env:
+          MYSQL_DATABASE: framework-tests
+          MYSQL_ROOT_PASSWORD: password
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+      memcached:
+        image: memcached
+        ports:
+          - 11211:11211
+
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+
+    name: PHP 8.2 - Last
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          tools: composer
+          coverage: xdebug
+
+      - name: Install dependencies
+        run:
+          composer update
+
+      - name: PHPUnit
+        env:
+          DB_HOST: 127.0.0.1
+          MEMCACHED_HOST: 127.0.0.1
+          REDIS_HOST: 127.0.0.1
+        run: vendor/bin/phpunit --verbose
