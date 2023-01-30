@@ -27,6 +27,13 @@ final class ModelTest extends ModelTestCase
         $this->model = new ModelMock();
     }
 
+    public function testFindBy() : void
+    {
+        self::assertIsObject($this->model->findBy('id', 1));
+        self::assertNull($this->model->findBy('id', 1000));
+        self::assertIsObject($this->model->findBy('data', 'foo'));
+    }
+
     public function testFind() : void
     {
         self::assertIsObject($this->model->find(1));

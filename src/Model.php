@@ -9,6 +9,7 @@
  */
 namespace Framework\MVC;
 
+use Closure;
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -480,6 +481,28 @@ abstract class Model implements ModelInterface
     public function getPager() : Pager
     {
         return $this->pager;
+    }
+
+    /**
+     * Find a row by column name and value.
+     *
+     * @param string $column
+     * @param Closure|float|int|string|null $value
+     *
+     * @return array<string,float|int|string|null>|Entity|stdClass|null
+     */
+    public function findBy(
+        string $column,
+        Closure | float | int | string | null $value
+    ) : array | Entity | stdClass | null {
+        $data = $this->getDatabaseToRead()
+            ->select()
+            ->from($this->getTable())
+            ->whereEqual($column, $value)
+            ->limit(1)
+            ->run()
+            ->fetchArray();
+        return $data ? $this->makeEntity($data) : null;
     }
 
     /**
