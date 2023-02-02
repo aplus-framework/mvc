@@ -27,6 +27,28 @@ final class ModelTest extends ModelTestCase
         $this->model = new ModelMock();
     }
 
+    public function testConvertCase() : void
+    {
+        self::assertSame('fooBarBaz', $this->model->convertCase('fooBarBaz', 'camel'));
+        self::assertSame('FooBarBaz', $this->model->convertCase('fooBarBaz', 'pascal'));
+        self::assertSame('foo_bar_baz', $this->model->convertCase('fooBarBaz', 'snake'));
+        self::assertSame('fooBarBaz', $this->model->convertCase('FooBarBaz', 'camel'));
+        self::assertSame('FooBarBaz', $this->model->convertCase('FooBarBaz', 'pascal'));
+        self::assertSame('foo_bar_baz', $this->model->convertCase('FooBarBaz', 'snake'));
+        self::assertSame('fooBarBaz', $this->model->convertCase('foo_bar_baz', 'camel'));
+        self::assertSame('FooBarBaz', $this->model->convertCase('foo_bar_baz', 'pascal'));
+        self::assertSame('foo_bar_baz', $this->model->convertCase('foo_bar_baz', 'snake'));
+        self::assertSame('curlFile', $this->model->convertCase('CurlFile', 'camel'));
+        self::assertSame('CurlFile', $this->model->convertCase('CurlFile', 'pascal'));
+        self::assertSame('curl_file', $this->model->convertCase('CurlFile', 'snake'));
+        self::assertSame('curlfile', $this->model->convertCase('CURLFile', 'camel'));
+        self::assertSame('Curlfile', $this->model->convertCase('CURLFile', 'pascal'));
+        self::assertSame('curlfile', $this->model->convertCase('CURLFile', 'snake'));
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid case: foo');
+        $this->model->convertCase('fooBar', 'foo');
+    }
+
     public function testFindBy() : void
     {
         self::assertIsObject($this->model->findBy('id', 1));

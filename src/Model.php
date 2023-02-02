@@ -173,6 +173,32 @@ abstract class Model implements ModelInterface
     protected int | string $cacheDataNotFound = 0;
     protected string $languageInstance = 'default';
 
+    /**
+     * Convert a value to specific case.
+     *
+     * @param string $value
+     * @param string $case camel, pascal or snake
+     *
+     * @return string The converted value
+     */
+    protected function convertCase(string $value, string $case) : string
+    {
+        if ($case === 'camel' || $case === 'pascal') {
+            $i = ['-', '_'];
+            $value = \preg_replace('/([a-z])([A-Z])/', '\\1 \\2', $value);
+            $value = \preg_replace('@[^a-zA-Z0-9\-_ ]+@', '', $value);
+            $value = \str_replace($i, ' ', $value);
+            $value = \str_replace(' ', '', \ucwords(\strtolower($value)));
+            $value = \strtolower($value[0]) . \substr($value, 1);
+            return $case === 'camel' ? \lcfirst($value) : \ucfirst($value);
+        }
+        if ($case === 'snake') {
+            $value = \preg_replace('/([a-z])([A-Z])/', '\\1_\\2', $value);
+            return \strtolower($value);
+        }
+        throw new InvalidArgumentException('Invalid case: ' . $case);
+    }
+
     #[Pure]
     protected function getConnectionRead() : string
     {

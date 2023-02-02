@@ -25,6 +25,11 @@ class ModelMock extends Model
     public string $pagerQuery;
     public array $pagerAllowedQueries;
 
+    public function convertCase(string $value, string $case) : string
+    {
+        return parent::convertCase($value, $case);
+    }
+
     /**
      * @param int $page
      * @param int $per_page
