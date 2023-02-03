@@ -56,6 +56,31 @@ final class ModelTest extends ModelTestCase
         self::assertIsObject($this->model->findBy('data', 'foo'));
     }
 
+    public function testFindByWithCall() : void
+    {
+        self::assertIsObject($this->model->findById(1));
+        self::assertNull($this->model->findById(1000));
+        self::assertIsObject($this->model->findByData('foo')); // @phpstan-ignore-line
+    }
+
+    public function testCallMethodNotAllowed() : void
+    {
+        $this->expectException(\BadMethodCallException::class);
+        $this->expectExceptionMessage(
+            'Method not allowed: ' . $this->model::class . '::getPrimaryKey'
+        );
+        $this->model->getPrimaryKey(); // @phpstan-ignore-line
+    }
+
+    public function testCallMethodNotFound() : void
+    {
+        $this->expectException(\BadMethodCallException::class);
+        $this->expectExceptionMessage(
+            'Method not found: ' . $this->model::class . '::foo'
+        );
+        $this->model->foo(); // @phpstan-ignore-line
+    }
+
     public function testFind() : void
     {
         self::assertIsObject($this->model->find(1));

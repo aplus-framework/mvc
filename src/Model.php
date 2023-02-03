@@ -31,6 +31,8 @@ use stdClass;
  * Class Model.
  *
  * @package mvc
+ *
+ * @method array|Entity|stdClass|null findById(Closure|float|int|string|null $value) Find a row by id.
  */
 abstract class Model implements ModelInterface
 {
@@ -172,6 +174,29 @@ abstract class Model implements ModelInterface
     protected int $cacheTtl = 60;
     protected int | string $cacheDataNotFound = 0;
     protected string $languageInstance = 'default';
+    protected string $columnCase = 'camel';
+
+    /**
+     * @param string $method
+     * @param array<string,mixed> $arguments
+     *
+     * @return mixed
+     */
+    public function __call(string $method, array $arguments) : mixed
+    {
+        if (\str_starts_with($method, 'findBy')) {
+            $method = \substr($method, 6);
+            $method = $this->convertCase($method, $this->columnCase);
+            return $this->findBy($method, $arguments[0]); // @phpstan-ignore-line
+        }
+        $class = static::class;
+        if (\method_exists($this, $method)) {
+            throw new \BadMethodCallException(
+                "Method not allowed: {$class}::{$method}"
+            );
+        }
+        throw new \BadMethodCallException("Method not found: {$class}::{$method}");
+    }
 
     /**
      * Convert a value to specific case.
