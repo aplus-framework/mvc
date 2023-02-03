@@ -9,6 +9,7 @@
  */
 namespace Framework\MVC;
 
+use BadMethodCallException;
 use Closure;
 use DateTime;
 use DateTimeZone;
@@ -191,11 +192,11 @@ abstract class Model implements ModelInterface
         }
         $class = static::class;
         if (\method_exists($this, $method)) {
-            throw new \BadMethodCallException(
+            throw new BadMethodCallException(
                 "Method not allowed: {$class}::{$method}"
             );
         }
-        throw new \BadMethodCallException("Method not found: {$class}::{$method}");
+        throw new BadMethodCallException("Method not found: {$class}::{$method}");
     }
 
     /**
@@ -209,10 +210,9 @@ abstract class Model implements ModelInterface
     protected function convertCase(string $value, string $case) : string
     {
         if ($case === 'camel' || $case === 'pascal') {
-            $i = ['-', '_'];
             $value = \preg_replace('/([a-z])([A-Z])/', '\\1 \\2', $value);
             $value = \preg_replace('@[^a-zA-Z0-9\-_ ]+@', '', $value);
-            $value = \str_replace($i, ' ', $value);
+            $value = \str_replace(['-', '_'], ' ', $value);
             $value = \str_replace(' ', '', \ucwords(\strtolower($value)));
             $value = \strtolower($value[0]) . \substr($value, 1);
             return $case === 'camel' ? \lcfirst($value) : \ucfirst($value);
