@@ -576,16 +576,17 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * @param int|string $id
+     * @param string $column
+     * @param int|string $value
      *
      * @return array<string,float|int|string|null>|null
      */
-    protected function findRow(int | string $id) : array | null
+    protected function findRow(string $column, int | string $value) : array | null
     {
         return $this->getDatabaseToRead()
             ->select()
             ->from($this->getTable())
-            ->whereEqual($this->getPrimaryKey(), $id)
+            ->whereEqual($column, $value)
             ->limit(1)
             ->run()
             ->fetchArray();
