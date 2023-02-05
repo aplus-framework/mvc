@@ -593,14 +593,15 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * @param int|string $id
+     * @param string $column
+     * @param int|string $value
      *
      * @return array<string,float|int|string|null>|Entity|stdClass|null
      */
-    protected function findWithCache(int | string $id) : array | Entity | stdClass | null
+    protected function findWithCache(string $column, int | string $value) : array | Entity | stdClass | null
     {
         $cacheKey = $this->getCacheKey([
-            $this->getPrimaryKey() => $id,
+            $column => $value,
         ]);
         $data = $this->getCache()->get($cacheKey);
         if ($data === $this->getCacheDataNotFound()) {
@@ -609,7 +610,7 @@ abstract class Model implements ModelInterface
         if (\is_array($data)) {
             return $this->makeEntity($data);
         }
-        $data = $this->findRow($id);
+        $data = $this->findRow($column, $value);
         if ($data === null) {
             $data = $this->getCacheDataNotFound();
         }
