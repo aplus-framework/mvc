@@ -733,14 +733,18 @@ abstract class Model implements ModelInterface
         return $insertId;
     }
 
-    protected function updateCachedRow(int | string $id) : void
+    /**
+     * @param string $column
+     * @param int|string $value
+     */
+    protected function updateCachedRow(string $column, int | string $value) : void
     {
-        $data = $this->findRow($id);
+        $data = $this->findRow($column, $value);
         if ($data === null) {
             $data = $this->getCacheDataNotFound();
         }
         $this->getCache()->set(
-            $this->getCacheKey([$this->getPrimaryKey() => $id]),
+            $this->getCacheKey([$column => $value]),
             $data,
             $this->getCacheTtl()
         );
