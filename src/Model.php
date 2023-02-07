@@ -538,21 +538,18 @@ abstract class Model implements ModelInterface
      * Find a row by column name and value.
      *
      * @param string $column
-     * @param Closure|float|int|string|null $value
+     * @param int|string $value
      *
      * @return array<string,float|int|string|null>|Entity|stdClass|null
      */
     public function findBy(
         string $column,
-        Closure | float | int | string | null $value
+        int | string $value
     ) : array | Entity | stdClass | null {
-        $data = $this->getDatabaseToRead()
-            ->select()
-            ->from($this->getTable())
-            ->whereEqual($column, $value)
-            ->limit(1)
-            ->run()
-            ->fetchArray();
+        if ($this->isCacheActive()) {
+            return $this->findWithCache($column, $value);
+        }
+        $data = $this->findRow($column, $value);
         return $data ? $this->makeEntity($data) : null;
     }
 
