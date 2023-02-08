@@ -775,8 +775,26 @@ abstract class Model implements ModelInterface
     public function update(int | string $id, array | Entity | stdClass $data) : false | int | string
     {
         $this->checkPrimaryKey($id);
+        return $this->updateBy($this->getPrimaryKey(), $id, $data);
+    }
+
+    /**
+     * Update based on column value and return the number of affected rows.
+     *
+     * @param string $column
+     * @param int|string $value
+     * @param array<string,float|int|string|null>|Entity|stdClass $data
+     *
+     * @return false|int|string The number of affected rows or false if
+     * validation fails
+     */
+    public function updateBy(
+        string $column,
+        int | string $value,
+        array | Entity | stdClass $data
+    ) : false | int | string {
         $data = $this->makeArray($data);
-        $data[$this->getPrimaryKey()] = $id;
+        $data[$column] = $value;
         if ($this->getValidation()->validateOnly($data) === false) {
             return false;
         }
@@ -788,7 +806,7 @@ abstract class Model implements ModelInterface
             ->update()
             ->table($this->getTable())
             ->set($data)
-            ->whereEqual($this->getPrimaryKey(), $id)
+            ->whereEqual($column, $value)
             ->run();
         if ($this->isCacheActive()) {
             $this->updateCachedRow($column, $value);
