@@ -21,8 +21,8 @@ class ModelCacheMock extends Model
     ];
     protected bool $cacheActive = true;
 
-    public function updateCachedRow(int | string $id) : void
+    public function updateCachedRow(string $column, int | string $value) : void
     {
-        parent::updateCachedRow($id);
+        parent::updateCachedRow($column, $value);
     }
 }
