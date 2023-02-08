@@ -565,11 +565,7 @@ abstract class Model implements ModelInterface
     public function find(int | string $id) : array | Entity | stdClass | null
     {
         $this->checkPrimaryKey($id);
-        if ($this->isCacheActive()) {
-            return $this->findWithCache($id);
-        }
-        $data = $this->findRow($id);
-        return $data ? $this->makeEntity($data) : null;
+        return $this->findBy($this->getPrimaryKey(), $id);
     }
 
     /**
