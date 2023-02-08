@@ -237,6 +237,22 @@ final class ModelTest extends ModelTestCase
         self::assertSame(0, $this->model->delete(25));
     }
 
+    public function testDeleteBy() : void
+    {
+        self::assertSame(1, $this->model->deleteBy('id', 1));
+        self::assertSame(0, $this->model->deleteBy('id', 1000));
+        self::assertSame(0, $this->model->deleteBy('data', 'foo'));
+        self::assertSame(1, $this->model->deleteBy('data', 'bar'));
+    }
+
+    public function testDeleteByWithCall() : void
+    {
+        self::assertSame(1, $this->model->deleteById(1));
+        self::assertSame(0, $this->model->deleteById(1000));
+        self::assertSame(0, $this->model->deleteByData('foo')); // @phpstan-ignore-line
+        self::assertSame(1, $this->model->deleteByData('bar')); // @phpstan-ignore-line
+    }
+
     public function testCount() : void
     {
         self::assertSame(2, $this->model->count());

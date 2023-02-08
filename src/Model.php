@@ -33,6 +33,7 @@ use stdClass;
  * @package mvc
  *
  * @method array|Entity|stdClass|null findById(int|string $value) Find a row by id.
+ * @method false|int|string deleteById(int|string $value) Delete rows by id.
  */
 abstract class Model implements ModelInterface
 {
@@ -188,6 +189,11 @@ abstract class Model implements ModelInterface
             $method = \substr($method, 6);
             $method = $this->convertCase($method, $this->columnCase);
             return $this->findBy($method, $arguments[0]); // @phpstan-ignore-line
+        }
+        if (\str_starts_with($method, 'deleteBy')) {
+            $method = \substr($method, 8);
+            $method = $this->convertCase($method, $this->columnCase);
+            return $this->deleteBy($method, $arguments[0]); // @phpstan-ignore-line
         }
         $class = static::class;
         if (\method_exists($this, $method)) {
