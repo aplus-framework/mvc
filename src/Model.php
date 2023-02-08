@@ -721,7 +721,7 @@ abstract class Model implements ModelInterface
             ? $database->insertId()
             : false;
         if ($insertId && $this->isCacheActive()) {
-            $this->updateCachedRow($insertId);
+            $this->updateCachedRow($this->getPrimaryKey(), $insertId);
         }
         return $insertId;
     }
@@ -791,7 +791,7 @@ abstract class Model implements ModelInterface
             ->whereEqual($this->getPrimaryKey(), $id)
             ->run();
         if ($this->isCacheActive()) {
-            $this->updateCachedRow($id);
+            $this->updateCachedRow($column, $value);
         }
         return $affectedRows;
     }
@@ -828,7 +828,7 @@ abstract class Model implements ModelInterface
             ->set($data)
             ->run();
         if ($this->isCacheActive()) {
-            $this->updateCachedRow($id);
+            $this->updateCachedRow($this->getPrimaryKey(), $id);
         }
         return $affectedRows;
     }
