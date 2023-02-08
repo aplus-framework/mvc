@@ -33,7 +33,7 @@ use stdClass;
  *
  * @package mvc
  *
- * @method array|Entity|stdClass|null findById(Closure|float|int|string|null $value) Find a row by id.
+ * @method array|Entity|stdClass|null findById(int|string $value) Find a row by id.
  */
 abstract class Model implements ModelInterface
 {
