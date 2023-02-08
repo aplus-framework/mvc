@@ -843,14 +843,27 @@ abstract class Model implements ModelInterface
     public function delete(int | string $id) : false | int | string
     {
         $this->checkPrimaryKey($id);
+        return $this->deleteBy($this->getPrimaryKey(), $id);
+    }
+
+    /**
+     * Delete based on column value.
+     *
+     * @param string $column
+     * @param int|string $value
+     *
+     * @return false|int|string The number of affected rows
+     */
+    public function deleteBy(string $column, int | string $value) : false | int | string
+    {
         $affectedRows = $this->getDatabaseToWrite()
             ->delete()
             ->from($this->getTable())
-            ->whereEqual($this->getPrimaryKey(), $id)
+            ->whereEqual($column, $value)
             ->run();
         if ($this->isCacheActive()) {
             $this->getCache()->delete(
-                $this->getCacheKey([$this->getPrimaryKey() => $id])
+                $this->getCacheKey([$column => $value])
             );
         }
         return $affectedRows;
