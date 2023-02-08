@@ -10,7 +10,6 @@
 namespace Framework\MVC;
 
 use BadMethodCallException;
-use Closure;
 use DateTime;
 use DateTimeZone;
 use Exception;
