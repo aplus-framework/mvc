@@ -33,6 +33,7 @@ use stdClass;
  * @package mvc
  *
  * @method array|Entity|stdClass|null findById(int|string $id) Find a row by id.
+ * @method false|int|string updateById(int|string $id, array|Entity|stdClass $data) Update rows by id.
  * @method false|int|string deleteById(int|string $id) Delete rows by id.
  */
 abstract class Model implements ModelInterface
