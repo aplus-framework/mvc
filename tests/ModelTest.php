@@ -128,6 +128,27 @@ final class ModelTest extends ModelTestCase
         $this->model->update(0, ['data' => 'x']);
     }
 
+    public function testCreateBy() : void
+    {
+        self::assertSame(
+            'Value',
+            $this->model->createBy('data', new EntityMock(['data' => 'Value']))
+        );
+        self::assertSame(
+            'Other',
+            $this->model->createBy('data', ['data' => 'Other'])
+        );
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Value of column data is not set');
+        $this->model->createBy('data', ['foo' => 'Other']);
+    }
+
+    public function testCreateByValidationFail() : void
+    {
+        $this->model->validationRules = ['data' => 'required'];
+        self::assertFalse($this->model->createBy('data', ['data' => '']));
+    }
+
     public function testCreate() : void
     {
         $insert_id = $this->model->create(new EntityMock(['data' => 'Value']));

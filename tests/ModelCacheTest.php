@@ -43,6 +43,15 @@ final class ModelCacheTest extends ModelTestCase
         self::assertNull($this->model->find(3));
     }
 
+    public function testCreateBy() : void
+    {
+        self::assertNull($this->model->findBy('data', 'bazz'));
+        self::assertSame('bazz', $this->model->createBy('data', [
+            'data' => 'bazz',
+        ]));
+        self::assertIsObject($this->model->findBy('data', 'bazz'));
+    }
+
     public function testCreate() : void
     {
         self::assertNull($this->model->find(3));

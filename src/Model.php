@@ -733,6 +733,40 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * Insert a new row and return the inserted column value.
+     *
+     * @param string $column Column name
+     * @param array<string,float|int|string|null>|Entity|stdClass $data
+     *
+     * @return false|int|string The value from the column data or false if
+     * validation fail
+     */
+    public function createBy(string $column, array | Entity | stdClass $data) : false | int | string
+    {
+        $data = $this->makeArray($data);
+        if ($this->getValidation()->validate($data) === false) {
+            return false;
+        }
+        $data = $this->filterAllowedFields($data);
+        if ( ! isset($data[$column])) {
+            throw new LogicException('Value of column ' . $column . ' is not set');
+        }
+        if ($this->isAutoTimestamps()) {
+            $timestamp = $this->getTimestamp();
+            $data[$this->getFieldCreated()] ??= $timestamp;
+            $data[$this->getFieldUpdated()] ??= $timestamp;
+        }
+        $this->getDatabaseToWrite()->insert()
+            ->into($this->getTable())
+            ->set($data)
+            ->run();
+        if ($this->isCacheActive()) {
+            $this->updateCachedRow($column, $data[$column]);
+        }
+        return $data[$column];
+    }
+
+    /**
      * @param string $column
      * @param int|string $value
      */
