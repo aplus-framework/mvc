@@ -202,6 +202,11 @@ abstract class Model implements ModelInterface
             $method = $this->convertCase($method, $this->columnCase);
             return $this->deleteBy($method, $arguments[0]); // @phpstan-ignore-line
         }
+        if (\str_starts_with($method, 'updateBy')) {
+            $method = \substr($method, 8);
+            $method = $this->convertCase($method, $this->columnCase);
+            return $this->updateBy($method, $arguments[0], $arguments[1]); // @phpstan-ignore-line
+        }
         $class = static::class;
         if (\method_exists($this, $method)) {
             throw new BadMethodCallException(

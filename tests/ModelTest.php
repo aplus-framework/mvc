@@ -227,6 +227,32 @@ final class ModelTest extends ModelTestCase
         self::assertSame(0, $affected_rows);
     }
 
+    public function testUpdateBy() : void
+    {
+        $affected_rows = $this->model->updateBy('id', 1, new EntityMock(['data' => 'x']));
+        self::assertSame(1, $affected_rows);
+        $affected_rows = $this->model->updateBy('id', 1, ['data' => 'x']);
+        self::assertSame(0, $affected_rows); // same data
+        \sleep(1); // change updatedAt value
+        $affected_rows = $this->model->updateBy('id', 1, ['data' => 'x']);
+        self::assertSame(1, $affected_rows);
+        $affected_rows = $this->model->updateBy('id', 25, ['data' => 'foo']);
+        self::assertSame(0, $affected_rows);
+    }
+
+    public function testUpdateByWithCall() : void
+    {
+        $affected_rows = $this->model->updateById(1, new EntityMock(['data' => 'x']));
+        self::assertSame(1, $affected_rows);
+        $affected_rows = $this->model->updateById(1, ['data' => 'x']);
+        self::assertSame(0, $affected_rows); // same data
+        \sleep(1); // change updatedAt value
+        $affected_rows = $this->model->updateById(1, ['data' => 'x']);
+        self::assertSame(1, $affected_rows);
+        $affected_rows = $this->model->updateById(25, ['data' => 'foo']);
+        self::assertSame(0, $affected_rows);
+    }
+
     public function testUpdateExceptionUnknownColumn() : void
     {
         $this->model->allowedFields[] = 'not-exists';
