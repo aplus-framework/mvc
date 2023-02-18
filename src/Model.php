@@ -731,10 +731,15 @@ abstract class Model implements ModelInterface
             $data[$this->getFieldUpdated()] ??= $timestamp;
         }
         $database = $this->getDatabaseToWrite();
-        $affectedRows = $database->insert()
-            ->into($this->getTable())
-            ->set($data)
-            ->run();
+        try {
+            $affectedRows = $database->insert()
+                ->into($this->getTable())
+                ->set($data)
+                ->run();
+        } catch (mysqli_sql_exception $exception) {
+            $this->checkMysqliException($exception);
+            return false;
+        }
         $insertId = $affectedRows > 0 // $affectedRows is -1 if fail with MYSQLI_REPORT_OFF
             ? $database->insertId()
             : false;
@@ -768,10 +773,15 @@ abstract class Model implements ModelInterface
             $data[$this->getFieldCreated()] ??= $timestamp;
             $data[$this->getFieldUpdated()] ??= $timestamp;
         }
-        $this->getDatabaseToWrite()->insert()
-            ->into($this->getTable())
-            ->set($data)
-            ->run();
+        try {
+            $this->getDatabaseToWrite()->insert()
+                ->into($this->getTable())
+                ->set($data)
+                ->run();
+        } catch (mysqli_sql_exception $exception) {
+            $this->checkMysqliException($exception);
+            return false;
+        }
         if ($this->isCacheActive()) {
             $this->updateCachedRow($column, $data[$column]);
         }
@@ -874,12 +884,17 @@ abstract class Model implements ModelInterface
         if ($this->isAutoTimestamps()) {
             $data[$this->getFieldUpdated()] ??= $this->getTimestamp();
         }
-        $affectedRows = $this->getDatabaseToWrite()
-            ->update()
-            ->table($this->getTable())
-            ->set($data)
-            ->whereEqual($column, $value)
-            ->run();
+        try {
+            $affectedRows = $this->getDatabaseToWrite()
+                ->update()
+                ->table($this->getTable())
+                ->set($data)
+                ->whereEqual($column, $value)
+                ->run();
+        } catch (mysqli_sql_exception $exception) {
+            $this->checkMysqliException($exception);
+            return false;
+        }
         if ($this->isCacheActive()) {
             $this->updateCachedRow($column, $value);
         }
