@@ -783,7 +783,7 @@ abstract class Model implements ModelInterface
      *
      * @throws mysqli_sql_exception if message is not for duplicate entry
      */
-    protected function checkDuplicateEntry(mysqli_sql_exception $exception) : void
+    protected function checkMysqliException(mysqli_sql_exception $exception) : void
     {
         $message = $exception->getMessage();
         if (\str_starts_with($message, 'Duplicate entry')) {

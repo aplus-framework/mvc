@@ -47,8 +47,8 @@ class ModelMock extends Model
         return parent::getValidation();
     }
 
-    public function checkDuplicateEntry(mysqli_sql_exception $exception) : void
+    public function checkMysqliException(mysqli_sql_exception $exception) : void
     {
-        parent::checkDuplicateEntry($exception);
+        parent::checkMysqliException($exception);
     }
 }

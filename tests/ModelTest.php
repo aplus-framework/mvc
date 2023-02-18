@@ -128,23 +128,23 @@ final class ModelTest extends ModelTestCase
         $this->model->update(0, ['data' => 'x']);
     }
 
-    public function testCheckDuplicateEntry() : void
+    public function testCheckMysqliException() : void
     {
-        $this->model->checkDuplicateEntry(
+        $this->model->checkMysqliException(
             new \mysqli_sql_exception("Duplicate entry '3' for key 'PRIMARY'")
         );
         self::assertSame(
             'The id field has already been registered.',
             $this->model->getErrors()['id']
         );
-        $this->model->checkDuplicateEntry(
+        $this->model->checkMysqliException(
             new \mysqli_sql_exception("Duplicate entry '3' for key 'id'")
         );
         self::assertSame(
             'The id field has already been registered.',
             $this->model->getErrors()['id']
         );
-        $this->model->checkDuplicateEntry(
+        $this->model->checkMysqliException(
             new \mysqli_sql_exception("Duplicate entry 'foo@bar' for key 'email'")
         );
         self::assertSame(
@@ -153,7 +153,7 @@ final class ModelTest extends ModelTestCase
         );
         $this->expectException(\mysqli_sql_exception::class);
         $this->expectExceptionMessage('Foo bar');
-        $this->model->checkDuplicateEntry(
+        $this->model->checkMysqliException(
             new \mysqli_sql_exception('Foo bar')
         );
     }
