@@ -24,6 +24,7 @@ use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
 use LogicException;
+use mysqli_sql_exception;
 use RuntimeException;
 use stdClass;
 
@@ -775,6 +776,26 @@ abstract class Model implements ModelInterface
             $this->updateCachedRow($column, $data[$column]);
         }
         return $data[$column];
+    }
+
+    /**
+     * @param mysqli_sql_exception $exception
+     *
+     * @throws mysqli_sql_exception if message is not for duplicate entry
+     */
+    protected function checkDuplicateEntry(mysqli_sql_exception $exception) : void
+    {
+        $message = $exception->getMessage();
+        if (\str_starts_with($message, 'Duplicate entry')) {
+            $field = \rtrim($message, "'");
+            $field = \substr($field, \strrpos($field, "'") + 1);
+            if ($field === 'PRIMARY') {
+                $field = $this->getPrimaryKey();
+            }
+            $this->getValidation()->setError($field, 'unique', []);
+            return;
+        }
+        throw $exception;
     }
 
     /**

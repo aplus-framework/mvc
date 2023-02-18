@@ -11,6 +11,7 @@ namespace Tests\MVC;
 
 use Framework\MVC\Model;
 use Framework\Validation\Validation;
+use mysqli_sql_exception;
 
 class ModelMock extends Model
 {
@@ -44,5 +45,10 @@ class ModelMock extends Model
     public function getValidation() : Validation
     {
         return parent::getValidation();
+    }
+
+    public function checkDuplicateEntry(mysqli_sql_exception $exception) : void
+    {
+        parent::checkDuplicateEntry($exception);
     }
 }
