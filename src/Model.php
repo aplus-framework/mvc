@@ -876,7 +876,7 @@ abstract class Model implements ModelInterface
         array | Entity | stdClass $data
     ) : false | int | string {
         $data = $this->makeArray($data);
-        $data[$column] = $value;
+        $data[$column] ??= $value;
         if ($this->getValidation()->validateOnly($data) === false) {
             return false;
         }
