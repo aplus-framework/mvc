@@ -173,6 +173,16 @@ final class ModelTest extends ModelTestCase
         $this->model->createBy('data', ['foo' => 'Other']);
     }
 
+    public function testCreateByWithCheckMysqliException() : void
+    {
+        $this->model->allowedFields = ['id', 'data'];
+        $this->model->protectPrimaryKey = false;
+        $id = $this->model->createBy('id', ['id' => 3, 'data' => 'bar']);
+        self::assertSame(3, $id);
+        self::assertFalse($this->model->createBy('id', ['id' => 3, 'data' => 'bar']));
+        self::assertArrayHasKey('id', $this->model->getErrors());
+    }
+
     public function testCreateByWithCall() : void
     {
         self::assertSame(
@@ -219,15 +229,14 @@ final class ModelTest extends ModelTestCase
         $this->model->create(['not-exists' => 'Value']);
     }
 
-    public function testCreateExceptionDuplicateEntry() : void
+    public function testCreateWithCheckMysqliException() : void
     {
         $this->model->allowedFields = ['id', 'data'];
         $this->model->protectPrimaryKey = false;
-        $id = $this->model->create(['id' => 3, 'data' => 'foo']);
+        $id = $this->model->create(['id' => 3, 'data' => 'bar']);
         self::assertSame(3, $id);
-        $this->expectException(\mysqli_sql_exception::class);
-        $this->expectExceptionMessage("Duplicate entry '3' for key 'PRIMARY'");
-        $this->model->create(['id' => 3, 'data' => 'foo']);
+        self::assertFalse($this->model->create(['id' => 3, 'data' => 'bar']));
+        self::assertArrayHasKey('id', $this->model->getErrors());
     }
 
     public function testCreateExceptionDuplicateEntryWithReportOff() : void
@@ -257,6 +266,16 @@ final class ModelTest extends ModelTestCase
         self::assertSame(0, $affected_rows);
     }
 
+    public function testUpdateWithCheckMysqliException() : void
+    {
+        $this->model->allowedFields = ['id', 'data'];
+        $this->model->protectPrimaryKey = false;
+        $affectedRows = $this->model->update(1, ['id' => 1, 'data' => 'bar']);
+        self::assertSame(1, $affectedRows);
+        self::assertFalse($this->model->update(1, ['id' => 2, 'data' => 'bar']));
+        self::assertArrayHasKey('id', $this->model->getErrors());
+    }
+
     public function testUpdateBy() : void
     {
         $affected_rows = $this->model->updateBy('id', 1, new EntityMock(['data' => 'x']));
@@ -268,6 +287,16 @@ final class ModelTest extends ModelTestCase
         self::assertSame(1, $affected_rows);
         $affected_rows = $this->model->updateBy('id', 25, ['data' => 'foo']);
         self::assertSame(0, $affected_rows);
+    }
+
+    public function testUpdateByWithCheckMysqliException() : void
+    {
+        $this->model->allowedFields = ['id', 'data'];
+        $this->model->protectPrimaryKey = false;
+        $affectedRows = $this->model->updateBy('id', 1, ['id' => 1, 'data' => 'bar']);
+        self::assertSame(1, $affectedRows);
+        self::assertFalse($this->model->updateBy('id', 1, ['id' => 2, 'data' => 'bar']));
+        self::assertArrayHasKey('id', $this->model->getErrors());
     }
 
     public function testUpdateByWithCall() : void
