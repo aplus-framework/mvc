@@ -797,15 +797,30 @@ abstract class Model implements ModelInterface
     {
         $message = $exception->getMessage();
         if (\str_starts_with($message, 'Duplicate entry')) {
-            $field = \rtrim($message, "'");
-            $field = \substr($field, \strrpos($field, "'") + 1);
-            if ($field === 'PRIMARY') {
-                $field = $this->getPrimaryKey();
-            }
-            $this->getValidation()->setError($field, 'unique', []);
+            $this->setDuplicateEntryError($message);
             return;
         }
         throw $exception;
+    }
+
+    /**
+     * Set "Duplicate entry" as 'unique' error in the Validation.
+     *
+     * NOTE: We will get the index key name and not the column name. Usually the
+     * names are the same. If table have different column and index names,
+     * override this method and get the column name from the information_schema
+     * table.
+     *
+     * @param string $message The "Duplicate entry" message from the mysqli_sql_exception
+     */
+    protected function setDuplicateEntryError(string $message) : void
+    {
+        $field = \rtrim($message, "'");
+        $field = \substr($field, \strrpos($field, "'") + 1);
+        if ($field === 'PRIMARY') {
+            $field = $this->getPrimaryKey();
+        }
+        $this->getValidation()->setError($field, 'unique', []);
     }
 
     /**
