@@ -9,6 +9,15 @@
  */
 use Framework\MVC\App;
 use Framework\Routing\RouteCollection;
+use Framework\Routing\Router;
+
+/**
+ * @var Router $router Must be set in App::router()
+ */
+// @phpstan-ignore-next-line
+if ( ! isset($router)) {
+    throw new LogicException('Variable $router was not set.');
+}
 
 App::router()->serve('http://localhost:8080', static function (RouteCollection $routes) : void {
     $routes->get('/', static function () : void {

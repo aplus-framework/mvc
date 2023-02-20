@@ -997,7 +997,7 @@ class App
             $collector = new RoutingCollector($instance);
             $service->setDebugCollector($collector);
             if (isset($config['files'])) {
-                static::requireRouterFiles($config['files']);
+                static::requireRouterFiles($config['files'], $service);
             }
             $end = \microtime(true);
             static::debugger()->addCollector($collector, 'Routing');
@@ -1037,7 +1037,7 @@ class App
             $service->addPlaceholder($config['placeholders']);
         }
         if ($requireFiles && isset($config['files'])) {
-            static::requireRouterFiles($config['files']);
+            static::requireRouterFiles($config['files'], $service);
         }
         return $service;
     }
@@ -1046,14 +1046,15 @@ class App
      * Load files that set the routes.
      *
      * @param array<string> $files The path of the router files
+     * @param Router $router
      */
-    protected static function requireRouterFiles(array $files) : void
+    protected static function requireRouterFiles(array $files, Router $router) : void
     {
         foreach ($files as $file) {
             if ( ! \is_file($file)) {
                 throw new LogicException('Invalid router file: ' . $file);
             }
-            Isolation::require($file);
+            Isolation::require($file, ['router' => $router]);
         }
     }
 
@@ -1285,9 +1286,9 @@ class App
             'validation',
             new Validation(
                 $config['validators'] ?? [
-                    Validator::class,
-                    FilesValidator::class,
-                ],
+                Validator::class,
+                FilesValidator::class,
+            ],
                 $language
             ),
             $instance
