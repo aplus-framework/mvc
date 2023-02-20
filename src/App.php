@@ -1039,6 +1039,9 @@ class App
         if ($requireFiles && isset($config['files'])) {
             static::requireRouterFiles($config['files'], $service);
         }
+        if (isset($config['callback'])) {
+            $config['callback']($service);
+        }
         return $service;
     }
 

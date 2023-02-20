@@ -10,6 +10,9 @@
 /**
  * @see App::router()
  */
+
+use Framework\Routing\Router;
+
 return [
     'default' => [
         'auto_options' => true,
@@ -20,6 +23,9 @@ return [
         'files' => [
             __DIR__ . '/routes.php',
         ],
+        'callback' => static function (Router $router) : void {
+            // $router is here!
+        },
         'response_instance' => 'default',
         'language_instance' => 'default',
     ],
