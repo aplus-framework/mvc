@@ -338,6 +338,26 @@ final class ModelTest extends ModelTestCase
         $this->model->replace(1, ['not-exists' => 'Value']);
     }
 
+    public function testReplaceBy() : void
+    {
+        $affected_rows = $this->model->replaceBy('id', 1, new EntityMock(['data' => 'xii']));
+        self::assertSame(2, $affected_rows); // Deleted and inserted
+        $affected_rows = $this->model->replaceBy('id', 1, ['data' => 'bar']);
+        self::assertSame(2, $affected_rows); // Deleted and inserted
+        $affected_rows = $this->model->replaceBy('id', 25, ['data' => 'baz']);
+        self::assertSame(1, $affected_rows); // Inserted
+    }
+
+    public function testReplaceByWithCall() : void
+    {
+        $affected_rows = $this->model->replaceById(1, new EntityMock(['data' => 'xii']));
+        self::assertSame(2, $affected_rows); // Deleted and inserted
+        $affected_rows = $this->model->replaceById(1, ['data' => 'bar']);
+        self::assertSame(2, $affected_rows); // Deleted and inserted
+        $affected_rows = $this->model->replaceById(25, ['data' => 'baz']);
+        self::assertSame(1, $affected_rows); // Inserted
+    }
+
     public function testSave() : void
     {
         $this->model->allowedFields = ['data'];

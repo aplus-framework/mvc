@@ -930,13 +930,31 @@ abstract class Model implements ModelInterface
     public function replace(int | string $id, array | Entity | stdClass $data) : false | int | string
     {
         $this->checkPrimaryKey($id);
+        return $this->replaceBy($this->getPrimaryKey(), $id, $data);
+    }
+
+    /**
+     * Replace based on column value and return the number of affected rows.
+     *
+     * @param string $column
+     * @param int|string $value
+     * @param array<string,float|int|string|null>|Entity|stdClass $data
+     *
+     * @return false|int|string The number of affected rows or false if
+     * validation fails
+     */
+    public function replaceBy(
+        string $column,
+        int | string $value,
+        array | Entity | stdClass $data
+    ) : false | int | string {
         $data = $this->makeArray($data);
-        $data[$this->getPrimaryKey()] = $id;
+        $data[$column] ??= $value;
         if ($this->getValidation()->validate($data) === false) {
             return false;
         }
         $data = $this->filterAllowedFields($data);
-        $data[$this->getPrimaryKey()] = $id;
+        $data[$column] = $value;
         if ($this->isAutoTimestamps()) {
             $timestamp = $this->getTimestamp();
             $data[$this->getFieldCreated()] ??= $timestamp;
@@ -948,7 +966,7 @@ abstract class Model implements ModelInterface
             ->set($data)
             ->run();
         if ($this->isCacheActive()) {
-            $this->updateCachedRow($this->getPrimaryKey(), $id);
+            $this->updateCachedRow($column, $value);
         }
         return $affectedRows;
     }
