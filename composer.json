@@ -59,7 +59,7 @@
         "aplus/pagination": "^3.2",
         "aplus/routing": "^3.4",
         "aplus/session": "^3.2",
-        "aplus/validation": "^2.4"
+        "aplus/validation": "^2.5"
     },
     "require-dev": {
         "ext-xdebug": "*",
