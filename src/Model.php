@@ -36,6 +36,7 @@ use stdClass;
  * @method array|Entity|stdClass|null findById(int|string $id) Find a row by id.
  * @method false|int|string createById(array|Entity|stdClass $data) Create a new row and return the id.
  * @method false|int|string updateById(int|string $id, array|Entity|stdClass $data) Update rows by id.
+ * @method false|int|string replaceById(int|string $id, array|Entity|stdClass $data) Replace rows by id.
  * @method false|int|string deleteById(int|string $id) Delete rows by id.
  */
 abstract class Model implements ModelInterface
@@ -207,6 +208,11 @@ abstract class Model implements ModelInterface
             $method = \substr($method, 8);
             $method = $this->convertCase($method, $this->columnCase);
             return $this->updateBy($method, $arguments[0], $arguments[1]); // @phpstan-ignore-line
+        }
+        if (\str_starts_with($method, 'replaceBy')) {
+            $method = \substr($method, 9);
+            $method = $this->convertCase($method, $this->columnCase);
+            return $this->replaceBy($method, $arguments[0], $arguments[1]); // @phpstan-ignore-line
         }
         $class = static::class;
         if (\method_exists($this, $method)) {
