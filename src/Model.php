@@ -826,7 +826,10 @@ abstract class Model implements ModelInterface
         if ($field === 'PRIMARY') {
             $field = $this->getPrimaryKey();
         }
-        $this->getValidation()->setError($field, 'unique', []);
+        $validation = $this->getValidation();
+        $validation->setError($field, 'unique');
+        $validation->getDebugCollector()
+            ?->setErrorInDebugData($field, $validation->getError($field));
     }
 
     /**
