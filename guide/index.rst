@@ -1035,6 +1035,13 @@ Router Config Options
         ],
     ]
 
+callback
+""""""""
+
+Sets a callback to be executed when the Router starts up. The callback receives
+the Router instance in the first parameter.
+By default no callback is set.
+
 files
 """""
 
