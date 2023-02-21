@@ -1302,7 +1302,8 @@ anywhere in your application:
     App::other()->doSomething();
     App::other('other_instance')->doSomething();
 
-Tip: Use a smart IDE. Aplus loves it. Be happy.
+**Tip**: Use a `smart IDE <https://www.jetbrains.com/phpstorm/>`_. Aplus loves it.
+Be happy.
 
 Models
 ------
