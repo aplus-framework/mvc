@@ -453,13 +453,15 @@ abstract class Model implements ModelInterface
     /**
      * A basic function to paginate all rows of the table.
      *
-     * @param int $page The current page
-     * @param int $perPage Items per page
+     * @param mixed $page The current page
+     * @param mixed $perPage Items per page
      *
      * @return array<int,array<mixed>|Entity|stdClass>
      */
-    public function paginate(int $page, int $perPage = 10) : array
+    public function paginate(mixed $page, mixed $perPage = 10) : array
     {
+        $page = Pager::sanitize($page);
+        $perPage = Pager::sanitize($perPage);
         $data = $this->getDatabaseToRead()
             ->select()
             ->from($this->getTable())
