@@ -98,7 +98,7 @@ instance:
 
 .. code-block:: php
 
-    $result = App::database()->select()->from('Users')->run();
+    $result = App::database()->select()->from('Users')->run(); // Framework\Database\Result
 
     while($user = $result->fetch()) {
         App::database('replica')->replace()->into('Users')->set($user)->run();
@@ -147,7 +147,7 @@ This is the **public/index.php** file:
                 ],
             ],
         ],
-    ]))->runHttp();
+    ]))->runHttp(); // void
 
 And now, let's create the router files:
 
@@ -161,7 +161,7 @@ The **routes/front.php** file is for the front end. The origin will be
     
     App::router()->serve('https://domain.tld', function (RouteCollection $routes) {
         $routes->get('/', fn () => '<h1>Homepage</h1>');
-    });
+    }); // static
 
 The **routes/api.php** is for the REST API. The origin will be
 `https://api.domain.tld <https://api.domain.tld>`_. Change if you need:
@@ -175,7 +175,7 @@ The **routes/api.php** is for the REST API. The origin will be
         $routes->get('/', fn () => App::router()->getMatchedCollection());
         $routes->post('/users', 'Api\UsersController::create');
         $routes->get('/users/{int}', 'Api\UsersController::show/0', 'users.show');
-    }, 'api');
+    }, 'api'); // static
 
 This is the **api/UsersController.php** example:
 
@@ -261,7 +261,7 @@ Let's create the **console.php** file:
             __DIR__ . '/commands',
         ]
     ]);
-    $app->runCli();
+    $app->runCli(); // void
 
 Now, let's add a command in the **commands/Meet.php** file:
 
@@ -1714,7 +1714,7 @@ array with items in the ``$returnType``.
 
     $limit = 10;
     $offset = 20;
-    $rows = $model->findAll($limit, $offset);
+    $rows = $model->findAll($limit, $offset); // array
 
 Update
 ******
@@ -1728,7 +1728,7 @@ of rows affected or ``false`` if validation fails.
     $data = [
         'name' => 'Johnny Doe',
     ];
-    $affectedRows = $model->update($id, $data);
+    $affectedRows = $model->update($id, $data); // int, string or false
 
 Delete
 ******
@@ -1739,7 +1739,7 @@ of affected rows:
 .. code-block:: php
 
     $id = 1;
-    $affectedRows = $model->delete($id);
+    $affectedRows = $model->delete($id); // int, string or false
 
 Extra
 *****
@@ -1753,7 +1753,7 @@ A basic function to count all rows in the table.
 
 .. code-block:: php
 
-    $count = $model->count();
+    $count = $model->count(); // int
 
 Replace
 """""""
@@ -1768,7 +1768,7 @@ if validation fails.
         'name' => 'John Morgan',
         'email' => 'johndoe@domain.tld',
     ];
-    $affectedRows = $model->replace($id, $data);
+    $affectedRows = $model->replace($id, $data); // int, string or false
 
 Save
 """"
@@ -1785,7 +1785,7 @@ LAST_INSERT_ID(), in inserts. Or ``false`` if validation fails.
         'id' => 1,
         'email' => 'john@domain.tld',
     ];
-    $result = $model->save($data);
+    $result = $model->save($data); // int, string or false
 
 Entities
 --------
@@ -2100,7 +2100,7 @@ Let's see the layout file **views/_layouts/default.php** below:
         <title><?= $title ?></title>
     </head>
     <body>
-    <?= $view->renderBlock('contents') ?>
+    <?= $view->renderBlock('contents') // string or null ?>
     </body>
     </html>
 
@@ -2112,20 +2112,20 @@ Then, in the view that will be rendered by the ``render`` method, the file
 .. code-block:: php
 
     <?php
-    $view->extends('_layouts/default');
-    $view->block('contents');
+    $view->extends('_layouts/default'); // static
+    $view->block('contents'); // static
     ?>
     <h1><?= $title ?></h1>
     <p><?= $description ?></p>
     <?php
-    $view->endBlock();
+    $view->endBlock(); // static
 
 If you want to extend views always from the same directory, you can set the
 layout prefix:
 
 .. code-block:: php
 
-    $view->setLayoutPrefix('_layouts');
+    $view->setLayoutPrefix('_layouts'); // static
 
 This will make it unnecessary to type the entire path. See the example below:
 
@@ -2143,7 +2143,7 @@ Let's see how to extend the default layout and capture the content in the file
 .. code-block:: php
 
     <?php
-    $view->extends('default', 'contents');
+    $view->extends('default', 'contents'); // static
     ?>
     <h1><?= $title ?></h1>
     <p><?= $description ?></p>
@@ -2197,7 +2197,7 @@ Let's see below how to make it appear in views that extend the layout
 .. code-block:: php
 
     <body>
-    <?= $view->include('_includes/navbar') ?>
+    <?= $view->include('_includes/navbar') // string ?>
     <h1><?= $title ?></h1>
 
 As with layouts, you can set the includes path prefix:
@@ -2219,7 +2219,7 @@ The call in the default layout will be like this:
 .. code-block:: php
 
     <body>
-    <?= $view->include('navbar') ?>
+    <?= $view->include('navbar') // string ?>
     <h1><?= $title ?></h1>
 
 When necessary, you can pass an array of data to the include.
@@ -2229,7 +2229,7 @@ Let's see how to pass the variable ``active`` with the value ``home``:
 .. code-block:: php
 
     <body>
-    <?= $view->include('navbar', ['active' => 'home']) ?>
+    <?= $view->include('navbar', ['active' => 'home']) // string ?>
     <h1><?= $title ?></h1>
 
 When rendered, the include will show the ``active`` class on the Home line in the
@@ -2257,30 +2257,30 @@ called ``scripts`` in the **views/home/index.php** file:
 .. code-block:: php
 
     <?php
-    $view->extends('default');
+    $view->extends('default'); // static
     
-    $view->block('contents');
+    $view->block('contents'); // static
     ?>
     <h1><?= $title ?></h1>
     <p><?= $description ?></p>
     <?php
-    $view->endBlock();
+    $view->endBlock(); // static
 
-    $view->block('scripts');
+    $view->block('scripts'); // static
     ?>
     <script>
         console.log('Hello!');
     </script>
     <?php
-    $view->endBlock();
+    $view->endBlock(); // static
 
 In the **views/_layouts/default.php** file we can render the two blocks:
 
 .. code-block:: php
 
     <body>
-    <?= $view->renderBlock('contents') ?>
-    <?= $view->renderBlock('scripts') ?>
+    <?= $view->renderBlock('contents') // string or null ?>
+    <?= $view->renderBlock('scripts') // string or null ?>
     </body>
 
 And the output will be like this:
