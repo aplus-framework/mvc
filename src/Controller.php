@@ -39,6 +39,8 @@ abstract class Controller extends RouteActions
      * instance of this FQCN in the Controller constructor.
      *
      * @var class-string<ModelInterface>
+     *
+     * @deprecated
      */
     protected string $modelClass;
     /**
@@ -46,7 +48,6 @@ abstract class Controller extends RouteActions
      *
      * Tip: Append the $modelClass type to the declaration of this property to
      * enable an improved code-completion in your code editor.
-     * ...Or update the PHPDoc var!
      *
      * @var ModelInterface
      */
@@ -62,9 +63,26 @@ abstract class Controller extends RouteActions
     {
         $this->request = $request;
         $this->response = $response;
+        $this->prepareModelDeprecated();
+    }
+
+    /**
+     * @return static
+     *
+     * @deprecated
+     *
+     * @codeCoverageIgnore
+     */
+    protected function prepareModelDeprecated() : static
+    {
         if (isset($this->modelClass)) {
+            \trigger_error(
+                'Setting $modelClass property is deprecated',
+                \E_USER_DEPRECATED
+            );
             $this->model = new $this->modelClass();
         }
+        return $this;
     }
 
     /**
