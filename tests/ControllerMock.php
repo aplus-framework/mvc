@@ -12,13 +12,11 @@ namespace Tests\MVC;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\MVC\Controller;
-use Framework\MVC\Model;
 use Framework\MVC\ModelInterface;
 
 class ControllerMock extends Controller
 {
-    protected string $modelClass = ModelMock::class;
-    public ModelInterface | Model $model;
+    public ModelInterface | ModelMock $model;
 
     public function __construct()
     {

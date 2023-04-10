@@ -12,6 +12,8 @@ namespace Framework\MVC;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Routing\RouteActions;
+use ReflectionNamedType;
+use ReflectionProperty;
 
 /**
  * Class Controller.
@@ -44,9 +46,9 @@ abstract class Controller extends RouteActions
      */
     protected string $modelClass;
     /**
-     * The instance of the $modelClass FQCN.
+     * The instance of the custom $model FQCN.
      *
-     * Tip: Append the $modelClass type to the declaration of this property to
+     * Tip: Append the FQCN type to the declaration of this property to
      * enable an improved code-completion in your code editor.
      *
      * @var ModelInterface
@@ -63,6 +65,7 @@ abstract class Controller extends RouteActions
     {
         $this->request = $request;
         $this->response = $response;
+        $this->prepareModel();
         $this->prepareModelDeprecated();
     }
 
@@ -81,6 +84,32 @@ abstract class Controller extends RouteActions
                 \E_USER_DEPRECATED
             );
             $this->model = new $this->modelClass();
+        }
+        return $this;
+    }
+
+    /**
+     * Initialize $model with property type name.
+     *
+     * @since 3.6
+     *
+     * @return static
+     */
+    protected function prepareModel() : static
+    {
+        $property = new ReflectionProperty($this, 'model');
+        $type = $property->getType();
+        // @phpstan-ignore-next-line
+        $types = $type instanceof ReflectionNamedType ? [$type] : $type->getTypes();
+        if (\count($types) > 1) {
+            foreach ($types as $type) {
+                $name = $type->getName();
+                if ($name === ModelInterface::class) {
+                    continue;
+                }
+                $this->model = new $name(); // @phpstan-ignore-line
+                break;
+            }
         }
         return $this;
     }

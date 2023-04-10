@@ -11,7 +11,6 @@ namespace Tests\MVC;
 
 use Framework\Config\Config;
 use Framework\MVC\Controller;
-use Framework\MVC\Model;
 use PHPUnit\Framework\TestCase;
 use Tests\MVC\AppMock as App;
 
@@ -37,7 +36,7 @@ final class ControllerTest extends TestCase
 
     public function testModelInstance() : void
     {
-        self::assertInstanceOf(Model::class, $this->controller->model);
+        self::assertInstanceOf(ModelMock::class, $this->controller->model);
     }
 
     public function testRender() : void
