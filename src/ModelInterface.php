@@ -19,18 +19,6 @@ use stdClass;
 interface ModelInterface
 {
     /**
-     * Find an item based on id.
-     *
-     * @param int|string $id
-     *
-     * @return array<string,float|int|string|null>|Entity|stdClass|null The
-     * item as array, Entity or stdClass or null if the item was not found
-     *
-     * @deprecated
-     */
-    public function find(int | string $id) : array | Entity | stdClass | null;
-
-    /**
      * Create a new item.
      *
      * @param array<string,float|int|string|null>|Entity|stdClass $data
