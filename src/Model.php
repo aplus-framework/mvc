@@ -22,6 +22,7 @@ use Framework\Validation\FilesValidator;
 use Framework\Validation\Validation;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
+use JetBrains\PhpStorm\Deprecated;
 use JetBrains\PhpStorm\Pure;
 use LogicException;
 use mysqli_sql_exception;
@@ -33,7 +34,7 @@ use stdClass;
  *
  * @package mvc
  *
- * @method array|Entity|stdClass|null findById(int|string $id) Find a row by id.
+ * @method array|Entity|stdClass|null readById(int|string $id) Read a row by id.
  * @method false|int|string createById(array|Entity|stdClass $data) Create a new row and return the id.
  * @method false|int|string updateById(int|string $id, array|Entity|stdClass $data) Update rows by id.
  * @method false|int|string replaceById(int|string $id, array|Entity|stdClass $data) Replace rows by id.
@@ -189,10 +190,17 @@ abstract class Model implements ModelInterface
      */
     public function __call(string $method, array $arguments) : mixed
     {
+        // @codeCoverageIgnoreStart
         if (\str_starts_with($method, 'findBy')) {
             $method = \substr($method, 6);
             $method = $this->convertCase($method, $this->columnCase);
             return $this->findBy($method, $arguments[0]); // @phpstan-ignore-line
+        }
+        // @codeCoverageIgnoreEnd
+        if (\str_starts_with($method, 'readBy')) {
+            $method = \substr($method, 6);
+            $method = $this->convertCase($method, $this->columnCase);
+            return $this->readBy($method, $arguments[0]); // @phpstan-ignore-line
         }
         if (\str_starts_with($method, 'createBy')) {
             $method = \substr($method, 8);
@@ -561,26 +569,53 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * Find a row by column name and value.
+     * Read a row by column name and value.
      *
      * @param string $column
      * @param int|string $value
      *
      * @return array<string,float|int|string|null>|Entity|stdClass|null
      */
-    public function findBy(
+    public function readBy(
         string $column,
         int | string $value
     ) : array | Entity | stdClass | null {
         if ($this->isCacheActive()) {
-            return $this->findWithCache($column, $value);
+            return $this->readWithCache($column, $value);
         }
-        $data = $this->findRow($column, $value);
+        $data = $this->readRow($column, $value);
         return $data ? $this->makeEntity($data) : null;
     }
 
     /**
-     * Find a row based on Primary Key.
+     * Find a row by column name and value.
+     *
+     * @param string $column
+     * @param int|string $value
+     *
+     * @deprecated
+     *
+     * @codeCoverageIgnore
+     *
+     * @return array<string,float|int|string|null>|Entity|stdClass|null
+     */
+    #[Deprecated(
+        reason: 'since MVC Library version 3.6, use readBy() instead',
+        replacement: '%class%->readBy(%parameter0%, %parameter1%)'
+    )]
+    public function findBy(
+        string $column,
+        int | string $value
+    ) : array | Entity | stdClass | null {
+        \trigger_error(
+            'Method ' . __METHOD__ . ' is deprecated',
+            \E_USER_DEPRECATED
+        );
+        return $this->readBy($column, $value);
+    }
+
+    /**
+     * Read a row based on Primary Key.
      *
      * @param int|string $id
      *
@@ -588,10 +623,32 @@ abstract class Model implements ModelInterface
      * selected row as configured on $returnType property or null if row was
      * not found
      */
-    public function find(int | string $id) : array | Entity | stdClass | null
+    public function read(int | string $id) : array | Entity | stdClass | null
     {
         $this->checkPrimaryKey($id);
-        return $this->findBy($this->getPrimaryKey(), $id);
+        return $this->readBy($this->getPrimaryKey(), $id);
+    }
+
+    /**
+     * @param int|string $id
+     *
+     * @return array|Entity|float[]|int[]|null[]|stdClass|string[]|null
+     *
+     * @deprecated
+     *
+     * @codeCoverageIgnore
+     */
+    #[Deprecated(
+        reason: 'since MVC Library version 3.6, use read() instead',
+        replacement: '%class%->read(%parameter0%)'
+    )]
+    public function find(int | string $id) : array | Entity | stdClass | null
+    {
+        \trigger_error(
+            'Method ' . __METHOD__ . ' is deprecated',
+            \E_USER_DEPRECATED
+        );
+        return $this->read($id);
     }
 
     /**
@@ -600,7 +657,7 @@ abstract class Model implements ModelInterface
      *
      * @return array<string,float|int|string|null>|null
      */
-    protected function findRow(string $column, int | string $value) : array | null
+    protected function readRow(string $column, int | string $value) : array | null
     {
         return $this->getDatabaseToRead()
             ->select()
@@ -615,9 +672,55 @@ abstract class Model implements ModelInterface
      * @param string $column
      * @param int|string $value
      *
+     * @return array<string,float|int|string|null>|null
+     *
+     * @deprecated
+     *
+     * @codeCoverageIgnore
+     */
+    #[Deprecated(
+        reason: 'since MVC Library version 3.6, use readRow() instead',
+        replacement: '%class%->readRow(%parameter0%, %parameter1%)'
+    )]
+    protected function findRow(string $column, int | string $value) : array | null
+    {
+        \trigger_error(
+            'Method ' . __METHOD__ . ' is deprecated',
+            \E_USER_DEPRECATED
+        );
+        return $this->readRow($column, $value);
+    }
+
+    /**
+     * @param string $column
+     * @param int|string $value
+     *
+     * @return array<string,float|int|string|null>|Entity|stdClass|null
+     *
+     * @deprecated
+     *
+     * @codeCoverageIgnore
+     */
+    #[Deprecated(
+        reason: 'since MVC Library version 3.6, use readWithCache() instead',
+        replacement: '%class%->readWithCache(%parameter0%, %parameter1%)'
+    )]
+    protected function findWithCache(string $column, int | string $value) : array | Entity | stdClass | null
+    {
+        \trigger_error(
+            'Method ' . __METHOD__ . ' is deprecated',
+            \E_USER_DEPRECATED
+        );
+        return $this->readWithCache($column, $value);
+    }
+
+    /**
+     * @param string $column
+     * @param int|string $value
+     *
      * @return array<string,float|int|string|null>|Entity|stdClass|null
      */
-    protected function findWithCache(string $column, int | string $value) : array | Entity | stdClass | null
+    protected function readWithCache(string $column, int | string $value) : array | Entity | stdClass | null
     {
         $cacheKey = $this->getCacheKey([
             $column => $value,
@@ -629,7 +732,7 @@ abstract class Model implements ModelInterface
         if (\is_array($data)) {
             return $this->makeEntity($data);
         }
-        $data = $this->findRow($column, $value);
+        $data = $this->readRow($column, $value);
         if ($data === null) {
             $data = $this->getCacheDataNotFound();
         }
@@ -644,8 +747,33 @@ abstract class Model implements ModelInterface
      * @param int|null $offset
      *
      * @return array<int,array<mixed>|Entity|stdClass>
+     *
+     * @deprecated
+     *
+     * @codeCoverageIgnore
      */
+    #[Deprecated(
+        reason: 'since MVC Library version 3.6, use readAll() instead',
+        replacement: '%class%->readAll()'
+    )]
     public function findAll(int $limit = null, int $offset = null) : array
+    {
+        \trigger_error(
+            'Method ' . __METHOD__ . ' is deprecated',
+            \E_USER_DEPRECATED
+        );
+        return $this->readAll($limit, $offset);
+    }
+
+    /**
+     * Read all rows with limit and offset.
+     *
+     * @param int|null $limit
+     * @param int|null $offset
+     *
+     * @return array<int,array<mixed>|Entity|stdClass>
+     */
+    public function readAll(int $limit = null, int $offset = null) : array
     {
         $data = $this->getDatabaseToRead()
             ->select()
@@ -840,7 +968,7 @@ abstract class Model implements ModelInterface
      */
     protected function updateCachedRow(string $column, int | string $value) : void
     {
-        $data = $this->findRow($column, $value);
+        $data = $this->readRow($column, $value);
         if ($data === null) {
             $data = $this->getCacheDataNotFound();
         }

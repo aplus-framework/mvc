@@ -49,18 +49,18 @@ final class ModelTest extends ModelTestCase
         $this->model->convertCase('fooBar', 'foo');
     }
 
-    public function testFindBy() : void
+    public function testReadBy() : void
     {
-        self::assertIsObject($this->model->findBy('id', 1));
-        self::assertNull($this->model->findBy('id', 1000));
-        self::assertIsObject($this->model->findBy('data', 'foo'));
+        self::assertIsObject($this->model->readBy('id', 1));
+        self::assertNull($this->model->readBy('id', 1000));
+        self::assertIsObject($this->model->readBy('data', 'foo'));
     }
 
-    public function testFindByWithCall() : void
+    public function testReadByWithCall() : void
     {
-        self::assertIsObject($this->model->findById(1));
-        self::assertNull($this->model->findById(1000));
-        self::assertIsObject($this->model->findByData('foo')); // @phpstan-ignore-line
+        self::assertIsObject($this->model->readById(1));
+        self::assertNull($this->model->readById(1000));
+        self::assertIsObject($this->model->readByData('foo')); // @phpstan-ignore-line
     }
 
     public function testCallMethodNotAllowed() : void
@@ -81,28 +81,28 @@ final class ModelTest extends ModelTestCase
         $this->model->foo(); // @phpstan-ignore-line
     }
 
-    public function testFind() : void
+    public function testRead() : void
     {
-        self::assertIsObject($this->model->find(1));
+        self::assertIsObject($this->model->read(1));
         $this->model->returnType = 'array';
-        self::assertIsArray($this->model->find(1));
+        self::assertIsArray($this->model->read(1));
         $this->model->returnType = EntityMock::class;
-        self::assertInstanceOf(EntityMock::class, $this->model->find(1));
-        self::assertNull($this->model->find(100));
+        self::assertInstanceOf(EntityMock::class, $this->model->read(1));
+        self::assertNull($this->model->read(100));
     }
 
-    public function testFindAll() : void
+    public function testReadAll() : void
     {
-        $data = $this->model->findAll();
+        $data = $this->model->readAll();
         self::assertSame(1, $data[0]->id); // @phpstan-ignore-line
         self::assertSame(2, $data[1]->id); // @phpstan-ignore-line
-        $data = $this->model->findAll(2, 1);
+        $data = $this->model->readAll(2, 1);
         self::assertSame(2, $data[0]->id); // @phpstan-ignore-line
         $this->model->returnType = 'array';
-        $data = $this->model->findAll();
+        $data = $this->model->readAll();
         self::assertSame(1, $data[0]['id']); // @phpstan-ignore-line
         self::assertSame(2, $data[1]['id']); // @phpstan-ignore-line
-        self::assertEmpty($this->model->findAll(1, 100));
+        self::assertEmpty($this->model->readAll(1, 100));
     }
 
     public function testAllowedFieldsNotDefined() : void
