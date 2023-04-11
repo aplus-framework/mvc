@@ -574,6 +574,8 @@ abstract class Model implements ModelInterface
      * @param string $column
      * @param int|string $value
      *
+     * @since 3.6
+     *
      * @return array<string,float|int|string|null>|Entity|stdClass|null
      */
     public function readBy(
@@ -619,6 +621,8 @@ abstract class Model implements ModelInterface
      *
      * @param int|string $id
      *
+     * @since 3.6
+     *
      * @return array<string,float|int|string|null>|Entity|stdClass|null The
      * selected row as configured on $returnType property or null if row was
      * not found
@@ -654,6 +658,8 @@ abstract class Model implements ModelInterface
     /**
      * @param string $column
      * @param int|string $value
+     *
+     * @since 3.6
      *
      * @return array<string,float|int|string|null>|null
      */
@@ -718,6 +724,8 @@ abstract class Model implements ModelInterface
      * @param string $column
      * @param int|string $value
      *
+     * @since 3.6
+     *
      * @return array<string,float|int|string|null>|Entity|stdClass|null
      */
     protected function readWithCache(string $column, int | string $value) : array | Entity | stdClass | null
@@ -770,6 +778,8 @@ abstract class Model implements ModelInterface
      *
      * @param int|null $limit
      * @param int|null $offset
+     *
+     * @since 3.6
      *
      * @return array<int,array<mixed>|Entity|stdClass>
      */
