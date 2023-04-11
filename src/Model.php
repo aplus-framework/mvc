@@ -34,11 +34,11 @@ use stdClass;
  *
  * @package mvc
  *
- * @method array|Entity|stdClass|null readById(int|string $id) Read a row by id.
  * @method false|int|string createById(array|Entity|stdClass $data) Create a new row and return the id.
+ * @method array|Entity|stdClass|null readById(int|string $id) Read a row by id.
  * @method false|int|string updateById(int|string $id, array|Entity|stdClass $data) Update rows by id.
- * @method false|int|string replaceById(int|string $id, array|Entity|stdClass $data) Replace rows by id.
  * @method false|int|string deleteById(int|string $id) Delete rows by id.
+ * @method false|int|string replaceById(int|string $id, array|Entity|stdClass $data) Replace rows by id.
  */
 abstract class Model implements ModelInterface
 {
@@ -190,6 +190,31 @@ abstract class Model implements ModelInterface
      */
     public function __call(string $method, array $arguments) : mixed
     {
+        if (\str_starts_with($method, 'createBy')) {
+            $method = \substr($method, 8);
+            $method = $this->convertCase($method, $this->columnCase);
+            return $this->createBy($method, $arguments[0]); // @phpstan-ignore-line
+        }
+        if (\str_starts_with($method, 'readBy')) {
+            $method = \substr($method, 6);
+            $method = $this->convertCase($method, $this->columnCase);
+            return $this->readBy($method, $arguments[0]); // @phpstan-ignore-line
+        }
+        if (\str_starts_with($method, 'updateBy')) {
+            $method = \substr($method, 8);
+            $method = $this->convertCase($method, $this->columnCase);
+            return $this->updateBy($method, $arguments[0], $arguments[1]); // @phpstan-ignore-line
+        }
+        if (\str_starts_with($method, 'deleteBy')) {
+            $method = \substr($method, 8);
+            $method = $this->convertCase($method, $this->columnCase);
+            return $this->deleteBy($method, $arguments[0]); // @phpstan-ignore-line
+        }
+        if (\str_starts_with($method, 'replaceBy')) {
+            $method = \substr($method, 9);
+            $method = $this->convertCase($method, $this->columnCase);
+            return $this->replaceBy($method, $arguments[0], $arguments[1]); // @phpstan-ignore-line
+        }
         // @codeCoverageIgnoreStart
         if (\str_starts_with($method, 'findBy')) {
             $method = \substr($method, 6);
@@ -197,31 +222,6 @@ abstract class Model implements ModelInterface
             return $this->findBy($method, $arguments[0]); // @phpstan-ignore-line
         }
         // @codeCoverageIgnoreEnd
-        if (\str_starts_with($method, 'readBy')) {
-            $method = \substr($method, 6);
-            $method = $this->convertCase($method, $this->columnCase);
-            return $this->readBy($method, $arguments[0]); // @phpstan-ignore-line
-        }
-        if (\str_starts_with($method, 'createBy')) {
-            $method = \substr($method, 8);
-            $method = $this->convertCase($method, $this->columnCase);
-            return $this->createBy($method, $arguments[0]); // @phpstan-ignore-line
-        }
-        if (\str_starts_with($method, 'deleteBy')) {
-            $method = \substr($method, 8);
-            $method = $this->convertCase($method, $this->columnCase);
-            return $this->deleteBy($method, $arguments[0]); // @phpstan-ignore-line
-        }
-        if (\str_starts_with($method, 'updateBy')) {
-            $method = \substr($method, 8);
-            $method = $this->convertCase($method, $this->columnCase);
-            return $this->updateBy($method, $arguments[0], $arguments[1]); // @phpstan-ignore-line
-        }
-        if (\str_starts_with($method, 'replaceBy')) {
-            $method = \substr($method, 9);
-            $method = $this->convertCase($method, $this->columnCase);
-            return $this->replaceBy($method, $arguments[0], $arguments[1]); // @phpstan-ignore-line
-        }
         $class = static::class;
         if (\method_exists($this, $method)) {
             throw new BadMethodCallException(
