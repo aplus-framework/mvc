@@ -91,18 +91,18 @@ final class ModelTest extends ModelTestCase
         self::assertNull($this->model->read(100));
     }
 
-    public function testReadAll() : void
+    public function testList() : void
     {
-        $data = $this->model->readAll();
+        $data = $this->model->list();
         self::assertSame(1, $data[0]->id); // @phpstan-ignore-line
         self::assertSame(2, $data[1]->id); // @phpstan-ignore-line
-        $data = $this->model->readAll(2, 1);
+        $data = $this->model->list(2, 1);
         self::assertSame(2, $data[0]->id); // @phpstan-ignore-line
         $this->model->returnType = 'array';
-        $data = $this->model->readAll();
+        $data = $this->model->list();
         self::assertSame(1, $data[0]['id']); // @phpstan-ignore-line
         self::assertSame(2, $data[1]['id']); // @phpstan-ignore-line
-        self::assertEmpty($this->model->readAll(1, 100));
+        self::assertEmpty($this->model->list(1, 100));
     }
 
     public function testAllowedFieldsNotDefined() : void

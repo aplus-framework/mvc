@@ -753,8 +753,8 @@ abstract class Model implements ModelInterface
      * @codeCoverageIgnore
      */
     #[Deprecated(
-        reason: 'since MVC Library version 3.6, use readAll() instead',
-        replacement: '%class%->readAll()'
+        reason: 'since MVC Library version 3.6, use list() instead',
+        replacement: '%class%->readAll(%parameter0%, %parameter1%)'
     )]
     public function findAll(int $limit = null, int $offset = null) : array
     {
@@ -762,18 +762,18 @@ abstract class Model implements ModelInterface
             'Method ' . __METHOD__ . ' is deprecated',
             \E_USER_DEPRECATED
         );
-        return $this->readAll($limit, $offset);
+        return $this->list($limit, $offset);
     }
 
     /**
-     * Read all rows with limit and offset.
+     * List rows, optionally with limit and offset.
      *
      * @param int|null $limit
      * @param int|null $offset
      *
      * @return array<int,array<mixed>|Entity|stdClass>
      */
-    public function readAll(int $limit = null, int $offset = null) : array
+    public function list(int $limit = null, int $offset = null) : array
     {
         $data = $this->getDatabaseToRead()
             ->select()
