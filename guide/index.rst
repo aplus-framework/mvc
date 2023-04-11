@@ -2431,10 +2431,11 @@ which has the instance of ``App\Models\UsersModel``:
 
     use App\Models\UsersModel;
     use Framework\MVC\Controller;
+    use Framework\MVC\ModelInterface;
 
     class Users extends Controller
     {
-        protected string $modelClass = UsersModel::class;
+        protected ModelInterface | UsersModel $model;
 
         public function show(int $id) : string
         {
@@ -2460,10 +2461,11 @@ JSON-encoded and added to the Response body:
 
     use App\Models\UsersModel;
     use Framework\MVC\Controller;
+    use Framework\MVC\ModelInterface;
 
     class Users extends Controller
     {
-        protected string $modelClass = UsersModel::class;
+        protected ModelInterface | UsersModel $model;
 
         public function index() : array
         {
