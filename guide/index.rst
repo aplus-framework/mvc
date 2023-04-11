@@ -1380,7 +1380,7 @@ Primary Key
 
 To work with a model, it is necessary that its database table has an
 auto-incrementing Primary Key, because it is through it that data is found by
-the ``find`` method, and rows are also updated and deleted.
+the ``read`` method, and rows are also updated and deleted.
 
 By default, the name of the primary key is ``id``, as in the example below:
 
@@ -1441,8 +1441,8 @@ returned rows an associative array) or as a class-string of a child class of
 
 The return type can be obtained with the ``getReturnType`` method.
 
-Results are automatically converted to the return type in the ``find``,
-``findAll`` and ``paginate`` methods.
+Results are automatically converted to the return type in the ``read``,
+``list`` and ``paginate`` methods.
 
 Automatic Timestamps
 ####################
@@ -1604,7 +1604,7 @@ Cache
 
 The model has a cache system that works with individual results. For example,
 once the ``$cacheActive`` property is set to ``true``, when obtaining a row
-via the ``find`` method, the result will be stored in the cache and will be
+via the ``read`` method, the result will be stored in the cache and will be
 available directly from it for the duration of the Time To Live, defined in the
 ``$cacheTtl`` property.
 
@@ -1698,23 +1698,23 @@ If it returns ``false``, it is possible to get the errors through the
 Read
 ****
 
-The ``find`` method finds a row based on the Primary Key and returns the row
+The ``read`` method reads a row based on the Primary Key and returns the row
 with the type set in the ``$returnType`` property or ``null`` if the row is not
 found.
 
 .. code-block:: php
 
     $id = 1;
-    $row = $model->find($id);
+    $row = $model->read($id);
 
-It is also possible to find all rows, with limit and offset, by returning an
+It is also possible to read all rows, with limit and offset, by returning an
 array with items in the ``$returnType``.
 
 .. code-block:: php
 
     $limit = 10;
     $offset = 20;
-    $rows = $model->findAll($limit, $offset); // array
+    $rows = $model->list($limit, $offset); // array
 
 Update
 ******
@@ -2438,7 +2438,7 @@ which has the instance of ``App\Models\UsersModel``:
 
         public function show(int $id) : string
         {
-            $user = $this->model->find($id);
+            $user = $this->model->read($id);
             return $this->render('users/show', [
                 'user' => $user,
             ]);
