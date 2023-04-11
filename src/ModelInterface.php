@@ -25,6 +25,8 @@ interface ModelInterface
      *
      * @return array<string,float|int|string|null>|Entity|stdClass|null The
      * item as array, Entity or stdClass or null if the item was not found
+     *
+     * @deprecated
      */
     public function find(int | string $id) : array | Entity | stdClass | null;
 
@@ -37,6 +39,18 @@ interface ModelInterface
      * be created
      */
     public function create(array | Entity | stdClass $data) : false | int | string;
+
+    /**
+     * Read an item based on id.
+     *
+     * @since 3.6
+     *
+     * @param int|string $id
+     *
+     * @return array<string,float|int|string|null>|Entity|stdClass|null The
+     * item as array, Entity or stdClass or null if the item was not found
+     */
+    public function read(int | string $id) : array | Entity | stdClass | null;
 
     /**
      * Update based on id and return the number of updated items.
