@@ -62,4 +62,16 @@ interface ModelInterface
      * deleted
      */
     public function delete(int | string $id) : false | int | string;
+
+    /**
+     * List items, optionally with limit and offset.
+     *
+     * @param int|null $limit
+     * @param int|null $offset
+     *
+     * @since 3.6
+     *
+     * @return array<int,array<mixed>|Entity|stdClass>
+     */
+    public function list(int $limit = null, int $offset = null) : array;
 }
