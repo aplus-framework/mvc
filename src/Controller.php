@@ -34,26 +34,6 @@ abstract class Controller extends RouteActions
      * @var Response
      */
     protected Response $response;
-    /**
-     * A Full Qualified Class Name of a model.
-     *
-     * If this property is set, the $model property will be set with a new
-     * instance of this FQCN in the Controller constructor.
-     *
-     * @var class-string<ModelInterface>
-     *
-     * @deprecated
-     */
-    protected string $modelClass;
-    /**
-     * The instance of the custom $model FQCN.
-     *
-     * Tip: Append the FQCN type to the declaration of this property to
-     * enable an improved code-completion in your code editor.
-     *
-     * @var ModelInterface
-     */
-    protected ModelInterface $model;
 
     /**
      * Controller constructor.
