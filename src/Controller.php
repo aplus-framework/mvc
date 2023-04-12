@@ -66,26 +66,6 @@ abstract class Controller extends RouteActions
         $this->request = $request;
         $this->response = $response;
         $this->prepareModel();
-        $this->prepareModelDeprecated();
-    }
-
-    /**
-     * @return static
-     *
-     * @deprecated
-     *
-     * @codeCoverageIgnore
-     */
-    protected function prepareModelDeprecated() : static
-    {
-        if (isset($this->modelClass)) {
-            \trigger_error(
-                'Setting $modelClass property is deprecated',
-                \E_USER_DEPRECATED
-            );
-            $this->model = new $this->modelClass();
-        }
-        return $this;
     }
 
     /**
