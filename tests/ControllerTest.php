@@ -39,6 +39,45 @@ final class ControllerTest extends TestCase
         self::assertInstanceOf(ModelMock::class, $this->controller->model);
     }
 
+    protected function expectModelPropertyException() : void
+    {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessageMatches(
+            '#The (.+)::\$model property must have one type to be instantiated#'
+        );
+    }
+
+    public function testModelPropertyUndefined() : void
+    {
+        $controller = new class(App::request(), App::response()) extends Controller {
+        };
+        self::assertFalse(\property_exists($controller, 'model'));
+    }
+
+    public function testModelPropertyWithoutType() : void
+    {
+        $this->expectModelPropertyException();
+        new class(App::request(), App::response()) extends Controller {
+            protected $model; // @phpstan-ignore-line
+        };
+    }
+
+    public function testModelPropertyWithBuiltinType() : void
+    {
+        $this->expectModelPropertyException();
+        new class(App::request(), App::response()) extends Controller {
+            protected int $model;
+        };
+    }
+
+    public function testModelPropertyWithManyTypes() : void
+    {
+        $this->expectModelPropertyException();
+        new class(App::request(), App::response()) extends Controller {
+            protected ModelMock | \stdClass $model;
+        };
+    }
+
     public function testRender() : void
     {
         self::assertSame(

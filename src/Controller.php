@@ -12,6 +12,7 @@ namespace Framework\MVC;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Routing\RouteActions;
+use LogicException;
 use ReflectionNamedType;
 use ReflectionProperty;
 
@@ -57,20 +58,19 @@ abstract class Controller extends RouteActions
      */
     protected function prepareModel() : static
     {
+        if ( ! \property_exists($this, 'model')) {
+            return $this;
+        }
         $property = new ReflectionProperty($this, 'model');
         $type = $property->getType();
-        // @phpstan-ignore-next-line
-        $types = $type instanceof ReflectionNamedType ? [$type] : $type->getTypes();
-        if (\count($types) > 1) {
-            foreach ($types as $type) {
-                $name = $type->getName();
-                if ($name === ModelInterface::class) {
-                    continue;
-                }
-                $this->model = new $name(); // @phpstan-ignore-line
-                break;
-            }
+        if ( ! $type instanceof ReflectionNamedType || $type->isBuiltin()) {
+            throw new LogicException(
+                'The ' . static::class
+                . '::$model property must have one type to be instantiated'
+            );
         }
+        $name = $type->getName();
+        $this->model = new $name();
         return $this;
     }
 
