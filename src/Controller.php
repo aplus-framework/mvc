@@ -58,19 +58,18 @@ abstract class Controller extends RouteActions
      */
     protected function prepareModel() : static
     {
-        if ( ! \property_exists($this, 'model')) {
-            return $this;
+        if (\property_exists($this, 'model')) {
+            $property = new ReflectionProperty($this, 'model');
+            $type = $property->getType();
+            if ( ! $type instanceof ReflectionNamedType || $type->isBuiltin()) {
+                throw new LogicException(
+                    'The ' . static::class
+                    . '::$model property must have one type to be instantiated'
+                );
+            }
+            $name = $type->getName();
+            $this->model = new $name();
         }
-        $property = new ReflectionProperty($this, 'model');
-        $type = $property->getType();
-        if ( ! $type instanceof ReflectionNamedType || $type->isBuiltin()) {
-            throw new LogicException(
-                'The ' . static::class
-                . '::$model property must have one type to be instantiated'
-            );
-        }
-        $name = $type->getName();
-        $this->model = new $name();
         return $this;
     }
 
