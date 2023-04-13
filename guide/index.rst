@@ -2432,7 +2432,6 @@ the ``$model`` property is used, which has the instance of
 
     use App\Models\UsersModel;
     use Framework\MVC\Controller;
-    use Framework\MVC\ModelInterface;
 
     class Users extends Controller
     {
@@ -2462,11 +2461,10 @@ JSON-encoded and added to the Response body:
 
     use App\Models\UsersModel;
     use Framework\MVC\Controller;
-    use Framework\MVC\ModelInterface;
 
     class Users extends Controller
     {
-        protected ModelInterface | UsersModel $model;
+        protected UsersModel $model;
 
         public function index() : array
         {
