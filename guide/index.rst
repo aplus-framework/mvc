@@ -2418,14 +2418,15 @@ numerous useful methods for working on HTTP interactions.
 Model Instance
 ##############
 
-Often, a controller works with a specific model and through the $model
-property it is possible to set the Fully Qualified Class Name of a
-``ModelInterface`` child class so that an instance of it is automatically loaded,
-in all requests, in the construction of the controller.
+Each controller can have a ``$model`` property, which will be automatically
+instantiated in the class constructor.
 
-Let's see below that $model receives the type name of the ``App\Models\UsersModel``
-class and in the ``show`` method the direct call to the $model property is used,
-which has the instance of ``App\Models\UsersModel``:
+The ``$model`` property must have a child class type of Model.
+
+Let's see below that ``$model`` receives the type name of the
+``App\Models\UsersModel`` class and in the ``show`` method the direct call to
+the ``$model`` property is used, which has the instance of
+``App\Models\UsersModel``:
 
 .. code-block:: php
 
@@ -2435,7 +2436,7 @@ which has the instance of ``App\Models\UsersModel``:
 
     class Users extends Controller
     {
-        protected ModelInterface | UsersModel $model;
+        protected UsersModel $model;
 
         public function show(int $id) : string
         {
