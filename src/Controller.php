@@ -63,8 +63,8 @@ abstract class Controller extends RouteActions
             $type = $property->getType();
             if ( ! $type instanceof ReflectionNamedType || $type->isBuiltin()) {
                 throw new LogicException(
-                    'The ' . static::class
-                    . '::$model property must have one type to be instantiated'
+                    'Property ' . static::class
+                    . '::$model must have a valid named type'
                 );
             }
             $name = $type->getName();

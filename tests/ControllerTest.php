@@ -43,7 +43,7 @@ final class ControllerTest extends TestCase
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessageMatches(
-            '#The (.+)::\$model property must have one type to be instantiated#'
+            '#Property (.+)::\$model must have a valid named type#'
         );
     }
 
