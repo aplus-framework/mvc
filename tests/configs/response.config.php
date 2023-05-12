@@ -10,6 +10,9 @@
 /**
  * @see App::response()
  */
+
+use Framework\HTTP\CSP;
+
 return [
     'default' => [
         'headers' => [
@@ -20,6 +23,20 @@ return [
         'cache' => [
             'seconds' => 60,
             'public' => true,
+        ],
+        'csp' => [
+            CSP::defaultSrc => [
+                'self',
+            ],
+            CSP::styleSrc => [
+                'self',
+                'cdn.foo.tld',
+            ],
+        ],
+        'csp_report_only' => [
+            CSP::defaultSrc => [
+                'self',
+            ],
         ],
         'request_instance' => 'default',
     ],

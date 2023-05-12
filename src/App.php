@@ -27,6 +27,7 @@ use Framework\Email\Mailer;
 use Framework\Email\Mailers\SMTPMailer;
 use Framework\Helpers\Isolation;
 use Framework\HTTP\AntiCSRF;
+use Framework\HTTP\CSP;
 use Framework\HTTP\Debug\HTTPCollector;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
@@ -1180,6 +1181,12 @@ class App
             $config['cache'] === false
                 ? $service->setNoCache()
                 : $service->setCache($config['cache']['seconds'], $config['cache']['public'] ?? false);
+        }
+        if ( ! empty($config['csp'])) {
+            $service->setCsp(new CSP($config['csp']));
+        }
+        if ( ! empty($config['csp_report_only'])) {
+            $service->setCspReportOnly(new CSP($config['csp_report_only']));
         }
         return static::setService('response', $service, $instance);
     }
