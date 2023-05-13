@@ -966,6 +966,8 @@ Response Config Options
                 'auto_language' => false,
                 'language_instance' => 'default',
                 'cache' => null,
+                'csp' => [],
+                'csp_report_only' => [],
                 'request_instance' => 'default',
             ],
         ],
@@ -1001,6 +1003,24 @@ Set ``false`` to set Cache-Control to ``no-cache`` or an array with key ``second
 to set cache seconds and optionally ``public`` to true or false to ``private``.
 
 The default is not to set these settings.
+
+csp
+"""
+
+If it is empty, it does nothing.
+
+It can take an array of directives to initialize an instance of
+``Framework\HTTP\CSP`` and pass it as the **Content-Security-Policy** of the
+response.
+
+csp_report_only
+"""""""""""""""
+
+If it is empty, it does nothing.
+
+It can take an array of directives to initialize an instance of
+``Framework\HTTP\CSP`` and pass it as the **Content-Security-Policy-Report-Only**
+of the response.
 
 request_instance
 """"""""""""""""
