@@ -687,6 +687,7 @@ Language Config Options
         'language' => [
             'default' => [
                 'default' => 'en',
+                'current' => 'en',
                 'supported' => null,
                 'negotiate' => false,
                 'request_instance' => 'default',
@@ -702,6 +703,11 @@ default
 """""""
 
 Sets the default language code. The default is ``en``.
+
+current
+"""""""
+
+Sets the current language code. The default is ``en``.
 
 supported
 """""""""

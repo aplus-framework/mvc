@@ -822,6 +822,9 @@ class App
     {
         $config = static::config()->get('language', $instance);
         $service = new Language($config['default'] ?? 'en');
+        if (isset($config['current'])) {
+            $service->setCurrentLocale($config['current']);
+        }
         if (isset($config['supported'])) {
             $service->setSupportedLocales($config['supported']);
         }
