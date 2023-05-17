@@ -15,6 +15,7 @@ use DateTimeZone;
 use Exception;
 use Framework\Cache\Cache;
 use Framework\Database\Database;
+use Framework\Database\Manipulation\Traits\Where;
 use Framework\Language\Language;
 use Framework\Pagination\Pager;
 use Framework\Validation\Debug\ValidationCollector;
@@ -401,23 +402,28 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * A basic function to count all rows in the table.
+     * A basic function to count rows in the table.
+     *
+     * @param array<array<mixed>> $where Array in this format: `[['id', '=', 25]]`
+     *
+     * @see Where
      *
      * @return int
      */
-    public function count() : int
+    public function count(array $where = []) : int
     {
-        $result = $this->getDatabaseToRead()
+        $select = $this->getDatabaseToRead()
             ->select()
             ->expressions([
                 'count' => static function () : string {
                     return 'COUNT(*)';
                 },
             ])
-            ->from($this->getTable())
-            ->run()
-            ->fetch();
-        return $result->count; // @phpstan-ignore-line
+            ->from($this->getTable());
+        foreach ($where as $args) {
+            $select->where(...$args);
+        }
+        return $select->run()->fetch()->count; // @phpstan-ignore-line
     }
 
     /**

@@ -397,6 +397,13 @@ final class ModelTest extends ModelTestCase
     public function testCount() : void
     {
         self::assertSame(2, $this->model->count());
+        self::assertSame(1, $this->model->count([
+            ['id', '=', 1],
+        ]));
+        self::assertSame(2, $this->model->count([
+            ['id', 'is not null'],
+            ['id', '<', 3],
+        ]));
     }
 
     public function testPaginatedItems() : void
