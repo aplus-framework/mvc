@@ -469,24 +469,53 @@ abstract class Model implements ModelInterface
      *
      * @param mixed $page The current page
      * @param mixed $perPage Items per page
+     * @param array<string>|string $orderBy Order by columns
+     * @param string $orderByDirection asc or desc
+     * @param array<array<mixed>> $where Array in this format: `[['id', '=', 25]]`
+     *
+     * @see Where
      *
      * @return array<int,array<mixed>|Entity|stdClass>
      */
-    public function paginate(mixed $page, mixed $perPage = 10) : array
-    {
+    public function paginate(
+        mixed $page,
+        mixed $perPage = 10,
+        array $where = [],
+        array | string $orderBy = null,
+        string $orderByDirection = 'asc',
+    ) : array {
         $page = Pager::sanitize($page);
         $perPage = Pager::sanitize($perPage);
-        $data = $this->getDatabaseToRead()
+        $select = $this->getDatabaseToRead()
             ->select()
             ->from($this->getTable())
-            ->limit(...$this->makePageLimitAndOffset($page, $perPage))
-            ->run()
-            ->fetchArrayAll();
+            ->limit(...$this->makePageLimitAndOffset($page, $perPage));
+        if ($where) {
+            foreach ($where as $args) {
+                $select->where(...$args);
+            }
+        }
+        if ($orderBy !== null) {
+            $orderBy = (array) $orderBy;
+            $orderByDir = \strtolower($orderByDirection);
+            if ( ! \in_array($orderByDir, [
+                'asc',
+                'desc',
+            ])) {
+                throw new InvalidArgumentException(
+                    'Invalid ORDER BY direction: ' . $orderByDirection
+                );
+            }
+            $orderByDir === 'asc'
+                ? $select->orderByAsc(...$orderBy)
+                : $select->orderByDesc(...$orderBy);
+        }
+        $data = $select->run()->fetchArrayAll();
         foreach ($data as &$row) {
             $row = $this->makeEntity($row);
         }
         unset($row);
-        $this->setPager(new Pager($page, $perPage, $this->count()));
+        $this->setPager(new Pager($page, $perPage, $this->count($where)));
         return $data;
     }
 

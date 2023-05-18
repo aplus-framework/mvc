@@ -408,32 +408,81 @@ final class ModelTest extends ModelTestCase
 
     public function testPaginatedItems() : void
     {
+        $date = \date('Y-m-d H:i:s');
         $this->model->returnType = 'array';
         self::assertSame([
             [
                 'id' => 1,
                 'data' => 'foo',
-                'createdAt' => \date('Y-m-d H:i:s'),
-                'updatedAt' => \date('Y-m-d H:i:s'),
+                'createdAt' => $date,
+                'updatedAt' => $date,
             ],
         ], $this->model->paginate(-1, 1));
         self::assertSame([
             [
                 'id' => 1,
                 'data' => 'foo',
-                'createdAt' => \date('Y-m-d H:i:s'),
-                'updatedAt' => \date('Y-m-d H:i:s'),
+                'createdAt' => $date,
+                'updatedAt' => $date,
             ],
         ], $this->model->paginate(1, 1));
         self::assertSame([
             [
                 'id' => 2,
                 'data' => 'bar',
-                'createdAt' => \date('Y-m-d H:i:s'),
-                'updatedAt' => \date('Y-m-d H:i:s'),
+                'createdAt' => $date,
+                'updatedAt' => $date,
             ],
         ], $this->model->paginate(2, 1));
         self::assertSame([], $this->model->paginate(3, 1));
+        self::assertSame([
+            [
+                'id' => 2,
+                'data' => 'bar',
+                'createdAt' => $date,
+                'updatedAt' => $date,
+            ],
+        ], $this->model->paginate(1, 10, [
+            ['id', '=', 2],
+            ['id', 'between', 0, 3],
+        ]));
+        self::assertSame([
+            [
+                'id' => 1,
+                'data' => 'foo',
+                'createdAt' => $date,
+                'updatedAt' => $date,
+            ],
+            [
+                'id' => 2,
+                'data' => 'bar',
+                'createdAt' => $date,
+                'updatedAt' => $date,
+            ],
+        ], $this->model->paginate(1, 10, [
+            ['id', '>', 0],
+            ['data', 'is not null'],
+        ], 'id'));
+        self::assertSame([
+            [
+                'id' => 2,
+                'data' => 'bar',
+                'createdAt' => $date,
+                'updatedAt' => $date,
+            ],
+            [
+                'id' => 1,
+                'data' => 'foo',
+                'createdAt' => $date,
+                'updatedAt' => $date,
+            ],
+        ], $this->model->paginate(1, 10, [
+            ['id', '>', 0],
+            ['data', 'is not null'],
+        ], 'id', 'desc'));
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid ORDER BY direction: Foo');
+        $this->model->paginate(1, 10, [], 'id', 'Foo');
     }
 
     public function testPaginatedUrl() : void
