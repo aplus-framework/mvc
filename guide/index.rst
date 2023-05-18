@@ -1807,11 +1807,21 @@ The Model has some extra methods for doing common operations:
 Count
 """""
 
-A basic function to count all rows in the table.
+A basic function to count rows in the table.
 
 .. code-block:: php
 
     $count = $model->count(); // int
+
+Optionally, with a parameter to the WHERE clause:
+
+.. code-block:: php
+
+    $where = [
+        ['id', '<', 100], // WHERE `id` < 100
+        ['name', 'like', 'Pa%'], // AND `name` LIKE 'Pa%'
+    ];
+    $count = $model->count($where); // int
 
 Replace
 """""""
