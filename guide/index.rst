@@ -1588,8 +1588,8 @@ retrieved via the ``getErrors`` method.
 Pagination
 ##########
 
-Using the ``paginate`` method, you can perform a basic pagination with all the
-data in a table.
+Using the ``paginate`` method, you can perform pagination with all the data in
+a table.
 
 Below, we take the first 30 items from the table:
 
@@ -1598,6 +1598,38 @@ Below, we take the first 30 items from the table:
     $page = 1;
     $perPage = 30;
     $data = $model->paginate($page, $perPage); // array
+
+Also, it is possible to pass an array to the WHERE clause, as in the example
+below:
+
+.. code-block:: php
+
+    $where = [
+        ['id', '<', 100], // WHERE `id` < 100
+        ['author', 'is not null'], // AND `author` IS NOT NULL
+    ];
+    $data = $model->paginate($page, $perPage, $where); // array
+
+The following SQL will be appended to the query:
+
+.. code-block:: sql
+
+    WHERE `id` < 100
+    AND `author` IS NOT NULL
+
+Also, it is possible to order the results by the last parameters:
+
+.. code-block:: php
+
+    $orderBy = 'title'; // Column name
+    $orderByDirection = 'asc'; // asc or desc
+    $data = $model->paginate(
+        $page, 
+        $perPage,
+        $where, 
+        $orderBy, 
+        $orderByDirection
+    ); // array
 
 After calling the ``paginate`` method, the ``$pager`` property will have an
 instance of the **Framework\Pagination\Pager** class, which can be obtained by
