@@ -116,3 +116,13 @@ expectedArguments(
     1,
     argumentsSet('rules')
 );
+registerArgumentsSet(
+    'order_by_directions',
+    'asc',
+    'desc',
+);
+expectedArguments(
+    \Framework\MVC\Model::paginate(),
+    4,
+    argumentsSet('order_by_directions')
+);
