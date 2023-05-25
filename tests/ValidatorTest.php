@@ -41,6 +41,14 @@ final class ValidatorTest extends TestCase
         self::assertArrayHasKey('username', $validation->getErrors());
     }
 
+    public function testExistManyNoDataValue() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('username', 'existMany:Users');
+        self::assertTrue($validation->validate([]));
+        self::assertEmpty($validation->getErrors());
+    }
+
     public function testUniqueNoDataValue() : void
     {
         $validation = App::validation();
@@ -71,6 +79,41 @@ final class ValidatorTest extends TestCase
         ];
         self::assertFalse($validation->validate($data));
         self::assertArrayHasKey('username', $validation->getErrors());
+    }
+
+    public function testExistMany() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('usernames', 'existMany:Users.username');
+        $data = [
+            'usernames' => [
+                'foo',
+                'bar',
+            ],
+        ];
+        self::assertTrue($validation->validate($data));
+        self::assertEmpty($validation->getErrors());
+        $data = [
+            'usernames' => [
+                'foo',
+                'bazz',
+            ],
+        ];
+        self::assertFalse($validation->validate($data));
+        self::assertArrayHasKey('usernames', $validation->getErrors());
+        $data = [
+            'usernames' => 'invalid', // it should be an array
+        ];
+        self::assertFalse($validation->validate($data));
+        self::assertArrayHasKey('usernames', $validation->getErrors());
+        $data = [
+            'usernames' => [
+                ['invalid'], // it should be scalar
+                'bazz',
+            ],
+        ];
+        self::assertFalse($validation->validate($data));
+        self::assertArrayHasKey('usernames', $validation->getErrors());
     }
 
     public function testUnique() : void
@@ -164,6 +207,20 @@ final class ValidatorTest extends TestCase
         );
         $data = [
             'username' => 'foo',
+        ];
+        $validation->validate($data);
+    }
+
+    public function testExistManyWithoutConnection() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('usernames', 'existMany:Users,');
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage(
+            'The connection parameter must be set to be able to connect the database'
+        );
+        $data = [
+            'usernames' => ['foo'],
         ];
         $validation->validate($data);
     }

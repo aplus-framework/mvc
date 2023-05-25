@@ -9,6 +9,7 @@
  */
 return [
     'exist' => 'El campo {field} no existe.',
+    'existMany' => 'El campo {field} tiene al menos un valor que no existe.',
     'notUnique' => 'El campo {field} no está registrado.',
     'unique' => 'El campo {field} ya se ha registrado. ',
 ];

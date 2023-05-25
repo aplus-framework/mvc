@@ -9,6 +9,7 @@
  */
 namespace Framework\MVC;
 
+use Framework\Helpers\ArraySimple;
 use LogicException;
 
 /**
@@ -135,5 +136,61 @@ class Validator extends \Framework\Validation\Validator
             ->limit(1)
             ->run()
             ->fetch()->count > 0;
+    }
+
+    /**
+     * Validates many values exists in database table.
+     *
+     * @since 3.10
+     *
+     * @param string $field
+     * @param array<string,mixed> $data
+     * @param string $tableColumn
+     * @param string $connection
+     *
+     * @return bool
+     */
+    public static function existMany(
+        string $field,
+        array $data,
+        string $tableColumn,
+        string $connection = 'default'
+    ) : bool {
+        $values = ArraySimple::value($field, $data);
+        if ($values === null) {
+            return true;
+        }
+        if ( ! \is_array($values)) {
+            return false;
+        }
+        foreach ($values as $value) {
+            if ( ! \is_scalar($value)) {
+                return false;
+            }
+        }
+        [$table, $column] = \array_pad(\explode('.', $tableColumn, 2), 2, '');
+        if ($column === '') {
+            $column = $field;
+        }
+        if ($connection === '') {
+            throw new LogicException(
+                'The connection parameter must be set to be able to connect the database'
+            );
+        }
+        $database = App::database($connection);
+        foreach ($values as $value) {
+            $count = $database // @phpstan-ignore-line
+                ->select()
+                ->expressions(['count' => static fn () => 'COUNT(*)'])
+                ->from($table)
+                ->whereEqual($column, $value)
+                ->limit(1)
+                ->run()
+                ->fetch()->count;
+            if ($count < 1) {
+                return false;
+            }
+        }
+        return true;
     }
 }
