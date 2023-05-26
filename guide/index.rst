@@ -2058,6 +2058,7 @@ The following rules can be used alongside the
 `default validation rules <https://docs.aplus-framework.com/guides/libraries/validation/index.html#available-rules>`_:
 
 - `exist`_
+- `existMany`_
 - `unique`_
 
 exist
@@ -2076,6 +2077,40 @@ The rule has two parameters: ``$tableColumn`` and ``$connection``.
 a dot. If the column is not defined, the field name will be used as the column name.
 
 ``$connection`` is the name of the database connection. The default is ``default``.
+
+existMany
+#########
+
+Requires that many values exists in the database.
+
+.. code-block:: php
+
+    existMany:$tableColumn
+    existMany:$tableColumn,$connection
+
+This rule is similar to `exist`_. Except it is able to check if many values are
+present in a database table.
+
+It can validate many values from a ``select`` HTML element:
+
+.. code-block:: html
+
+    <select name="fruits[]" multiple>
+        <option value="1">Apple</option>
+        <option value="2">Orange</option>
+        <option value="3">Pear</option>
+        <option value="5">Banana</option>
+        <option value="9">Strawberry</option>
+    </select>
+
+The following example will validate if the ids sent in the ``fruits`` field are
+present in the ``Fruits`` table:
+
+.. code-block::
+
+    existMany:Fruits.id
+
+If any value does not exist, validation will fail.
 
 unique
 ######
