@@ -29,9 +29,9 @@
     "homepage": "https://aplus-framework.com/packages/mvc",
     "support": {
         "email": "support@aplus-framework.com",
-        "issues": "https://gitlab.com/aplus-framework/libraries/mvc/issues",
+        "issues": "https://github.com/aplus-framework/mvc/issues",
         "forum": "https://aplus-framework.com/forum",
-        "source": "https://gitlab.com/aplus-framework/libraries/mvc",
+        "source": "https://github.com/aplus-framework/mvc",
         "docs": "https://docs.aplus-framework.com/guides/libraries/mvc/"
     },
     "funding": [
