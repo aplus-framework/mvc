@@ -542,6 +542,11 @@ final class ModelTest extends ModelTestCase
     public function testPagerAllowedQueries() : void
     {
         $_SERVER['REQUEST_URI'] = '/products?page=5&foo=bar&order=asc&bla=bla&per_page=10';
+        $this->model->paginate(5);
+        self::assertSame(
+            'http://localhost:8080/products?page=5&foo=bar&order=asc&bla=bla&per_page=10',
+            $this->model->getPager()->getCurrentPageUrl()
+        );
         $this->model->pagerAllowedQueries = ['order', 'per_page'];
         $this->model->paginate(5);
         self::assertSame(

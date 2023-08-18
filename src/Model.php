@@ -167,9 +167,9 @@ abstract class Model implements ModelInterface
      */
     protected string $pagerQuery;
     /**
-     * @var array<string>
+     * @var array<string>|null
      */
-    protected array $pagerAllowedQueries;
+    protected array | null $pagerAllowedQueries = null;
     /**
      * Pager URL.
      *
@@ -537,10 +537,7 @@ abstract class Model implements ModelInterface
         if (isset($temp)) {
             $pager->setUrl($temp);
         }
-        $temp = $this->getPagerAllowedQueries();
-        if (isset($temp)) {
-            $pager->setAllowedQueries($temp);
-        }
+        $pager->setAllowedQueries($this->getPagerAllowedQueries());
         $temp = $this->getPagerView();
         if (isset($temp)) {
             $pager->setDefaultView($temp);
@@ -586,7 +583,7 @@ abstract class Model implements ModelInterface
      */
     protected function getPagerAllowedQueries() : ?array
     {
-        return $this->pagerAllowedQueries ?? null;
+        return $this->pagerAllowedQueries;
     }
 
     /**
