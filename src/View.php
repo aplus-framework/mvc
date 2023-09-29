@@ -342,7 +342,7 @@ class View
         $contents = $this->getContents($view, $data);
         $this->inInclude = false;
         $this->setDebugData($view, $start, 'include');
-        if ( ! $this->isShowingDebugComments()) {
+        if (!$this->isShowingDebugComments()) {
             return $contents;
         }
         return $this->involveInclude($view, $contents);

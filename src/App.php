@@ -1185,10 +1185,10 @@ class App
                 ? $service->setNoCache()
                 : $service->setCache($config['cache']['seconds'], $config['cache']['public'] ?? false);
         }
-        if ( ! empty($config['csp'])) {
+        if (!empty($config['csp'])) {
             $service->setCsp(new CSP($config['csp']));
         }
-        if ( ! empty($config['csp_report_only'])) {
+        if (!empty($config['csp_report_only'])) {
             $service->setCspReportOnly(new CSP($config['csp_report_only']));
         }
         return static::setService('response', $service, $instance);

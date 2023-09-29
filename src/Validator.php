@@ -160,11 +160,11 @@ class Validator extends \Framework\Validation\Validator
         if ($values === null) {
             return true;
         }
-        if ( ! \is_array($values)) {
+        if (!\is_array($values)) {
             return false;
         }
         foreach ($values as $value) {
-            if ( ! \is_scalar($value)) {
+            if (!\is_scalar($value)) {
                 return false;
             }
         }

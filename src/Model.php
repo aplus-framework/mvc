@@ -498,7 +498,7 @@ abstract class Model implements ModelInterface
         if ($orderBy !== null) {
             $orderBy = (array) $orderBy;
             $orderByDir = \strtolower($orderByDirection);
-            if ( ! \in_array($orderByDir, [
+            if (!\in_array($orderByDir, [
                 'asc',
                 'desc',
             ])) {
@@ -943,7 +943,7 @@ abstract class Model implements ModelInterface
             return false;
         }
         $data = $this->filterAllowedFields($data);
-        if ( ! isset($data[$column])) {
+        if (!isset($data[$column])) {
             throw new LogicException('Value of column ' . $column . ' is not set');
         }
         if ($this->isAutoTimestamps()) {

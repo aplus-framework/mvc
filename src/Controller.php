@@ -61,7 +61,7 @@ abstract class Controller extends RouteActions
         if (\property_exists($this, 'model')) {
             $property = new ReflectionProperty($this, 'model');
             $type = $property->getType();
-            if ( ! $type instanceof ReflectionNamedType || $type->isBuiltin()) {
+            if (!$type instanceof ReflectionNamedType || $type->isBuiltin()) {
                 throw new LogicException(
                     'Property ' . static::class
                     . '::$model must have a valid named type'
