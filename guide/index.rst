@@ -929,6 +929,7 @@ Request Config Options
                 'server_vars' => [],
                 'allowed_hosts' => [],
                 'force_https' => false,
+                'json_flags' => null,
             ],
         ],
     ]
@@ -948,6 +949,11 @@ force_https
 
 Set ``true`` to automatically redirect to the HTTPS version of the current URL. 
 By default it is not set.
+
+json_flags
+""""""""""
+
+Flags for ``json_decode``. The default is set to none.
 
 Response Service
 ^^^^^^^^^^^^^^^^
@@ -974,6 +980,7 @@ Response Config Options
                 'cache' => null,
                 'csp' => [],
                 'csp_report_only' => [],
+                'json_flags' => null,
                 'request_instance' => 'default',
             ],
         ],
@@ -1027,6 +1034,11 @@ If it is empty, it does nothing.
 It can take an array of directives to initialize an instance of
 ``Framework\HTTP\CSP`` and pass it as the **Content-Security-Policy-Report-Only**
 of the response.
+
+json_flags
+""""""""""
+
+Flags for ``json_encode``. The default is set to none.
 
 request_instance
 """"""""""""""""

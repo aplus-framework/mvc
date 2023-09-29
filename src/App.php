@@ -1122,6 +1122,9 @@ class App
         if (isset($config['force_https']) && $config['force_https'] === true) {
             $service->forceHttps();
         }
+        if (isset($config['json_flags'])) {
+            $service->setJsonFlags($config['json_flags']);
+        }
         return static::setService('request', $service, $instance);
     }
 
@@ -1190,6 +1193,9 @@ class App
         }
         if (!empty($config['csp_report_only'])) {
             $service->setCspReportOnly(new CSP($config['csp_report_only']));
+        }
+        if (isset($config['json_flags'])) {
+            $service->setJsonFlags($config['json_flags']);
         }
         return static::setService('response', $service, $instance);
     }

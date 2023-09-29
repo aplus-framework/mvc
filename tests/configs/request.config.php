@@ -14,5 +14,6 @@ return [
         'server_vars' => [
             'HTTP_FOO' => 'Foo',
         ],
+        'json_flags' => \JSON_THROW_ON_ERROR,
     ],
 ];

@@ -38,6 +38,7 @@ return [
                 'self',
             ],
         ],
+        'json_flags' => \JSON_THROW_ON_ERROR,
         'request_instance' => 'default',
     ],
 ];
