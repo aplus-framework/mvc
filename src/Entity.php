@@ -140,7 +140,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
 
     protected function setProperty(string $name, mixed $value) : void
     {
-        if ( ! \property_exists($this, $name)) {
+        if (!\property_exists($this, $name)) {
             throw $this->propertyNotDefined($name);
         }
         if ($value !== null) {
@@ -251,7 +251,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
 
     public function jsonSerialize() : stdClass
     {
-        if ( ! $this->getJsonVars()) {
+        if (!$this->getJsonVars()) {
             return new stdClass();
         }
         $allowed = \array_flip($this->getJsonVars());
@@ -268,7 +268,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
     {
         $result = [];
         foreach (\get_object_vars($this) as $key => $value) {
-            if ( ! \str_starts_with($key, '_')) {
+            if (!\str_starts_with($key, '_')) {
                 $result[$key] = $value;
             }
         }

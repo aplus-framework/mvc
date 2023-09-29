@@ -66,7 +66,7 @@ class View
     public function setBaseDir(string $baseDir) : static
     {
         $real = \realpath($baseDir);
-        if ( ! $real || ! \is_dir($real)) {
+        if (!$real || !\is_dir($real)) {
             throw new InvalidArgumentException("View base dir is not a valid directory: {$baseDir} ");
         }
         $this->baseDir = \rtrim($real, '\\/ ') . \DIRECTORY_SEPARATOR;
@@ -150,10 +150,10 @@ class View
         }
         $view = $this->getBaseDir() . $view . $this->getExtension();
         $real = \realpath($view);
-        if ( ! $real || ! \is_file($real)) {
+        if (!$real || !\is_file($real)) {
             throw new InvalidArgumentException("View path does not match a file: {$view}");
         }
-        if ($this->getBaseDir() && ! \str_starts_with($real, $this->getBaseDir())) {
+        if ($this->getBaseDir() && !\str_starts_with($real, $this->getBaseDir())) {
             throw new InvalidArgumentException("View path out of base directory: {$real}");
         }
         return $real;
@@ -255,7 +255,7 @@ class View
             echo \PHP_EOL . '<!-- Block end: ' . $block . ' -->' . \PHP_EOL;
         }
         $contents = \ob_get_clean();
-        if ( ! isset($this->blocks[$name])) {
+        if (!isset($this->blocks[$name])) {
             $this->blocks[$name] = $contents; // @phpstan-ignore-line
         }
         return $this;
@@ -367,7 +367,7 @@ class View
         $data['view'] = $this;
         \ob_start();
         Isolation::require($this->getFilepath($view), $data);
-        if (isset($this->openBlock) && ! $this->inInclude) {
+        if (isset($this->openBlock) && !$this->inInclude) {
             $this->openBlock = null;
             $this->endBlock();
         }

@@ -73,7 +73,7 @@ class ViewCollector extends Collector
 
     protected function renderRenderedViews() : string
     {
-        if ( ! $this->hasData()) {
+        if (!$this->hasData()) {
             return '<p>No view has been rendered.</p>';
         }
         $data = $this->getSortedData();

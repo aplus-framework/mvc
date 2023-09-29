@@ -31,10 +31,10 @@ class AppCollector extends Collector
     public function setApp(App $app) : static
     {
         $this->app = $app;
-        if ( ! isset($this->startTime)) {
+        if (!isset($this->startTime)) {
             $this->setStartTime();
         }
-        if ( ! isset($this->startMemory)) {
+        if (!isset($this->startMemory)) {
             $this->setStartMemory();
         }
         return $this;
@@ -90,10 +90,10 @@ class AppCollector extends Collector
 
     public function getContents() : string
     {
-        if ( ! isset($this->endTime)) {
+        if (!isset($this->endTime)) {
             $this->setEndTime(\microtime(true));
         }
-        if ( ! isset($this->endMemory)) {
+        if (!isset($this->endMemory)) {
             $this->setEndMemory(\memory_get_usage());
         }
         \ob_start(); ?>
@@ -161,7 +161,7 @@ class AppCollector extends Collector
     {
         $result = [];
         foreach ($this->getData() as $data) {
-            if ( ! isset($result[$data['service']])) {
+            if (!isset($result[$data['service']])) {
                 $result[$data['service']] = [];
             }
             $result[$data['service']][] = [
@@ -180,7 +180,7 @@ class AppCollector extends Collector
         $class = new ReflectionClass($this->app);
         $methods = $class->getMethods(ReflectionMethod::IS_STATIC);
         foreach ($methods as $method) {
-            if ( ! $method->isPublic()) {
+            if (!$method->isPublic()) {
                 continue;
             }
             $name = $method->getName();
@@ -196,7 +196,7 @@ class AppCollector extends Collector
                 continue;
             }
             $param = $method->getParameters()[0] ?? null;
-            if ( ! $param || $param->getName() !== 'instance') {
+            if (!$param || $param->getName() !== 'instance') {
                 continue;
             }
             if ($param->getType()?->getName() !== 'string') { // @phpstan-ignore-line

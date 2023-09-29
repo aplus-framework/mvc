@@ -825,7 +825,7 @@ abstract class Model implements ModelInterface
      */
     protected function getValidationRules() : array
     {
-        if ( ! isset($this->validationRules)) {
+        if (!isset($this->validationRules)) {
             throw new RuntimeException('Validation rules are not set');
         }
         return $this->validationRules;

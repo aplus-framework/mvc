@@ -117,7 +117,7 @@ class App
         if (isset(static::$config)) {
             throw new LogicException('App already initialized');
         }
-        if ( ! $config instanceof Config) {
+        if (!$config instanceof Config) {
             $config = new Config($config);
         }
         static::$config = $config;
@@ -178,7 +178,7 @@ class App
         if ($config->getDir() !== null) {
             $exceptionHandlerConfigs ??= $this->loadConfigs('exceptionHandler');
         }
-        if ( ! isset($exceptionHandlerConfigs['default'])) {
+        if (!isset($exceptionHandlerConfigs['default'])) {
             $environment = static::isDebugging()
                 ? ExceptionHandler::DEVELOPMENT
                 : ExceptionHandler::PRODUCTION;
@@ -230,8 +230,8 @@ class App
     {
         static::$debugCollector->setEndTime()->setEndMemory();
         $response = static::router()->getResponse();
-        if ( ! $response->hasDownload()
-            && ! $response->getRequest()->isAjax()
+        if (!$response->hasDownload()
+            && !$response->getRequest()->isAjax()
             && \str_contains(
                 (string) $response->getHeader('Content-Type'),
                 'text/html'
@@ -492,7 +492,7 @@ class App
         if ($className === null) {
             return false;
         }
-        if ( ! \class_exists($className)) {
+        if (!\class_exists($className)) {
             Isolation::require($file);
         }
         $class = new ReflectionClass($className); // @phpstan-ignore-line
@@ -1033,7 +1033,7 @@ class App
         if (isset($config['auto_methods']) && $config['auto_methods'] === true) {
             $service->setAutoMethods();
         }
-        if ( ! empty($config['placeholders'])) {
+        if (!empty($config['placeholders'])) {
             $service->addPlaceholder($config['placeholders']);
         }
         if ($requireFiles && isset($config['files'])) {
@@ -1050,7 +1050,7 @@ class App
     protected static function requireRouterFiles(array $files) : void
     {
         foreach ($files as $file) {
-            if ( ! \is_file($file)) {
+            if (!\is_file($file)) {
                 throw new LogicException('Invalid router file: ' . $file);
             }
             Isolation::require($file);
@@ -1158,10 +1158,10 @@ class App
     {
         $config = static::config()->get('response', $instance);
         $service = new Response(static::request($config['request_instance'] ?? 'default'));
-        if ( ! empty($config['headers'])) {
+        if (!empty($config['headers'])) {
             $service->setHeaders($config['headers']);
         }
-        if ( ! empty($config['auto_etag'])) {
+        if (!empty($config['auto_etag'])) {
             $service->setAutoEtag(
                 $config['auto_etag']['active'] ?? true,
                 $config['auto_etag']['hash_algo'] ?? null
