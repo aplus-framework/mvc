@@ -39,7 +39,7 @@ class Validator extends \Framework\Validation\Validator
         int | string $ignoreValue = '',
         string $connection = 'default'
     ) : bool {
-        return ! static::unique(
+        return !static::unique(
             $field,
             $data,
             $tableColumn,
@@ -91,7 +91,7 @@ class Validator extends \Framework\Validation\Validator
             ->expressions(['count' => static fn () => 'COUNT(*)'])
             ->from($table)
             ->whereEqual($column, $value);
-        if ($ignoreColumn !== '' && ! \preg_match('#^{(\w+)}$#', $ignoreValue)) {
+        if ($ignoreColumn !== '' && !\preg_match('#^{(\w+)}$#', $ignoreValue)) {
             $statement->whereNotEqual($ignoreColumn, $ignoreValue);
         }
         return $statement->limit(1)->run()->fetch()->count < 1; // @phpstan-ignore-line
