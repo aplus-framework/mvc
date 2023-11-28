@@ -50,6 +50,7 @@ use Framework\Validation\Validation;
 use LogicException;
 use ReflectionClass;
 use ReflectionException;
+use SensitiveParameter;
 
 /**
  * Class App.
@@ -109,8 +110,11 @@ class App
      * @param array<string,mixed>|Config|string|null $config The config
      * @param bool $debug Set true to enable debug mode. False to disable.
      */
-    public function __construct(Config | array | string $config = null, bool $debug = false)
-    {
+    public function __construct(
+        #[SensitiveParameter]
+        Config | array | string $config = null,
+        bool $debug = false
+    ) {
         if ($debug) {
             $this->debugStart();
         }
