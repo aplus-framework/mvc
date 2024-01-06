@@ -74,7 +74,7 @@ jobs:
           DB_HOST: 127.0.0.1
           MEMCACHED_HOST: 127.0.0.1
           REDIS_HOST: 127.0.0.1
-        run: vendor/bin/phpunit --verbose
+        run: vendor/bin/phpunit
 
       - name: Upload coverage results to Coveralls
         env:
@@ -136,4 +136,4 @@ jobs:
           DB_HOST: 127.0.0.1
           MEMCACHED_HOST: 127.0.0.1
           REDIS_HOST: 127.0.0.1
-        run: vendor/bin/phpunit --verbose
+        run: vendor/bin/phpunit
