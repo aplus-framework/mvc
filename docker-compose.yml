@@ -9,9 +9,9 @@ services:
     depends_on:
       - mariadb
     tty: true
-  package-last:
-    image: registry.gitlab.com/aplus-framework/images/package:3
-    container_name: package-mvc-last
+  package-latest:
+    image: registry.gitlab.com/aplus-framework/images/package:latest
+    container_name: package-mvc-latest
     working_dir: /package
     volumes:
       - .:/package
