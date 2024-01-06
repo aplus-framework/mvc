@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class LanguagesTest extends TestCase
 {
-    protected string $langDir = __DIR__ . '/../src/Languages/';
+    protected static string $langDir = __DIR__ . '/../src/Languages/';
 
     /**
      * @return array<int,string>
@@ -26,8 +26,8 @@ final class LanguagesTest extends TestCase
     protected function getCodes() : array
     {
         // @phpstan-ignore-next-line
-        $codes = \array_filter((array) \glob($this->langDir . '*'), 'is_dir');
-        $length = \strlen($this->langDir);
+        $codes = \array_filter((array) \glob(self::$langDir . '*'), 'is_dir');
+        $length = \strlen(self::$langDir);
         $result = [];
         foreach ($codes as &$dir) {
             if ($dir === false) {
@@ -47,7 +47,7 @@ final class LanguagesTest extends TestCase
     public function testKeys(array $rules, string $file) : void
     {
         foreach ($this->getCodes() as $code) {
-            $lines = require $this->langDir . $code . '/' . $file . '.php';
+            $lines = require self::$langDir . $code . '/' . $file . '.php';
             $lines = \array_keys($lines);
             \sort($lines);
             self::assertSame($rules, $lines, 'File: ' . $file . '. Language: ' . $code);
@@ -57,7 +57,7 @@ final class LanguagesTest extends TestCase
     /**
      * @return array<string,array<mixed>>
      */
-    public function languageProvider() : array
+    public static function languageProvider() : array
     {
         $files = [
             'validation',
@@ -65,7 +65,7 @@ final class LanguagesTest extends TestCase
         $data = [];
         foreach ($files as $file) {
             $data[$file] = [
-                \array_keys(require $this->langDir . 'en/' . $file . '.php'),
+                \array_keys(require self::$langDir . 'en/' . $file . '.php'),
                 $file,
             ];
         }
