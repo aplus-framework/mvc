@@ -35,6 +35,7 @@ final class AppCollectorTest extends TestCase
         $this->collector = $this->app::debugger()
             ->getCollection('App')
             ->getCollectors()[0];
+        \restore_error_handler();
     }
 
     protected function getExternalCollector() : AppCollector

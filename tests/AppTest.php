@@ -46,6 +46,7 @@ final class AppTest extends TestCase
     protected function setUp() : void
     {
         $this->app = new App(new Config(__DIR__ . '/configs', [], '.config.php'));
+        \restore_error_handler();
     }
 
     public function testInitialization() : void
