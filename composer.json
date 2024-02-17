@@ -41,7 +41,7 @@
         }
     ],
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.3",
         "ext-json": "*",
         "ext-mysqli": "*",
         "aplus/autoload": "^2.0",
