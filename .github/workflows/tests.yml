@@ -11,9 +11,6 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
 
-    strategy:
-      fail-fast: true
-
     services:
       mariadb:
         image: mariadb
@@ -40,7 +37,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -89,9 +86,6 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
 
-    strategy:
-      fail-fast: true
-
     services:
       mariadb:
         image: mariadb
@@ -118,7 +112,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
