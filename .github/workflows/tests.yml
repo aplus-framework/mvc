@@ -11,9 +11,6 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
 
-    strategy:
-      fail-fast: true
-
     services:
       mariadb:
         image: mariadb
@@ -88,9 +85,6 @@ jobs:
   tests-latest:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
-
-    strategy:
-      fail-fast: true
 
     services:
       mariadb:
