@@ -51,6 +51,7 @@ final class ControllerTest extends TestCase
     {
         $controller = new class(App::request(), App::response()) extends Controller {
         };
+        // @phpstan-ignore-next-line
         self::assertFalse(\property_exists($controller, 'model'));
     }
 
