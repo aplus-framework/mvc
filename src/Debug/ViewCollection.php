@@ -24,17 +24,6 @@ class ViewCollection extends Collection
         $this->addAction($this->makeActionToggleViewsHints());
     }
 
-    /**
-     * This method contains snippets originally created in CodeIgniter 4 and is
-     * MIT licensed.
-     *
-     * A big thank you to all the contributors, without them this wouldn't be
-     * possible.
-     *
-     * @see https://github.com/codeigniter4/CodeIgniter4/issues/758
-     *
-     * @return string
-     */
     protected function makeActionToggleViewsHints() : string
     {
         \ob_start();

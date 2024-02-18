@@ -1,4 +1,14 @@
-<button id="debugbar-toggle-views">Toggle Views Hints</button>
+<?php
+/**
+ * This file contains snippets originally created in CodeIgniter 4 and is
+ * MIT licensed.
+ *
+ * A big thank you to all the contributors, without them this wouldn't be
+ * possible.
+ *
+ * @see https://github.com/codeigniter4/CodeIgniter4/issues/758
+ */
+?><button id="debugbar-toggle-views">Toggle Views Hints</button>
 <style>
     .debugbar-view.show-view {
         border: 1px solid;
