@@ -1,11 +1,11 @@
 <button id="debugbar-toggle-views">Toggle Views Hints</button>
 <style>
-    .debug-view.show-view {
+    .debugbar-view.show-view {
         border: 1px solid;
         margin: 2px;
     }
 
-    .debug-view-path {
+    .debugbar-view-path {
         font-family: monospace;
         font-size: 12px;
         letter-spacing: normal;
@@ -14,15 +14,15 @@
         text-align: left;
     }
 
-    .show-view .debug-view-path {
+    .show-view .debugbar-view-path {
         display: block !important;
     }
 
-    .debug-view.show-view {
+    .debugbar-view.show-view {
         border-color: #222;
     }
 
-    .debug-view-path {
+    .debugbar-view-path {
         background: #000;
         color: #fff;
     }
@@ -172,9 +172,9 @@
                 let parent = startElement[0].parentNode;
                 let start, end;
                 // setup container
-                debugDiv.classList.add('debug-view');
+                debugDiv.classList.add('debugbar-view');
                 debugDiv.classList.add('show-view');
-                debugPath.classList.add('debug-view-path');
+                debugPath.classList.add('debugbar-view-path');
                 debugPath.innerText = key;
                 debugDiv.appendChild(debugPath);
                 // calc distance between them
@@ -224,7 +224,7 @@
                 // add container to DOM
                 nodeList.push(parent.insertBefore(debugDiv, childArray[start]));
             }
-            localStorage.setItem('debug-view', 'show');
+            localStorage.setItem('debugbar-view', 'show');
             btn.classList.add('active');
         }
 
@@ -253,7 +253,7 @@
                 nodeList[i].parentNode.removeChild(nodeList[i]);
             }
             nodeList.length = 0;
-            localStorage.removeItem('debug-view')
+            localStorage.removeItem('debugbar-view')
             btn.classList.remove('active');
         }
 
@@ -263,14 +263,14 @@
             return;
         }
         btn.onclick = function () {
-            if (localStorage.getItem('debug-view')) {
+            if (localStorage.getItem('debugbar-view')) {
                 hideHints();
                 return;
             }
             showHints();
         };
         // Determine Hints state on page load
-        if (localStorage.getItem('debug-view')) {
+        if (localStorage.getItem('debugbar-view')) {
             showHints();
         }
     }
