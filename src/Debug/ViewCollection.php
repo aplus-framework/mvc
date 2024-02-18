@@ -30,7 +30,7 @@ class ViewCollection extends Collection
     protected function makeActionToggleViewsHints() : string
     {
         \ob_start();
-        require __DIR__ . '/toggle-views-hints.php';
+        require __DIR__ . '/Views/toggle-views-hints.php';
         return (string) \ob_get_clean();
     }
 }
