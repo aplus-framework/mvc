@@ -189,9 +189,9 @@ class View
             $this->setDebugData($view, $start, $type);
             $type = \ucfirst($type);
             if ($this->isShowingDebugComments()) {
-                $contents = '<!-- ' . $type . ' start: ' . $view . ' -->'
+                $contents = '<!-- DEBUG-VIEW START ' . $type . ': ' . $view . ' -->'
                     . \PHP_EOL . $contents . \PHP_EOL
-                    . '<!-- ' . $type . ' end: ' . $view . ' -->';
+                    . '<!-- DEBUG-VIEW ENDED ' . $type . ': ' . $view . ' -->';
             }
         }
         return $contents;
@@ -239,7 +239,7 @@ class View
             if (isset($this->currentView)) {
                 $name = $this->currentView . '::' . $name;
             }
-            echo \PHP_EOL . '<!-- Block start: ' . $name . ' -->' . \PHP_EOL;
+            echo \PHP_EOL . '<!-- DEBUG-VIEW START Block: ' . $name . ' -->' . \PHP_EOL;
         }
         return $this;
     }
@@ -255,7 +255,7 @@ class View
             if (isset($this->currentView)) {
                 $block = $this->currentView . '::' . $name;
             }
-            echo \PHP_EOL . '<!-- Block end: ' . $block . ' -->' . \PHP_EOL;
+            echo \PHP_EOL . '<!-- DEBUG-VIEW ENDED Block: ' . $block . ' -->' . \PHP_EOL;
         }
         $contents = \ob_get_clean();
         if (!isset($this->blocks[$name])) {
@@ -310,9 +310,9 @@ class View
 
     protected function involveInclude(string $view, string $contents) : string
     {
-        return \PHP_EOL . '<!-- Include start: ' . $view . ' -->'
+        return \PHP_EOL . '<!-- DEBUG-VIEW START Include: ' . $view . ' -->'
             . \PHP_EOL . $contents . \PHP_EOL
-            . '<!-- Include end: ' . $view . ' -->' . \PHP_EOL;
+            . '<!-- DEBUG-VIEW ENDED Include: ' . $view . ' -->' . \PHP_EOL;
     }
 
     /**
