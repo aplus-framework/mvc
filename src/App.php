@@ -39,6 +39,7 @@ use Framework\Log\Logger;
 use Framework\Log\Loggers\MultiFileLogger;
 use Framework\Log\LogLevel;
 use Framework\MVC\Debug\AppCollector;
+use Framework\MVC\Debug\ViewCollection;
 use Framework\MVC\Debug\ViewCollector;
 use Framework\Routing\Debug\RoutingCollector;
 use Framework\Routing\Router;
@@ -1335,9 +1336,12 @@ class App
             $start = \microtime(true);
             $service = static::setView($instance);
             $end = \microtime(true);
+            $collection = static::debugger()->getCollection('Views')
+                ?? new ViewCollection('Views');
+            static::debugger()->addCollection($collection);
             $collector = new ViewCollector($instance);
+            $collection->addCollector($collector);
             $service->setDebugCollector($collector);
-            static::debugger()->addCollector($collector, 'View');
             static::addDebugData('view', $instance, $start, $end);
             return $service;
         }
