@@ -29,28 +29,28 @@
 </style>
 <script>
     function toggleViewsHints() {
-        var nodeList = []; // [ Element, NewElement( 1 )/OldElement( 0 ) ]
-        var sortedComments = [];
-        var comments = [];
-        var getComments = function () {
-            var nodes = [];
-            var result = [];
-            var xpathResults = document.evaluate(
+        let nodeList = []; // [ Element, NewElement( 1 )/OldElement( 0 ) ]
+        let sortedComments = [];
+        let comments = [];
+        let getComments = function () {
+            let nodes = [];
+            let result = [];
+            let xpathResults = document.evaluate(
                 "//comment()[starts-with(., ' DEBUG-VIEW')]",
                 document,
                 null,
                 XPathResult.ANY_TYPE,
                 null,
             );
-            var nextNode = xpathResults.iterateNext();
+            let nextNode = xpathResults.iterateNext();
             while (nextNode) {
                 nodes.push(nextNode);
                 nextNode = xpathResults.iterateNext();
             }
             // sort comment by opening and closing tags
-            for (var i = 0; i < nodes.length; ++i) {
+            for (let i = 0; i < nodes.length; ++i) {
                 // get file path + name to use as key
-                var path = nodes[i].nodeValue.substring(
+                let path = nodes[i].nodeValue.substring(
                     18,
                     nodes[i].nodeValue.length - 1,
                 );
@@ -66,7 +66,7 @@
             return result;
         };
         // find node that has TargetNode as parentNode
-        var getParentNode = function (node, targetNode) {
+        let getParentNode = function (node, targetNode) {
             if (node.parentNode === null) {
                 return null;
             }
@@ -78,14 +78,14 @@
         // define invalid & outer ( also invalid ) elements
         const INVALID_ELEMENTS = ['NOSCRIPT', 'SCRIPT', 'STYLE'];
         const OUTER_ELEMENTS = ['HTML', 'BODY', 'HEAD'];
-        var getValidElementInner = function (node, reverse) {
+        let getValidElementInner = function (node, reverse) {
             // handle invalid tags
             if (OUTER_ELEMENTS.indexOf(node.nodeName) !== -1) {
-                for (var i = 0; i < document.body.children.length; ++i) {
-                    var index = reverse
+                for (let i = 0; i < document.body.children.length; ++i) {
+                    let index = reverse
                         ? document.body.children.length - (i + 1)
                         : i;
-                    var element = document.body.children[index];
+                    let element = document.body.children[index];
                     // skip invalid tags
                     if (INVALID_ELEMENTS.indexOf(element.nodeName) !== -1) {
                         continue;
@@ -111,7 +111,7 @@
         };
         // get next valid element ( to be safe to add divs )
         // @return [ element, skip element ] or null if we couldnt find a valid place
-        var getValidElement = function (nodeElement) {
+        let getValidElement = function (nodeElement) {
             if (nodeElement) {
                 if (nodeElement.nextElementSibling !== null) {
                     return (
@@ -139,15 +139,15 @@
         function showHints() {
             // Had AJAX? Reset view blocks
             sortedComments = getComments();
-            for (var key in sortedComments) {
-                var startElement = getValidElement(sortedComments[key][0]);
-                var endElement = getValidElement(sortedComments[key][1]);
+            for (let key in sortedComments) {
+                let startElement = getValidElement(sortedComments[key][0]);
+                let endElement = getValidElement(sortedComments[key][1]);
                 // skip if we couldnt get a valid element
                 if (startElement === null || endElement === null) {
                     continue;
                 }
                 // find element which has same parent as startelement
-                var jointParent = getParentNode(
+                let jointParent = getParentNode(
                     endElement[0],
                     startElement[0].parentNode,
                 );
@@ -166,11 +166,11 @@
                 } else {
                     endElement[0] = jointParent;
                 }
-                var debugDiv = document.createElement('div'); // holder
-                var debugPath = document.createElement('div'); // path
-                var childArray = startElement[0].parentNode.childNodes; // target child array
-                var parent = startElement[0].parentNode;
-                var start, end;
+                let debugDiv = document.createElement('div'); // holder
+                let debugPath = document.createElement('div'); // path
+                let childArray = startElement[0].parentNode.childNodes; // target child array
+                let parent = startElement[0].parentNode;
+                let start, end;
                 // setup container
                 debugDiv.classList.add('debug-view');
                 debugDiv.classList.add('show-view');
@@ -179,7 +179,7 @@
                 debugDiv.appendChild(debugPath);
                 // calc distance between them
                 // start
-                for (var i = 0; i < childArray.length; ++i) {
+                for (let i = 0; i < childArray.length; ++i) {
                     // check for comment ( start & end ) -> if its before valid start element
                     if (
                         childArray[i] === sortedComments[key][1] ||
@@ -198,7 +198,7 @@
                     start++;
                 }
                 // end
-                for (var i = start; i < childArray.length; ++i) {
+                for (let i = start; i < childArray.length; ++i) {
                     if (childArray[i] === endElement[0]) {
                         end = i;
                         // dont break to check for end comment after end valid element
@@ -209,11 +209,11 @@
                     }
                 }
                 // move elements
-                var number = end - start;
+                let number = end - start;
                 if (endElement[1]) {
                     number++;
                 }
-                for (var i = 0; i < number; ++i) {
+                for (let i = 0; i < number; ++i) {
                     if (INVALID_ELEMENTS.indexOf(childArray[start]) !== -1) {
                         // skip invalid childs that can cause problems if moved
                         start++;
@@ -229,11 +229,11 @@
         }
 
         function hideHints() {
-            for (var i = 0; i < nodeList.length; ++i) {
-                var index;
+            for (let i = 0; i < nodeList.length; ++i) {
+                let index;
                 // find index
                 for (
-                    var j = 0;
+                    let j = 0;
                     j < nodeList[i].parentNode.childNodes.length;
                     ++j
                 ) {
@@ -257,7 +257,7 @@
             btn.classList.remove('active');
         }
 
-        var btn = document.querySelector('#debugbar-toggle-views');
+        let btn = document.querySelector('#debugbar-toggle-views');
         // If the Views Collector is inactive stops here
         if (!btn) {
             return;
