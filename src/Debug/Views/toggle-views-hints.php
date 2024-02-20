@@ -16,6 +16,9 @@
     }
 
     .debugbar-view-path {
+        background: #000;
+        border-bottom: 1px solid #222;
+        color: #fff;
         font-family: monospace;
         font-size: 12px;
         letter-spacing: normal;
@@ -30,11 +33,6 @@
 
     .debugbar-view.show-view {
         border-color: #222;
-    }
-
-    .debugbar-view-path {
-        background: #000;
-        color: #fff;
     }
 </style>
 <script>
