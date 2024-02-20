@@ -43,6 +43,10 @@ class View
     protected string $includePrefix = '';
     protected bool $inInclude = false;
     protected bool $showDebugComments = true;
+    /**
+     * @var array<string>
+     */
+    protected array $viewsPaths = [];
 
     public function __construct(string $baseDir = null, string $extension = '.php')
     {
@@ -187,11 +191,11 @@ class View
                 $type = 'layout';
             }
             $this->setDebugData($view, $start, $type);
-            $type = \ucfirst($type);
             if ($this->isShowingDebugComments()) {
-                $contents = '<!-- DEBUG-VIEW START ' . $type . ': ' . $view . ' -->'
+                $path = $this->getCommentPath($view);
+                $contents = '<!-- DEBUG-VIEW START ' . $path . ' -->'
                     . \PHP_EOL . $contents . \PHP_EOL
-                    . '<!-- DEBUG-VIEW ENDED ' . $type . ': ' . $view . ' -->';
+                    . '<!-- DEBUG-VIEW ENDED ' . $path . ' -->';
             }
         }
         return $contents;
@@ -238,8 +242,9 @@ class View
         if (isset($this->debugCollector) && $this->isShowingDebugComments()) {
             if (isset($this->currentView)) {
                 $name = $this->currentView . '::' . $name;
+                $name = $this->getCommentPath($name);
             }
-            echo \PHP_EOL . '<!-- DEBUG-VIEW START Block: ' . $name . ' -->' . \PHP_EOL;
+            echo \PHP_EOL . '<!-- DEBUG-VIEW START ' . $name . ' -->' . \PHP_EOL;
         }
         return $this;
     }
@@ -255,7 +260,7 @@ class View
             if (isset($this->currentView)) {
                 $block = $this->currentView . '::' . $name;
             }
-            echo \PHP_EOL . '<!-- DEBUG-VIEW ENDED Block: ' . $block . ' -->' . \PHP_EOL;
+            echo \PHP_EOL . '<!-- DEBUG-VIEW ENDED ' . $block . ' -->' . \PHP_EOL;
         }
         $contents = \ob_get_clean();
         if (!isset($this->blocks[$name])) {
@@ -310,9 +315,10 @@ class View
 
     protected function involveInclude(string $view, string $contents) : string
     {
-        return \PHP_EOL . '<!-- DEBUG-VIEW START Include: ' . $view . ' -->'
+        $path = $this->getCommentPath($view);
+        return \PHP_EOL . '<!-- DEBUG-VIEW START ' . $path . ' -->'
             . \PHP_EOL . $contents . \PHP_EOL
-            . '<!-- DEBUG-VIEW ENDED Include: ' . $view . ' -->' . \PHP_EOL;
+            . '<!-- DEBUG-VIEW ENDED ' . $path . ' -->' . \PHP_EOL;
     }
 
     /**
@@ -378,6 +384,21 @@ class View
             $this->endBlock();
         }
         return \ob_get_clean(); // @phpstan-ignore-line
+    }
+
+    protected function getCommentPath(string $name) : string
+    {
+        $count = null;
+        foreach ($this->viewsPaths as $view) {
+            if ($view === $name) {
+                $count++;
+            }
+        }
+        $this->viewsPaths[] = $name;
+        if ($count) {
+            $count = ' ' . ($count + 1);
+        }
+        return $name . $count;
     }
 
     public function setDebugCollector(ViewCollector $debugCollector) : static
