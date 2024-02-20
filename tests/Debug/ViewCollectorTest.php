@@ -29,6 +29,7 @@ final class ViewCollectorTest extends TestCase
         $this->collector = new ViewCollector();
         $this->debugger->addCollector($this->collector, 'View');
         $this->view = new View();
+        $this->view->setInstanceName('default');
         $this->view->setDebugCollector($this->collector);
     }
 
