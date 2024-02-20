@@ -1335,6 +1335,7 @@ class App
         if (static::isDebugging()) {
             $start = \microtime(true);
             $service = static::setView($instance);
+            $service->setInstanceName($instance);
             $end = \microtime(true);
             $collection = static::debugger()->getCollection('Views')
                 ?? new ViewCollection('Views');

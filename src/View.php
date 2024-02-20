@@ -47,6 +47,7 @@ class View
      * @var array<string>
      */
     protected array $viewsPaths = [];
+    protected string $instanceName;
 
     public function __construct(string $baseDir = null, string $extension = '.php')
     {
@@ -242,7 +243,7 @@ class View
         if (isset($this->debugCollector) && $this->isShowingDebugComments()) {
             if (isset($this->currentView)) {
                 $name = $this->currentView . '::' . $name;
-                $name = $this->getCommentPath($name);
+                $name = $this->getInstanceNameWithPath($name);
             }
             echo \PHP_EOL . '<!-- DEBUG-VIEW START ' . $name . ' -->' . \PHP_EOL;
         }
@@ -259,6 +260,7 @@ class View
             $block = $name;
             if (isset($this->currentView)) {
                 $block = $this->currentView . '::' . $name;
+                $block = $this->getInstanceNameWithPath($block);
             }
             echo \PHP_EOL . '<!-- DEBUG-VIEW ENDED ' . $block . ' -->' . \PHP_EOL;
         }
@@ -386,6 +388,22 @@ class View
         return \ob_get_clean(); // @phpstan-ignore-line
     }
 
+    public function getInstanceName() : string
+    {
+        return $this->instanceName;
+    }
+
+    public function getInstanceNameWithPath(string $name) : string
+    {
+        return $this->getInstanceName() . ':' . $name;
+    }
+
+    public function setInstanceName(string $instanceName) : static
+    {
+        $this->instanceName = $instanceName;
+        return $this;
+    }
+
     protected function getCommentPath(string $name) : string
     {
         $count = null;
@@ -396,9 +414,9 @@ class View
         }
         $this->viewsPaths[] = $name;
         if ($count) {
-            $count = ' ' . ($count + 1);
+            $count = ':' . ($count + 1);
         }
-        return $name . $count;
+        return $this->getInstanceNameWithPath($name) . $count;
     }
 
     public function setDebugCollector(ViewCollector $debugCollector) : static
