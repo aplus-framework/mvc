@@ -68,6 +68,14 @@ class AppCollector extends Collector
     {
         $activities = [];
         $activities[] = [
+            'collection' => 'App',
+            'collector' => $this->getName(),
+            'class' => static::class,
+            'description' => 'Initialization',
+            'start' => $_SERVER['REQUEST_TIME_FLOAT'],
+            'end' => $this->startTime,
+        ];
+        $activities[] = [
             'collector' => $this->getName(),
             'class' => static::class,
             'description' => 'Runtime',
