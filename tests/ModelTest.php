@@ -10,6 +10,7 @@
 namespace Tests\MVC;
 
 use Framework\MVC\App;
+use Framework\MVC\Model;
 use Tests\MVC\Models\FooBarModel;
 
 /**
@@ -643,5 +644,11 @@ final class ModelTest extends ModelTestCase
         $model = new FooBarModel();
         self::assertSame('FooBar', $model->getTable());
         self::assertSame('FooBar', $model->getTable());
+    }
+
+    public function testGet() : void
+    {
+        $model = Model::get(ModelMock::class);
+        self::assertSame($model, Model::get(ModelMock::class));
     }
 }

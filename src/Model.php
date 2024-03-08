@@ -44,6 +44,10 @@ use stdClass;
 abstract class Model implements ModelInterface
 {
     /**
+     * @var array<int,Model>
+     */
+    protected static array $models = [];
+    /**
      * Database connection instance name for read operations.
      *
      * @var string
@@ -1297,5 +1301,22 @@ abstract class Model implements ModelInterface
         }
         $suffix = \implode(';', $suffix);
         return 'Model:' . static::class . '::' . $suffix;
+    }
+
+    /**
+     * Get same Model instance.
+     *
+     * @template T of Model
+     *
+     * @param class-string<T> $class
+     *
+     * @return Model
+     */
+    public static function get(string $class) : Model
+    {
+        if (!isset(static::$models[$class])) {
+            static::$models[$class] = new $class();
+        }
+        return static::$models[$class];
     }
 }
