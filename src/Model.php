@@ -35,11 +35,14 @@ use stdClass;
  *
  * @package mvc
  *
- * @method false|int|string createById(array|Entity|stdClass $data) Create a new row and return the id.
+ * @method false|int|string createById(array|Entity|stdClass $data) Create a new row and return the
+ *     id.
  * @method array|Entity|stdClass|null readById(int|string $id) Read a row by id.
- * @method false|int|string updateById(int|string $id, array|Entity|stdClass $data) Update rows by id.
+ * @method false|int|string updateById(int|string $id, array|Entity|stdClass $data) Update rows by
+ *     id.
  * @method false|int|string deleteById(int|string $id) Delete rows by id.
- * @method false|int|string replaceById(int|string $id, array|Entity|stdClass $data) Replace rows by id.
+ * @method false|int|string replaceById(int|string $id, array|Entity|stdClass $data) Replace rows
+ *     by id.
  */
 abstract class Model implements ModelInterface
 {
@@ -607,10 +610,10 @@ abstract class Model implements ModelInterface
     /**
      * Read a row by column name and value.
      *
-     * @param string $column
-     * @param int|string $value
-     *
      * @since 3.6
+     *
+     * @param int|string $value
+     * @param string $column
      *
      * @return array<string,float|int|string|null>|Entity|stdClass|null
      */
@@ -631,11 +634,11 @@ abstract class Model implements ModelInterface
      * @param string $column
      * @param int|string $value
      *
+     * @return array<string,float|int|string|null>|Entity|stdClass|null
+     *
      * @deprecated
      *
      * @codeCoverageIgnore
-     *
-     * @return array<string,float|int|string|null>|Entity|stdClass|null
      */
     #[Deprecated(
         reason: 'since MVC Library version 3.6, use readBy() instead',
@@ -655,9 +658,9 @@ abstract class Model implements ModelInterface
     /**
      * Read a row based on Primary Key.
      *
-     * @param int|string $id
-     *
      * @since 3.6
+     *
+     * @param int|string $id
      *
      * @return array<string,float|int|string|null>|Entity|stdClass|null The
      * selected row as configured on $returnType property or null if row was
@@ -692,10 +695,10 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * @param string $column
-     * @param int|string $value
-     *
      * @since 3.6
+     *
+     * @param int|string $value
+     * @param string $column
      *
      * @return array<string,float|int|string|null>|null
      */
@@ -757,10 +760,10 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * @param string $column
-     * @param int|string $value
-     *
      * @since 3.6
+     *
+     * @param int|string $value
+     * @param string $column
      *
      * @return array<string,float|int|string|null>|Entity|stdClass|null
      */
@@ -812,10 +815,10 @@ abstract class Model implements ModelInterface
     /**
      * List rows, optionally with limit and offset.
      *
-     * @param int|null $limit
-     * @param int|null $offset
-     *
      * @since 3.6
+     *
+     * @param int|null $offset
+     * @param int|null $limit
      *
      * @return array<int,array<mixed>|Entity|stdClass>
      */
