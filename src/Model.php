@@ -47,7 +47,7 @@ use stdClass;
 abstract class Model implements ModelInterface
 {
     /**
-     * @var array<int,Model>
+     * @var array<string,Model>
      */
     protected static array $models = [];
     /**
@@ -1311,9 +1311,11 @@ abstract class Model implements ModelInterface
      *
      * @template T of Model
      *
+     * @since 4
+     *
      * @param class-string<T> $class
      *
-     * @return Model
+     * @return T
      */
     public static function get(string $class) : Model
     {
