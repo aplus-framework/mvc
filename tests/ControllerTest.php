@@ -34,49 +34,12 @@ final class ControllerTest extends TestCase
         self::assertInstanceOf(Controller::class, $this->controller);
     }
 
-    public function testModelInstance() : void
+    public function testModelInstances() : void
     {
         self::assertInstanceOf(ModelMock::class, $this->controller->model);
-    }
-
-    protected function expectModelPropertyException() : void
-    {
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessageMatches(
-            '#Property (.+)::\$model must have a valid named type#'
-        );
-    }
-
-    public function testModelPropertyUndefined() : void
-    {
-        $controller = new class(App::request(), App::response()) extends Controller {
-        };
-        // @phpstan-ignore-next-line
-        self::assertFalse(\property_exists($controller, 'model'));
-    }
-
-    public function testModelPropertyWithoutType() : void
-    {
-        $this->expectModelPropertyException();
-        new class(App::request(), App::response()) extends Controller {
-            protected $model; // @phpstan-ignore-line
-        };
-    }
-
-    public function testModelPropertyWithBuiltinType() : void
-    {
-        $this->expectModelPropertyException();
-        new class(App::request(), App::response()) extends Controller {
-            protected int $model;
-        };
-    }
-
-    public function testModelPropertyWithManyTypes() : void
-    {
-        $this->expectModelPropertyException();
-        new class(App::request(), App::response()) extends Controller {
-            protected ModelMock | \stdClass $model;
-        };
+        self::assertInstanceOf(ModelMock::class, $this->controller->foo);
+        self::assertTrue(isset($this->controller->modelIsset));
+        self::assertFalse(isset($this->controller->reflectionUnionType));
     }
 
     public function testRender() : void
