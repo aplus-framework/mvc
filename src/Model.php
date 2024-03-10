@@ -47,7 +47,7 @@ use stdClass;
 abstract class Model implements ModelInterface
 {
     /**
-     * @var array<string,Model>
+     * @var array<string,mixed>
      */
     protected static array $models = [];
     /**
