@@ -20,9 +20,9 @@ class ViewCollection extends Collection
 {
     protected string $iconPath = __DIR__ . '/icons/views.svg';
 
-    public function __construct(string $name)
+    protected function prepare() : void
     {
-        parent::__construct($name);
+        parent::prepare();
         $this->addAction($this->makeActionToggleViewsHints());
     }
 
