@@ -12,11 +12,11 @@ namespace Framework\MVC\Debug;
 use Framework\Debug\Collection;
 
 /**
- * Class ViewCollection.
+ * Class ViewsCollection.
  *
  * @package mvc
  */
-class ViewCollection extends Collection
+class ViewsCollection extends Collection
 {
     protected string $iconPath = __DIR__ . '/icons/views.svg';
 

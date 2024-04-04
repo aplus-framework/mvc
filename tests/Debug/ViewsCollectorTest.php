@@ -10,23 +10,23 @@
 namespace Tests\MVC\Debug;
 
 use Framework\Debug\Debugger;
-use Framework\MVC\Debug\ViewCollector;
+use Framework\MVC\Debug\ViewsCollector;
 use Framework\MVC\View;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @runTestsInSeparateProcesses
  */
-final class ViewCollectorTest extends TestCase
+final class ViewsCollectorTest extends TestCase
 {
     protected Debugger $debugger;
-    protected ViewCollector $collector;
+    protected ViewsCollector $collector;
     protected View $view;
 
     protected function setUp() : void
     {
         $this->debugger = new Debugger();
-        $this->collector = new ViewCollector();
+        $this->collector = new ViewsCollector();
         $this->debugger->addCollector($this->collector, 'View');
         $this->view = new View();
         $this->view->setInstanceName('default');

@@ -10,7 +10,7 @@
 namespace Framework\MVC;
 
 use Framework\Helpers\Isolation;
-use Framework\MVC\Debug\ViewCollector;
+use Framework\MVC\Debug\ViewsCollector;
 use InvalidArgumentException;
 use LogicException;
 
@@ -38,7 +38,7 @@ class View
      */
     protected array $blocks;
     protected string $currentView;
-    protected ViewCollector $debugCollector;
+    protected ViewsCollector $debugCollector;
     protected string $layoutPrefix = '';
     protected string $includePrefix = '';
     protected bool $inInclude = false;
@@ -419,7 +419,7 @@ class View
         return $this->getInstanceNameWithPath($name) . $count;
     }
 
-    public function setDebugCollector(ViewCollector $debugCollector) : static
+    public function setDebugCollector(ViewsCollector $debugCollector) : static
     {
         $this->debugCollector = $debugCollector;
         $this->debugCollector->setView($this);

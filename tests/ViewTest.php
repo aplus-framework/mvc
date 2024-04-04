@@ -10,7 +10,7 @@
 namespace Tests\MVC;
 
 use Framework\MVC\App;
-use Framework\MVC\Debug\ViewCollector;
+use Framework\MVC\Debug\ViewsCollector;
 use Framework\MVC\View;
 use PHPUnit\Framework\TestCase;
 
@@ -285,7 +285,7 @@ final class ViewTest extends TestCase
 
     protected function setDebugCollector() : void
     {
-        $collector = new ViewCollector();
+        $collector = new ViewsCollector();
         $this->view->setDebugCollector($collector);
     }
 
@@ -364,7 +364,7 @@ final class ViewTest extends TestCase
 
     public function testDebugComments() : void
     {
-        $this->view->setDebugCollector(new ViewCollector())
+        $this->view->setDebugCollector(new ViewsCollector())
             ->setLayoutPrefix('_layouts')
             ->setIncludePrefix('_includes');
         $contents = $this->view->render('comments');
@@ -393,7 +393,7 @@ final class ViewTest extends TestCase
 
     public function testDebugCommentsDisabled() : void
     {
-        $this->view->setDebugCollector(new ViewCollector())
+        $this->view->setDebugCollector(new ViewsCollector())
             ->disableDebugComments()
             ->setLayoutPrefix('_layouts')
             ->setIncludePrefix('_includes');
