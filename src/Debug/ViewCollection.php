@@ -18,6 +18,8 @@ use Framework\Debug\Collection;
  */
 class ViewCollection extends Collection
 {
+    protected string $iconPath = __DIR__ . '/icons/views.svg';
+
     public function __construct(string $name)
     {
         parent::__construct($name);
