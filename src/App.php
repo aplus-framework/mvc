@@ -10,6 +10,7 @@
 namespace Framework\MVC;
 
 use Framework\Autoload\Autoloader;
+use Framework\Autoload\Debug\AutoloadCollection;
 use Framework\Autoload\Locator;
 use Framework\Cache\Cache;
 use Framework\Cache\Debug\CacheCollector;
@@ -344,7 +345,10 @@ class App
             $service = static::setAutoloader($instance);
             $end = \microtime(true);
             $service->setDebugCollector(name: $instance);
-            static::debugger()->addCollector($service->getDebugCollector(), 'Autoload');
+            $collection = static::debugger()->getCollection('Autoload')
+                ?? new AutoloadCollection('Autoload');
+            $collection->addCollector($service->getDebugCollector());
+            static::debugger()->addCollection($collection);
             static::addDebugData('autoloader', $instance, $start, $end);
             return $service;
         }
