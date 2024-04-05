@@ -24,7 +24,6 @@ use Framework\Debug\Debugger;
 use Framework\Debug\ExceptionHandler;
 use Framework\Email\Debug\EmailCollector;
 use Framework\Email\Mailer;
-use Framework\Email\Mailers\SMTPMailer;
 use Framework\Helpers\Isolation;
 use Framework\HTTP\AntiCSRF;
 use Framework\HTTP\CSP;
@@ -738,13 +737,9 @@ class App
     protected static function setMailer(string $instance) : Mailer
     {
         $config = static::config()->get('mailer', $instance);
-        /**
-         * @var class-string<Mailer> $class
-         */
-        $class = $config['class'] ?? SMTPMailer::class;
         return static::setService(
             'mailer',
-            new $class($config['config']),
+            new Mailer($config),
             $instance
         );
     }
