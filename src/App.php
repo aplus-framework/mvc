@@ -13,6 +13,7 @@ use Framework\Autoload\Autoloader;
 use Framework\Autoload\Debug\AutoloadCollection;
 use Framework\Autoload\Locator;
 use Framework\Cache\Cache;
+use Framework\Cache\Debug\CacheCollection;
 use Framework\Cache\Debug\CacheCollector;
 use Framework\Cache\Serializer;
 use Framework\CLI\Command;
@@ -394,7 +395,10 @@ class App
             $end = \microtime(true);
             $collector = new CacheCollector($instance);
             $service->setDebugCollector($collector);
-            static::debugger()->addCollector($collector, 'Cache');
+            $collection = static::debugger()->getCollection('Cache')
+                ?? new CacheCollection('Cache');
+            $collection->addCollector($collector);
+            static::debugger()->addCollection($collection);
             static::addDebugData('cache', $instance, $start, $end);
             return $service;
         }
