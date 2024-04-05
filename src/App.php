@@ -38,6 +38,7 @@ use Framework\Log\Debug\LogCollector;
 use Framework\Log\Logger;
 use Framework\Log\Loggers\MultiFileLogger;
 use Framework\Log\LogLevel;
+use Framework\MVC\Debug\AppCollection;
 use Framework\MVC\Debug\AppCollector;
 use Framework\MVC\Debug\ViewsCollection;
 use Framework\MVC\Debug\ViewsCollector;
@@ -128,7 +129,9 @@ class App
         }
         static::$config = $config;
         if ($debug) {
-            static::debugger()->addCollector(static::$debugCollector, 'App');
+            $collection = new AppCollection('App');
+            $collection->addCollector(static::$debugCollector);
+            static::debugger()->addCollection($collection);
         }
     }
 
