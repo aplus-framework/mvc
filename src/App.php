@@ -42,6 +42,7 @@ use Framework\MVC\Debug\AppCollection;
 use Framework\MVC\Debug\AppCollector;
 use Framework\MVC\Debug\ViewsCollection;
 use Framework\MVC\Debug\ViewsCollector;
+use Framework\Routing\Debug\RoutingCollection;
 use Framework\Routing\Debug\RoutingCollector;
 use Framework\Routing\Router;
 use Framework\Session\Debug\SessionCollector;
@@ -1008,7 +1009,10 @@ class App
                 static::requireRouterFiles($config['files'], $service);
             }
             $end = \microtime(true);
-            static::debugger()->addCollector($collector, 'Routing');
+            $collection = static::debugger()->getCollection('Routing')
+                ?? new RoutingCollection('Routing');
+            $collection->addCollector($collector);
+            static::debugger()->addCollection($collection);
             static::addDebugData('router', $instance, $start, $end);
             return $service;
         }
