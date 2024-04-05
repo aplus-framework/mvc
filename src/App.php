@@ -27,6 +27,7 @@ use Framework\Email\Mailer;
 use Framework\Helpers\Isolation;
 use Framework\HTTP\AntiCSRF;
 use Framework\HTTP\CSP;
+use Framework\HTTP\Debug\HTTPCollection;
 use Framework\HTTP\Debug\HTTPCollector;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
@@ -1087,7 +1088,10 @@ class App
             $end = \microtime(true);
             $collector = new HTTPCollector($instance);
             $collector->setRequest($service);
-            static::debugger()->addCollector($collector, 'HTTP');
+            $collection = static::debugger()->getCollection('HTTP')
+                ?? new HTTPCollection('HTTP');
+            $collection->addCollector($collector);
+            static::debugger()->addCollection($collection);
             static::addDebugData('request', $instance, $start, $end);
             return $service;
         }
