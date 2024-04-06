@@ -55,6 +55,7 @@ use Framework\Session\Debug\SessionCollection;
 use Framework\Session\Debug\SessionCollector;
 use Framework\Session\SaveHandlers\DatabaseHandler;
 use Framework\Session\Session;
+use Framework\Validation\Debug\ValidationCollection;
 use Framework\Validation\Debug\ValidationCollector;
 use Framework\Validation\FilesValidator;
 use Framework\Validation\Validation;
@@ -1319,7 +1320,10 @@ class App
             $end = \microtime(true);
             $collector = new ValidationCollector($instance);
             $service->setDebugCollector($collector);
-            static::debugger()->addCollector($collector, 'Validation');
+            $collection = static::debugger()->getCollection('Validation')
+                ?? new ValidationCollection('Validation');
+            $collection->addCollector($collector);
+            static::debugger()->addCollection($collection);
             static::addDebugData('validation', $instance, $start, $end);
             return $service;
         }
