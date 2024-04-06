@@ -51,6 +51,7 @@ use Framework\MVC\Debug\ViewsCollector;
 use Framework\Routing\Debug\RoutingCollection;
 use Framework\Routing\Debug\RoutingCollector;
 use Framework\Routing\Router;
+use Framework\Session\Debug\SessionCollection;
 use Framework\Session\Debug\SessionCollector;
 use Framework\Session\SaveHandlers\DatabaseHandler;
 use Framework\Session\Session;
@@ -1254,7 +1255,10 @@ class App
             $end = \microtime(true);
             $collector = new SessionCollector($instance);
             $service->setDebugCollector($collector);
-            static::debugger()->addCollector($collector, 'Session');
+            $collection = static::debugger()->getCollection('Session')
+                ?? new SessionCollection('Session');
+            $collection->addCollector($collector);
+            static::debugger()->addCollection($collection);
             static::addDebugData('session', $instance, $start, $end);
             return $service;
         }
