@@ -10,6 +10,7 @@
 namespace Framework\MVC\Debug;
 
 use Framework\Debug\Collection;
+use Framework\Helpers\Isolation;
 
 /**
  * Class ViewsCollection.
@@ -28,6 +29,8 @@ class ViewsCollection extends Collection
 
     protected function makeActionToggleViewsHints() : string
     {
-        return (string) \file_get_contents(__DIR__ . '/Views/toggle-views-hints.php');
+        \ob_start();
+        Isolation::require(__DIR__ . '/Views/toggle-views-hints.php');
+        return \ob_get_clean(); // @phpstan-ignore-line
     }
 }
