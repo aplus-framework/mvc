@@ -1375,12 +1375,12 @@ class App
             $service = static::setView($instance);
             $service->setInstanceName($instance);
             $end = \microtime(true);
+            $collector = new ViewsCollector($instance);
+            $service->setDebugCollector($collector);
             $collection = static::debugger()->getCollection('Views')
                 ?? new ViewsCollection('Views');
-            static::debugger()->addCollection($collection);
-            $collector = new ViewsCollector($instance);
             $collection->addCollector($collector);
-            $service->setDebugCollector($collector);
+            static::debugger()->addCollection($collection);
             static::addDebugData('view', $instance, $start, $end);
             return $service;
         }
