@@ -20,6 +20,7 @@ use Framework\CLI\Command;
 use Framework\CLI\Console;
 use Framework\Config\Config;
 use Framework\Database\Database;
+use Framework\Database\Debug\DatabaseCollection;
 use Framework\Database\Debug\DatabaseCollector;
 use Framework\Database\Extra\Migrator;
 use Framework\Debug\Debugger;
@@ -683,7 +684,10 @@ class App
             $end = \microtime(true);
             $collector = new DatabaseCollector($instance);
             $service->setDebugCollector($collector);
-            static::debugger()->addCollector($collector, 'Database');
+            $collection = static::debugger()->getCollection('Database')
+                ?? new DatabaseCollection('Database');
+            $collection->addCollector($collector);
+            static::debugger()->addCollection($collection);
             static::addDebugData('database', $instance, $start, $end);
             return $service;
         }
