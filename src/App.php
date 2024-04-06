@@ -35,6 +35,7 @@ use Framework\HTTP\Debug\HTTPCollection;
 use Framework\HTTP\Debug\HTTPCollector;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
+use Framework\Language\Debug\LanguageCollection;
 use Framework\Language\Debug\LanguageCollector;
 use Framework\Language\FallbackLevel;
 use Framework\Language\Language;
@@ -825,7 +826,10 @@ class App
             $end = \microtime(true);
             $collector = new LanguageCollector($instance);
             $service->setDebugCollector($collector);
-            static::debugger()->addCollector($collector, 'Language');
+            $collection = static::debugger()->getCollection('Language')
+                ?? new LanguageCollection('Language');
+            $collection->addCollector($collector);
+            static::debugger()->addCollection($collection);
             static::addDebugData('language', $instance, $start, $end);
             return $service;
         }
