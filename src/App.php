@@ -25,6 +25,7 @@ use Framework\Database\Debug\DatabaseCollector;
 use Framework\Database\Extra\Migrator;
 use Framework\Debug\Debugger;
 use Framework\Debug\ExceptionHandler;
+use Framework\Email\Debug\EmailCollection;
 use Framework\Email\Debug\EmailCollector;
 use Framework\Email\Mailer;
 use Framework\Helpers\Isolation;
@@ -734,7 +735,10 @@ class App
             $end = \microtime(true);
             $collector = new EmailCollector($instance);
             $service->setDebugCollector($collector);
-            static::debugger()->addCollector($collector, 'Email');
+            $collection = static::debugger()->getCollection('Email')
+                ?? new EmailCollection('Email');
+            $collection->addCollector($collector);
+            static::debugger()->addCollection($collection);
             static::addDebugData('mailer', $instance, $start, $end);
             return $service;
         }
