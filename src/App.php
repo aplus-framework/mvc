@@ -39,6 +39,7 @@ use Framework\Language\Debug\LanguageCollection;
 use Framework\Language\Debug\LanguageCollector;
 use Framework\Language\FallbackLevel;
 use Framework\Language\Language;
+use Framework\Log\Debug\LogCollection;
 use Framework\Log\Debug\LogCollector;
 use Framework\Log\Logger;
 use Framework\Log\Loggers\MultiFileLogger;
@@ -970,7 +971,10 @@ class App
             $end = \microtime(true);
             $collector = new LogCollector($instance);
             $service->setDebugCollector($collector);
-            static::debugger()->addCollector($collector, 'Log');
+            $collection = static::debugger()->getCollection('Log')
+                ?? new LogCollection('Log');
+            $collection->addCollector($collector);
+            static::debugger()->addCollection($collection);
             static::addDebugData('logger', $instance, $start, $end);
             return $service;
         }
