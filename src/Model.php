@@ -243,7 +243,7 @@ abstract class Model implements ModelInterface
     protected function convertCase(string $value, string $case) : string
     {
         if ($case === 'camel' || $case === 'pascal') {
-            $value = \preg_replace('/([a-z])([A-Z])/', '\\1 \\2', $value);
+            $value = \preg_replace('/([a-z])([A-Z])/', '\1 \2', $value);
             $value = \preg_replace('@[^a-zA-Z0-9\-_ ]+@', '', $value);
             $value = \str_replace(['-', '_'], ' ', $value);
             $value = \str_replace(' ', '', \ucwords(\strtolower($value)));
@@ -251,7 +251,7 @@ abstract class Model implements ModelInterface
             return $case === 'camel' ? \lcfirst($value) : \ucfirst($value);
         }
         if ($case === 'snake') {
-            $value = \preg_replace('/([a-z])([A-Z])/', '\\1_\\2', $value);
+            $value = \preg_replace('/([a-z])([A-Z])/', '\1_\2', $value);
             return \strtolower($value);
         }
         throw new InvalidArgumentException('Invalid case: ' . $case);

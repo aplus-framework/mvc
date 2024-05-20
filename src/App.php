@@ -153,7 +153,7 @@ class App
         $config = static::config();
         try {
             $config->load($name);
-        } catch (\LogicException) {
+        } catch (LogicException) {
         }
         return $config->getInstances($name);
     }
