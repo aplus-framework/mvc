@@ -13,7 +13,7 @@ return [
         'extensions' => '.php',
         'classes' => [],
         'namespaces' => [
-            'Tests\\MVC' => dirname(__DIR__),
+            'Tests\MVC' => dirname(__DIR__),
         ],
     ],
 ];

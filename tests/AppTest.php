@@ -41,7 +41,7 @@ use Tests\MVC\AppMock as App;
  */
 final class AppTest extends TestCase
 {
-    protected AppMock $app;
+    protected App $app;
 
     protected function setUp() : void
     {

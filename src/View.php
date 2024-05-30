@@ -75,7 +75,7 @@ class View
         if (!$real || !\is_dir($real)) {
             throw new InvalidArgumentException("View base dir is not a valid directory: {$baseDir} ");
         }
-        $this->baseDir = \rtrim($real, '\\/ ') . \DIRECTORY_SEPARATOR;
+        $this->baseDir = \rtrim($real, '\/ ') . \DIRECTORY_SEPARATOR;
         return $this;
     }
 
@@ -118,7 +118,7 @@ class View
     {
         return $prefix === ''
             ? ''
-            : \trim($prefix, '\\/') . \DIRECTORY_SEPARATOR;
+            : \trim($prefix, '\/') . \DIRECTORY_SEPARATOR;
     }
 
     /**
