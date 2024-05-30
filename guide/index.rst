@@ -440,6 +440,7 @@ Cache Config Options
                 'configs' => [],
                 'prefix' => null,
                 'serializer' => Framework\Cache\Serializer::PHP,
+                'default_ttl' => null,
                 'logger_instance' => 'default',
             ],
         ],
@@ -469,6 +470,13 @@ Sets the serializer with a value from the enum Framework\Cache\Serializer,
 which can be a case of the enum or a string.
 
 The default value is ``Framework\Cache\Serializer::PHP``.
+
+default_ttl
+"""""""""""
+
+Sets the default Time To Live, in seconds, for caching items.
+
+The default value is ``null`` to use the class value (``60``).
 
 logger_instance
 """""""""""""""

@@ -18,6 +18,7 @@ return [
         ],
         'prefix' => null,
         'serializer' => 'php', //Serializer::PHP,
+        'default_ttl' => 300,
         'logger_instance' => 'default',
     ],
 ];

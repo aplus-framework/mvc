@@ -438,6 +438,9 @@ class App
             $config['serializer'],
             $logger
         );
+        if (isset($config['default_ttl'])) {
+            $service->setDefaultTtl($config['default_ttl']);
+        }
         return static::setService('cache', $service, $instance);
     }
 
