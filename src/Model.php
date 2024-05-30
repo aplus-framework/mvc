@@ -848,7 +848,7 @@ abstract class Model implements ModelInterface
             return false;
         }
         $insertId = $affectedRows > 0 // $affectedRows is -1 if fail with MYSQLI_REPORT_OFF
-            ? $database->insertId()
+            ? $database->getInsertId()
             : false;
         if ($insertId && $this->isCacheActive()) {
             $this->updateCachedRow($this->getPrimaryKey(), $insertId);
