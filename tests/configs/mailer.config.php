@@ -12,7 +12,7 @@
  */
 return [
     'default' => [
-        'server' => 'localhost',
+        'host' => 'localhost',
         'port' => 587,
         'tls' => true,
         'username' => null,
