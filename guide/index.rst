@@ -854,21 +854,17 @@ Mailer Config Options
     [
         'mailer' => [
             'default' => [
-                'class' => Framework\Email\Mailers\SMTPMailer::class,
-                'config' => ???, // Must be set
+                'host' => 'localhost',
+                'port' => 587,
+                'tls' => true,
+                'username' => null,
+                'password' => null,
+                'charset' => 'utf-8',
+                'crlf' => "\r\n",
+                'keep_alive' => false,
             ],
         ],
     ]
-
-class
-"""""
-
-Sets the Fully Qualified Class Name of a child class of Framework\Email\Mailer.
-
-The default is ``Framework\Email\Mailers\SMTPMailer``.
-
-config
-""""""
 
 Set an array with Mailer settings. Normally you just set the ``username``, the
 ``password``, the ``host`` and the ``port``.
@@ -1289,12 +1285,12 @@ methods, ``isGet`` and ``isPost``:
     {
         public function isGet() : bool
         {
-            return $this->hasMethod('get');
+            return $this->isMethod('get');
         }
 
         public function isPost() : bool
         {
-            return $this->hasMethod('post');
+            return $this->isMethod('post');
         }
     }
 
@@ -2492,11 +2488,11 @@ successfully:
         public function create() : void
         {
             $rules = [
-                'name' => 'required|minLength:5|maxLength:32',
-                'email' => 'required|email',
-                'message' => 'required|minLength:10|maxLength:1000',
+                'name' => 'minLength:5|maxLength:32',
+                'email' => 'email',
+                'message' => 'minLength:10|maxLength:1000',
             ];
-            $errors =  $this->validate($this->request->getPost(), $rules);
+            $errors = $this->validate($this->request->getPost(), $rules);
             if ($errors) {
                 echo '<h2>Validation Errors</h2>';
                 echo '<ul>';
@@ -2538,17 +2534,17 @@ in the Response body:
 The example above is simple, but $request and $response are powerful, having
 numerous useful methods for working on HTTP interactions.
 
-Model Instance
-##############
+Model Instances
+###############
 
-Each controller can have a ``$model`` property, which will be automatically
+Each controller can have model instances in properties, which will be automatically
 instantiated in the class constructor.
 
-The ``$model`` property must have a child class type of Model.
+The properties must be child classes of the ``Framework\MVC\Model`` class.
 
-Let's see below that ``$model`` receives the type name of the
+Let's see below that ``$users`` receives the type name of the
 ``App\Models\UsersModel`` class and in the ``show`` method the direct call to
-the ``$model`` property is used, which has the instance of
+the ``$users`` property is used, which has the instance of
 ``App\Models\UsersModel``:
 
 .. code-block:: php
@@ -2558,11 +2554,11 @@ the ``$model`` property is used, which has the instance of
 
     class Users extends Controller
     {
-        protected UsersModel $model;
+        protected UsersModel $users;
 
         public function show(int $id) : string
         {
-            $user = $this->model->read($id);
+            $user = $this->users->read($id);
             return $this->render('users/show', [
                 'user' => $user,
             ]);
@@ -2587,12 +2583,12 @@ JSON-encoded and added to the Response body:
 
     class Users extends Controller
     {
-        protected UsersModel $model;
+        protected UsersModel $users;
 
         public function index() : array
         {
             $page = $this->request->getGet('page')
-            $users = $this->model->paginate($page);
+            $users = $this->users->paginate($page);
             return $users;
         }
     }
@@ -2622,7 +2618,7 @@ the user can access the admin area:
     {
         protected function beforeAction(string $method, array $arguments) : mixed
         {
-            if ( ! App::session()->has('user_id')) {
+            if (!App::session()->has('user_id')) {
                 return $this->response->redirect('/login');
             }
             return null;
