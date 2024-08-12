@@ -687,11 +687,10 @@ class App
             return $service; // @phpstan-ignore-line
         }
         if (static::isDebugging()) {
-            $start = \microtime(true);
-            $service = static::setDatabase($instance);
-            $end = \microtime(true);
             $collector = new DatabaseCollector($instance);
-            $service->setDebugCollector($collector);
+            $start = \microtime(true);
+            $service = static::setDatabase($instance, $collector);
+            $end = \microtime(true);
             $collection = static::debugger()->getCollection('Database')
                 ?? new DatabaseCollection('Database');
             $collection->addCollector($collector);
@@ -709,8 +708,10 @@ class App
      *
      * @return Database
      */
-    protected static function setDatabase(string $instance) : Database
-    {
+    protected static function setDatabase(
+        string $instance,
+        DatabaseCollector $collector = null
+    ) : Database {
         $config = static::config()->get('database', $instance);
         $logger = null;
         if (isset($config['logger_instance'])) {
@@ -718,7 +719,11 @@ class App
         }
         return static::setService(
             'database',
-            new Database($config['config'], logger: $logger),
+            new Database(
+                $config['config'],
+                logger: $logger,
+                collector: $collector
+            ),
             $instance
         );
     }

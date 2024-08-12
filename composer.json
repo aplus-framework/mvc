@@ -48,7 +48,7 @@
         "aplus/cache": "^4.0",
         "aplus/cli": "^3.0",
         "aplus/config": "^4.0",
-        "aplus/database": "^4.0",
+        "aplus/database": "^4.1",
         "aplus/database-extra": "^4.0",
         "aplus/date": "^3.0",
         "aplus/debug": "^4.0",
