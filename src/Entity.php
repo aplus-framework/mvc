@@ -26,7 +26,7 @@ use stdClass;
  */
 abstract class Entity implements \JsonSerializable //, \Stringable
 {
-    public int $_jsonOptions = \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE
+    public int $_jsonFlags = \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE
     | \JSON_PRESERVE_ZERO_FRACTION | \JSON_THROW_ON_ERROR;
     /**
      * @var array<string>
@@ -175,7 +175,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
     {
         if ($propertyType === 'array') {
             return $valueType === 'string'
-                ? \json_decode($value, true, flags: $this->_jsonOptions)
+                ? \json_decode($value, true, flags: $this->_jsonFlags)
                 : (array) $value;
         }
         if ($propertyType === 'bool') {
@@ -192,7 +192,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         }
         if ($propertyType === stdClass::class) {
             return $valueType === 'string'
-                ? (object) \json_decode($value, flags: $this->_jsonOptions)
+                ? (object) \json_decode($value, flags: $this->_jsonFlags)
                 : (object) $value;
         }
         return null;
@@ -221,10 +221,10 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         $jsonVars = $this->_jsonVars;
         $this->_jsonVars = \array_keys($this->getObjectVars());
         // @phpstan-ignore-next-line
-        $data = \json_decode(\json_encode($this, $this->_jsonOptions), true, 512, $this->_jsonOptions);
+        $data = \json_decode(\json_encode($this, $this->_jsonFlags), true, 512, $this->_jsonFlags);
         foreach ($data as $property => &$value) {
             if (\is_array($value)) {
-                $value = \json_encode($value, $this->_jsonOptions);
+                $value = \json_encode($value, $this->_jsonFlags);
                 continue;
             }
             $type = \get_debug_type($this->{$property});
