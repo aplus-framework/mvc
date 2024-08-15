@@ -23,16 +23,33 @@ use stdClass;
 /**
  * Class Entity.
  *
+ * @todo In PHP 8.4 add property hooks to validate config properties.
+ *
  * @package mvc
  */
 abstract class Entity implements \JsonSerializable //, \Stringable
 {
+    /**
+     * Sets the flags that will be used to encode/decode JSON in internal
+     * methods of this Entity class.
+     */
     public int $_jsonFlags = \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE
     | \JSON_PRESERVE_ZERO_FRACTION | \JSON_THROW_ON_ERROR;
     /**
+     * Sets the name of the properties that will be visible when this Entity is
+     * JSON encoded.
+     *
      * @var array<string>
      */
     public array $_jsonVars = [];
+    /**
+     * This timezone is used to convert times in the {@see Entity::toModel()}
+     * method.
+     *
+     * Note that it must be the same timezone as the database configurations.
+     *
+     * @see Model::timezone()
+     */
     public string $_timezone = '+00:00';
 
     /**
