@@ -175,7 +175,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
     {
         if ($propertyType === 'array') {
             return $valueType === 'string'
-                ? \json_decode($value, true, flags: $this->jsonOptions())
+                ? \json_decode($value, true, flags: $this->_jsonOptions)
                 : (array) $value;
         }
         if ($propertyType === 'bool') {
@@ -192,7 +192,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         }
         if ($propertyType === stdClass::class) {
             return $valueType === 'string'
-                ? (object) \json_decode($value, flags: $this->jsonOptions())
+                ? (object) \json_decode($value, flags: $this->_jsonOptions)
                 : (object) $value;
         }
         return null;
@@ -209,16 +209,6 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         return null;
     }
 
-    protected function jsonOptions() : int
-    {
-        return $this->_jsonOptions;
-    }
-
-    protected function timezone() : DateTimeZone
-    {
-        return new DateTimeZone($this->_timezone);
-    }
-
     /**
      * Convert the Entity to an associative array accepted by Model methods.
      *
@@ -228,33 +218,34 @@ abstract class Entity implements \JsonSerializable //, \Stringable
      */
     public function toModel() : array
     {
-        $jsonVars = $this->getJsonVars();
-        $this->setJsonVars(\array_keys($this->getObjectVars()));
+        $jsonVars = $this->_jsonVars;
+        $this->_jsonVars = \array_keys($this->getObjectVars());
         // @phpstan-ignore-next-line
-        $data = \json_decode(\json_encode($this, $this->jsonOptions()), true, 512, $this->jsonOptions());
+        $data = \json_decode(\json_encode($this, $this->_jsonOptions), true, 512, $this->_jsonOptions);
         foreach ($data as $property => &$value) {
             if (\is_array($value)) {
-                $value = \json_encode($value, $this->jsonOptions());
+                $value = \json_encode($value, $this->_jsonOptions);
                 continue;
             }
             $type = \get_debug_type($this->{$property});
             if (\is_subclass_of($type, DateTimeInterface::class)) {
                 $datetime = DateTime::createFromFormat(DateTimeInterface::ATOM, $value);
-                $datetime->setTimezone($this->timezone()); // @phpstan-ignore-line
+                // @phpstan-ignore-next-line
+                $datetime->setTimezone(new DateTimeZone($this->_timezone));
                 $value = $datetime->format('Y-m-d H:i:s'); // @phpstan-ignore-line
             }
         }
         unset($value);
-        $this->setJsonVars($jsonVars);
+        $this->_jsonVars = $jsonVars;
         return $data;
     }
 
     public function jsonSerialize() : stdClass
     {
-        if (!$this->getJsonVars()) {
+        if (!$this->_jsonVars) {
             return new stdClass();
         }
-        $allowed = \array_flip($this->getJsonVars());
+        $allowed = \array_flip($this->_jsonVars);
         $filtered = \array_intersect_key($this->getObjectVars(), $allowed);
         $allowed = \array_intersect_key($allowed, $filtered);
         $ordered = \array_replace($allowed, $filtered);
@@ -273,22 +264,5 @@ abstract class Entity implements \JsonSerializable //, \Stringable
             }
         }
         return $result;
-    }
-
-    /**
-     * @return array<string>
-     */
-    public function getJsonVars() : array
-    {
-        return $this->_jsonVars;
-    }
-
-    /**
-     * @param array<string> $vars
-     */
-    public function setJsonVars(array $vars) : static
-    {
-        $this->_jsonVars = $vars;
-        return $this;
     }
 }
