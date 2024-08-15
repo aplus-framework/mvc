@@ -12,6 +12,7 @@ namespace Framework\MVC;
 use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
+use Exception;
 use Framework\Date\Date;
 use Framework\HTTP\URL;
 use JsonException;
@@ -212,7 +213,7 @@ abstract class Entity implements \JsonSerializable //, \Stringable
     /**
      * Convert the Entity to an associative array accepted by Model methods.
      *
-     * @throws JsonException
+     * @throws Exception|JsonException
      *
      * @return array<string,scalar>
      */
