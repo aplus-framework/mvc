@@ -26,13 +26,13 @@ use stdClass;
  */
 abstract class Entity implements \JsonSerializable //, \Stringable
 {
-    protected int $_jsonOptions = \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE
+    public int $_jsonOptions = \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE
     | \JSON_PRESERVE_ZERO_FRACTION | \JSON_THROW_ON_ERROR;
     /**
      * @var array<string>
      */
-    protected array $_jsonVars = [];
-    protected string $_timezone = '+00:00';
+    public array $_jsonVars = [];
+    public string $_timezone = '+00:00';
 
     /**
      * @param array<string,mixed> $properties
