@@ -180,4 +180,11 @@ final class EntityTest extends TestCase
         $this->entity->_jsonVars = $vars;
         self::assertSame($vars, $this->entity->_jsonVars);
     }
+
+    public function testToString() : void
+    {
+        $json = (string) $this->entity;
+        self::assertStringStartsWith('{', $json);
+        self::assertStringEndsWith('}', $json);
+    }
 }

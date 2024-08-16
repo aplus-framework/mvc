@@ -27,7 +27,7 @@ use stdClass;
  *
  * @package mvc
  */
-abstract class Entity implements \JsonSerializable //, \Stringable
+abstract class Entity implements \JsonSerializable, \Stringable
 {
     /**
      * Sets the flags that will be used to encode/decode JSON in internal
@@ -108,6 +108,11 @@ abstract class Entity implements \JsonSerializable //, \Stringable
             return $this->{$property};
         }
         throw $this->propertyNotDefined($property);
+    }
+
+    public function __toString() : string
+    {
+        return \json_encode($this, $this->_jsonFlags); // @phpstan-ignore-line
     }
 
     protected function propertyNotDefined(string $property) : OutOfBoundsException
