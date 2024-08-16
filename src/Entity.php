@@ -171,6 +171,14 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         $this->{$name} = $value;
     }
 
+    /**
+     * Tries to convert the value according to the property type.
+     *
+     * @param string $propertyType
+     * @param mixed $value
+     *
+     * @return mixed
+     */
     protected function typeHint(string $propertyType, mixed $value) : mixed
     {
         $valueType = \get_debug_type($value);
@@ -184,11 +192,29 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         return $newValue ?? $value;
     }
 
+    /**
+     * Override this method to set customizable property types.
+     *
+     * @param string $propertyType
+     * @param string $valueType
+     * @param mixed $value
+     *
+     * @return mixed
+     */
     protected function typeHintCustom(string $propertyType, string $valueType, mixed $value) : mixed
     {
         return null;
     }
 
+    /**
+     * Tries to convert the property value to native PHP types.
+     *
+     * @param string $propertyType
+     * @param string $valueType
+     * @param mixed $value
+     *
+     * @return mixed
+     */
     protected function typeHintNative(string $propertyType, string $valueType, mixed $value) : mixed
     {
         if ($propertyType === 'array') {
@@ -216,6 +242,17 @@ abstract class Entity implements \JsonSerializable //, \Stringable
         return null;
     }
 
+    /**
+     * Tries to convert the property value using Aplus Framework types.
+     *
+     * @param string $propertyType
+     * @param string $valueType
+     * @param mixed $value
+     *
+     * @throws Exception
+     *
+     * @return mixed
+     */
     protected function typeHintAplus(string $propertyType, string $valueType, mixed $value) : mixed
     {
         if ($propertyType === Date::class) {
@@ -230,7 +267,8 @@ abstract class Entity implements \JsonSerializable //, \Stringable
     /**
      * Convert the Entity to an associative array accepted by Model methods.
      *
-     * @throws Exception|JsonException
+     * @throws Exception in case of error creating DateTimeZone
+     * @throws JsonException in case of error while encoding/decoding JSON
      *
      * @return array<string,scalar>
      */
