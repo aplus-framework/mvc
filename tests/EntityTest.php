@@ -183,8 +183,14 @@ final class EntityTest extends TestCase
 
     public function testToString() : void
     {
+        $origin = $this->entity->_jsonVars;
         $json = (string) $this->entity;
+        self::assertSame($origin, $this->entity->_jsonVars);
         self::assertStringStartsWith('{', $json);
-        self::assertStringEndsWith('}', $json);
+        $values = \json_decode($json, true);
+        self::assertArrayHasKey('array', $values);
+        self::assertIsArray($values['array']);
+        self::assertArrayHasKey('id', $values);
+        self::assertNull($values['id']);
     }
 }

@@ -110,9 +110,21 @@ abstract class Entity implements \JsonSerializable, \Stringable
         throw $this->propertyNotDefined($property);
     }
 
+    /**
+     * Converts the entity to a JSON string.
+     * All properties will be included.
+     * Please note that sensitive property data may be exposed!
+     *
+     * @return string
+     */
     public function __toString() : string
     {
-        return \json_encode($this, $this->_jsonFlags); // @phpstan-ignore-line
+        $origin = $this->_jsonVars;
+        $all = \array_keys($this->getObjectVars());
+        $this->_jsonVars = $all;
+        $json = \json_encode($this, $this->_jsonFlags);
+        $this->_jsonVars = $origin;
+        return $json; // @phpstan-ignore-line
     }
 
     protected function propertyNotDefined(string $property) : OutOfBoundsException
