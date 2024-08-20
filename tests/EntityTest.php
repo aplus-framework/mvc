@@ -12,6 +12,7 @@ namespace Tests\MVC;
 use DateTime;
 use Framework\Date\Date;
 use Framework\HTTP\URL;
+use Framework\MVC\Entity;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -146,7 +147,7 @@ final class EntityTest extends TestCase
             '{}',
             \json_encode($this->entity)
         );
-        $this->entity->setJsonVars(['array', 'int', 'url', 'stdClass']);
+        $this->entity->_jsonVars = ['array', 'int', 'url', 'stdClass'];
         self::assertSame(
             '{"array":[],"int":3,"url":"https:\/\/foo.com\/","stdClass":{}}',
             \json_encode($this->entity)
@@ -166,9 +167,10 @@ final class EntityTest extends TestCase
             'date' => '2021-09-15 15:47:08',
             'url' => 'https://foo.com/',
             'mixed' => null,
+            /* Properties not set:
             'id' => null,
             'data' => null,
-            'createdAt' => null,
+            'createdAt' => null,*/
             'updatedAt' => null,
         ], $this->entity->toModel());
     }
@@ -176,8 +178,51 @@ final class EntityTest extends TestCase
     public function testJsonVars() : void
     {
         $vars = ['id', 'data'];
-        self::assertEmpty($this->entity->getJsonVars());
-        $this->entity->setJsonVars($vars);
-        self::assertSame($vars, $this->entity->getJsonVars());
+        self::assertEmpty($this->entity->_jsonVars);
+        $this->entity->_jsonVars = $vars;
+        self::assertSame($vars, $this->entity->_jsonVars);
+    }
+
+    public function testToString() : void
+    {
+        $origin = $this->entity->_jsonVars;
+        $json = (string) $this->entity;
+        self::assertSame($origin, $this->entity->_jsonVars);
+        self::assertStringStartsWith('{', $json);
+        $values = \json_decode($json, true);
+        self::assertArrayHasKey('array', $values);
+        self::assertIsArray($values['array']);
+        self::assertArrayNotHasKey('id', $values);
+    }
+
+    public function testGetObjectVars() : void
+    {
+        $data = [
+            'id2' => 1,
+            'id5' => null,
+        ];
+        $user = new class($data) extends Entity {
+            protected int $id; // not set
+            protected int $id2; // set with 1
+            protected ?int $id3; // nullable not set
+            protected ?int $id4 = null; // nullable set with default value (null)
+            protected ?int $id5; // nullable set with null
+            protected ?int $id6 = 5; // nullable set with default value (5)
+            // @phpstan-ignore-next-line
+            protected $id7; // property without type is null
+            protected string | int $id8; // not set
+
+            public function getObjectVars() : array
+            {
+                return parent::getObjectVars();
+            }
+        };
+        self::assertSame([
+            'id2' => 1,
+            'id4' => null,
+            'id5' => null,
+            'id6' => 5,
+            'id7' => null,
+        ], $user->getObjectVars());
     }
 }

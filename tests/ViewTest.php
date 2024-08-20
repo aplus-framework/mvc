@@ -10,7 +10,7 @@
 namespace Tests\MVC;
 
 use Framework\MVC\App;
-use Framework\MVC\Debug\ViewCollector;
+use Framework\MVC\Debug\ViewsCollector;
 use Framework\MVC\View;
 use PHPUnit\Framework\TestCase;
 
@@ -21,6 +21,7 @@ final class ViewTest extends TestCase
     protected function setUp() : void
     {
         $this->view = new ViewMock(__DIR__ . '/Views');
+        $this->view->setInstanceName('default');
     }
 
     public function testBaseDir() : void
@@ -284,7 +285,7 @@ final class ViewTest extends TestCase
 
     protected function setDebugCollector() : void
     {
-        $collector = new ViewCollector();
+        $collector = new ViewsCollector();
         $this->view->setDebugCollector($collector);
     }
 
@@ -293,11 +294,11 @@ final class ViewTest extends TestCase
         $this->setDebugCollector();
         $contents = $this->view->render('home/index');
         self::assertStringContainsString(
-            '<!-- Block start: home/index::contents -->',
+            '<!-- DEBUG-VIEW START default:home/index::contents -->',
             $contents
         );
         self::assertStringContainsString(
-            '<!-- Block end: home/index::contents -->',
+            '<!-- DEBUG-VIEW ENDED default:home/index::contents -->',
             $contents
         );
     }
@@ -307,20 +308,42 @@ final class ViewTest extends TestCase
         $this->setDebugCollector();
         $contents = $this->view->render('home/index');
         self::assertStringContainsString(
-            '<!-- Include start: _includes/footer -->',
+            '<!-- DEBUG-VIEW START default:_includes/footer -->',
             $contents
         );
         self::assertStringContainsString(
-            '<!-- Include end: _includes/footer -->',
+            '<!-- DEBUG-VIEW ENDED default:_includes/footer -->',
             $contents
         );
         $contents = $this->view->render('home/without-prefix');
         self::assertStringContainsString(
-            '<!-- Include start: _includes/footer -->',
+            '<!-- DEBUG-VIEW START default:_includes/footer -->',
             $contents
         );
         self::assertStringContainsString(
-            '<!-- Include end: _includes/footer -->',
+            '<!-- DEBUG-VIEW ENDED default:_includes/footer -->',
+            $contents
+        );
+    }
+
+    public function testDebugIncludeRepeated() : void
+    {
+        $this->setDebugCollector();
+        $contents = $this->view->render('home/repeat-includes');
+        self::assertStringContainsString(
+            '<!-- DEBUG-VIEW START default:_includes/footer -->',
+            $contents
+        );
+        self::assertStringContainsString(
+            '<!-- DEBUG-VIEW ENDED default:_includes/footer -->',
+            $contents
+        );
+        self::assertStringContainsString(
+            '<!-- DEBUG-VIEW START default:_includes/footer:2 -->',
+            $contents
+        );
+        self::assertStringContainsString(
+            '<!-- DEBUG-VIEW ENDED default:_includes/footer:2 -->',
             $contents
         );
     }
@@ -330,39 +353,39 @@ final class ViewTest extends TestCase
         $this->setDebugCollector();
         $contents = $this->view->render('home/index');
         self::assertStringContainsString(
-            '<!-- Render start: home/index -->',
+            '<!-- DEBUG-VIEW START default:home/index -->',
             $contents
         );
         self::assertStringContainsString(
-            '<!-- Render end: home/index -->',
+            '<!-- DEBUG-VIEW ENDED default:home/index -->',
             $contents
         );
     }
 
     public function testDebugComments() : void
     {
-        $this->view->setDebugCollector(new ViewCollector())
+        $this->view->setDebugCollector(new ViewsCollector())
             ->setLayoutPrefix('_layouts')
             ->setIncludePrefix('_includes');
         $contents = $this->view->render('comments');
         self::assertSame(
             <<<'EOL'
-                <!-- Render start: comments -->
-                <!-- Layout start: _layouts/default -->
+                <!-- DEBUG-VIEW START default:comments -->
+                <!-- DEBUG-VIEW START default:_layouts/default -->
                 <h1>Layout Default</h1>
 
-                <!-- Block start: comments::contents -->
+                <!-- DEBUG-VIEW START default:comments::contents -->
                 CONTENTS
 
-                <!-- Include start: _includes/footer -->
+                <!-- DEBUG-VIEW START default:_includes/footer -->
                 <footer>Footer</footer>
 
-                <!-- Include end: _includes/footer -->
+                <!-- DEBUG-VIEW ENDED default:_includes/footer -->
 
-                <!-- Block end: comments::contents -->
+                <!-- DEBUG-VIEW ENDED default:comments::contents -->
 
-                <!-- Layout end: _layouts/default -->
-                <!-- Render end: comments -->
+                <!-- DEBUG-VIEW ENDED default:_layouts/default -->
+                <!-- DEBUG-VIEW ENDED default:comments -->
                 EOL,
             $contents
         );
@@ -370,7 +393,7 @@ final class ViewTest extends TestCase
 
     public function testDebugCommentsDisabled() : void
     {
-        $this->view->setDebugCollector(new ViewCollector())
+        $this->view->setDebugCollector(new ViewsCollector())
             ->disableDebugComments()
             ->setLayoutPrefix('_layouts')
             ->setIncludePrefix('_includes');

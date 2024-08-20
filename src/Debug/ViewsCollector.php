@@ -13,11 +13,11 @@ use Framework\Debug\Collector;
 use Framework\MVC\View;
 
 /**
- * Class ViewCollector.
+ * Class ViewsCollector.
  *
  * @package mvc
  */
-class ViewCollector extends Collector
+class ViewsCollector extends Collector
 {
     protected View $view;
 

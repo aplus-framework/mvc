@@ -12,9 +12,8 @@ namespace Framework\MVC;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\Routing\RouteActions;
-use LogicException;
+use ReflectionClass;
 use ReflectionNamedType;
-use ReflectionProperty;
 
 /**
  * Class Controller.
@@ -35,6 +34,14 @@ abstract class Controller extends RouteActions
      * @var Response
      */
     protected Response $response;
+    /**
+     * Set true to load models in properties.
+     *
+     * @see Controller::prepareModels()
+     *
+     * @var bool
+     */
+    protected bool $loadModels = true;
 
     /**
      * Controller constructor.
@@ -46,29 +53,35 @@ abstract class Controller extends RouteActions
     {
         $this->request = $request;
         $this->response = $response;
-        $this->prepareModel();
+        if ($this->loadModels) {
+            $this->prepareModels();
+        }
     }
 
     /**
-     * Initialize $model with property type name.
+     * Initialize models in properties.
      *
-     * @since 3.6
+     * @since 4
      *
      * @return static
      */
-    protected function prepareModel() : static
+    protected function prepareModels() : static
     {
-        if (\property_exists($this, 'model')) {
-            $property = new ReflectionProperty($this, 'model');
+        $reflection = new ReflectionClass($this);
+        foreach ($reflection->getProperties() as $property) {
             $type = $property->getType();
-            if (!$type instanceof ReflectionNamedType || $type->isBuiltin()) {
-                throw new LogicException(
-                    'Property ' . static::class
-                    . '::$model must have a valid named type'
-                );
+            if (!$type instanceof ReflectionNamedType) {
+                continue;
             }
-            $name = $type->getName();
-            $this->model = new $name();
+            $class = $type->getName();
+            if (!\is_subclass_of($class, Model::class)) {
+                continue;
+            }
+            $name = $property->name;
+            if (isset($this->{$name})) {
+                continue;
+            }
+            $this->{$name} = Model::get($class);
         }
         return $this;
     }

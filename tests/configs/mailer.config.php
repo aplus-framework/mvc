@@ -10,21 +10,15 @@
 /**
  * @see App::mailer()
  */
-
-use Framework\Email\Mailers\SMTPMailer;
-
 return [
     'default' => [
-        'class' => SMTPMailer::class,
-        'config' => [
-            'server' => 'localhost',
-            'port' => 587,
-            'tls' => true,
-            'username' => null,
-            'password' => null,
-            'charset' => 'utf-8',
-            'crlf' => "\r\n",
-            'keep_alive' => false,
-        ],
+        'host' => 'localhost',
+        'port' => 587,
+        'tls' => true,
+        'username' => null,
+        'password' => null,
+        'charset' => 'utf-8',
+        'crlf' => "\r\n",
+        'keep_alive' => false,
     ],
 ];

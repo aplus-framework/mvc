@@ -10,7 +10,7 @@
 namespace Framework\MVC;
 
 use Framework\Helpers\Isolation;
-use Framework\MVC\Debug\ViewCollector;
+use Framework\MVC\Debug\ViewsCollector;
 use InvalidArgumentException;
 use LogicException;
 
@@ -38,11 +38,16 @@ class View
      */
     protected array $blocks;
     protected string $currentView;
-    protected ViewCollector $debugCollector;
+    protected ViewsCollector $debugCollector;
     protected string $layoutPrefix = '';
     protected string $includePrefix = '';
     protected bool $inInclude = false;
     protected bool $showDebugComments = true;
+    /**
+     * @var array<string>
+     */
+    protected array $viewsPaths = [];
+    protected string $instanceName;
 
     public function __construct(string $baseDir = null, string $extension = '.php')
     {
@@ -187,11 +192,11 @@ class View
                 $type = 'layout';
             }
             $this->setDebugData($view, $start, $type);
-            $type = \ucfirst($type);
             if ($this->isShowingDebugComments()) {
-                $contents = '<!-- ' . $type . ' start: ' . $view . ' -->'
+                $path = $this->getCommentPath($view);
+                $contents = '<!-- DEBUG-VIEW START ' . $path . ' -->'
                     . \PHP_EOL . $contents . \PHP_EOL
-                    . '<!-- ' . $type . ' end: ' . $view . ' -->';
+                    . '<!-- DEBUG-VIEW ENDED ' . $path . ' -->';
             }
         }
         return $contents;
@@ -238,8 +243,9 @@ class View
         if (isset($this->debugCollector) && $this->isShowingDebugComments()) {
             if (isset($this->currentView)) {
                 $name = $this->currentView . '::' . $name;
+                $name = $this->getInstanceNameWithPath($name);
             }
-            echo \PHP_EOL . '<!-- Block start: ' . $name . ' -->' . \PHP_EOL;
+            echo \PHP_EOL . '<!-- DEBUG-VIEW START ' . $name . ' -->' . \PHP_EOL;
         }
         return $this;
     }
@@ -254,8 +260,9 @@ class View
             $block = $name;
             if (isset($this->currentView)) {
                 $block = $this->currentView . '::' . $name;
+                $block = $this->getInstanceNameWithPath($block);
             }
-            echo \PHP_EOL . '<!-- Block end: ' . $block . ' -->' . \PHP_EOL;
+            echo \PHP_EOL . '<!-- DEBUG-VIEW ENDED ' . $block . ' -->' . \PHP_EOL;
         }
         $contents = \ob_get_clean();
         if (!isset($this->blocks[$name])) {
@@ -310,9 +317,10 @@ class View
 
     protected function involveInclude(string $view, string $contents) : string
     {
-        return \PHP_EOL . '<!-- Include start: ' . $view . ' -->'
+        $path = $this->getCommentPath($view);
+        return \PHP_EOL . '<!-- DEBUG-VIEW START ' . $path . ' -->'
             . \PHP_EOL . $contents . \PHP_EOL
-            . '<!-- Include end: ' . $view . ' -->' . \PHP_EOL;
+            . '<!-- DEBUG-VIEW ENDED ' . $path . ' -->' . \PHP_EOL;
     }
 
     /**
@@ -380,7 +388,38 @@ class View
         return \ob_get_clean(); // @phpstan-ignore-line
     }
 
-    public function setDebugCollector(ViewCollector $debugCollector) : static
+    public function getInstanceName() : string
+    {
+        return $this->instanceName;
+    }
+
+    public function getInstanceNameWithPath(string $name) : string
+    {
+        return $this->getInstanceName() . ':' . $name;
+    }
+
+    public function setInstanceName(string $instanceName) : static
+    {
+        $this->instanceName = $instanceName;
+        return $this;
+    }
+
+    protected function getCommentPath(string $name) : string
+    {
+        $count = null;
+        foreach ($this->viewsPaths as $view) {
+            if ($view === $name) {
+                $count++;
+            }
+        }
+        $this->viewsPaths[] = $name;
+        if ($count) {
+            $count = ':' . ($count + 1);
+        }
+        return $this->getInstanceNameWithPath($name) . $count;
+    }
+
+    public function setDebugCollector(ViewsCollector $debugCollector) : static
     {
         $this->debugCollector = $debugCollector;
         $this->debugCollector->setView($this);

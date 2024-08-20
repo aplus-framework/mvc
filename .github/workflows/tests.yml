@@ -33,7 +33,7 @@ jobs:
         ports:
           - 6379:6379
 
-    name: PHP 8.1
+    name: PHP 8.3
 
     steps:
       - name: Checkout
@@ -42,7 +42,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: 8.3
           tools: composer
           coverage: xdebug
 

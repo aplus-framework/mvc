@@ -440,6 +440,7 @@ Cache Config Options
                 'configs' => [],
                 'prefix' => null,
                 'serializer' => Framework\Cache\Serializer::PHP,
+                'default_ttl' => null,
                 'logger_instance' => 'default',
             ],
         ],
@@ -469,6 +470,13 @@ Sets the serializer with a value from the enum Framework\Cache\Serializer,
 which can be a case of the enum or a string.
 
 The default value is ``Framework\Cache\Serializer::PHP``.
+
+default_ttl
+"""""""""""
+
+Sets the default Time To Live, in seconds, for caching items.
+
+The default value is ``null`` to use the class value (``60``).
 
 logger_instance
 """""""""""""""
@@ -846,21 +854,17 @@ Mailer Config Options
     [
         'mailer' => [
             'default' => [
-                'class' => Framework\Email\Mailers\SMTPMailer::class,
-                'config' => ???, // Must be set
+                'host' => 'localhost',
+                'port' => 587,
+                'tls' => true,
+                'username' => null,
+                'password' => null,
+                'charset' => 'utf-8',
+                'crlf' => "\r\n",
+                'keep_alive' => false,
             ],
         ],
     ]
-
-class
-"""""
-
-Sets the Fully Qualified Class Name of a child class of Framework\Email\Mailer.
-
-The default is ``Framework\Email\Mailers\SMTPMailer``.
-
-config
-""""""
 
 Set an array with Mailer settings. Normally you just set the ``username``, the
 ``password``, the ``host`` and the ``port``.
@@ -1281,12 +1285,12 @@ methods, ``isGet`` and ``isPost``:
     {
         public function isGet() : bool
         {
-            return $this->hasMethod('get');
+            return $this->isMethod('get');
         }
 
         public function isPost() : bool
         {
-            return $this->hasMethod('post');
+            return $this->isMethod('post');
         }
     }
 
@@ -2019,8 +2023,69 @@ Let's see how to create a row using the variable ``$user``, which is an entity:
 
     $id = $model->create($user); // Insert ID or false
 
+Working with Timezones
+**********************
+
+Let's see below how to work with timezones when exporting data to models.
+
+.. code-block:: php
+    
+    use Framework\Date\Date;
+    use Framework\MVC\Entity;
+
+    class User extends Entity
+    {
+        public string $_timezone = '+00:00'; // Default value
+        protected Date $createdAt;
+    }
+
+We set PHP's default timezone to America/Sao_Paulo (-03:00):
+
+.. code-block:: php
+
+    date_default_timezone_set('America/Sao_Paulo');
+
+The User object is created:
+
+.. code-block:: php
+
+    $user = new User([
+        'createdAt' => '2024-08-02 10:30:00',
+    ]);
+
+Result using default timezone (-03:00):
+
+.. code-block:: php
+
+    echo $user->createdAt->format('Y-m-d H:i:s'); // '2024-08-02 10:30:00'
+
+When passing through the ``toModel`` method, the value of ``createdAt`` is modified.
+
+The conversion to the time zone of the ``$_timezone`` property (+00:00) is performed:
+
+.. code-block:: php
+
+    $data = $user->toModel();
+    echo $data['createdAt']; // '2024-08-02 13:30:00'
+
+When modifying ``$_timezone``, the converted value will also change:
+
+.. code-block:: php
+
+    $user->_timezone = '+05:00';
+    $data = $user->toModel();
+    echo $data['createdAt']; // '2024-08-02 18:30:00'
+
+We advise you to leave the Entity and database timezones with the default value
+of ``+00:00`` (UTC). But if you really need to modify it don't forget to do it
+when you `connect the database <https://docs.aplus-framework.com/guides/libraries/database/index.html#connection>`_
+and put the same timezone in the Entity.
+
 JSON Encoding
 #############
+
+JSON Vars
+*********
 
 When working with APIs, it may be necessary to convert an Entity to a JSON
 object.
@@ -2030,15 +2095,51 @@ To set which properties will be JSON-encoded just list them in the property
 
 .. code-block:: php
 
+    use Framework\Date\Date;
+    use Framework\HTTP\URL;
+    use Framework\MVC\Entity;
+    
     class User extends Entity
     {
-        protected array $_jsonVars = [
+        public array $_jsonVars = [
             'id',
             'name',
             'url',
             'createdAt',
+            'updatedAt',
+            'bio',
         ];
+        protected int $id;
+        protected string $name;
+        protected ?string $bio = null;
+        protected string $email;
+        protected string $passwordHash;
+        protected URL $url;
+        protected Date $createdAt;
+        protected Date $updatedAt;
     }
+
+.. code-block:: php
+
+    $user = new User([
+        'id' => 1,
+        'name' => 'John Doe',
+        'url' => 'https://domain.tld/users/1',
+        'createdAt' => 'now',
+    ]);
+
+Or set whenever you want:
+
+.. code-block:: php
+
+    $user->_jsonVars = [
+        'id',
+        'name',
+        'url',
+        'createdAt',
+        'updatedAt',
+        'bio',
+    ];
 
 Once this is done, the entity can be encoded. Let's see in the following
 example:
@@ -2055,10 +2156,82 @@ And then the JSON object:
         "id": 1,
         "name": "John Doe",
         "url": "https://domain.tld/users/1",
-        "createdAt": "2022-06-10T18:36:52-03:00"
+        "createdAt": "2024-08-02T10:30:00-03:00",
+        "bio": null
     }
 
-Note that the ``url`` and ``createdAt`` property objects have been serialized.
+Note that the ``url`` and ``createdAt`` property objects have been json-serialized.
+
+And, only properties with defined values will appear in the result. Note that
+``bio`` has the default value of ``null`` and appears in the result. On the other
+hand, the ``updatedAt`` property does not have a defined value and therefore does
+not appear in the result.
+
+JSON Flags
+**********
+
+Through the ``$_jsonFlags`` property, the flags to encode and decode JSON
+internally in the Entity class are set.
+
+The example below shows the flags with the default value:
+
+.. code-block:: php
+
+    class User extends Entity
+    {
+        public int $_jsonFlags = JSON_UNESCAPED_SLASHES
+            | JSON_UNESCAPED_UNICODE
+            | JSON_PRESERVE_ZERO_FRACTION
+            | JSON_THROW_ON_ERROR;
+    }
+
+You can find more details on the
+`JSON Constants <https://www.php.net/manual/en/json.constants.php>`_ page.
+
+Below is an example showing what can happen:
+
+.. code-block:: php
+    
+    class People extends Entity
+    {
+        protected string $name;
+        protected float $height;
+        protected string $status;
+        protected URL $link;
+        protected array $config;
+    }
+
+    $people = new People([
+        'name' => 'John Doe',
+        'height' => 1,
+        'status' => 'Happy! ❤️ ⚡⚡',
+        'link' => 'https://domain.tld/john-doe',
+        'config' => [
+            'theme' => [
+                'color' => 'magenta',
+                'background' => 'black',
+            ],
+        ],
+    ]);
+
+    $people->_jsonVars = ['height', 'link', 'config', 'status'];
+
+    echo (string) $people;
+
+This is the result when the People entity is encoded without flags:
+
+.. code-block:: json
+
+    {"height":1,"link":"https:\/\/domain.tld\/john-doe","config":{"theme":{"color":"magenta","background":"black"}},"status":"Happy! \u2764\ufe0f \u26a1\u26a1"}
+
+And, this is the result with the default flags:
+
+.. code-block:: json
+
+    {"height":1.0,"link":"https://domain.tld/john-doe","config":{"theme":{"color":"magenta","background":"black"}},"status":"Happy! ❤️ ⚡⚡"}
+
+Note that ``height`` has a float value, ``link`` has no backslashes, and the
+unicode in ``status`` is not escaped.
 
 Validator
 ---------
@@ -2484,11 +2657,11 @@ successfully:
         public function create() : void
         {
             $rules = [
-                'name' => 'required|minLength:5|maxLength:32',
-                'email' => 'required|email',
-                'message' => 'required|minLength:10|maxLength:1000',
+                'name' => 'minLength:5|maxLength:32',
+                'email' => 'email',
+                'message' => 'minLength:10|maxLength:1000',
             ];
-            $errors =  $this->validate($this->request->getPost(), $rules);
+            $errors = $this->validate($this->request->getPost(), $rules);
             if ($errors) {
                 echo '<h2>Validation Errors</h2>';
                 echo '<ul>';
@@ -2530,17 +2703,17 @@ in the Response body:
 The example above is simple, but $request and $response are powerful, having
 numerous useful methods for working on HTTP interactions.
 
-Model Instance
-##############
+Model Instances
+###############
 
-Each controller can have a ``$model`` property, which will be automatically
+Each controller can have model instances in properties, which will be automatically
 instantiated in the class constructor.
 
-The ``$model`` property must have a child class type of Model.
+The properties must be child classes of the ``Framework\MVC\Model`` class.
 
-Let's see below that ``$model`` receives the type name of the
+Let's see below that ``$users`` receives the type name of the
 ``App\Models\UsersModel`` class and in the ``show`` method the direct call to
-the ``$model`` property is used, which has the instance of
+the ``$users`` property is used, which has the instance of
 ``App\Models\UsersModel``:
 
 .. code-block:: php
@@ -2550,11 +2723,11 @@ the ``$model`` property is used, which has the instance of
 
     class Users extends Controller
     {
-        protected UsersModel $model;
+        protected UsersModel $users;
 
         public function show(int $id) : string
         {
-            $user = $this->model->read($id);
+            $user = $this->users->read($id);
             return $this->render('users/show', [
                 'user' => $user,
             ]);
@@ -2579,12 +2752,12 @@ JSON-encoded and added to the Response body:
 
     class Users extends Controller
     {
-        protected UsersModel $model;
+        protected UsersModel $users;
 
         public function index() : array
         {
             $page = $this->request->getGet('page')
-            $users = $this->model->paginate($page);
+            $users = $this->users->paginate($page);
             return $users;
         }
     }
@@ -2614,7 +2787,7 @@ the user can access the admin area:
     {
         protected function beforeAction(string $method, array $arguments) : mixed
         {
-            if ( ! App::session()->has('user_id')) {
+            if (!App::session()->has('user_id')) {
                 return $this->response->redirect('/login');
             }
             return null;

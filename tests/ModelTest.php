@@ -10,6 +10,7 @@
 namespace Tests\MVC;
 
 use Framework\MVC\App;
+use Framework\MVC\Model;
 use Tests\MVC\Models\FooBarModel;
 
 /**
@@ -49,6 +50,20 @@ final class ModelTest extends ModelTestCase
         $this->model->convertCase('fooBar', 'foo');
     }
 
+    public function testFindBy() : void
+    {
+        self::assertIsObject($this->model->findBy('id', 1));
+        self::assertNull($this->model->findBy('id', 1000));
+        self::assertIsObject($this->model->findBy('data', 'foo'));
+    }
+
+    public function testFindByWithCall() : void
+    {
+        self::assertIsObject($this->model->findById(1));
+        self::assertNull($this->model->findById(1000));
+        self::assertIsObject($this->model->findByData('foo')); // @phpstan-ignore-line
+    }
+
     public function testReadBy() : void
     {
         self::assertIsObject($this->model->readBy('id', 1));
@@ -81,6 +96,16 @@ final class ModelTest extends ModelTestCase
         $this->model->foo(); // @phpstan-ignore-line
     }
 
+    public function testFind() : void
+    {
+        self::assertIsObject($this->model->find(1));
+        $this->model->returnType = 'array';
+        self::assertIsArray($this->model->find(1));
+        $this->model->returnType = EntityMock::class;
+        self::assertInstanceOf(EntityMock::class, $this->model->find(1));
+        self::assertNull($this->model->find(100));
+    }
+
     public function testRead() : void
     {
         self::assertIsObject($this->model->read(1));
@@ -89,6 +114,20 @@ final class ModelTest extends ModelTestCase
         $this->model->returnType = EntityMock::class;
         self::assertInstanceOf(EntityMock::class, $this->model->read(1));
         self::assertNull($this->model->read(100));
+    }
+
+    public function testFindAll() : void
+    {
+        $data = $this->model->findAll();
+        self::assertSame(1, $data[0]->id); // @phpstan-ignore-line
+        self::assertSame(2, $data[1]->id); // @phpstan-ignore-line
+        $data = $this->model->findAll(2, 1);
+        self::assertSame(2, $data[0]->id); // @phpstan-ignore-line
+        $this->model->returnType = 'array';
+        $data = $this->model->findAll();
+        self::assertSame(1, $data[0]['id']); // @phpstan-ignore-line
+        self::assertSame(2, $data[1]['id']); // @phpstan-ignore-line
+        self::assertEmpty($this->model->findAll(1, 100));
     }
 
     public function testList() : void
@@ -643,5 +682,11 @@ final class ModelTest extends ModelTestCase
         $model = new FooBarModel();
         self::assertSame('FooBar', $model->getTable());
         self::assertSame('FooBar', $model->getTable());
+    }
+
+    public function testGet() : void
+    {
+        $model = Model::get(ModelMock::class);
+        self::assertSame($model, Model::get(ModelMock::class));
     }
 }

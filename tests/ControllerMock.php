@@ -16,9 +16,13 @@ use Framework\MVC\Controller;
 class ControllerMock extends Controller
 {
     public ModelMock $model;
+    public ModelMock $foo;
+    public ModelMock $modelIsset;
+    public string|ModelMock $reflectionUnionType;
 
     public function __construct()
     {
+        $this->modelIsset = new ModelMock();
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['HTTP_HOST'] = 'localhost';

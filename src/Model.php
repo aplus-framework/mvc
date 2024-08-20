@@ -23,7 +23,6 @@ use Framework\Validation\FilesValidator;
 use Framework\Validation\Validation;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
-use JetBrains\PhpStorm\Deprecated;
 use JetBrains\PhpStorm\Pure;
 use LogicException;
 use mysqli_sql_exception;
@@ -35,14 +34,22 @@ use stdClass;
  *
  * @package mvc
  *
- * @method false|int|string createById(array|Entity|stdClass $data) Create a new row and return the id.
+ * @method false|int|string createById(array|Entity|stdClass $data) Create a new row and return the
+ *     id.
  * @method array|Entity|stdClass|null readById(int|string $id) Read a row by id.
- * @method false|int|string updateById(int|string $id, array|Entity|stdClass $data) Update rows by id.
+ * @method array|Entity|stdClass|null findById(int|string $id) Find a row by id.
+ * @method false|int|string updateById(int|string $id, array|Entity|stdClass $data) Update rows by
+ *     id.
  * @method false|int|string deleteById(int|string $id) Delete rows by id.
- * @method false|int|string replaceById(int|string $id, array|Entity|stdClass $data) Replace rows by id.
+ * @method false|int|string replaceById(int|string $id, array|Entity|stdClass $data) Replace rows
+ *     by id.
  */
 abstract class Model implements ModelInterface
 {
+    /**
+     * @var array<string,mixed>
+     */
+    protected static array $models = [];
     /**
      * Database connection instance name for read operations.
      *
@@ -216,13 +223,11 @@ abstract class Model implements ModelInterface
             $method = $this->convertCase($method, $this->columnCase);
             return $this->replaceBy($method, $arguments[0], $arguments[1]); // @phpstan-ignore-line
         }
-        // @codeCoverageIgnoreStart
         if (\str_starts_with($method, 'findBy')) {
             $method = \substr($method, 6);
             $method = $this->convertCase($method, $this->columnCase);
             return $this->findBy($method, $arguments[0]); // @phpstan-ignore-line
         }
-        // @codeCoverageIgnoreEnd
         $class = static::class;
         if (\method_exists($this, $method)) {
             throw new BadMethodCallException(
@@ -603,10 +608,10 @@ abstract class Model implements ModelInterface
     /**
      * Read a row by column name and value.
      *
-     * @param string $column
-     * @param int|string $value
-     *
      * @since 3.6
+     *
+     * @param int|string $value
+     * @param string $column
      *
      * @return array<string,float|int|string|null>|Entity|stdClass|null
      */
@@ -622,38 +627,28 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * Alias of {@see Model::readBy()}.
+     *
      * Find a row by column name and value.
      *
      * @param string $column
      * @param int|string $value
      *
-     * @deprecated
-     *
-     * @codeCoverageIgnore
-     *
      * @return array<string,float|int|string|null>|Entity|stdClass|null
      */
-    #[Deprecated(
-        reason: 'since MVC Library version 3.6, use readBy() instead',
-        replacement: '%class%->readBy(%parameter0%, %parameter1%)'
-    )]
     public function findBy(
         string $column,
         int | string $value
     ) : array | Entity | stdClass | null {
-        \trigger_error(
-            'Method ' . __METHOD__ . ' is deprecated',
-            \E_USER_DEPRECATED
-        );
         return $this->readBy($column, $value);
     }
 
     /**
      * Read a row based on Primary Key.
      *
-     * @param int|string $id
-     *
      * @since 3.6
+     *
+     * @param int|string $id
      *
      * @return array<string,float|int|string|null>|Entity|stdClass|null The
      * selected row as configured on $returnType property or null if row was
@@ -666,32 +661,22 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * Alias of {@see Model::read()}.
+     *
      * @param int|string $id
      *
      * @return array|Entity|float[]|int[]|null[]|stdClass|string[]|null
-     *
-     * @deprecated
-     *
-     * @codeCoverageIgnore
      */
-    #[Deprecated(
-        reason: 'since MVC Library version 3.6, use read() instead',
-        replacement: '%class%->read(%parameter0%)'
-    )]
     public function find(int | string $id) : array | Entity | stdClass | null
     {
-        \trigger_error(
-            'Method ' . __METHOD__ . ' is deprecated',
-            \E_USER_DEPRECATED
-        );
         return $this->read($id);
     }
 
     /**
-     * @param string $column
-     * @param int|string $value
-     *
      * @since 3.6
+     *
+     * @param int|string $value
+     * @param string $column
      *
      * @return array<string,float|int|string|null>|null
      */
@@ -707,56 +692,10 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * @param string $column
-     * @param int|string $value
-     *
-     * @return array<string,float|int|string|null>|null
-     *
-     * @deprecated
-     *
-     * @codeCoverageIgnore
-     */
-    #[Deprecated(
-        reason: 'since MVC Library version 3.6, use readRow() instead',
-        replacement: '%class%->readRow(%parameter0%, %parameter1%)'
-    )]
-    protected function findRow(string $column, int | string $value) : array | null
-    {
-        \trigger_error(
-            'Method ' . __METHOD__ . ' is deprecated',
-            \E_USER_DEPRECATED
-        );
-        return $this->readRow($column, $value);
-    }
-
-    /**
-     * @param string $column
-     * @param int|string $value
-     *
-     * @return array<string,float|int|string|null>|Entity|stdClass|null
-     *
-     * @deprecated
-     *
-     * @codeCoverageIgnore
-     */
-    #[Deprecated(
-        reason: 'since MVC Library version 3.6, use readWithCache() instead',
-        replacement: '%class%->readWithCache(%parameter0%, %parameter1%)'
-    )]
-    protected function findWithCache(string $column, int | string $value) : array | Entity | stdClass | null
-    {
-        \trigger_error(
-            'Method ' . __METHOD__ . ' is deprecated',
-            \E_USER_DEPRECATED
-        );
-        return $this->readWithCache($column, $value);
-    }
-
-    /**
-     * @param string $column
-     * @param int|string $value
-     *
      * @since 3.6
+     *
+     * @param int|string $value
+     * @param string $column
      *
      * @return array<string,float|int|string|null>|Entity|stdClass|null
      */
@@ -781,37 +720,27 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * Alias of {@see Model::list()}.
+     *
      * Find all rows with limit and offset.
      *
      * @param int|null $limit
      * @param int|null $offset
      *
      * @return array<int,array<mixed>|Entity|stdClass>
-     *
-     * @deprecated
-     *
-     * @codeCoverageIgnore
      */
-    #[Deprecated(
-        reason: 'since MVC Library version 3.6, use list() instead',
-        replacement: '%class%->readAll(%parameter0%, %parameter1%)'
-    )]
     public function findAll(int $limit = null, int $offset = null) : array
     {
-        \trigger_error(
-            'Method ' . __METHOD__ . ' is deprecated',
-            \E_USER_DEPRECATED
-        );
         return $this->list($limit, $offset);
     }
 
     /**
      * List rows, optionally with limit and offset.
      *
-     * @param int|null $limit
-     * @param int|null $offset
-     *
      * @since 3.6
+     *
+     * @param int|null $offset
+     * @param int|null $limit
      *
      * @return array<int,array<mixed>|Entity|stdClass>
      */
@@ -919,7 +848,7 @@ abstract class Model implements ModelInterface
             return false;
         }
         $insertId = $affectedRows > 0 // $affectedRows is -1 if fail with MYSQLI_REPORT_OFF
-            ? $database->insertId()
+            ? $database->getInsertId()
             : false;
         if ($insertId && $this->isCacheActive()) {
             $this->updateCachedRow($this->getPrimaryKey(), $insertId);
@@ -1297,5 +1226,24 @@ abstract class Model implements ModelInterface
         }
         $suffix = \implode(';', $suffix);
         return 'Model:' . static::class . '::' . $suffix;
+    }
+
+    /**
+     * Get same Model instance.
+     *
+     * @template T of Model
+     *
+     * @since 4
+     *
+     * @param class-string<T> $class
+     *
+     * @return T
+     */
+    public static function get(string $class) : Model
+    {
+        if (!isset(static::$models[$class])) {
+            static::$models[$class] = new $class();
+        }
+        return static::$models[$class];
     }
 }
