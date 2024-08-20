@@ -2023,8 +2023,69 @@ Let's see how to create a row using the variable ``$user``, which is an entity:
 
     $id = $model->create($user); // Insert ID or false
 
+Working with Timezones
+**********************
+
+Let's see below how to work with timezones when exporting data to models.
+
+.. code-block:: php
+    
+    use Framework\Date\Date;
+    use Framework\MVC\Entity;
+
+    class User extends Entity
+    {
+        public string $_timezone = '+00:00'; // Default value
+        protected Date $createdAt;
+    }
+
+We set PHP's default timezone to America/Sao_Paulo (-03:00):
+
+.. code-block:: php
+
+    date_default_timezone_set('America/Sao_Paulo');
+
+The User object is created:
+
+.. code-block:: php
+
+    $user = new User([
+        'createdAt' => '2024-08-02 10:30:00',
+    ]);
+
+Result using default timezone (-03:00):
+
+.. code-block:: php
+
+    echo $user->createdAt->format('Y-m-d H:i:s'); // '2024-08-02 10:30:00'
+
+When passing through the ``toModel`` method, the value of ``createdAt`` is modified.
+
+The conversion to the time zone of the ``$_timezone`` property (+00:00) is performed:
+
+.. code-block:: php
+
+    $data = $user->toModel();
+    echo $data['createdAt']; // '2024-08-02 13:30:00'
+
+When modifying ``$_timezone``, the converted value will also change:
+
+.. code-block:: php
+
+    $user->_timezone = '+05:00';
+    $data = $user->toModel();
+    echo $data['createdAt']; // '2024-08-02 18:30:00'
+
+We advise you to leave the Entity and database timezones with the default value
+of ``+00:00`` (UTC). But if you really need to modify it don't forget to do it
+when you `connect the database <https://docs.aplus-framework.com/guides/libraries/database/index.html#connection>`_
+and put the same timezone in the Entity.
+
 JSON Encoding
 #############
+
+JSON Vars
+*********
 
 When working with APIs, it may be necessary to convert an Entity to a JSON
 object.
@@ -2034,15 +2095,51 @@ To set which properties will be JSON-encoded just list them in the property
 
 .. code-block:: php
 
+    use Framework\Date\Date;
+    use Framework\HTTP\URL;
+    use Framework\MVC\Entity;
+    
     class User extends Entity
     {
-        protected array $_jsonVars = [
+        public array $_jsonVars = [
             'id',
             'name',
             'url',
             'createdAt',
+            'updatedAt',
+            'bio',
         ];
+        protected int $id;
+        protected string $name;
+        protected ?string $bio = null;
+        protected string $email;
+        protected string $passwordHash;
+        protected URL $url;
+        protected Date $createdAt;
+        protected Date $updatedAt;
     }
+
+.. code-block:: php
+
+    $user = new User([
+        'id' => 1,
+        'name' => 'John Doe',
+        'url' => 'https://domain.tld/users/1',
+        'createdAt' => 'now',
+    ]);
+
+Or set whenever you want:
+
+.. code-block:: php
+
+    $user->_jsonVars = [
+        'id',
+        'name',
+        'url',
+        'createdAt',
+        'updatedAt',
+        'bio',
+    ];
 
 Once this is done, the entity can be encoded. Let's see in the following
 example:
@@ -2059,10 +2156,82 @@ And then the JSON object:
         "id": 1,
         "name": "John Doe",
         "url": "https://domain.tld/users/1",
-        "createdAt": "2022-06-10T18:36:52-03:00"
+        "createdAt": "2024-08-02T10:30:00-03:00",
+        "bio": null
     }
 
-Note that the ``url`` and ``createdAt`` property objects have been serialized.
+Note that the ``url`` and ``createdAt`` property objects have been json-serialized.
+
+And, only properties with defined values will appear in the result. Note that
+``bio`` has the default value of ``null`` and appears in the result. On the other
+hand, the ``updatedAt`` property does not have a defined value and therefore does
+not appear in the result.
+
+JSON Flags
+**********
+
+Through the ``$_jsonFlags`` property, the flags to encode and decode JSON
+internally in the Entity class are set.
+
+The example below shows the flags with the default value:
+
+.. code-block:: php
+
+    class User extends Entity
+    {
+        public int $_jsonFlags = JSON_UNESCAPED_SLASHES
+            | JSON_UNESCAPED_UNICODE
+            | JSON_PRESERVE_ZERO_FRACTION
+            | JSON_THROW_ON_ERROR;
+    }
+
+You can find more details on the
+`JSON Constants <https://www.php.net/manual/en/json.constants.php>`_ page.
+
+Below is an example showing what can happen:
+
+.. code-block:: php
+    
+    class People extends Entity
+    {
+        protected string $name;
+        protected float $height;
+        protected string $status;
+        protected URL $link;
+        protected array $config;
+    }
+
+    $people = new People([
+        'name' => 'John Doe',
+        'height' => 1,
+        'status' => 'Happy! ❤️ ⚡⚡',
+        'link' => 'https://domain.tld/john-doe',
+        'config' => [
+            'theme' => [
+                'color' => 'magenta',
+                'background' => 'black',
+            ],
+        ],
+    ]);
+
+    $people->_jsonVars = ['height', 'link', 'config', 'status'];
+
+    echo (string) $people;
+
+This is the result when the People entity is encoded without flags:
+
+.. code-block:: json
+
+    {"height":1,"link":"https:\/\/domain.tld\/john-doe","config":{"theme":{"color":"magenta","background":"black"}},"status":"Happy! \u2764\ufe0f \u26a1\u26a1"}
+
+And, this is the result with the default flags:
+
+.. code-block:: json
+
+    {"height":1.0,"link":"https://domain.tld/john-doe","config":{"theme":{"color":"magenta","background":"black"}},"status":"Happy! ❤️ ⚡⚡"}
+
+Note that ``height`` has a float value, ``link`` has no backslashes, and the
+unicode in ``status`` is not escaped.
 
 Validator
 ---------
