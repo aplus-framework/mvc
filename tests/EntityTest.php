@@ -12,6 +12,7 @@ namespace Tests\MVC;
 use DateTime;
 use Framework\Date\Date;
 use Framework\HTTP\URL;
+use Framework\MVC\Entity;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -166,9 +167,10 @@ final class EntityTest extends TestCase
             'date' => '2021-09-15 15:47:08',
             'url' => 'https://foo.com/',
             'mixed' => null,
+            /* Properties not set:
             'id' => null,
             'data' => null,
-            'createdAt' => null,
+            'createdAt' => null,*/
             'updatedAt' => null,
         ], $this->entity->toModel());
     }
@@ -190,7 +192,37 @@ final class EntityTest extends TestCase
         $values = \json_decode($json, true);
         self::assertArrayHasKey('array', $values);
         self::assertIsArray($values['array']);
-        self::assertArrayHasKey('id', $values);
-        self::assertNull($values['id']);
+        self::assertArrayNotHasKey('id', $values);
+    }
+
+    public function testGetObjectVars() : void
+    {
+        $data = [
+            'id2' => 1,
+            'id5' => null,
+        ];
+        $user = new class($data) extends Entity {
+            protected int $id; // not set
+            protected int $id2; // set with 1
+            protected ?int $id3; // nullable not set
+            protected ?int $id4 = null; // nullable set with default value (null)
+            protected ?int $id5; // nullable set with null
+            protected ?int $id6 = 5; // nullable set with default value (5)
+            // @phpstan-ignore-next-line
+            protected $id7; // property without type is null
+            protected string | int $id8; // not set
+
+            public function getObjectVars() : array
+            {
+                return parent::getObjectVars();
+            }
+        };
+        self::assertSame([
+            'id2' => 1,
+            'id4' => null,
+            'id5' => null,
+            'id6' => 5,
+            'id7' => null,
+        ], $user->getObjectVars());
     }
 }
