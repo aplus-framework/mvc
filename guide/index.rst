@@ -2214,24 +2214,22 @@ Below is an example showing what can happen:
         ],
     ]);
 
-    $people->_jsonVars = ['height', 'link', 'config', 'status'];
-
     echo (string) $people;
 
 This is the result when the People entity is encoded without flags:
 
 .. code-block:: json
 
-    {"height":1,"link":"https:\/\/domain.tld\/john-doe","config":{"theme":{"color":"magenta","background":"black"}},"status":"Happy! \u2764\ufe0f \u26a1\u26a1"}
+    {"name":"John Doe","height":1,"status":"Happy! \u2764\ufe0f \u26a1\u26a1","link":"https:\/\/domain.tld\/john-doe","config":{"theme":{"color":"magenta","background":"black"}}}
 
 And, this is the result with the default flags:
 
 .. code-block:: json
 
-    {"height":1.0,"link":"https://domain.tld/john-doe","config":{"theme":{"color":"magenta","background":"black"}},"status":"Happy! ❤️ ⚡⚡"}
+    {"name":"John Doe","height":1.0,"status":"Happy! ❤️ ⚡⚡","link":"https://domain.tld/john-doe","config":{"theme":{"color":"magenta","background":"black"}}}
 
-Note that ``height`` has a float value, ``link`` has no backslashes, and the
-unicode in ``status`` is not escaped.
+Note that ``height`` has a float value, the unicode in ``status`` is not escaped
+and ``link`` has no backslashes.
 
 Validator
 ---------
