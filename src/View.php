@@ -49,7 +49,7 @@ class View
     protected array $viewsPaths = [];
     protected string $instanceName;
 
-    public function __construct(string $baseDir = null, string $extension = '.php')
+    public function __construct(?string $baseDir = null, string $extension = '.php')
     {
         if ($baseDir !== null) {
             $this->setBaseDir($baseDir);
@@ -215,7 +215,7 @@ class View
         return $this;
     }
 
-    public function extends(string $layout, string $openBlock = null) : static
+    public function extends(string $layout, ?string $openBlock = null) : static
     {
         $this->layout = $this->getLayoutPrefix() . $layout;
         $this->openBlock = $openBlock;

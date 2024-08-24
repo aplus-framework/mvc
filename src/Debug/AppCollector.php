@@ -40,25 +40,25 @@ class AppCollector extends Collector
         return $this;
     }
 
-    public function setStartTime(float $microtime = null) : static
+    public function setStartTime(?float $microtime = null) : static
     {
         $this->startTime = $microtime ?? \microtime(true);
         return $this;
     }
 
-    public function setEndTime(float $microtime = null) : static
+    public function setEndTime(?float $microtime = null) : static
     {
         $this->endTime = $microtime ?? \microtime(true);
         return $this;
     }
 
-    public function setStartMemory(int $memoryUsage = null) : static
+    public function setStartMemory(?int $memoryUsage = null) : static
     {
         $this->startMemory = $memoryUsage ?? \memory_get_usage();
         return $this;
     }
 
-    public function setEndMemory(int $memoryUsage = null) : static
+    public function setEndMemory(?int $memoryUsage = null) : static
     {
         $this->endMemory = $memoryUsage ?? \memory_get_usage();
         return $this;

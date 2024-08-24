@@ -34,14 +34,14 @@ use stdClass;
  *
  * @package mvc
  *
- * @method false|int|string createById(array|Entity|stdClass $data) Create a new row and return the
+ * @method false|int|string createById(Entity|array|stdClass $data) Create a new row and return the
  *     id.
- * @method array|Entity|stdClass|null readById(int|string $id) Read a row by id.
- * @method array|Entity|stdClass|null findById(int|string $id) Find a row by id.
- * @method false|int|string updateById(int|string $id, array|Entity|stdClass $data) Update rows by
+ * @method Entity|array|stdClass|null readById(int|string $id) Read a row by id.
+ * @method Entity|array|stdClass|null findById(int|string $id) Find a row by id.
+ * @method false|int|string updateById(int|string $id, Entity|array|stdClass $data) Update rows by
  *     id.
  * @method false|int|string deleteById(int|string $id) Delete rows by id.
- * @method false|int|string replaceById(int|string $id, array|Entity|stdClass $data) Replace rows
+ * @method false|int|string replaceById(int|string $id, Entity|array|stdClass $data) Replace rows
  *     by id.
  */
 abstract class Model implements ModelInterface
@@ -176,7 +176,7 @@ abstract class Model implements ModelInterface
     /**
      * @var array<string>|null
      */
-    protected array | null $pagerAllowedQueries = null;
+    protected ?array $pagerAllowedQueries = null;
     /**
      * Pager URL.
      *
@@ -480,13 +480,13 @@ abstract class Model implements ModelInterface
      *
      * @see Where
      *
-     * @return array<int,array<mixed>|Entity|stdClass>
+     * @return array<int,Entity|array<mixed>|stdClass>
      */
     public function paginate(
         mixed $page,
         mixed $perPage = 10,
         array $where = [],
-        array | string $orderBy = null,
+        array | string | null $orderBy = null,
         string $orderByDirection = 'asc',
     ) : array {
         $page = Pager::sanitize($page);
@@ -613,12 +613,12 @@ abstract class Model implements ModelInterface
      * @param int|string $value
      * @param string $column
      *
-     * @return array<string,float|int|string|null>|Entity|stdClass|null
+     * @return Entity|array<string,float|int|string|null>|stdClass|null
      */
     public function readBy(
         string $column,
         int | string $value
-    ) : array | Entity | stdClass | null {
+    ) : Entity | array | stdClass | null {
         if ($this->isCacheActive()) {
             return $this->readWithCache($column, $value);
         }
@@ -634,12 +634,12 @@ abstract class Model implements ModelInterface
      * @param string $column
      * @param int|string $value
      *
-     * @return array<string,float|int|string|null>|Entity|stdClass|null
+     * @return Entity|array<string,float|int|string|null>|stdClass|null
      */
     public function findBy(
         string $column,
         int | string $value
-    ) : array | Entity | stdClass | null {
+    ) : Entity | array | stdClass | null {
         return $this->readBy($column, $value);
     }
 
@@ -650,11 +650,11 @@ abstract class Model implements ModelInterface
      *
      * @param int|string $id
      *
-     * @return array<string,float|int|string|null>|Entity|stdClass|null The
+     * @return Entity|array<string,float|int|string|null>|stdClass|null The
      * selected row as configured on $returnType property or null if row was
      * not found
      */
-    public function read(int | string $id) : array | Entity | stdClass | null
+    public function read(int | string $id) : Entity | array | stdClass | null
     {
         $this->checkPrimaryKey($id);
         return $this->readBy($this->getPrimaryKey(), $id);
@@ -665,9 +665,9 @@ abstract class Model implements ModelInterface
      *
      * @param int|string $id
      *
-     * @return array|Entity|float[]|int[]|null[]|stdClass|string[]|null
+     * @return Entity|array|float[]|int[]|null[]|stdClass|string[]|null
      */
-    public function find(int | string $id) : array | Entity | stdClass | null
+    public function find(int | string $id) : Entity | array | stdClass | null
     {
         return $this->read($id);
     }
@@ -680,7 +680,7 @@ abstract class Model implements ModelInterface
      *
      * @return array<string,float|int|string|null>|null
      */
-    protected function readRow(string $column, int | string $value) : array | null
+    protected function readRow(string $column, int | string $value) : ?array
     {
         return $this->getDatabaseToRead()
             ->select()
@@ -697,9 +697,9 @@ abstract class Model implements ModelInterface
      * @param int|string $value
      * @param string $column
      *
-     * @return array<string,float|int|string|null>|Entity|stdClass|null
+     * @return Entity|array<string,float|int|string|null>|stdClass|null
      */
-    protected function readWithCache(string $column, int | string $value) : array | Entity | stdClass | null
+    protected function readWithCache(string $column, int | string $value) : Entity | array | stdClass | null
     {
         $cacheKey = $this->getCacheKey([
             $column => $value,
@@ -727,9 +727,9 @@ abstract class Model implements ModelInterface
      * @param int|null $limit
      * @param int|null $offset
      *
-     * @return array<int,array<mixed>|Entity|stdClass>
+     * @return array<int,Entity|array<mixed>|stdClass>
      */
-    public function findAll(int $limit = null, int $offset = null) : array
+    public function findAll(?int $limit = null, ?int $offset = null) : array
     {
         return $this->list($limit, $offset);
     }
@@ -742,9 +742,9 @@ abstract class Model implements ModelInterface
      * @param int|null $offset
      * @param int|null $limit
      *
-     * @return array<int,array<mixed>|Entity|stdClass>
+     * @return array<int,Entity|array<mixed>|stdClass>
      */
-    public function list(int $limit = null, int $offset = null) : array
+    public function list(?int $limit = null, ?int $offset = null) : array
     {
         $data = $this->getDatabaseToRead()
             ->select()
@@ -763,9 +763,9 @@ abstract class Model implements ModelInterface
     /**
      * @param array<string,float|int|string|null> $data
      *
-     * @return array<string,float|int|string|null>|Entity|stdClass
+     * @return Entity|array<string,float|int|string|null>|stdClass
      */
-    protected function makeEntity(array $data) : array | Entity | stdClass
+    protected function makeEntity(array $data) : Entity | array | stdClass
     {
         $returnType = $this->getReturnType();
         if ($returnType === 'array') {
@@ -778,11 +778,11 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * @param array<string,mixed>|Entity|stdClass $data
+     * @param Entity|array<string,mixed>|stdClass $data
      *
      * @return array<string,mixed>
      */
-    protected function makeArray(array | Entity | stdClass $data) : array
+    protected function makeArray(Entity | array | stdClass $data) : array
     {
         return $data instanceof Entity
             ? $data->toModel()
@@ -820,12 +820,12 @@ abstract class Model implements ModelInterface
     /**
      * Insert a new row.
      *
-     * @param array<string,float|int|string|null>|Entity|stdClass $data
+     * @param Entity|array<string,float|int|string|null>|stdClass $data
      *
      * @return false|int|string The LAST_INSERT_ID() on success or false if
      * validation fail
      */
-    public function create(array | Entity | stdClass $data) : false | int | string
+    public function create(Entity | array | stdClass $data) : false | int | string
     {
         $data = $this->makeArray($data);
         if ($this->getValidation()->validate($data) === false) {
@@ -860,12 +860,12 @@ abstract class Model implements ModelInterface
      * Insert a new row and return the inserted column value.
      *
      * @param string $column Column name
-     * @param array<string,float|int|string|null>|Entity|stdClass $data
+     * @param Entity|array<string,float|int|string|null>|stdClass $data
      *
      * @return false|int|string The value from the column data or false if
      * validation fail
      */
-    public function createBy(string $column, array | Entity | stdClass $data) : false | int | string
+    public function createBy(string $column, Entity | array | stdClass $data) : false | int | string
     {
         $data = $this->makeArray($data);
         if ($this->getValidation()->validate($data) === false) {
@@ -954,12 +954,12 @@ abstract class Model implements ModelInterface
      * Save a row. Update if the Primary Key is present, otherwise
      * insert a new row.
      *
-     * @param array<string,float|int|string|null>|Entity|stdClass $data
+     * @param Entity|array<string,float|int|string|null>|stdClass $data
      *
      * @return false|int|string The number of affected rows on updates as int, the
      * LAST_INSERT_ID() as int on inserts or false if validation fails
      */
-    public function save(array | Entity | stdClass $data) : false | int | string
+    public function save(Entity | array | stdClass $data) : false | int | string
     {
         $data = $this->makeArray($data);
         $id = $data[$this->getPrimaryKey()] ?? null;
@@ -974,12 +974,12 @@ abstract class Model implements ModelInterface
      * Update based on Primary Key and return the number of affected rows.
      *
      * @param int|string $id
-     * @param array<string,float|int|string|null>|Entity|stdClass $data
+     * @param Entity|array<string,float|int|string|null>|stdClass $data
      *
      * @return false|int|string The number of affected rows or false if
      * validation fails
      */
-    public function update(int | string $id, array | Entity | stdClass $data) : false | int | string
+    public function update(int | string $id, Entity | array | stdClass $data) : false | int | string
     {
         $this->checkPrimaryKey($id);
         return $this->updateBy($this->getPrimaryKey(), $id, $data);
@@ -990,7 +990,7 @@ abstract class Model implements ModelInterface
      *
      * @param string $column
      * @param int|string $value
-     * @param array<string,float|int|string|null>|Entity|stdClass $data
+     * @param Entity|array<string,float|int|string|null>|stdClass $data
      *
      * @return false|int|string The number of affected rows or false if
      * validation fails
@@ -998,7 +998,7 @@ abstract class Model implements ModelInterface
     public function updateBy(
         string $column,
         int | string $value,
-        array | Entity | stdClass $data
+        Entity | array | stdClass $data
     ) : false | int | string {
         $data = $this->makeArray($data);
         $data[$column] ??= $value;
@@ -1032,12 +1032,12 @@ abstract class Model implements ModelInterface
      * Most used with HTTP PUT method.
      *
      * @param int|string $id
-     * @param array<string,float|int|string|null>|Entity|stdClass $data
+     * @param Entity|array<string,float|int|string|null>|stdClass $data
      *
      * @return false|int|string The number of affected rows or false if
      * validation fails
      */
-    public function replace(int | string $id, array | Entity | stdClass $data) : false | int | string
+    public function replace(int | string $id, Entity | array | stdClass $data) : false | int | string
     {
         $this->checkPrimaryKey($id);
         return $this->replaceBy($this->getPrimaryKey(), $id, $data);
@@ -1048,7 +1048,7 @@ abstract class Model implements ModelInterface
      *
      * @param string $column
      * @param int|string $value
-     * @param array<string,float|int|string|null>|Entity|stdClass $data
+     * @param Entity|array<string,float|int|string|null>|stdClass $data
      *
      * @return false|int|string The number of affected rows or false if
      * validation fails
@@ -1056,7 +1056,7 @@ abstract class Model implements ModelInterface
     public function replaceBy(
         string $column,
         int | string $value,
-        array | Entity | stdClass $data
+        Entity | array | stdClass $data
     ) : false | int | string {
         $data = $this->makeArray($data);
         $data[$column] ??= $value;

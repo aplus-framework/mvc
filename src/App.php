@@ -119,12 +119,12 @@ class App
     /**
      * Initialize the App.
      *
-     * @param array<string,mixed>|Config|string|null $config The config
+     * @param Config|array<string,mixed>|string|null $config The config
      * @param bool $debug Set true to enable debug mode. False to disable.
      */
     public function __construct(
         #[SensitiveParameter]
-        Config | array | string $config = null,
+        Config | array | string | null $config = null,
         bool $debug = false
     ) {
         if ($debug) {
@@ -161,7 +161,7 @@ class App
      *
      * @return array<string,array<string,mixed>>|null The service configs or null
      */
-    protected function loadConfigs(string $name) : array | null
+    protected function loadConfigs(string $name) : ?array
     {
         $config = static::config();
         try {
@@ -710,7 +710,7 @@ class App
      */
     protected static function setDatabase(
         string $instance,
-        DatabaseCollector $collector = null
+        ?DatabaseCollector $collector = null
     ) : Database {
         $config = static::config()->get('database', $instance);
         $logger = null;
@@ -1061,7 +1061,7 @@ class App
      *
      * @return Router
      */
-    protected static function setRouter(string $instance, array $config = null) : Router
+    protected static function setRouter(string $instance, ?array $config = null) : Router
     {
         $requireFiles = $config === null;
         $config ??= static::config()->get('router', $instance);

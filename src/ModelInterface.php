@@ -23,12 +23,12 @@ interface ModelInterface
     /**
      * Create a new item.
      *
-     * @param array<string,float|int|string|null>|Entity|stdClass $data
+     * @param Entity|array<string,float|int|string|null>|stdClass $data
      *
      * @return false|int|string The created item id on success or false if it could not
      * be created
      */
-    public function create(array | Entity | stdClass $data) : false | int | string;
+    public function create(Entity | array | stdClass $data) : false | int | string;
 
     /**
      * Read an item based on id.
@@ -37,21 +37,21 @@ interface ModelInterface
      *
      * @param int|string $id
      *
-     * @return array<string,float|int|string|null>|Entity|stdClass|null The
+     * @return Entity|array<string,float|int|string|null>|stdClass|null The
      * item as array, Entity or stdClass or null if the item was not found
      */
-    public function read(int | string $id) : array | Entity | stdClass | null;
+    public function read(int | string $id) : Entity | array | stdClass | null;
 
     /**
      * Update based on id and return the number of updated items.
      *
      * @param int|string $id
-     * @param array<string,float|int|string|null>|Entity|stdClass $data
+     * @param Entity|array<string,float|int|string|null>|stdClass $data
      *
      * @return false|int|string The number of updated items or false if it could
      * not be updated
      */
-    public function update(int | string $id, array | Entity | stdClass $data) : false | int | string;
+    public function update(int | string $id, Entity | array | stdClass $data) : false | int | string;
 
     /**
      * Delete based on id.

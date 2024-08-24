@@ -210,7 +210,7 @@ final class EntityTest extends TestCase
             protected ?int $id6 = 5; // nullable set with default value (5)
             // @phpstan-ignore-next-line
             protected $id7; // property without type is null
-            protected string | int $id8; // not set
+            protected int | string $id8; // not set
 
             public function getObjectVars() : array
             {

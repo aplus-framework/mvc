@@ -24,7 +24,7 @@ class ModelMock extends Model
     public string $pagerView;
     public string $pagerUrl;
     public string $pagerQuery;
-    public array | null $pagerAllowedQueries = null;
+    public ?array $pagerAllowedQueries = null;
 
     public function convertCase(string $value, string $case) : string
     {

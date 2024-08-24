@@ -18,7 +18,7 @@ class ControllerMock extends Controller
     public ModelMock $model;
     public ModelMock $foo;
     public ModelMock $modelIsset;
-    public string|ModelMock $reflectionUnionType;
+    public ModelMock | string $reflectionUnionType;
 
     public function __construct()
     {

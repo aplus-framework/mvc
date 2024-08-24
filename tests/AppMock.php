@@ -15,7 +15,7 @@ use Framework\MVC\Debug\AppCollector;
 
 class AppMock extends \Framework\MVC\App
 {
-    public function loadConfigs(string $name) : array | null
+    public function loadConfigs(string $name) : ?array
     {
         return parent::loadConfigs($name);
     }
