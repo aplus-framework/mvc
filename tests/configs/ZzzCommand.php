@@ -9,6 +9,12 @@
  */
 use Framework\CLI\Command;
 
+/**
+ * NOTE: Ignore Composer warning. This file serves as an example to load classes
+ * that cannot be loaded with autoload. And it increases coverage.
+ *
+ * @see Framework\MVC\App::addCommand()
+ */
 class ZzzCommand extends Command
 {
     public function run() : void
