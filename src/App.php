@@ -1459,7 +1459,7 @@ class App
      * @param float $start Microtime right before setting up the service
      * @param float $end Microtime right after setting up the service
      */
-    protected static function addDebugData(
+    public static function addDebugData(
         string $service,
         string $instance,
         float $start,
