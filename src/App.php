@@ -626,6 +626,9 @@ class App
         if ($config['initialize'] === true) {
             $service->initialize($config['handle_errors'] ?? true);
         }
+        if (isset($config['search_engine'])) {
+            $service->getSearchEngines()->setCurrent($config['search_engine']);
+        }
         return static::setService('exceptionHandler', $service, $instance);
     }
 

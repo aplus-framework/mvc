@@ -15,6 +15,7 @@ return [
         'development_view' => __FILE__,
         'production_view' => __FILE__,
         'initialize' => true,
+        'search_engine' => 'bing',
         'logger_instance' => 'default',
         'language_instance' => 'default',
     ],
