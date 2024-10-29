@@ -663,7 +663,11 @@ class App
     {
         $config = static::config()->get('antiCsrf', $instance);
         static::session($config['session_instance'] ?? 'default');
-        $service = new AntiCSRF(static::request($config['request_instance'] ?? 'default'));
+        $service = new AntiCSRF(
+            static::request($config['request_instance'] ?? 'default'),
+            $config['token_bytes_length'] ?? null,
+            $config['generate_token_function'] ?? null,
+        );
         if (isset($config['token_name'])) {
             $service->setTokenName($config['token_name']);
         }

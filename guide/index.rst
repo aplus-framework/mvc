@@ -345,6 +345,8 @@ Anti-CSRF Config Options
             'default' => [
                 'enabled' => true,
                 'token_name' => 'csrf_token',
+                'token_bytes_length' => 8,
+                'generate_token_function' => 'base64_encode',
                 'session_instance' => 'default',
                 'request_instance' => 'default',
             ],
@@ -360,6 +362,18 @@ token_name
 """"""""""
 
 Sets the token name. The default is ``csrf_token``.
+
+token_bytes_length
+""""""""""""""""""
+
+Sets the length of random bytes used to generate the token. The default is
+``8``.
+
+generate_token_function
+"""""""""""""""""""""""
+
+Sets the function to generate the token. Available values are:
+``base64_encode``, ``bin2hex``, ``md5``. The default is ``base64_encode``.
 
 session_instance
 """"""""""""""""
