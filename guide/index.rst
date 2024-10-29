@@ -691,10 +691,6 @@ Set the search engine used to create search links on exception error messages.
 Valid values are: ``ask``, ``baidu``, ``bing``, ``duckduckgo``, ``google``,
 ``yahoo`` and ``yandex``. The default is ``google``.
 
-
-Set if it is to initialize by setting the class as exception handler. The
-default value is ``true``.
-
 handle_errors
 """""""""""""
 
