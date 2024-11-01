@@ -562,7 +562,7 @@ class App
      */
     protected static function setDebugger(string $instance) : Debugger
     {
-        $config = static::config()->get('debugger');
+        $config = static::config()->get('debugger', $instance);
         $service = new Debugger();
         if (isset($config['debugbar_view'])) {
             $service->setDebugbarView($config['debugbar_view']);
@@ -605,7 +605,7 @@ class App
      */
     protected static function setExceptionHandler(string $instance) : ExceptionHandler
     {
-        $config = static::config()->get('exceptionHandler');
+        $config = static::config()->get('exceptionHandler', $instance);
         $environment = $config['environment'] ?? ExceptionHandler::PRODUCTION;
         $logger = null;
         if (isset($config['logger_instance'])) {
