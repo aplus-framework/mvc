@@ -73,6 +73,8 @@ class View
     /**
      * Tells whether it is able to throw exceptions in the destructor.
      *
+     * @since 4.2
+     *
      * @return bool
      */
     public function isThrowExceptionsInDestructor() : bool
@@ -82,6 +84,8 @@ class View
 
     /**
      * Enables/disables exceptions in the destructor.
+     *
+     * @since 4.2
      *
      * @param bool $active True to throw exceptions, false otherwise
      *
