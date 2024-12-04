@@ -264,7 +264,7 @@ final class ModelTest extends ModelTestCase
     {
         $this->model->allowedFields[] = 'not-exists';
         $this->expectException(\mysqli_sql_exception::class);
-        $this->expectExceptionMessage("Unknown column 'not-exists' in 'field list'");
+        $this->expectExceptionMessage("Unknown column 'not-exists' in 'INSERT INTO'");
         $this->model->create(['not-exists' => 'Value']);
     }
 
@@ -355,7 +355,7 @@ final class ModelTest extends ModelTestCase
     {
         $this->model->allowedFields[] = 'not-exists';
         $this->expectException(\mysqli_sql_exception::class);
-        $this->expectExceptionMessage("Unknown column 'not-exists' in 'field list'");
+        $this->expectExceptionMessage("Unknown column 'not-exists' in 'SET'");
         $this->model->update(1, ['not-exists' => 'Value']);
     }
 
@@ -373,7 +373,7 @@ final class ModelTest extends ModelTestCase
     {
         $this->model->allowedFields[] = 'not-exists';
         $this->expectException(\mysqli_sql_exception::class);
-        $this->expectExceptionMessage("Unknown column 'not-exists' in 'field list'");
+        $this->expectExceptionMessage("Unknown column 'not-exists' in 'INSERT INTO'");
         $this->model->replace(1, ['not-exists' => 'Value']);
     }
 
