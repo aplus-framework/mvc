@@ -48,6 +48,7 @@ class View
      */
     protected array $viewsPaths = [];
     protected string $instanceName;
+    protected bool $throwExceptionsInDestructor = true;
 
     public function __construct(?string $baseDir = null, string $extension = '.php')
     {
@@ -59,7 +60,7 @@ class View
 
     public function __destruct()
     {
-        if ($this->openBlocks) {
+        if ($this->isThrowExceptionsInDestructor() && $this->openBlocks) {
             throw new LogicException(
                 'Trying to destruct a View instance while the following blocks stayed open: '
                 . \implode(', ', \array_map(static function ($name) {
@@ -67,6 +68,24 @@ class View
                 }, $this->openBlocks))
             );
         }
+    }
+
+    public function isThrowExceptionsInDestructor() : bool
+    {
+        return $this->throwExceptionsInDestructor;
+    }
+
+    /**
+     * Enables/disables exceptions in the destructor.
+     *
+     * @param bool $active True to throw exceptions, false otherwise
+     *
+     * @return static
+     */
+    public function setThrowExceptionsInDestructor(bool $active = true) : static
+    {
+        $this->throwExceptionsInDestructor = $active;
+        return $this;
     }
 
     public function setBaseDir(string $baseDir) : static

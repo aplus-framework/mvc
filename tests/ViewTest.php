@@ -283,6 +283,17 @@ final class ViewTest extends TestCase
         unset($this->view);
     }
 
+    public function testDestructWhenBlockIsOpenAndThrowIsDisabled() : void
+    {
+        $this->view->setThrowExceptionsInDestructor(false);
+        $this->view->block('foo');
+        \ob_end_clean();
+        $this->view->block('bar');
+        \ob_end_clean();
+        unset($this->view);
+        self::assertTrue(true);
+    }
+
     protected function setDebugCollector() : void
     {
         $collector = new ViewsCollector();
