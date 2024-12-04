@@ -70,6 +70,11 @@ class View
         }
     }
 
+    /**
+     * Tells whether it is able to throw exceptions in the destructor.
+     *
+     * @return bool
+     */
     public function isThrowExceptionsInDestructor() : bool
     {
         return $this->throwExceptionsInDestructor;
@@ -88,6 +93,13 @@ class View
         return $this;
     }
 
+    /**
+     * Sets the base directory where the views files are located.
+     *
+     * @param string $baseDir
+     *
+     * @return static
+     */
     public function setBaseDir(string $baseDir) : static
     {
         $real = \realpath($baseDir);
@@ -98,23 +110,42 @@ class View
         return $this;
     }
 
+    /**
+     * Get the base directory.
+     *
+     * @return string|null
+     */
     public function getBaseDir() : ?string
     {
         return $this->baseDir;
     }
 
+    /**
+     * Set the extension of views files.
+     *
+     * @param string $extension
+     *
+     * @return static
+     */
     public function setExtension(string $extension) : static
     {
         $this->extension = '.' . \ltrim($extension, '.');
         return $this;
     }
 
+    /**
+     * Get the extension of view files.
+     *
+     * @return string
+     */
     public function getExtension() : string
     {
         return $this->extension;
     }
 
     /**
+     * Set the name of a directory for layouts within the base directory.
+     *
      * @param string $prefix
      *
      * @return static
@@ -126,6 +157,8 @@ class View
     }
 
     /**
+     * Get the name of the layouts directory.
+     *
      * @return string
      */
     public function getLayoutPrefix() : string
@@ -141,6 +174,8 @@ class View
     }
 
     /**
+     * Set the name of a directory for includes within the base directory.
+     *
      * @param string $prefix
      *
      * @return static
@@ -152,6 +187,8 @@ class View
     }
 
     /**
+     * Get the name of the includes directory.
+     *
      * @return string
      */
     public function getIncludePrefix() : string
@@ -185,8 +222,11 @@ class View
     }
 
     /**
-     * @param string $view
-     * @param array<string,mixed> $data
+     * Render a view file.
+     *
+     * @param string $view View path within the base directory
+     * @param array<string,mixed> $data Data passed to the view. The array keys
+     * will be variables
      *
      * @return string
      */
@@ -234,6 +274,14 @@ class View
         return $this;
     }
 
+    /**
+     * Extends a layout.
+     *
+     * @param string $layout The name of the file within the layouts directory
+     * @param string|null $openBlock Optionally opens and closes this block automatically
+     *
+     * @return static
+     */
     public function extends(string $layout, ?string $openBlock = null) : static
     {
         $this->layout = $this->getLayoutPrefix() . $layout;
@@ -244,17 +292,38 @@ class View
         return $this;
     }
 
+    /**
+     * Extends a layout without prefix.
+     *
+     * @param string $layout The name of the file within the base directory
+     *
+     * @return static
+     */
     public function extendsWithoutPrefix(string $layout) : static
     {
         $this->layout = $layout;
         return $this;
     }
 
+    /**
+     * Tells whether the current contents is inside a layout.
+     *
+     * @param string $layout
+     *
+     * @return bool
+     */
     public function inLayout(string $layout) : bool
     {
         return isset($this->layout) && $this->layout === $layout;
     }
 
+    /**
+     * Open a block.
+     *
+     * @param string $name Block name
+     *
+     * @return static
+     */
     public function block(string $name) : static
     {
         $this->openBlocks[] = $name;
@@ -269,6 +338,11 @@ class View
         return $this;
     }
 
+    /**
+     * Close an open block.
+     *
+     * @return static
+     */
     public function endBlock() : static
     {
         if (empty($this->openBlocks)) {
@@ -290,27 +364,60 @@ class View
         return $this;
     }
 
+    /**
+     * Render a block.
+     *
+     * @param string $name Block name
+     *
+     * @return string|null
+     */
     public function renderBlock(string $name) : ?string
     {
         return $this->blocks[$name] ?? null;
     }
 
+    /**
+     * Remove a block.
+     *
+     * @param string $name Block name
+     *
+     * @return static
+     */
     public function removeBlock(string $name) : static
     {
         unset($this->blocks[$name]);
         return $this;
     }
 
+    /**
+     * Tells whether a given block is set.
+     *
+     * @param string $name Block name
+     *
+     * @return bool
+     */
     public function hasBlock(string $name) : bool
     {
         return isset($this->blocks[$name]);
     }
 
+    /**
+     * Tells whether the current content is inside a block.
+     *
+     * @param string $name Block name
+     *
+     * @return bool
+     */
     public function inBlock(string $name) : bool
     {
         return $this->currentBlock() === $name;
     }
 
+    /**
+     * Tells the name of the current block.
+     *
+     * @return string|null
+     */
     public function currentBlock() : ?string
     {
         if ($this->openBlocks) {
@@ -320,8 +427,11 @@ class View
     }
 
     /**
-     * @param string $view
-     * @param array<string,mixed> $data
+     * Returns the contents of an include.
+     *
+     * @param string $view The path of the file within the includes directory
+     * @param array<string,mixed> $data Data passed to the view. The array keys
+     * will be variables
      *
      * @return string
      */
@@ -343,8 +453,11 @@ class View
     }
 
     /**
-     * @param string $view
-     * @param array<string,mixed> $data
+     * Returns the contents of an include without prefix.
+     *
+     * @param string $view The path of the file within the base directory
+     * @param array<string,mixed> $data Data passed to the view. The array keys
+     * will be variables
      *
      * @return string
      */
