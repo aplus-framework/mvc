@@ -178,7 +178,7 @@ class AppCollector extends Collector
                 'end' => $data['end'],
             ];
         }
-        return $result; // @phpstan-ignore-line
+        return $result;
     }
 
     protected function renderAvailableServices() : string
