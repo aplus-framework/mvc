@@ -10,6 +10,7 @@
 namespace Framework\MVC\Debug;
 
 use Framework\Debug\Collector;
+use Framework\Debug\Debugger;
 use Framework\MVC\View;
 
 /**
@@ -86,7 +87,7 @@ class ViewsCollector extends Collector
                 <th>#</th>
                 <th>File</th>
                 <th>Type</th>
-                <th>Time to Render</th>
+                <th title="Milliseconds">Time to Render</th>
             </tr>
             </thead>
             <tbody>
@@ -95,7 +96,7 @@ class ViewsCollector extends Collector
                     <td><?= $index + 1 ?></td>
                     <td><?= \htmlentities($item['file']) ?></td>
                     <td><?= \htmlentities($item['type']) ?></td>
-                    <td><?= \round($item['end'] - $item['start'], 6) ?></td>
+                    <td><?= Debugger::roundSecondsToMilliseconds($item['end'] - $item['start']) ?></td>
                 </tr>
             <?php endforeach ?>
             </tbody>

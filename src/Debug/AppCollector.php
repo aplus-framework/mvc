@@ -106,7 +106,7 @@ class AppCollector extends Collector
         }
         \ob_start(); ?>
         <p><strong>Started at:</strong> <?= \date('r', (int) $this->startTime) ?></p>
-        <p><strong>Runtime:</strong> <?= \round($this->endTime - $this->startTime, 6) ?> seconds
+        <p><strong>Runtime:</strong> <?= Debugger::roundSecondsToMilliseconds($this->endTime - $this->startTime) ?> ms
         </p>
         <p>
             <strong>Memory:</strong> <?=
