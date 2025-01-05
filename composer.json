@@ -51,7 +51,7 @@
         "aplus/database": "^4.1",
         "aplus/database-extra": "^4.0",
         "aplus/date": "^3.0",
-        "aplus/debug": "^4.1",
+        "aplus/debug": "^4.3",
         "aplus/email": "^4.0",
         "aplus/http": "^6.2",
         "aplus/language": "^4.0",
