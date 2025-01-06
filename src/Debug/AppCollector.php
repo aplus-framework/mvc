@@ -138,7 +138,7 @@ class AppCollector extends Collector
             <tr>
                 <th>Service</th>
                 <th>Instances</th>
-                <th title="Seconds">Time to Load</th>
+                <th title="Milliseconds">Time to Load</th>
             </tr>
             </thead>
             <tbody>
@@ -147,12 +147,12 @@ class AppCollector extends Collector
                 <tr>
                     <td rowspan="<?= $count ?>"><?= $service ?></td>
                     <td><?= $data[0]['name'] ?></td>
-                    <td><?= \round($data[0]['end'] - $data[0]['start'], 6) ?></td>
+                    <td><?= Debugger::roundSecondsToMilliseconds($data[0]['end'] - $data[0]['start']) ?></td>
                 </tr>
                 <?php for ($i = 1; $i < $count; $i++): ?>
                     <tr>
                         <td><?= $data[$i]['name'] ?></td>
-                        <td><?= \round($data[$i]['end'] - $data[$i]['start'], 6) ?></td>
+                        <td><?= Debugger::roundSecondsToMilliseconds($data[$i]['end'] - $data[$i]['start']) ?></td>
                     </tr>
                 <?php endfor ?>
             <?php endforeach ?>
