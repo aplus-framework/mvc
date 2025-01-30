@@ -19,6 +19,8 @@ use Framework\Cache\Serializer;
 use Framework\CLI\Command;
 use Framework\CLI\Console;
 use Framework\Config\Config;
+use Framework\Config\Debug\ConfigCollection;
+use Framework\Config\Debug\ConfigCollector;
 use Framework\Database\Database;
 use Framework\Database\Debug\DatabaseCollection;
 use Framework\Database\Debug\DatabaseCollector;
@@ -141,6 +143,11 @@ class App
             $collection = new AppCollection('App');
             $collection->addCollector(static::$debugCollector);
             static::debugger()->addCollection($collection);
+            $configCollector = new ConfigCollector();
+            static::$config->setDebugCollector($configCollector);
+            $configCollection = new ConfigCollection('Config');
+            $configCollection->addCollector($configCollector);
+            static::debugger()->addCollection($configCollection);
         }
     }
 
