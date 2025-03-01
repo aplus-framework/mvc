@@ -1432,6 +1432,9 @@ class App
         if (isset($config['show_debug_comments']) && $config['show_debug_comments'] === false) {
             $service->disableDebugComments();
         }
+        if (isset($config['throw_exceptions_in_destructor'])) {
+            $service->setThrowExceptionsInDestructor($config['throw_exceptions_in_destructor']);
+        }
         return static::setService('view', $service, $instance);
     }
 

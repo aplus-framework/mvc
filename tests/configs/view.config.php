@@ -14,5 +14,6 @@ return [
         'layout_prefix' => '',
         'include_prefix' => '',
         'show_debug_comments' => false,
+        'throw_exceptions_in_destructor' => false,
     ],
 ];

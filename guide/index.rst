@@ -1266,6 +1266,7 @@ View Config Options
                 'layout_prefix' => null,
                 'include_prefix' => null,
                 'show_debug_comments' => true,
+                'throw_exceptions_in_destructor' => true,
             ],
         ],
     ]
@@ -1295,6 +1296,12 @@ show_debug_comments
 """""""""""""""""""
 
 Set to ``false`` to disable HTML comments when in debug mode.
+
+throw_exceptions_in_destructor
+""""""""""""""""""""""""""""""
+
+Set ``false`` to not throw exceptions in the class destructor. The default is to
+throw. Disabling this will help you debug exceptions thrown inside views.
 
 Extending
 #########
