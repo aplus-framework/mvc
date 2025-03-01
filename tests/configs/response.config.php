@@ -39,6 +39,7 @@ return [
             ],
         ],
         'json_flags' => \JSON_THROW_ON_ERROR,
+        'replace_headers' => false,
         'request_instance' => 'default',
     ],
 ];

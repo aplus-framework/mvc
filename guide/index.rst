@@ -1006,6 +1006,7 @@ Response Config Options
                 'csp' => [],
                 'csp_report_only' => [],
                 'json_flags' => null,
+                'replace_headers' => false,
                 'request_instance' => 'default',
             ],
         ],
@@ -1064,6 +1065,11 @@ json_flags
 """"""""""
 
 Flags for ``json_encode``. The default is set to none.
+
+replace_headers
+"""""""""""""""
+
+Set ``true`` to force header replacement. Default is ``false`` to not replace.
 
 request_instance
 """"""""""""""""

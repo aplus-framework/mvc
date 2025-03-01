@@ -1256,6 +1256,9 @@ class App
         if (isset($config['json_flags'])) {
             $service->setJsonFlags($config['json_flags']);
         }
+        if (isset($config['replace_headers'])) {
+            $service->setReplaceHeaders($config['replace_headers']);
+        }
         return static::setService('response', $service, $instance);
     }
 
