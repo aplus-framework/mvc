@@ -636,6 +636,9 @@ class App
         if (isset($config['search_engine'])) {
             $service->getSearchEngines()->setCurrent($config['search_engine']);
         }
+        if (isset($config['show_log_id'])) {
+            $service->setShowLogId($config['show_log_id']);
+        }
         return static::setService('exceptionHandler', $service, $instance);
     }
 

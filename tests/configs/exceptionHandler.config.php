@@ -16,6 +16,7 @@ return [
         'production_view' => __FILE__,
         'initialize' => true,
         'search_engine' => 'bing',
+        'show_log_id' => true,
         'logger_instance' => 'default',
         'language_instance' => 'default',
     ],

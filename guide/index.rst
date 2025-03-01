@@ -647,6 +647,7 @@ Exception Handler Config Options
                 'initialize' => true,
                 'search_engine' => 'google',
                 'handle_errors' => true,
+                'show_log_id' => true,
             ],
         ],
     ]
@@ -696,6 +697,12 @@ handle_errors
 
 If initialize is ``true``, this option defines whether to set the class as an
 error handler. The default value is ``true``.
+
+show_log_id
+"""""""""""
+
+Allow to show or hide the log id in the production view. The default is ``true``,
+to show.
 
 Language Service
 ^^^^^^^^^^^^^^^^
