@@ -645,8 +645,8 @@ Exception Handler Config Options
                 'development_view' => null,
                 'production_view' => null,
                 'initialize' => true,
-                'search_engine' => 'google',
                 'handle_errors' => true,
+                'search_engine' => 'google',
                 'show_log_id' => true,
             ],
         ],
@@ -686,17 +686,17 @@ initialize
 Set if it is to initialize by setting the class as exception handler. The
 default value is ``true``.
 
-search_engine
-"""""""""""""
-Set the search engine used to create search links on exception error messages.
-Valid values are: ``ask``, ``baidu``, ``bing``, ``duckduckgo``, ``google``,
-``yahoo`` and ``yandex``. The default is ``google``.
-
 handle_errors
 """""""""""""
 
 If initialize is ``true``, this option defines whether to set the class as an
 error handler. The default value is ``true``.
+
+search_engine
+"""""""""""""
+Set the search engine used to create search links on exception error messages.
+Valid values are: ``ask``, ``baidu``, ``bing``, ``duckduckgo``, ``google``,
+``yahoo`` and ``yandex``. The default is ``google``.
 
 show_log_id
 """""""""""
