@@ -621,6 +621,9 @@ options
 
 Sets an array of options for the Debugger. The default is to set nothing.
 
+You can find more details about the options
+`here <https://docs.aplus-framework.com/guides/libraries/debug/index.html#options>`_.
+
 Exception Handler Service
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -648,6 +651,8 @@ Exception Handler Config Options
                 'handle_errors' => true,
                 'search_engine' => 'google',
                 'show_log_id' => true,
+                'json_flags' => null,
+                'hidden_inputs' => [],
             ],
         ],
     ]
@@ -703,6 +708,22 @@ show_log_id
 
 Allow to show or hide the log id in the production view. The default is ``true``,
 to show.
+
+json_flags
+""""""""""
+
+Set the flags to encode JSON responses.
+
+The default values are: ``JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE``.
+
+hidden_inputs
+"""""""""""""
+
+Set which input variables will not be shown on the exception page in development.
+
+Available values are: ``$_COOKIE``, ``$_ENV``, ``$_FILES``, ``$_GET``, ``$_POST`` and ``$_SERVER``.
+
+By default, no input variables are hidden.
 
 Language Service
 ^^^^^^^^^^^^^^^^
