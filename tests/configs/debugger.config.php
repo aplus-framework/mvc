@@ -11,6 +11,8 @@ return [
     'default' => [
         'debugbar_view' => __DIR__ . '/../../vendor/aplus/debug/src/Views/debugbar/debugbar.php',
         'options' => [
+            'icon_path' => null,
+            'info_contents' => null,
             'color' => 'green',
         ],
     ],
