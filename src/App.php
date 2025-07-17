@@ -639,6 +639,12 @@ class App
         if (isset($config['show_log_id'])) {
             $service->setShowLogId($config['show_log_id']);
         }
+        if (isset($config['json_flags'])) {
+            $service->setJsonFlags($config['json_flags']);
+        }
+        if (isset($config['hidden_inputs']) && $config['hidden_inputs'] !== []) {
+            $service->setHiddenInputs(...$config['hidden_inputs']);
+        }
         return static::setService('exceptionHandler', $service, $instance);
     }
 
