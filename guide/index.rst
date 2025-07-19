@@ -329,14 +329,14 @@ Anti-CSRF Service
 ^^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\HTTP\AntiCSRF <https://docs.aplus-framework.com/classes/Framework-HTTP-AntiCSRF.html>`_.
-
-More details about Anti-CSRF can be found
-`here <https://docs.aplus-framework.com/guides/libraries/helpers/index.html>`_.
+`Framework\HTTP\AntiCSRF <https://docs.aplus-framework.com/classes/Framework-HTTP-AntiCSRF.html>`_:
 
 .. code-block:: php
 
     App::antiCsrf()
+
+More details about Anti-CSRF can be found
+`here <https://docs.aplus-framework.com/guides/libraries/http/index.html#anticsrf>`_.
 
 Anti-CSRF Config Options
 ************************
@@ -392,14 +392,14 @@ Autoloader Service
 ^^^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Autoload\Autoloader <https://docs.aplus-framework.com/classes/Framework-Autoload-Autoloader.html>`_.
-
-More details about Autoloader can be found
-`here <https://docs.aplus-framework.com/guides/libraries/autoload/index.html#autoloader>`_.
+`Framework\Autoload\Autoloader <https://docs.aplus-framework.com/classes/Framework-Autoload-Autoloader.html>`_:
 
 .. code-block:: php
 
     App::autoloader()
+
+More details about Autoloader can be found
+`here <https://docs.aplus-framework.com/guides/libraries/autoload/index.html#autoloader>`_.
 
 Autoloader Config Options
 *************************
@@ -442,14 +442,14 @@ Cache Service
 ^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Cache\Cache <https://docs.aplus-framework.com/classes/Framework-Cache-Cache.html>`_.
-
-More details about Cache can be found
-`here <https://docs.aplus-framework.com/guides/libraries/cache/index.html#cache>`_.
+`Framework\Cache\Cache <https://docs.aplus-framework.com/classes/Framework-Cache-Cache.html>`_:
 
 .. code-block:: php
 
     App::cache()
+
+More details about Cache can be found
+`here <https://docs.aplus-framework.com/guides/libraries/cache/index.html#cache>`_.
 
 Cache Config Options
 ********************
@@ -511,14 +511,14 @@ Console Service
 ^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\CLI\Console <https://docs.aplus-framework.com/classes/Framework-CLI-Console.html>`_.
-
-More details about Console can be found
-`here <https://docs.aplus-framework.com/guides/libraries/cli/index.html#cli>`_.
+`Framework\CLI\Console <https://docs.aplus-framework.com/classes/Framework-CLI-Console.html>`_:
 
 .. code-block:: php
 
     App::console()
+
+More details about Console can be found
+`here <https://docs.aplus-framework.com/guides/libraries/cli/index.html#console>`_.
 
 Console Config Options
 **********************
@@ -563,14 +563,14 @@ Database Service
 ^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Database\Database <https://docs.aplus-framework.com/classes/Framework-Database-Database.html>`_.
-
-More details about Database can be found
-`here <https://docs.aplus-framework.com/guides/libraries/database/index.html#database>`_.
+`Framework\Database\Database <https://docs.aplus-framework.com/classes/Framework-Database-Database.html>`_:
 
 .. code-block:: php
 
     App::database()
+
+More details about Database can be found
+`here <https://docs.aplus-framework.com/guides/libraries/database/index.html#database>`_.
 
 Database Config Options
 ***********************
@@ -605,14 +605,14 @@ Debugger Service
 ^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Debug\Debugger <https://docs.aplus-framework.com/classes/Framework-Debug-Debugger.html>`_.
-
-More details about Debugger can be found
-`here <https://docs.aplus-framework.com/guides/libraries/debug/index.html#debugger>`_.
+`Framework\Debug\Debugger <https://docs.aplus-framework.com/classes/Framework-Debug-Debugger.html>`_:
 
 .. code-block:: php
 
     App::debugger()
+
+More details about Debugger can be found
+`here <https://docs.aplus-framework.com/guides/libraries/debug/index.html#debugger>`_.
 
 Debugger Config Options
 ***********************
@@ -646,14 +646,14 @@ Exception Handler Service
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Debug\ExceptionHandler <https://docs.aplus-framework.com/classes/Framework-Debug-ExceptionHandler.html>`_.
-
-More details about Exception Handler can be found
-`here <https://docs.aplus-framework.com/guides/libraries/debug/index.html#exception-handler>`_.
+`Framework\Debug\ExceptionHandler <https://docs.aplus-framework.com/classes/Framework-Debug-ExceptionHandler.html>`_:
 
 .. code-block:: php
 
     App::exceptionHandler()
+
+More details about Exception Handler can be found
+`here <https://docs.aplus-framework.com/guides/libraries/debug/index.html#exception-handler>`_.
 
 Exception Handler Config Options
 ********************************
@@ -750,14 +750,14 @@ Language Service
 ^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Language\Language <https://docs.aplus-framework.com/classes/Framework-Language-Language.html>`_.
-
-More details about Language can be found
-`here <https://docs.aplus-framework.com/guides/libraries/language/index.html#language>`_.
+`Framework\Language\Language <https://docs.aplus-framework.com/classes/Framework-Language-Language.html>`_:
 
 .. code-block:: php
 
     App::language()
+
+More details about Language can be found
+`here <https://docs.aplus-framework.com/guides/libraries/language/index.html#language>`_.
 
 Language Config Options
 ***********************
@@ -834,14 +834,14 @@ Locator Service
 ^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Autoload\Locator <https://docs.aplus-framework.com/classes/Framework-Autoload-Locator.html>`_.
-
-More details about Locator can be found
-`here <https://docs.aplus-framework.com/guides/libraries/autoload/index.html#locator>`_.
+`Framework\Autoload\Locator <https://docs.aplus-framework.com/classes/Framework-Autoload-Locator.html>`_:
 
 .. code-block:: php
 
     App::locator()
+
+More details about Locator can be found
+`here <https://docs.aplus-framework.com/guides/libraries/autoload/index.html#locator>`_.
 
 Locator Config Options
 **********************
@@ -865,14 +865,14 @@ Logger Service
 ^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Log\Logger <https://docs.aplus-framework.com/classes/Framework-Log-Logger.html>`_.
-
-More details about Logger can be found
-`here <https://docs.aplus-framework.com/guides/libraries/log/index.html#log>`_.
+`Framework\Log\Logger <https://docs.aplus-framework.com/classes/Framework-Log-Logger.html>`_:
 
 .. code-block:: php
 
     App::logger()
+
+More details about Logger can be found
+`here <https://docs.aplus-framework.com/guides/libraries/log/index.html#log>`_.
 
 Logger Config Options
 *********************
@@ -919,14 +919,14 @@ Mailer Service
 ^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Email\Mailer <https://docs.aplus-framework.com/classes/Framework-Email-Mailer.html>`_.
-
-More details about Mailer can be found
-`here <https://docs.aplus-framework.com/guides/libraries/email/index.html#email>`_.
+`Framework\Email\Mailer <https://docs.aplus-framework.com/classes/Framework-Email-Mailer.html>`_:
 
 .. code-block:: php
 
     App::mailer()
+
+More details about Mailer can be found
+`here <https://docs.aplus-framework.com/guides/libraries/email/index.html#email>`_.
 
 Mailer Config Options
 *********************
@@ -958,14 +958,14 @@ Migrator Service
 ^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Database\Extra\Migrator <https://docs.aplus-framework.com/classes/Framework-Database-Extra-Migrator.html>`_.
-
-More details about Migrator can be found
-`here <https://docs.aplus-framework.com/guides/libraries/database-extra/index.html#migrations>`_.
+`Framework\Database\Extra\Migrator <https://docs.aplus-framework.com/classes/Framework-Database-Extra-Migrator.html>`_:
 
 .. code-block:: php
 
     App::migrator()
+
+More details about Migrator can be found
+`here <https://docs.aplus-framework.com/guides/libraries/database-extra/index.html#migrations>`_.
 
 Migrator Config Options
 ***********************
@@ -1001,14 +1001,14 @@ Request Service
 ^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\HTTP\Request <https://docs.aplus-framework.com/classes/Framework-HTTP-Request.html>`_.
-
-More details about Request can be found
-`here <https://docs.aplus-framework.com/guides/libraries/http/index.html#request>`_.
+`Framework\HTTP\Request <https://docs.aplus-framework.com/classes/Framework-HTTP-Request.html>`_:
 
 .. code-block:: php
 
     App::request()
+
+More details about Request can be found
+`here <https://docs.aplus-framework.com/guides/libraries/http/index.html#request>`_.
 
 Request Config Options
 **********************
@@ -1051,14 +1051,14 @@ Response Service
 ^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\HTTP\Response <https://docs.aplus-framework.com/classes/Framework-HTTP-Response.html>`_.
-
-More details about Response can be found
-`here <https://docs.aplus-framework.com/guides/libraries/http/index.html#response>`_.
+`Framework\HTTP\Response <https://docs.aplus-framework.com/classes/Framework-HTTP-Response.html>`_:
 
 .. code-block:: php
 
     App::response()
+
+More details about Response can be found
+`here <https://docs.aplus-framework.com/guides/libraries/http/index.html#response>`_.
 
 Response Config Options
 ***********************
@@ -1150,14 +1150,14 @@ Router Service
 ^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Routing\Router <https://docs.aplus-framework.com/classes/Framework-Routing-Router.html>`_.
-
-More details about Router can be found
-`here <https://docs.aplus-framework.com/guides/libraries/routing/index.html#router>`_.
+`Framework\Routing\Router <https://docs.aplus-framework.com/classes/Framework-Routing-Router.html>`_:
 
 .. code-block:: php
 
     App::router()
+
+More details about Router can be found
+`here <https://docs.aplus-framework.com/guides/libraries/routing/index.html#router>`_.
 
 Router Config Options
 *********************
@@ -1223,14 +1223,14 @@ Session Service
 ^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Session\Session <https://docs.aplus-framework.com/classes/Framework-Session-Session.html>`_.
-
-More details about Session can be found
-`here <https://docs.aplus-framework.com/guides/libraries/session/index.html#session>`_.
+`Framework\Session\Session <https://docs.aplus-framework.com/classes/Framework-Session-Session.html>`_:
 
 .. code-block:: php
 
     App::session()
+
+More details about Session can be found
+`here <https://docs.aplus-framework.com/guides/libraries/session/index.html#session>`_.
 
 Session Config Options
 **********************
@@ -1284,14 +1284,14 @@ Validation Service
 ^^^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Validation\Validation <https://docs.aplus-framework.com/classes/Framework-Validation-Validation.html>`_.
-
-More details about Validation can be found
-`here <https://docs.aplus-framework.com/guides/libraries/validation/index.html#validation>`_.
+`Framework\Validation\Validation <https://docs.aplus-framework.com/classes/Framework-Validation-Validation.html>`_:
 
 .. code-block:: php
 
     App::validation()
+
+More details about Validation can be found
+`here <https://docs.aplus-framework.com/guides/libraries/validation/index.html#validation>`_.
 
 Validation Config Options
 *************************
@@ -1326,14 +1326,14 @@ View Service
 ^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\MVC\View <https://docs.aplus-framework.com/classes/Framework-MVC-View.html>`_.
-
-More details about View can be found
-`here <https://docs.aplus-framework.com/guides/libraries/mvc/index.html#views>`_.
+`Framework\MVC\View <https://docs.aplus-framework.com/classes/Framework-MVC-View.html>`_:
 
 .. code-block:: php
 
     App::view()
+
+More details about View can be found
+`here <https://docs.aplus-framework.com/guides/libraries/mvc/index.html#views>`_.
 
 View Config Options
 *******************
