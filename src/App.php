@@ -506,6 +506,11 @@ class App
                 }
             }
         }
+        if (isset($config['commands'])) {
+            foreach ($config['commands'] as $command) {
+                $service->addCommand($command);
+            }
+        }
         return static::setService('console', $service, $instance);
     }
 

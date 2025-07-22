@@ -530,6 +530,7 @@ Console Config Options
             'default' => [
                 'directories' => null,
                 'find_in_namespaces' => false,
+                'commands' => null,
                 'language_instance' => 'default',
                 'locator_instance' => 'default',
             ],
@@ -547,6 +548,14 @@ find_in_namespaces
 
 Set ``true`` to find commands in all Commands subdirectories of all namespaces.
 The default is not to find in namespaces.
+
+commands
+""""""""
+
+Sets an array of Fully Qualified Class Names or instances of the
+Framework\CLICommand class. By default, no additional classes are set.
+
+These commands are added after searching through namespaces and directories.
 
 language_instance
 """""""""""""""""

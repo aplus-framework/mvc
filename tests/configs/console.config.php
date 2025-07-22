@@ -14,6 +14,9 @@ return [
             '/unknown',
         ],
         'find_in_namespaces' => true,
+        'commands' => [
+            Tests\MVC\Commands\Hello::class,
+        ],
         'language_instance' => 'default',
         'locator_instance' => 'default',
     ],
