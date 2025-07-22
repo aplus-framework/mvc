@@ -9,11 +9,11 @@
  */
 return [
     'default' => [
+        'find_in_namespaces' => true,
         'directories' => [
             __DIR__,
             '/unknown',
         ],
-        'find_in_namespaces' => true,
         'commands' => [
             Tests\MVC\Commands\Hello::class,
         ],
