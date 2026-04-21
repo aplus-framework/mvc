@@ -201,7 +201,8 @@ final class EntityTest extends TestCase
             'id2' => 1,
             'id5' => null,
         ];
-        $user = new class($data) extends Entity {
+        $user = new class($data) extends Entity
+        {
             protected int $id; // not set
             protected int $id2; // set with 1
             protected ?int $id3; // nullable not set
