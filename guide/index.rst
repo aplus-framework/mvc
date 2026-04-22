@@ -131,7 +131,7 @@ This is the **public/index.php** file:
 
     use Framework\MVC\App;
 
-    (new App([
+    new App([
         'autoloader' => [
             'default' => [
                 'namespaces' => [
@@ -147,7 +147,7 @@ This is the **public/index.php** file:
                 ],
             ],
         ],
-    ]))->runHttp(); // void
+    ])->runHttp(); // void
 
 And now, let's create the router files:
 
