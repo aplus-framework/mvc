@@ -253,11 +253,13 @@ final class AppTest extends TestCase
             'save_handler' => [
                 'class' => DatabaseHandler::class,
                 'config' => [
-                    'table' => 'Sessions',
-                    'host' => $config['host'],
-                    'username' => $config['username'],
-                    'password' => $config['password'],
-                    'schema' => $config['schema'],
+                    'database' => [
+                        'table' => 'Sessions',
+                        'host' => $config['host'],
+                        'username' => $config['username'],
+                        'password' => $config['password'],
+                        'schema' => $config['schema'],
+                    ],
                 ],
             ],
         ]);
