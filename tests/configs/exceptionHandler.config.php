@@ -15,7 +15,6 @@ return [
         'development_view' => __FILE__,
         'production_view' => __FILE__,
         'initialize' => true,
-        'search_engine' => 'bing',
         'show_log_id' => true,
         'json_flags' => \JSON_PRETTY_PRINT | \JSON_THROW_ON_ERROR,
         'hidden_inputs' => ['$_ENV'],

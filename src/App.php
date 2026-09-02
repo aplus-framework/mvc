@@ -638,9 +638,6 @@ class App
         if ($config['initialize'] === true) {
             $service->initialize($config['handle_errors'] ?? true);
         }
-        if (isset($config['search_engine'])) {
-            $service->getSearchEngines()->setCurrent($config['search_engine']);
-        }
         if (isset($config['show_log_id'])) {
             $service->setShowLogId($config['show_log_id']);
         }
