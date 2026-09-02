@@ -272,7 +272,7 @@ final class AppTest extends TestCase
         $database->dropTable('Sessions')->ifExists()->run();
         $database->createTable('Sessions')
             ->definition(static function (TableDefinition $definition) : void {
-                $definition->column('id')->varchar(128)->primaryKey();
+                $definition->column('id')->char(32)->primaryKey();
                 $definition->column('data')->blob();
                 $definition->column('timestamp')->timestamp();
             })->run();
