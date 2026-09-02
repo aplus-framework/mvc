@@ -1195,6 +1195,12 @@ class App
         if (isset($config['json_flags'])) {
             $service->setJsonFlags($config['json_flags']);
         }
+        if (isset($config['ip_key'])) {
+            $service->setIpKey($config['ip_key']);
+        }
+        if (isset($config['parse_body_options'])) {
+            $service->setParseBodyOptions($config['parse_body_options']);
+        }
         return static::setService('request', $service, $instance);
     }
 

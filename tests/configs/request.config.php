@@ -15,5 +15,7 @@ return [
             'HTTP_FOO' => 'Foo',
         ],
         'json_flags' => \JSON_THROW_ON_ERROR,
+        'ip_key' => 'REMOTE_ADDR',
+        'parse_body_options' => [],
     ],
 ];
