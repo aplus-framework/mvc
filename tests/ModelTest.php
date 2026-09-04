@@ -87,8 +87,8 @@ final class ModelTest extends ModelTestCase
         self::assertIsObject($this->model->find(1));
         $this->model->returnType = 'array';
         self::assertIsArray($this->model->find(1));
-        $this->model->returnType = EntityMock::class;
-        self::assertInstanceOf(EntityMock::class, $this->model->find(1));
+        $this->model->returnType = ModelEntityMock::class;
+        self::assertInstanceOf(ModelEntityMock::class, $this->model->find(1));
         self::assertNull($this->model->find(100));
     }
 
@@ -177,7 +177,7 @@ final class ModelTest extends ModelTestCase
     {
         self::assertSame(
             'Value',
-            $this->model->createBy('data', new EntityMock(['data' => 'Value']))
+            $this->model->createBy('data', new ModelEntityMock(['data' => 'Value']))
         );
         self::assertSame(
             'Other',
@@ -202,7 +202,7 @@ final class ModelTest extends ModelTestCase
     {
         self::assertSame(
             'Value',
-            $this->model->createByData(new EntityMock(['data' => 'Value'])) // @phpstan-ignore-line
+            $this->model->createByData(new ModelEntityMock(['data' => 'Value'])) // @phpstan-ignore-line
         );
         self::assertSame(
             'Other',
@@ -221,7 +221,7 @@ final class ModelTest extends ModelTestCase
 
     public function testCreate() : void
     {
-        $insert_id = $this->model->create(new EntityMock(['data' => 'Value']));
+        $insert_id = $this->model->create(new ModelEntityMock(['data' => 'Value']));
         self::assertSame(3, $insert_id);
         $insert_id = $this->model->create(['data' => 'Value']);
         self::assertSame(4, $insert_id);
@@ -270,7 +270,7 @@ final class ModelTest extends ModelTestCase
 
     public function testUpdate() : void
     {
-        $affected_rows = $this->model->update(1, new EntityMock(['data' => 'x']));
+        $affected_rows = $this->model->update(1, new ModelEntityMock(['data' => 'x']));
         self::assertSame(1, $affected_rows);
         $affected_rows = $this->model->update(1, ['data' => 'x']);
         self::assertSame(0, $affected_rows); // same data
@@ -293,7 +293,7 @@ final class ModelTest extends ModelTestCase
 
     public function testUpdateBy() : void
     {
-        $affected_rows = $this->model->updateBy('id', 1, new EntityMock(['data' => 'x']));
+        $affected_rows = $this->model->updateBy('id', 1, new ModelEntityMock(['data' => 'x']));
         self::assertSame(1, $affected_rows);
         $affected_rows = $this->model->updateBy('id', 1, ['data' => 'x']);
         self::assertSame(0, $affected_rows); // same data
@@ -316,7 +316,7 @@ final class ModelTest extends ModelTestCase
 
     public function testUpdateByWithCall() : void
     {
-        $affected_rows = $this->model->updateById(1, new EntityMock(['data' => 'x']));
+        $affected_rows = $this->model->updateById(1, new ModelEntityMock(['data' => 'x']));
         self::assertSame(1, $affected_rows);
         $affected_rows = $this->model->updateById(1, ['data' => 'x']);
         self::assertSame(0, $affected_rows); // same data
@@ -337,7 +337,7 @@ final class ModelTest extends ModelTestCase
 
     public function testReplace() : void
     {
-        $affected_rows = $this->model->replace(1, new EntityMock(['data' => 'xii']));
+        $affected_rows = $this->model->replace(1, new ModelEntityMock(['data' => 'xii']));
         self::assertSame(2, $affected_rows); // Deleted and inserted
         $affected_rows = $this->model->replace(1, ['data' => 'bar']);
         self::assertSame(2, $affected_rows); // Deleted and inserted
@@ -355,7 +355,7 @@ final class ModelTest extends ModelTestCase
 
     public function testReplaceBy() : void
     {
-        $affected_rows = $this->model->replaceBy('id', 1, new EntityMock(['data' => 'xii']));
+        $affected_rows = $this->model->replaceBy('id', 1, new ModelEntityMock(['data' => 'xii']));
         self::assertSame(2, $affected_rows); // Deleted and inserted
         $affected_rows = $this->model->replaceBy('id', 1, ['data' => 'bar']);
         self::assertSame(2, $affected_rows); // Deleted and inserted
@@ -365,7 +365,7 @@ final class ModelTest extends ModelTestCase
 
     public function testReplaceByWithCall() : void
     {
-        $affected_rows = $this->model->replaceById(1, new EntityMock(['data' => 'xii']));
+        $affected_rows = $this->model->replaceById(1, new ModelEntityMock(['data' => 'xii']));
         self::assertSame(2, $affected_rows); // Deleted and inserted
         $affected_rows = $this->model->replaceById(1, ['data' => 'bar']);
         self::assertSame(2, $affected_rows); // Deleted and inserted
@@ -380,9 +380,9 @@ final class ModelTest extends ModelTestCase
         self::assertSame(1, $affected_rows);
         $insert_id = $this->model->save(['data' => 'x']);
         self::assertSame(3, $insert_id);
-        $affected_rows = $this->model->save(new EntityMock(['id' => 3, 'data' => 'x']));
+        $affected_rows = $this->model->save(new ModelEntityMock(['id' => 3, 'data' => 'x']));
         self::assertSame(0, $affected_rows); // same data exists
-        $affected_rows = $this->model->save(new EntityMock(['id' => 25, 'data' => 'foo']));
+        $affected_rows = $this->model->save(new ModelEntityMock(['id' => 25, 'data' => 'foo']));
         self::assertSame(0, $affected_rows);
     }
 
