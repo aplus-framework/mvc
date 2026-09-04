@@ -197,6 +197,11 @@ abstract class Model implements ModelInterface
      */
     public function __call(string $method, array $arguments) : mixed
     {
+        if (\str_starts_with($method, 'findBy')) {
+            $method = \substr($method, 6);
+            $method = $this->convertCase($method, $this->columnCase);
+            return $this->findBy($method, $arguments[0]); // @phpstan-ignore-line
+        }
         if (\str_starts_with($method, 'createBy')) {
             $method = \substr($method, 8);
             $method = $this->convertCase($method, $this->columnCase);
@@ -216,11 +221,6 @@ abstract class Model implements ModelInterface
             $method = \substr($method, 9);
             $method = $this->convertCase($method, $this->columnCase);
             return $this->replaceBy($method, $arguments[0], $arguments[1]); // @phpstan-ignore-line
-        }
-        if (\str_starts_with($method, 'findBy')) {
-            $method = \substr($method, 6);
-            $method = $this->convertCase($method, $this->columnCase);
-            return $this->findBy($method, $arguments[0]); // @phpstan-ignore-line
         }
         $class = static::class;
         if (\method_exists($this, $method)) {
