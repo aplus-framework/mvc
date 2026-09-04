@@ -56,10 +56,20 @@ abstract class Entity implements \JsonSerializable
     }
 
     /**
+     * Specify data which should be serialized to JSON.
+     *
+     * @return array<string,mixed>
+     */
+    public function toJson() : array
+    {
+        return [];
+    }
+
+    /**
      * @return array<string,mixed>
      */
     public function jsonSerialize() : array
     {
-        return [];
+        return $this->toJson();
     }
 }
