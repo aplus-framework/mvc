@@ -31,7 +31,7 @@ interface ModelInterface
     public function create(Entity | array | stdClass $data) : false | int | string;
 
     /**
-     * Read an item based on id.
+     * Find an item based on id.
      *
      * @since 3.6
      *
@@ -40,7 +40,7 @@ interface ModelInterface
      * @return Entity|array<string,float|int|string|null>|stdClass|null The
      * item as array, Entity or stdClass or null if the item was not found
      */
-    public function read(int | string $id) : Entity | array | stdClass | null;
+    public function find(int | string $id) : Entity | array | stdClass | null;
 
     /**
      * Update based on id and return the number of updated items.
