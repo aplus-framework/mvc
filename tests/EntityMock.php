@@ -10,48 +10,74 @@
 namespace Tests\MVC;
 
 use Framework\Date\Date;
-use Framework\HTTP\URL;
 use Framework\MVC\Entity;
-use stdClass;
+use Override;
 
 /**
  * Class EntityMock.
- *
- * @property array $array;
- * @property bool $bool;
- * @property float $float;
- * @property int $int;
- * @property string $string;
- * @property stdClass $stdClass;
- * @property Date $date;
- * @property URL $url;
- * @property mixed $mixed;
  */
 class EntityMock extends Entity
 {
-    public array $_jsonVars = [];
-    protected array $array; // @phpstan-ignore-line
-    protected bool $bool;
-    protected float $float;
-    protected int $int;
-    protected string $string;
-    protected stdClass $stdClass;
-    protected Date $date;
-    protected URL $url;
-    protected mixed $mixed;
-    protected int $id;
-    protected string $data;
-    protected Date $createdAt;
-    protected $updatedAt; // @phpstan-ignore-line
-
-    public function setId(mixed $id) : static
-    {
-        $this->id = $id + 1000;
-        return $this;
+    public int $id {
+        set(string | int $id) {
+            $this->id = (int) $id;
+        }
+    }
+    public string $name {
+        set(string $name) {
+            $name = \preg_replace('/\s+/', ' ', $name);
+            $name = \trim($name);
+            $this->name = $name;
+        }
+    }
+    public Date $birthday {
+        set(Date | string $birthday) {
+            if(\is_string($birthday)) {
+                $birthday = new Date($birthday);
+            }
+            $this->birthday = $birthday;
+        }
+    }
+    /**
+     * @var array<string,mixed>
+     */
+    public array $configs {
+        set(array | string $configs) {
+            if(\is_string($configs)) {
+                $configs = \json_decode($configs, true);
+            }
+            $this->configs = $configs;
+        }
     }
 
-    public function getId() : mixed
+    public private(set) int $currentTime;
+
+    #[Override]
+    protected function init() : void
     {
-        return $this->id;
+        parent::init();
+        $this->currentTime = \time();
+    }
+
+    #[Override]
+    public function toModel() : array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'birthday' => $this->birthday->format('Y-m-d'),
+            'configs' => \json_encode($this->configs),
+        ];
+    }
+
+    #[Override]
+    public function toJson() : array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'birthday' => $this->birthday,
+            'configs' => $this->configs,
+        ];
     }
 }
