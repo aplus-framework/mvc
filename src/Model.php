@@ -606,33 +606,10 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * Read a row by column name and value.
-     *
-     * @since 3.6
-     *
-     * @param int|string $value
-     * @param string $column
-     *
-     * @return Entity|array<string,float|int|string|null>|stdClass|null
-     */
-    public function readBy(
-        string $column,
-        int | string $value
-    ) : Entity | array | stdClass | null {
-        if ($this->isCacheActive()) {
-            return $this->readWithCache($column, $value);
-        }
-        $data = $this->readRow($column, $value);
-        return $data ? $this->makeEntity($data) : null;
-    }
-
-    /**
-     * Alias of {@see Model::readBy()}.
-     *
      * Find a row by column name and value.
      *
-     * @param string $column
      * @param int|string $value
+     * @param string $column
      *
      * @return Entity|array<string,float|int|string|null>|stdClass|null
      */
@@ -640,13 +617,15 @@ abstract class Model implements ModelInterface
         string $column,
         int | string $value
     ) : Entity | array | stdClass | null {
-        return $this->readBy($column, $value);
+        if ($this->isCacheActive()) {
+            return $this->findWithCache($column, $value);
+        }
+        $data = $this->findRow($column, $value);
+        return $data ? $this->makeEntity($data) : null;
     }
 
     /**
-     * Read a row based on Primary Key.
-     *
-     * @since 3.6
+     * Find a row based on Primary Key.
      *
      * @param int|string $id
      *
@@ -654,33 +633,19 @@ abstract class Model implements ModelInterface
      * selected row as configured on $returnType property or null if row was
      * not found
      */
-    public function read(int | string $id) : Entity | array | stdClass | null
-    {
-        $this->checkPrimaryKey($id);
-        return $this->readBy($this->getPrimaryKey(), $id);
-    }
-
-    /**
-     * Alias of {@see Model::read()}.
-     *
-     * @param int|string $id
-     *
-     * @return Entity|array|float[]|int[]|null[]|stdClass|string[]|null
-     */
     public function find(int | string $id) : Entity | array | stdClass | null
     {
-        return $this->read($id);
+        $this->checkPrimaryKey($id);
+        return $this->findBy($this->getPrimaryKey(), $id);
     }
 
     /**
-     * @since 3.6
-     *
      * @param int|string $value
      * @param string $column
      *
      * @return array<string,float|int|string|null>|null
      */
-    protected function readRow(string $column, int | string $value) : ?array
+    protected function findRow(string $column, int | string $value) : ?array
     {
         return $this->getDatabaseToRead()
             ->select()
@@ -692,14 +657,12 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * @since 3.6
-     *
      * @param int|string $value
      * @param string $column
      *
      * @return Entity|array<string,float|int|string|null>|stdClass|null
      */
-    protected function readWithCache(string $column, int | string $value) : Entity | array | stdClass | null
+    protected function findWithCache(string $column, int | string $value) : Entity | array | stdClass | null
     {
         $cacheKey = $this->getCacheKey([
             $column => $value,
@@ -711,7 +674,7 @@ abstract class Model implements ModelInterface
         if (\is_array($data)) {
             return $this->makeEntity($data);
         }
-        $data = $this->readRow($column, $value);
+        $data = $this->findRow($column, $value);
         if ($data === null) {
             $data = $this->getCacheDataNotFound();
         }
@@ -939,7 +902,7 @@ abstract class Model implements ModelInterface
      */
     protected function updateCachedRow(string $column, int | string $value) : void
     {
-        $data = $this->readRow($column, $value);
+        $data = $this->findRow($column, $value);
         if ($data === null) {
             $data = $this->getCacheDataNotFound();
         }

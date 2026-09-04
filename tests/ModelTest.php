@@ -64,20 +64,6 @@ final class ModelTest extends ModelTestCase
         self::assertIsObject($this->model->findByData('foo')); // @phpstan-ignore-line
     }
 
-    public function testReadBy() : void
-    {
-        self::assertIsObject($this->model->readBy('id', 1));
-        self::assertNull($this->model->readBy('id', 1000));
-        self::assertIsObject($this->model->readBy('data', 'foo'));
-    }
-
-    public function testReadByWithCall() : void
-    {
-        self::assertIsObject($this->model->readById(1));
-        self::assertNull($this->model->readById(1000));
-        self::assertIsObject($this->model->readByData('foo')); // @phpstan-ignore-line
-    }
-
     public function testCallMethodNotAllowed() : void
     {
         $this->expectException(\BadMethodCallException::class);
@@ -104,16 +90,6 @@ final class ModelTest extends ModelTestCase
         $this->model->returnType = EntityMock::class;
         self::assertInstanceOf(EntityMock::class, $this->model->find(1));
         self::assertNull($this->model->find(100));
-    }
-
-    public function testRead() : void
-    {
-        self::assertIsObject($this->model->read(1));
-        $this->model->returnType = 'array';
-        self::assertIsArray($this->model->read(1));
-        $this->model->returnType = EntityMock::class;
-        self::assertInstanceOf(EntityMock::class, $this->model->read(1));
-        self::assertNull($this->model->read(100));
     }
 
     public function testFindAll() : void
