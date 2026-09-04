@@ -14,8 +14,6 @@ use JsonSerializable;
 /**
  * Class Entity.
  *
- * @todo In PHP 8.4 add property hooks to validate config properties.
- *
  * @package mvc
  */
 abstract class Entity implements JsonSerializable
