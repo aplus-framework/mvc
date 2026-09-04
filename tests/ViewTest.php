@@ -291,7 +291,7 @@ final class ViewTest extends TestCase
         $this->view->block('bar');
         \ob_end_clean();
         unset($this->view);
-        self::assertTrue(true);
+        self::assertTrue(true); // @phpstan-ignore-line
     }
 
     protected function setDebugCollector() : void

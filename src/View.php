@@ -23,7 +23,7 @@ class View
 {
     protected ?string $baseDir = null;
     protected string $extension;
-    protected string $layout;
+    protected ?string $layout;
     protected ?string $openBlock;
     /**
      * @var array<int,string>
@@ -244,7 +244,7 @@ class View
         $contents = $this->getContents($view, $data);
         if (isset($this->layout)) {
             $layout = $this->layout;
-            unset($this->layout);
+            $this->layout = null;
             $this->layoutsOpen[] = $layout;
             $contents = $this->render($layout, $data);
         }

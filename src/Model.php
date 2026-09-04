@@ -34,14 +34,11 @@ use stdClass;
  *
  * @package mvc
  *
- * @method false|int|string createById(Entity|array|stdClass $data) Create a new row and return the
- *     id.
- * @method Entity|array|stdClass|null findById(int|string $id) Find a row by id.
- * @method false|int|string updateById(int|string $id, Entity|array|stdClass $data) Update rows by
- *     id.
+ * @method false|int|string createById(Entity|array<string,float|int|string|null>|stdClass $data) Create a new row and return the id.
+ * @method Entity|array<string,float|int|string|null>|stdClass|null findById(int|string $id) Find a row by id.
+ * @method false|int|string updateById(int|string $id, Entity|array<string,float|int|string|null>|stdClass $data) Update rows by id.
  * @method false|int|string deleteById(int|string $id) Delete rows by id.
- * @method false|int|string replaceById(int|string $id, Entity|array|stdClass $data) Replace rows
- *     by id.
+ * @method false|int|string replaceById(int|string $id, Entity|array<string,float|int|string|null>|stdClass $data) Replace rows by id.
  */
 abstract class Model implements ModelInterface
 {

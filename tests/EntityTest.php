@@ -35,11 +35,11 @@ final class EntityTest extends TestCase
 
     public function testPopulate() : void
     {
-        self::assertIsInt($this->entity->id);
-        self::assertIsString($this->entity->name);
+        self::assertIsInt($this->entity->id); // @phpstan-ignore-line
+        self::assertIsString($this->entity->name); // @phpstan-ignore-line
         self::assertInstanceOf(Date::class, $this->entity->birthday);
         self::assertSame('1990-12-24', $this->entity->birthday->format('Y-m-d'));
-        self::assertIsArray($this->entity->configs);
+        self::assertIsArray($this->entity->configs); // @phpstan-ignore-line
         self::assertSame(['color' => 'red', 'foo' => 'bar'], $this->entity->configs);
     }
 
@@ -50,7 +50,7 @@ final class EntityTest extends TestCase
         $this->expectExceptionMessage(
             'Cannot modify private(set) property Tests\MVC\EntityMock::$currentTime from scope Tests\MVC\EntityTest'
         );
-        $this->entity->currentTime = $this->time;
+        $this->entity->currentTime = $this->time;  // @phpstan-ignore-line
     }
 
     public function testToModel() : void
