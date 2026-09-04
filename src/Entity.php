@@ -9,6 +9,8 @@
  */
 namespace Framework\MVC;
 
+use JsonSerializable;
+
 /**
  * Class Entity.
  *
@@ -16,7 +18,7 @@ namespace Framework\MVC;
  *
  * @package mvc
  */
-abstract class Entity implements \JsonSerializable
+abstract class Entity implements JsonSerializable
 {
     /**
      * @param array<string,mixed> $properties
