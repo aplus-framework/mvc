@@ -36,7 +36,6 @@ use stdClass;
  *
  * @method false|int|string createById(Entity|array|stdClass $data) Create a new row and return the
  *     id.
- * @method Entity|array|stdClass|null readById(int|string $id) Read a row by id.
  * @method Entity|array|stdClass|null findById(int|string $id) Find a row by id.
  * @method false|int|string updateById(int|string $id, Entity|array|stdClass $data) Update rows by
  *     id.
@@ -202,11 +201,6 @@ abstract class Model implements ModelInterface
             $method = \substr($method, 8);
             $method = $this->convertCase($method, $this->columnCase);
             return $this->createBy($method, $arguments[0]); // @phpstan-ignore-line
-        }
-        if (\str_starts_with($method, 'readBy')) {
-            $method = \substr($method, 6);
-            $method = $this->convertCase($method, $this->columnCase);
-            return $this->readBy($method, $arguments[0]); // @phpstan-ignore-line
         }
         if (\str_starts_with($method, 'updateBy')) {
             $method = \substr($method, 8);
