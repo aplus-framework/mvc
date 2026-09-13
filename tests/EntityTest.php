@@ -29,6 +29,7 @@ final class EntityTest extends TestCase
             'name' => 'John  Doe   ',
             'birthday' => '1990-12-24',
             'configs' => '{"color":"red", "foo":"bar"}',
+            'createdAt' => '2026-09-04 20:52:00',
         ]);
         $this->time = \time();
     }
@@ -41,6 +42,7 @@ final class EntityTest extends TestCase
         self::assertSame('1990-12-24', $this->entity->birthday->format('Y-m-d'));
         self::assertIsArray($this->entity->configs); // @phpstan-ignore-line
         self::assertSame(['color' => 'red', 'foo' => 'bar'], $this->entity->configs);
+        self::assertSame('2026-09-04 20:52:00', $this->entity->createdAt->format('Y-m-d H:i:s'));
     }
 
     public function testInit() : void
@@ -66,8 +68,8 @@ final class EntityTest extends TestCase
     public function testToJson() : void
     {
         self::assertSame(
-            '{"id":2,"name":"John Doe","birthday":"1990-12-24T00:00:00+00:00","configs":{"color":"red","foo":"bar"}}',
-            \json_encode($this->entity)
+            '{"id":2,"name":"John Doe","birthday":"1990-12-24","configs":{"color":"red","foo":"bar"},"url":"https://foo.com/users/2","createdAt":"2026-09-04T20:52:00+00:00"}',
+            \json_encode($this->entity, \JSON_UNESCAPED_SLASHES)
         );
     }
 

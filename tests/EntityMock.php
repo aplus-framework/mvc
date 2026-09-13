@@ -10,6 +10,7 @@
 namespace Tests\MVC;
 
 use Framework\Date\Date;
+use Framework\HTTP\URL;
 use Framework\MVC\Entity;
 use Override;
 
@@ -32,8 +33,8 @@ class EntityMock extends Entity
     }
     public Date $birthday {
         set(Date | string $birthday) {
-            if(\is_string($birthday)) {
-                $birthday = new Date($birthday);
+            if (\is_string($birthday)) {
+                $birthday = Date::createFromFormat('Y-m-d', $birthday);
             }
             $this->birthday = $birthday;
         }
@@ -43,10 +44,26 @@ class EntityMock extends Entity
      */
     public array $configs {
         set(array | string $configs) {
-            if(\is_string($configs)) {
+            if (\is_string($configs)) {
                 $configs = \json_decode($configs, true);
             }
             $this->configs = $configs;
+        }
+    }
+
+    public URL $url {
+        get {
+            $url = 'https://foo.com/users/' . $this->id;
+            return new URL($url);
+        }
+    }
+
+    public Date $createdAt {
+        set(string | Date $createdAt) {
+            if(\is_string($createdAt)) {
+                $createdAt = Date::createFromFormat('Y-m-d H:i:s', $createdAt);
+            }
+            $this->createdAt = $createdAt;
         }
     }
 
@@ -76,8 +93,10 @@ class EntityMock extends Entity
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'birthday' => $this->birthday,
+            'birthday' => $this->birthday->format('Y-m-d'),
             'configs' => $this->configs,
+            'url' => $this->url->toString(),
+            'createdAt' => $this->createdAt->format(\DATE_ATOM),
         ];
     }
 }
