@@ -19,6 +19,8 @@ use JsonSerializable;
 abstract class Entity implements JsonSerializable
 {
     /**
+     * Populate the properties with data and run the init method.
+     *
      * @param array<string,mixed> $data
      */
     public function __construct(array $data)
@@ -36,6 +38,8 @@ abstract class Entity implements JsonSerializable
     }
 
     /**
+     * Populate the properties with data.
+     *
      * @param array<string,mixed> $data
      */
     protected function populate(array $data) : void
@@ -66,6 +70,10 @@ abstract class Entity implements JsonSerializable
     }
 
     /**
+     * Method used to serialize JSON with json_encode.
+     *
+     * @see https://www.php.net/manual/en/class.jsonserializable.php
+     *
      * @return array<string,mixed>
      */
     public function jsonSerialize() : array
