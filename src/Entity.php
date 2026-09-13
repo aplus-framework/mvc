@@ -36,11 +36,11 @@ abstract class Entity implements JsonSerializable
     }
 
     /**
-     * @param array<string,mixed> $properties
+     * @param array<string,mixed> $data
      */
-    protected function populate(array $properties) : void
+    protected function populate(array $data) : void
     {
-        foreach ($properties as $name => $value) {
+        foreach ($data as $name => $value) {
             $this->{$name} = $value;
         }
     }
