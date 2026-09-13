@@ -19,11 +19,11 @@ use JsonSerializable;
 abstract class Entity implements JsonSerializable
 {
     /**
-     * @param array<string,mixed> $properties
+     * @param array<string,mixed> $data
      */
-    public function __construct(array $properties)
+    public function __construct(array $data)
     {
-        $this->populate($properties);
+        $this->populate($data);
         $this->init();
     }
 
