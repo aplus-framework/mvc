@@ -97,13 +97,10 @@ final class ModelTest extends ModelTestCase
         $data = $this->model->findAll();
         self::assertSame(1, $data[0]->id); // @phpstan-ignore-line
         self::assertSame(2, $data[1]->id); // @phpstan-ignore-line
-        $data = $this->model->findAll(2, 1);
-        self::assertSame(2, $data[0]->id); // @phpstan-ignore-line
         $this->model->returnType = 'array';
         $data = $this->model->findAll();
         self::assertSame(1, $data[0]['id']); // @phpstan-ignore-line
         self::assertSame(2, $data[1]['id']); // @phpstan-ignore-line
-        self::assertEmpty($this->model->findAll(1, 100));
     }
 
     public function testList() : void

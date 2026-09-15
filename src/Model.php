@@ -674,18 +674,13 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * Alias of {@see Model::list()}.
-     *
-     * Find all rows with limit and offset.
-     *
-     * @param int|null $limit
-     * @param int|null $offset
+     * Find all rows.
      *
      * @return array<int,Entity|array<mixed>|stdClass>
      */
-    public function findAll(?int $limit = null, ?int $offset = null) : array
+    public function findAll() : array
     {
-        return $this->list($limit, $offset);
+        return $this->list();
     }
 
     /**
