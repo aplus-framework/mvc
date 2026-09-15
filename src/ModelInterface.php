@@ -33,8 +33,6 @@ interface ModelInterface
     /**
      * Find an item based on id.
      *
-     * @since 3.6
-     *
      * @param int|string $id
      *
      * @return Entity|array<string,float|int|string|null>|stdClass|null The
