@@ -30,14 +30,6 @@ abstract class Entity implements JsonSerializable
     }
 
     /**
-     * Used to initialize settings, set custom properties, etc.
-     * Called in the constructor just after the properties be populated.
-     */
-    protected function init() : void
-    {
-    }
-
-    /**
      * Populate the properties with data.
      *
      * @param array<string,mixed> $data
@@ -47,6 +39,14 @@ abstract class Entity implements JsonSerializable
         foreach ($data as $name => $value) {
             $this->{$name} = $value;
         }
+    }
+
+    /**
+     * Used to initialize settings, set custom properties, etc.
+     * Called in the constructor just after the properties be populated.
+     */
+    protected function init() : void
+    {
     }
 
     /**
