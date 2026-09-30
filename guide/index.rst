@@ -947,19 +947,24 @@ Mailer Config Options
     [
         'mailer' => [
             'default' => [
-                'host' => 'localhost',
-                'port' => 587,
-                'tls' => true,
-                'username' => null,
-                'password' => null,
-                'charset' => 'utf-8',
-                'crlf' => "\r\n",
-                'keep_alive' => false,
+                'config' => [
+                    'host' => 'localhost',
+                    'port' => 587,
+                    'tls' => true,
+                    'username' => null,
+                    'password' => null,
+                    'charset' => 'utf-8',
+                    'crlf' => "\r\n",
+                    'keep_alive' => false,
+                ],
             ],
         ],
     ]
 
-Set an array with Mailer settings. Normally you just set the ``username``, the
+config
+""""""
+
+Set an array of configurations. Normally you just set the ``username``, the
 ``password``, the ``host`` and the ``port``.
 
 The complete list of configurations can be seen

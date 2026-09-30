@@ -794,7 +794,7 @@ class App
         $config = static::config()->get('mailer', $instance);
         return static::setService(
             'mailer',
-            new Mailer($config),
+            new Mailer($config['config']),
             $instance
         );
     }
