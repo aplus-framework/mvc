@@ -762,7 +762,7 @@ abstract class Model implements ModelInterface
      */
     protected function timezone() : DateTimeZone
     {
-        $timezone = $this->getDatabaseToWrite()->getConfig()['timezone'] ?? '+00:00';
+        $timezone = $this->getDatabaseToWrite()->getConfig()['timezone'];
         return new DateTimeZone($timezone);
     }
 
