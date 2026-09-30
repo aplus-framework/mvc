@@ -1390,9 +1390,9 @@ class App
             'validation',
             new Validation(
                 $config['validators'] ?? [
-                Validator::class,
-                FilesValidator::class,
-            ],
+                    Validator::class,
+                    FilesValidator::class,
+                ],
                 $language
             ),
             $instance
