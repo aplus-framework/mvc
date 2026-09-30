@@ -93,7 +93,7 @@ Prints the contents of the view file ``__DIR__ . '/views/home/index.php'``:
 
     echo App::view()->render('home/index');
 
-Fetch all rows in the database ``default`` instance and move to the ``replica``
+Fetch all rows in the database ``default`` instance and copy to the ``replica``
 instance:
 
 .. code-block:: php
@@ -216,7 +216,8 @@ This is the **api/UsersController.php** example:
                 ->setStatus(Status::CREATED)
                 ->setHeader(
                     ResponseHeader::LOCATION,
-                    App::router()->getNamedRoute('api.users.show')
+                    App::router()
+                        ->getNamedRoute('api.users.show')
                         ->getUrl(pathArgs: [$user['id']])
                 )->setJson($user);
         }
@@ -306,13 +307,13 @@ App services can be extended. See `Extending`_.
 
 Built-in services:
 
-- `Anti-CSRF Service`_
+- `AntiCSRF Service`_
 - `Autoloader Service`_
 - `Cache Service`_
 - `Console Service`_
 - `Database Service`_
 - `Debugger Service`_
-- `Exception Handler Service`_
+- `ExceptionHandler Service`_
 - `Language Service`_
 - `Locator Service`_
 - `Logger Service`_
@@ -325,8 +326,8 @@ Built-in services:
 - `Validation Service`_
 - `View Service`_
 
-Anti-CSRF Service
-^^^^^^^^^^^^^^^^^
+AntiCSRF Service
+^^^^^^^^^^^^^^^^
 
 Gets an instance of
 `Framework\HTTP\AntiCSRF <https://docs.aplus-framework.com/classes/Framework-HTTP-AntiCSRF.html>`_:
@@ -335,11 +336,11 @@ Gets an instance of
 
     App::antiCsrf()
 
-More details about Anti-CSRF can be found
+More details about AntiCSRF can be found
 `here <https://docs.aplus-framework.com/guides/libraries/http/index.html#anticsrf>`_.
 
-Anti-CSRF Config Options
-************************
+AntiCSRF Config Options
+***********************
 
 .. code-block:: php
 
@@ -489,7 +490,7 @@ A prefix for the name of cache items. By default nothing is set.
 serializer
 """"""""""
 
-Sets the serializer with a value from the enum Framework\Cache\Serializer,
+Sets the serializer with a value from the enum ``Framework\Cache\Serializer``,
 which can be a case of the enum or a string.
 
 The default value is ``Framework\Cache\Serializer::PHP``.
@@ -555,7 +556,7 @@ commands
 """"""""
 
 Sets an array of Fully Qualified Class Names or instances of the
-Framework\CLI\Command class. By default, no additional classes are set.
+``Framework\CLI\Command`` class. By default, no additional classes are set.
 
 These commands are added after finding through namespaces and directories.
 
@@ -653,8 +654,8 @@ Sets an array of options for the Debugger. The default is to set nothing.
 You can find more details about the options
 `here <https://docs.aplus-framework.com/guides/libraries/debug/index.html#options>`_.
 
-Exception Handler Service
-^^^^^^^^^^^^^^^^^^^^^^^^^
+ExceptionHandler Service
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Gets an instance of
 `Framework\Debug\ExceptionHandler <https://docs.aplus-framework.com/classes/Framework-Debug-ExceptionHandler.html>`_:
@@ -666,8 +667,8 @@ Gets an instance of
 More details about Exception Handler can be found
 `here <https://docs.aplus-framework.com/guides/libraries/debug/index.html#exception-handler>`_.
 
-Exception Handler Config Options
-********************************
+ExceptionHandler Config Options
+*******************************
 
 .. code-block:: php
 
@@ -681,7 +682,6 @@ Exception Handler Config Options
                 'production_view' => null,
                 'initialize' => true,
                 'handle_errors' => true,
-                'search_engine' => 'google',
                 'show_log_id' => true,
                 'json_flags' => null,
                 'hidden_inputs' => [],
@@ -728,12 +728,6 @@ handle_errors
 
 If initialize is ``true``, this option defines whether to set the class as an
 error handler. The default value is ``true``.
-
-search_engine
-"""""""""""""
-Set the search engine used to create search links on exception error messages.
-Valid values are: ``ask``, ``baidu``, ``bing``, ``duckduckgo``, ``google``,
-``yahoo`` and ``yandex``. The default is ``google``.
 
 show_log_id
 """""""""""
@@ -820,8 +814,8 @@ default is ``default``.
 fallback_level
 """"""""""""""
 
-Sets the Fallback Level to a Framework\Language\FallbackLevel enum case or an
-integer. The default is to set none.
+Sets the Fallback Level to a ``Framework\Language\FallbackLevel`` enum case or
+an integer. The default is to set none.
 
 directories
 """""""""""
@@ -904,7 +898,7 @@ Logger Config Options
 class
 """""
 
-A Fully Qualified Class Name of a child class of Framework\Log\Logger.
+A Fully Qualified Class Name of a child class of ``Framework\Log\Logger``.
 
 The default is ``Framework\Log\Logger\MultiFileLogger``.
 
@@ -917,8 +911,8 @@ according to the class used.
 level
 """""
 
-Sets the level of logs with a case of Framework\Log\LogLevel or an integer. If
-none is set, the ``DEBUG`` level will be used.
+Sets the level of logs with a case of ``Framework\Log\LogLevel`` or an integer.
+If none is set, the ``DEBUG`` level will be used.
 
 config
 """"""
@@ -1038,6 +1032,8 @@ Request Config Options
                 'allowed_hosts' => [],
                 'force_https' => false,
                 'json_flags' => null,
+                'ip_key' => null,
+                'parse_body_options' => null,
             ],
         ],
     ]
@@ -1045,7 +1041,7 @@ Request Config Options
 server_vars
 """""""""""
 
-An array of values to be set in the $_SERVER superglobal on the command line.
+An array of values to be set in the ``$_SERVER`` superglobal on the command line.
 
 allowed_hosts
 """""""""""""
@@ -1062,6 +1058,19 @@ json_flags
 """"""""""
 
 Flags for ``json_decode``. The default is set to none.
+
+ip_key
+""""""
+
+Set the key used to get the IP address from the ``$_SERVER`` superglobal or a
+``Closure``. Default is ``null`` to use ``REMOTE_ADDR``.
+
+parse_body_options
+""""""""""""""""""
+
+Sets an array of options used by the
+`request_parse_body <https://www.php.net/manual/en/function.request-parse-body.php>`_
+function. The default value is ``null``, setting no options.
 
 Response Service
 ^^^^^^^^^^^^^^^^
@@ -1271,10 +1280,10 @@ save_handler
 """"""""""""
 
 Optional. Sets an array containing the ``class`` key with the Fully Qualified
-Class Name of a child class of Framework\Session\SaveHandler. And also the
+Class Name of a child class of ``Framework\Session\SaveHandler``. And also the
 ``config`` key with the configurations passed to the SaveHandler.
 
-If the ``class`` is an instance of Framework\Session\SaveHandlers\DatabaseHandler
+If the ``class`` is an instance of ``Framework\Session\SaveHandlers\DatabaseHandler``
 it is possible to set the instance of a `Database Service`_ through the key 
 ``database_instance``.
 
@@ -1432,7 +1441,7 @@ The ``App::request`` method return type can be replaced by a child class thanks
 to `Covariance <https://www.php.net/manual/en/language.oop5.variance.php#language.oop5.variance.covariance>`_.
 
 The example below adds a new method, ``App::other``, which also uses
-`Late Static Bindings <https://www.php.net/manual/en/language.oop5.late-static-bindings.php#language.oop5.late-static-bindings.usage>`_.
+`Late Static Bindings <https://www.php.net/manual/en/language.oop5.late-static-bindings.php#language.oop5.late-static-bindings.usage>`_:
 
 .. code-block:: php
 
@@ -1483,8 +1492,7 @@ anywhere in your application:
     App::other()->doSomething();
     App::other('other_instance')->doSomething();
 
-**Tip**: Use a `smart IDE <https://www.jetbrains.com/phpstorm/>`_. Aplus loves it.
-Be happy.
+**Tip**: Use an IDE or an editor with code completion. Aplus loves that. Be happy!
 
 Models
 ------
@@ -1494,7 +1502,7 @@ and delete) methods, with validation, localization and performance
 optimization with caching and separation of read and write data.
 
 To create a model that represents a table, just create a class that extends the
-**Framework\MVC\Model** class.
+``Framework\MVC\Model`` class:
 
 .. code-block:: php
 
@@ -1510,7 +1518,7 @@ in the **Users** table.
 Table Name
 ##########
 
-The table name can be set in the ``$table`` property.
+The table name can be set in the ``$table`` property:
 
 .. code-block:: php
 
@@ -1529,18 +1537,18 @@ The connections are obtained through the ``Framework\MVC\App::database`` method
 and the name of the instances must be defined in the model.
 
 To set the name of the read connection instance, use the ``$connectionRead``
-property.
+property:
 
 .. code-block:: php
 
     protected string $connectionRead = 'default';
 
 The name of the connection can be obtained through the ``getConnectionRead``
-method and the instance of **Framework\Database\Database** can be obtained
+method and the instance of ``Framework\Database\Database`` can be obtained
 through the ``getDatabaseToRead`` method.
 
 The name of the write connection, by default, is also ``default``. But it can
-be modified through the ``$connectionWrite`` property.
+be modified through the ``$connectionWrite`` property:
 
 .. code-block:: php
 
@@ -1554,7 +1562,7 @@ Primary Key
 
 To work with a model, it is necessary that its database table has an
 auto-incrementing Primary Key, because it is through it that data is found by
-the ``read`` method, and rows are also updated and deleted.
+the ``find`` method, and rows are also updated and deleted.
 
 By default, the name of the primary key is ``id``, as in the example below:
 
@@ -1582,7 +1590,7 @@ Allowed Fields
 ##############
 
 To manipulate a table making changes it is required that the fields allowed for
-writing are set, otherwise a **LogicException** will be thrown.
+writing are set, otherwise a ``LogicException`` will be thrown.
 
 Using the ``$allowedFields`` property, you can set an array with the names of
 the allowed fields:
@@ -1607,7 +1615,7 @@ making it easier to work with object orientation.
 
 But, the ``$returnType`` property can also be set as ``array`` (making the
 returned rows an associative array) or as a class-string of a child class of
-**Framework\MVC\Entity**.
+``Framework\MVC\Entity``:
 
 .. code-block:: php
 
@@ -1615,8 +1623,8 @@ returned rows an associative array) or as a class-string of a child class of
 
 The return type can be obtained with the ``getReturnType`` method.
 
-Results are automatically converted to the return type in the ``read``,
-``list`` and ``paginate`` methods.
+Results are automatically converted to the return type in the ``find``,
+``findAll``, ``list`` and ``paginate`` methods.
 
 Automatic Timestamps
 ####################
@@ -1656,8 +1664,7 @@ below:
 
 And, the format can be obtained through the ``getTimestampFormat`` method.
 
-The timestamps are generated using the timezone of the write connection and,
-if it is not set, it uses UTC.
+The timestamps are generated using the timezone of the write connection.
 
 A timestamp formatted in ``$timestampFormat`` can be obtained with the
 ``getTimestamp`` method.
@@ -1671,11 +1678,11 @@ Validation
 
 When one of the ``create``, ``update`` or ``replace`` methods is called for the
 first time, the ``$validation`` property will receive an instance of
-**Framework\Validation\Validation** for exclusive use in the model, which can be
+``Framework\Validation\Validation`` for exclusive use in the model, which can be
 obtained by the ``getValidation`` method.
 
 To make changes it is required that the validation rules are set, otherwise a
-**RuntimeException** will be thrown saying that the rules were not set.
+``RuntimeException`` will be thrown saying that the rules were not set.
 
 You can set the rules in the ``$validationRules`` property:
 
@@ -1689,7 +1696,7 @@ You can set the rules in the ``$validationRules`` property:
 Or returning in the ``getValidationRules`` method.
 
 Validators can also be customized. By default, the ones used are
-**Framework\MVC\Validator** and **Framework\Validation\FilesValidator**:
+``Framework\MVC\Validator`` and ``Framework\Validation\FilesValidator``:
 
 .. code-block:: php
 
@@ -1780,7 +1787,7 @@ Also, it is possible to order the results by the last parameters:
     ); // array
 
 After calling the ``paginate`` method, the ``$pager`` property will have an
-instance of the **Framework\Pagination\Pager** class, which can be obtained by
+instance of the ``Framework\Pagination\Pager`` class, which can be obtained by
 the ``getPager`` method.
 
 So you can render the pagination wherever you need it, like in the HTTP Link
@@ -1810,7 +1817,7 @@ Cache
 
 The model has a cache system that works with individual results. For example,
 once the ``$cacheActive`` property is set to ``true``, when obtaining a row
-via the ``read`` method, the result will be stored in the cache and will be
+via the ``find`` method, the result will be stored in the cache and will be
 available directly from it for the duration of the Time To Live, defined in the
 ``$cacheTtl`` property.
 
@@ -1823,7 +1830,7 @@ With the active caching system it reduces the load on the database server, as
 the rows are obtained from files or directly from memory.
 
 Below is the example with the cache inactive. To activate it, just set the value
-to ``true``.
+to ``true``:
 
 .. code-block:: php
 
@@ -1841,7 +1848,7 @@ And the name of the service instance obtained through the method
 
 Whenever it is necessary to get the name of the cache instance, you can use the
 ``getCacheInstance`` method and to get the object instance of the
-**Framework\Cache\Cache** class, you can use the ``getCache`` method.
+``Framework\Cache\Cache`` class, you can use the ``getCache`` method.
 
 The default Time To Live value for each item is 60 seconds, as shown below:
 
@@ -1855,7 +1862,7 @@ Language
 ########
 
 Some features, such as validation, on labels and error messages, or pagination
-need an instance of **Framework\Language\Language** to locate the displayed
+need an instance of ``Framework\Language\Language`` to locate the displayed
 texts.
 
 The name of the instance defined in the ``$languageInstance`` property is
@@ -1881,7 +1888,7 @@ The model has methods to work with basic CRUD operations, which are:
 Create
 ******
 
-The ``create`` method inserts a new row and returns the LAST_INSERT_ID() on
+The ``create`` method inserts a new row and returns the ``LAST_INSERT_ID()`` on
 success or ``false`` if validation fails:
 
 .. code-block:: php
@@ -1904,17 +1911,17 @@ If it returns ``false``, it is possible to get the errors through the
 Read
 ****
 
-The ``read`` method reads a row based on the Primary Key and returns the row
+The ``find`` method finds a row based on the Primary Key and returns the row
 with the type set in the ``$returnType`` property or ``null`` if the row is not
-found.
+found:
 
 .. code-block:: php
 
     $id = 1;
-    $row = $model->read($id);
+    $row = $model->find($id);
 
-It is also possible to read all rows, with limit and offset, by returning an
-array with items in the ``$returnType``.
+It is also possible to list rows, with limit and offset, by returning an
+array with items in the ``$returnType``:
 
 .. code-block:: php
 
@@ -1922,11 +1929,17 @@ array with items in the ``$returnType``.
     $offset = 20;
     $rows = $model->list($limit, $offset); // array
 
+You can also retrieve all the table rows using the ``findAll`` method:
+
+.. code-block:: php
+
+    $all = $model->findAll();
+
 Update
 ******
 
 The ``update`` method updates based on the Primary Key and returns the number
-of rows affected or ``false`` if validation fails.
+of rows affected or ``false`` if validation fails:
 
 .. code-block:: php
 
@@ -1955,7 +1968,7 @@ The Model has some extra methods for doing common operations:
 Count
 """""
 
-A basic function to count rows in the table.
+A basic function to count rows in the table:
 
 .. code-block:: php
 
@@ -1975,7 +1988,7 @@ Replace
 """""""
 
 Replace based on Primary Key and return the number of affected rows or ``false``
-if validation fails.
+if validation fails:
 
 .. code-block:: php
 
@@ -1993,7 +2006,7 @@ Save a row. Updates if the Primary Key field is present, otherwise inserts a
 new row.
 
 Returns the number of rows affected in updates as an integer. The
-LAST_INSERT_ID(), in inserts. Or ``false`` if validation fails.
+``LAST_INSERT_ID()``, in inserts. Or ``false`` if validation fails:
 
 .. code-block:: php
 
@@ -2009,6 +2022,9 @@ Entities
 Entities represent rows in a database table. They can be used as a `Return Type`_
 in models.
 
+Typically, it features public properties with heavy use of
+`Property Hooks <https://www.php.net/releases/8.4/pt_BR.php#property_hooks>`_!
+
 Let's see the entity **User** below:
 
 .. code-block:: php
@@ -2019,13 +2035,81 @@ Let's see the entity **User** below:
 
     class User extends Entity
     {
-        protected int $id;
-        protected string $name;
-        protected string $email;
-        protected string $passwordHash;
-        protected URL $url;
-        protected Date $createdAt;
-        protected Date $updatedAt;
+        public int $id;
+
+        public string $firstName;
+
+        public string $lastName;
+
+        public string $name
+        {
+            get => $this->firstName . ' ' . $this->lastName;
+        }
+
+        public string $email;
+
+        public string $passwordHash;
+
+        public URL $url
+        {
+            set(URL | string $value) {
+                if(is_string($value)) {
+                    $value = new URL($value);
+                }
+                $this->url = $value;
+            }
+        }
+
+        public Date $createdAt
+        {
+            set(Date | string $value) {
+                if (is_string($value)) {
+                    $value = Date::createFromFormat('Y-m-d H:i:s', $value);
+                }
+                $this->createdAt = $value;
+            }
+        }
+
+        public Date $updatedAt
+        {
+            set(Date | string $value) {
+                if (is_string($value)) {
+                    $value = Date::createFromFormat('Y-m-d H:i:s', $value);
+                }
+                $this->updatedAt = $value;
+            }
+        }
+
+        protected function init() : void
+        {
+            $this->url = 'https://domain.tld/users/' . $this->id;
+        }
+
+        public function toModel() : array
+        {
+            $data = [
+                'firstName' => $this->firstName,
+                'lastName' => $this->lastName,
+                'email' => $this->email,
+                'passwordHash' => $this->passwordHash,
+            ];
+            if (isset($this->id)) {
+                $data['id'] = $this->id;
+            }
+            return $data;
+        }
+
+        public function toJson() : array
+        {
+            return [
+                'id' => $this->id,
+                'name' => $this->name,
+                'email' => $this->email,
+                'url' => $this->url,
+                'createdAt' => $this->createdAt,
+                'updatedAt' => $this->updatedAt->format(Date::ATOM),
+            ];
+        }
     }
 
 And, it can be instantiated as follows:
@@ -2034,21 +2118,19 @@ And, it can be instantiated as follows:
 
     $user = new User([
         'id' => 1,
-        'name' => 'John Doe',
+        'firstName' => 'John',
+        'lastName' => 'Doe',
+        'email' => 'john@doe.tld',
+        'passwordHash' => '$2y$12$J1nNGA1JirMUfBm.cFZDv...',
+        'createdAt' => '2026-09-02 22:42:43',
+        'updatedAt' => '2026-09-15 23:50:05',
     ]);
 
 Populate
 ########
 
-The array keys will be set as the property name with their respective values in
-the ``populate`` method.
-
-If a setter method exists for the property, it will be called. For example, if
-there is a ``setId`` method, it will be called to set the ``id`` property. If
-the ``setId`` method does not exist, it will try to set the property, if it
-exists, otherwise it will throw an exception saying that the property is not
-defined. If set, it will attempt to set the value to the property's type,
-casting type with the `Type Hints`_ methods.
+By default, the Entity constructor calls a method named ``populate`` that
+iterates over an array of data and sets the property values.
 
 Init
 ####
@@ -2056,90 +2138,46 @@ Init
 The init method is used to initialize settings, set custom properties, etc.
 Called in the constructor just after the properties are populated.
 
+Below is an example of automatically setting the ``$url`` property:
+
 .. code-block:: php
 
-    protected URL $url;
-    protected string $name;
+    public URL $url
+    {
+        set(URL | string $value) {
+            if(is_string($value)) {
+                $value = new URL($value);
+            }
+            $this->url = $value;
+        }
+    }
 
     protected function init() : void
     {
-        $this->name = $this->firstname . ' ' . $this->lastname;
-        $this->url = new URL('https://domain.tld/users/' . $this->id);        
+        $this->url = 'https://domain.tld/users/' . $this->id;        
     }
-
-Magic Isset and Unset
-#####################
-
-To check if a property is set:
-
-.. code-block:: php
-
-    $isSet = isset($user->id); // bool
-
-To remove a property:
-
-.. code-block:: php
-
-    unset($user->id);
-
-Magic Getters
-#############
-
-Properties can be called directly. But first, it is always checked if there is
-a getter for it and if there is, it will be used:
-
-.. code-block:: php
-
-    $id = $user->id; // 1
-    $id = $user->getId(); // 1
-
-Magic Setters
-#############
-
-Properties can be set directly. But before that, it is always checked if there
-is a setter for it and if there is, the value will be set through it:
-
-.. code-block:: php
-
-    $user->id = 3;
-    $user->setId(3);
-
-Type Hints
-**********
-
-It is common to need to convert types when setting property. For example,
-setting a URL string to be converted as an object of the Framework\HTTP\URL
-class.
-
-Before a property is set, the Entity class checks the property's type and checks
-the value's type. Then, try to convert the value to the property's type through
-3 methods.
-
-Each method must return the value in the converted type or null, indicating that
-the conversion was not performed.
-
-Type Hint Custom
-""""""""""""""""
-
-The ``typeHintCustom`` method must be overridden to make custom type changes.
-
-Type Hint Native
-""""""""""""""""
-
-The ``typeHintNative`` method converts to native PHP types, which are:
-``array``, ``bool``, ``float``, ``int``, ``string`` and ``stdClass``.
-
-Type Hint Aplus
-"""""""""""""""
-
-The ``typeHintAplus`` method converts to Aplus Framework class types, which are:
-``Framework\Date\Date`` and ``Framework\HTTP\URL``.
 
 To Model
 ########
 
 Through the ``toModel`` method, the object is transformed into an associative
-array ready to be written to the database.
+array ready to be written to the database:
+
+.. code-block:: php
+
+    public function toModel() : array
+    {
+        $data = [
+            'firstName' => $this->firstName,
+            'lastName' => $this->lastName,
+            'email' => $this->email,
+            'passwordHash' => $this->passwordHash,
+        ];
+        if (isset($this->id)) {
+            $data['id'] = $this->id;
+        }
+        return $data;
+    }
 
 Conversion to array can be done directly, as below:
 
@@ -2155,123 +2193,36 @@ Let's see how to create a row using the variable ``$user``, which is an entity:
 
     $id = $model->create($user); // Insert ID or false
 
-Working with Timezones
-**********************
-
-Let's see below how to work with timezones when exporting data to models.
-
-.. code-block:: php
-    
-    use Framework\Date\Date;
-    use Framework\MVC\Entity;
-
-    class User extends Entity
-    {
-        public string $_timezone = '+00:00'; // Default value
-        protected Date $createdAt;
-    }
-
-We set PHP's default timezone to America/Sao_Paulo (-03:00):
+It is also possible to use the `Save`_ method to automatically create or update
+the user, checking whether the primary key field ``id`` is set:
 
 .. code-block:: php
 
-    date_default_timezone_set('America/Sao_Paulo');
-
-The User object is created:
-
-.. code-block:: php
-
-    $user = new User([
-        'createdAt' => '2024-08-02 10:30:00',
-    ]);
-
-Result using default timezone (-03:00):
-
-.. code-block:: php
-
-    echo $user->createdAt->format('Y-m-d H:i:s'); // '2024-08-02 10:30:00'
-
-When passing through the ``toModel`` method, the value of ``createdAt`` is modified.
-
-The conversion to the time zone of the ``$_timezone`` property (+00:00) is performed:
-
-.. code-block:: php
-
-    $data = $user->toModel();
-    echo $data['createdAt']; // '2024-08-02 13:30:00'
-
-When modifying ``$_timezone``, the converted value will also change:
-
-.. code-block:: php
-
-    $user->_timezone = '+05:00';
-    $data = $user->toModel();
-    echo $data['createdAt']; // '2024-08-02 18:30:00'
-
-We advise you to leave the Entity and database timezones with the default value
-of ``+00:00`` (UTC). But if you really need to modify it don't forget to do it
-when you `connect the database <https://docs.aplus-framework.com/guides/libraries/database/index.html#connection>`_
-and put the same timezone in the Entity.
+    $result = $model->save($user); // int, string or false
 
 JSON Encoding
 #############
 
-JSON Vars
-*********
+The Entity implements the `JsonSerializable <https://www.php.net/manual/en/class.jsonserializable.php>`_
+interface, and the method used to return the data serialized by the
+``json_encode`` function is named ``toJson``.
 
-When working with APIs, it may be necessary to convert an Entity to a JSON
-object.
 
-To set which properties will be JSON-encoded just list them in the property
-``$_jsonVars``:
+Let's see how to return the public data of the User entity as JSON:
 
 .. code-block:: php
 
-    use Framework\Date\Date;
-    use Framework\HTTP\URL;
-    use Framework\MVC\Entity;
-    
-    class User extends Entity
+    public function toJson() : array
     {
-        public array $_jsonVars = [
-            'id',
-            'name',
-            'url',
-            'createdAt',
-            'updatedAt',
-            'bio',
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'url' => $this->url,
+            'createdAt' => $this->createdAt,
+            'updatedAt' => $this->updatedAt->format(Date::ATOM),
         ];
-        protected int $id;
-        protected string $name;
-        protected ?string $bio = null;
-        protected string $email;
-        protected string $passwordHash;
-        protected URL $url;
-        protected Date $createdAt;
-        protected Date $updatedAt;
     }
-
-.. code-block:: php
-
-    $user = new User([
-        'id' => 1,
-        'name' => 'John Doe',
-        'url' => 'https://domain.tld/users/1',
-        'createdAt' => 'now',
-    ]);
-
-Or set whenever you want:
-
-.. code-block:: php
-
-    $user->_jsonVars = [
-        'id',
-        'name',
-        'url',
-        'createdAt',
-        'updatedAt',
-        'bio',
-    ];
 
 Once this is done, the entity can be encoded. Let's see in the following
 example:
@@ -2287,86 +2238,20 @@ And then the JSON object:
     {
         "id": 1,
         "name": "John Doe",
+        "email": "john@doe.tld",
         "url": "https://domain.tld/users/1",
-        "createdAt": "2024-08-02T10:30:00-03:00",
-        "bio": null
+        "createdAt": "2026-09-02T22:42:43+00:00",
+        "updatedAt": "2026-09-15T23:50:05+00:00"
     }
 
 Note that the ``url`` and ``createdAt`` property objects have been json-serialized.
 
-And, only properties with defined values will appear in the result. Note that
-``bio`` has the default value of ``null`` and appears in the result. On the other
-hand, the ``updatedAt`` property does not have a defined value and therefore does
-not appear in the result.
-
-JSON Flags
-**********
-
-Through the ``$_jsonFlags`` property, the flags to encode and decode JSON
-internally in the Entity class are set.
-
-The example below shows the flags with the default value:
-
-.. code-block:: php
-
-    class User extends Entity
-    {
-        public int $_jsonFlags = JSON_UNESCAPED_SLASHES
-            | JSON_UNESCAPED_UNICODE
-            | JSON_PRESERVE_ZERO_FRACTION
-            | JSON_THROW_ON_ERROR;
-    }
-
-You can find more details on the
-`JSON Constants <https://www.php.net/manual/en/json.constants.php>`_ page.
-
-Below is an example showing what can happen:
-
-.. code-block:: php
-    
-    class People extends Entity
-    {
-        protected string $name;
-        protected float $height;
-        protected string $status;
-        protected URL $link;
-        protected array $config;
-    }
-
-    $people = new People([
-        'name' => 'John Doe',
-        'height' => 1,
-        'status' => 'Happy! ❤️ ⚡⚡',
-        'link' => 'https://domain.tld/john-doe',
-        'config' => [
-            'theme' => [
-                'color' => 'magenta',
-                'background' => 'black',
-            ],
-        ],
-    ]);
-
-    echo (string) $people;
-
-This is the result when the People entity is encoded without flags:
-
-.. code-block:: json
-
-    {"name":"John Doe","height":1,"status":"Happy! \u2764\ufe0f \u26a1\u26a1","link":"https:\/\/domain.tld\/john-doe","config":{"theme":{"color":"magenta","background":"black"}}}
-
-And, this is the result with the default flags:
-
-.. code-block:: json
-
-    {"name":"John Doe","height":1.0,"status":"Happy! ❤️ ⚡⚡","link":"https://domain.tld/john-doe","config":{"theme":{"color":"magenta","background":"black"}}}
-
-Note that ``height`` has a float value, the unicode in ``status`` is not escaped
-and ``link`` has no backslashes.
+While the ``updatedAt`` property was formatted before serialization.
 
 Validator
 ---------
 
-The **Framework\MVC\Validator** class has additional rules that work, for example,
+The ``Framework\MVC\Validator`` class has additional rules that work, for example,
 using database connections.
 
 The following rules can be used alongside the
@@ -2379,7 +2264,7 @@ The following rules can be used alongside the
 exist
 #####
 
-Requires that a value exists in the database.
+Requires that a value exists in the database:
 
 .. code-block:: php
 
@@ -2396,7 +2281,7 @@ a dot. If the column is not defined, the field name will be used as the column n
 existMany
 #########
 
-Requires that many values exists in the database.
+Requires that many values exists in the database:
 
 .. code-block:: php
 
@@ -2430,7 +2315,7 @@ If any value does not exist, validation will fail.
 unique
 ######
 
-Requires that a value is not registered in the database.
+Requires that a value is not registered in the database:
 
 .. code-block:: php
 
@@ -2716,8 +2601,8 @@ And the output will be like this:
 Controllers
 -----------
 
-The abstract class **Framework\MVC\Controller** extends the class
-**Framework\Routing\RouteActions**, inheriting the characteristics necessary
+The abstract class ``Framework\MVC\Controller`` extends the class
+``Framework\Routing\RouteActions``, inheriting the characteristics necessary
 for your methods to be used as route actions.
 
 Below we see an example with the **Home** class and the ``index`` action method
@@ -2857,7 +2742,7 @@ the ``$users`` property is used, which has the instance of
 
         public function show(int $id) : string
         {
-            $user = $this->users->read($id);
+            $user = $this->users->find($id);
             return $this->render('users/show', [
                 'user' => $user,
             ]);
@@ -2867,7 +2752,7 @@ the ``$users`` property is used, which has the instance of
 JSON Responses
 ##############
 
-As with the Framework\Routing\RouteActions class, the controller action methods
+As with the ``Framework\Routing\RouteActions`` class, the controller action methods
 can return an array, stdClass, or JsonSerializable instance so that the Response
 is automatically set with the JSON Content-Type and the message body as well.
 
@@ -2886,7 +2771,7 @@ JSON-encoded and added to the Response body:
 
         public function index() : array
         {
-            $page = $this->request->getGet('page')
+            $page = $this->request->getGet('page');
             $users = $this->users->paginate($page);
             return $users;
         }
@@ -2895,7 +2780,7 @@ JSON-encoded and added to the Response body:
 Before and After Actions
 ########################
 
-Every controller has two methods inherited from Framework\Routing\RouteActions
+Every controller has two methods inherited from ``Framework\Routing\RouteActions``
 that can be used to prepare configurations, filter input data, and also to
 finalize configurations and filter output data.
 
