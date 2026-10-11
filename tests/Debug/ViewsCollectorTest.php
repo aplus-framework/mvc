@@ -79,8 +79,8 @@ final class ViewsCollectorTest extends TestCase
         $this->view->setBaseDir(__DIR__ . '/../Views');
         $this->view->render('home/index');
         $activities = $this->collector->getActivities();
-        self::assertSame('Render view 1', $activities[0]['description']);
-        self::assertSame('Render view 2', $activities[1]['description']);
+        self::assertSame('Render view 1', $activities[0]->description);
+        self::assertSame('Render view 2', $activities[1]->description);
     }
 
     public function testDebugbar() : void

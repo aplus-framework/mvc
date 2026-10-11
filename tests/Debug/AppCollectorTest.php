@@ -147,19 +147,19 @@ final class AppCollectorTest extends TestCase
         AppMock::autoloader('autoloader-foo');
         $this->collector->getContents();
         $activities = $this->collector->getActivities();
-        self::assertSame('Initialization', $activities[0]['description']);
-        self::assertSame('Runtime', $activities[1]['description']);
+        self::assertSame('Initialization', $activities[0]->description);
+        self::assertSame('Runtime', $activities[1]->description);
         self::assertSame(
             'Load service debugger:default',
-            $activities[2]['description']
+            $activities[2]->description
         );
         self::assertSame(
             'Load service autoloader:default',
-            $activities[3]['description']
+            $activities[3]->description
         );
         self::assertSame(
             'Load service autoloader:autoloader-foo',
-            $activities[4]['description']
+            $activities[4]->description
         );
     }
 

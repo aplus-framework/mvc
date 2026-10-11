@@ -9,6 +9,7 @@
  */
 namespace Framework\MVC\Debug;
 
+use Framework\Debug\Activity;
 use Framework\Debug\Collector;
 use Framework\Debug\Debugger;
 use Framework\MVC\View;
@@ -32,13 +33,13 @@ class ViewsCollector extends Collector
     {
         $activities = [];
         foreach ($this->getSortedData() as $index => $data) {
-            $activities[] = [
-                'collector' => $this->getName(),
-                'class' => static::class,
-                'description' => 'Render view ' . ($index + 1),
-                'start' => $data['start'],
-                'end' => $data['end'],
-            ];
+            $activities[] = new Activity(
+                collector: $this->getName(),
+                class: static::class,
+                description: 'Render view ' . ($index + 1),
+                start: $data['start'],
+                end: $data['end'],
+            );
         }
         return $activities;
     }

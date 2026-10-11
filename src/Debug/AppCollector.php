@@ -9,6 +9,7 @@
  */
 namespace Framework\MVC\Debug;
 
+use Framework\Debug\Activity;
 use Framework\Debug\Collector;
 use Framework\Debug\Debugger;
 use Framework\MVC\App;
@@ -67,30 +68,30 @@ class AppCollector extends Collector
     public function getActivities() : array
     {
         $activities = [];
-        $activities[] = [
-            'collection' => 'App',
-            'collector' => $this->getName(),
-            'class' => static::class,
-            'description' => 'Initialization',
-            'start' => $_SERVER['REQUEST_TIME_FLOAT'],
-            'end' => $this->startTime,
-        ];
-        $activities[] = [
-            'collector' => $this->getName(),
-            'class' => static::class,
-            'description' => 'Runtime',
-            'start' => $this->startTime,
-            'end' => $this->endTime,
-        ];
+        $activities[] = new Activity(
+            collector: $this->getName(),
+            class: static::class,
+            description: 'Initialization',
+            start: $_SERVER['REQUEST_TIME_FLOAT'],
+            end: $this->startTime,
+        );
+        $activities[0]->collection = 'App';
+        $activities[] = new Activity(
+            collector: $this->getName(),
+            class: static::class,
+            description: 'Runtime',
+            start: $this->startTime,
+            end: $this->endTime,
+        );
         foreach ($this->getServices() as $service => $data) {
             foreach ($data as $item) {
-                $activities[] = [
-                    'collector' => $this->getName(),
-                    'class' => static::class,
-                    'description' => 'Load service ' . $service . ':' . $item['name'],
-                    'start' => $item['start'],
-                    'end' => $item['end'],
-                ];
+                $activities[] = new Activity(
+                    collector: $this->getName(),
+                    class: static::class,
+                    description: 'Load service ' . $service . ':' . $item['name'],
+                    start: $item['start'],
+                    end: $item['end'],
+                );
             }
         }
         return $activities;
