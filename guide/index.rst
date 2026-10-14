@@ -2312,6 +2312,11 @@ present in the ``Fruits`` table:
 
 If any value does not exist, validation will fail.
 
+Note that when no option is selected, the browser does not send the field—not
+even with an empty value. So, if you want to make this rule pass, add the
+`optional <https://docs.aplus-framework.com/guides/libraries/validation/index.html#optional>`_
+rule.
+
 unique
 ######
 
