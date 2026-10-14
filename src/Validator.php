@@ -180,20 +180,16 @@ class Validator extends \Framework\Validation\Validator
                 'The connection parameter must be set to be able to connect the database'
             );
         }
-        $database = App::database($connection);
-        foreach ($values as $value) {
-            $count = $database // @phpstan-ignore-line
-                ->select()
-                ->expressions(['count' => static fn () => 'COUNT(*)'])
-                ->from($table)
-                ->whereEqual($column, $value)
-                ->limit(1)
-                ->run()
-                ->fetch()->count;
-            if ($count < 1) {
-                return false;
-            }
-        }
-        return true;
+        $countValues = \count($values);
+        $countInDatabase = (int) App::database($connection) // @phpstan-ignore-line
+            ->select()
+            ->expressions(['count' => static fn () => 'COUNT(*)'])
+            ->from($table)
+            ->whereIn($column, ...$values)
+            ->limit($countValues)
+            ->run()
+            ->fetch()
+            ->count;
+        return $countInDatabase === $countValues;
     }
 }
