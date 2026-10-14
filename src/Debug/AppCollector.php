@@ -75,7 +75,6 @@ class AppCollector extends Collector
             start: $_SERVER['REQUEST_TIME_FLOAT'],
             end: $this->startTime,
         );
-        $activities[0]->collection = 'App';
         $activities[] = new Activity(
             collector: $this->getName(),
             class: static::class,
