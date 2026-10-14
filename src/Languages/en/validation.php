@@ -8,8 +8,8 @@
  * file that was distributed with this source code.
  */
 return [
-    'exist' => 'The {field} field does not exist.',
-    'existMany' => 'The {field} field has at least one value that does not exist.',
-    'notUnique' => 'The {field} field is not registered.',
-    'unique' => 'The {field} field has already been registered.',
+    'exist' => 'The {field} field requires a value that already exists.',
+    'existMany' => 'The {field} field requires values that already exist.',
+    'notUnique' => 'The {field} field requires a value that has already been registered.',
+    'unique' => 'The {field} field requires a value that has not yet been registered.',
 ];
