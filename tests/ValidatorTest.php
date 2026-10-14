@@ -45,8 +45,8 @@ final class ValidatorTest extends TestCase
     {
         $validation = App::validation();
         $validation->setRule('username', 'existMany:Users');
-        self::assertTrue($validation->validate([]));
-        self::assertEmpty($validation->getErrors());
+        self::assertFalse($validation->validate([]));
+        self::assertArrayHasKey('username', $validation->getErrors());
     }
 
     public function testUniqueNoDataValue() : void
@@ -251,5 +251,16 @@ final class ValidatorTest extends TestCase
             'username' => 'foo',
         ];
         $validation->validate($data);
+    }
+
+    public function testExistManyWithEmptyData() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('usernames', 'existMany:Users.username');
+        $data = [
+            'usernames' => [],
+        ];
+        self::assertFalse($validation->validate($data));
+        self::assertArrayHasKey('usernames', $validation->getErrors());
     }
 }

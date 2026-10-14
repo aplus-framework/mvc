@@ -158,9 +158,12 @@ class Validator extends \Framework\Validation\Validator
     ) : bool {
         $values = ArraySimple::value($field, $data);
         if ($values === null) {
-            return true;
+            return false;
         }
         if (!\is_array($values)) {
+            return false;
+        }
+        if (empty($values)) {
             return false;
         }
         foreach ($values as $value) {
