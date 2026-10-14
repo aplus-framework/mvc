@@ -146,21 +146,21 @@ final class ModelTest extends ModelTestCase
             new \mysqli_sql_exception("Duplicate entry '3' for key 'PRIMARY'")
         );
         self::assertSame(
-            'The id field has already been registered.',
+            'The id field requires a value that has not yet been registered.',
             $this->model->getErrors()['id']
         );
         $this->model->checkMysqliException(
             new \mysqli_sql_exception("Duplicate entry '3' for key 'id'")
         );
         self::assertSame(
-            'The id field has already been registered.',
+            'The id field requires a value that has not yet been registered.',
             $this->model->getErrors()['id']
         );
         $this->model->checkMysqliException(
             new \mysqli_sql_exception("Duplicate entry 'foo@bar' for key 'email'")
         );
         self::assertSame(
-            'The email field has already been registered.',
+            'The email field requires a value that has not yet been registered.',
             $this->model->getErrors()['email']
         );
         $this->expectException(\mysqli_sql_exception::class);
