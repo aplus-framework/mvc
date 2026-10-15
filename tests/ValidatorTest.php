@@ -263,4 +263,19 @@ final class ValidatorTest extends TestCase
         self::assertFalse($validation->validate($data));
         self::assertArrayHasKey('usernames', $validation->getErrors());
     }
+
+    public function testExistManyWithMaxValues() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('usernames', 'existMany: Users.username, default, 2');
+        $data = [
+            'usernames' => [
+                'foo',
+                'bar',
+                'baz',
+            ],
+        ];
+        self::assertFalse($validation->validate($data));
+        self::assertArrayHasKey('usernames', $validation->getErrors());
+    }
 }

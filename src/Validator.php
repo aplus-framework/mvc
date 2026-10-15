@@ -147,6 +147,7 @@ class Validator extends \Framework\Validation\Validator
      * @param array<string,mixed> $data
      * @param string $tableColumn
      * @param string $connection
+     * @param int|string $maxValues
      *
      * @return bool
      */
@@ -154,7 +155,8 @@ class Validator extends \Framework\Validation\Validator
         string $field,
         array $data,
         string $tableColumn,
-        string $connection = 'default'
+        string $connection = 'default',
+        int | string $maxValues = 100,
     ) : bool {
         $values = ArraySimple::value($field, $data);
         if ($values === null) {
@@ -170,6 +172,9 @@ class Validator extends \Framework\Validation\Validator
             if (!\is_scalar($value)) {
                 return false;
             }
+        }
+        if (\count($values) > $maxValues) {
+            return false;
         }
         [$table, $column] = \array_pad(\explode('.', $tableColumn, 2), 2, '');
         if ($column === '') {
