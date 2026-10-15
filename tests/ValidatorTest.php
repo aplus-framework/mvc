@@ -116,6 +116,41 @@ final class ValidatorTest extends TestCase
         self::assertArrayHasKey('usernames', $validation->getErrors());
     }
 
+    public function testExistManyWithRepeatedDataValues() : void
+    {
+        $validation = App::validation();
+        $validation->setRule('usernames', 'existMany:Users.username');
+        $data = [
+            'usernames' => [
+                'foo',
+                'foo',
+                'foo',
+                'foo',
+                'foo',
+                'bar',
+                'bar',
+            ],
+        ];
+        self::assertTrue($validation->validate($data));
+        self::assertEmpty($validation->getErrors());
+    }
+
+    public function testExistManyWithRepeatedDatabaseValues() : void
+    {
+        App::database()->insert()->into('Users')->values(3, 'foo')->run();
+        App::database()->insert()->into('Users')->values(4, 'foo')->run();
+        $validation = App::validation();
+        $validation->setRule('usernames', 'existMany:Users.username');
+        $data = [
+            'usernames' => [
+                'foo',
+                'bar',
+            ],
+        ];
+        self::assertTrue($validation->validate($data));
+        self::assertEmpty($validation->getErrors());
+    }
+
     public function testUnique() : void
     {
         $validation = App::validation();
