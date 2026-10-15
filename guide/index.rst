@@ -2287,6 +2287,7 @@ Requires that many values exists in the database:
 
     existMany:$tableColumn
     existMany:$tableColumn,$connection
+    existMany:$tableColumn,$connection,$maxValues
 
 This rule is similar to `exist`_. Except it is able to check if many values are
 present in a database table.
@@ -2308,9 +2309,24 @@ present in the ``Fruits`` table:
 
 .. code-block::
 
-    existMany:Fruits.id
+    existMany: Fruits.id
 
 If any value does not exist, validation will fail.
+
+In the rule declaration, it is possible to specify which database connection
+instance will be used. By default, the ``default`` value is used. See the
+following example:
+
+.. code-block::
+
+    existMany: Fruits.id, default
+
+In the third parameter, it is possible to set the maximum number of values
+received. By default, the maximum value is ``100``. See the following example:
+
+.. code-block::
+
+    existMany: Fruits.id, default, 100
 
 Note that when no option is selected, the browser does not send the field—not
 even with an empty value. So, if you want to make this rule pass, add the
