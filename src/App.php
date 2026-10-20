@@ -1188,15 +1188,19 @@ class App
         if (static::isCli()) {
             static::setServerVars($config['server_vars'] ?? []);
         }
-        $service = new Request($config['allowed_hosts'] ?? []);
+        $constructor = [];
+        if (isset($config['allowed_hosts'])) {
+            $constructor['allowed_hosts'] = $config['allowed_hosts'];
+        }
+        if (isset($config['ip_key'])) {
+            $constructor['ip_key'] = $config['ip_key'];
+        }
+        $service = new Request($constructor);
         if (isset($config['force_https']) && $config['force_https'] === true) {
             $service->forceHttps();
         }
         if (isset($config['json_flags'])) {
             $service->setJsonFlags($config['json_flags']);
-        }
-        if (isset($config['ip_key'])) {
-            $service->setIpKey($config['ip_key']);
         }
         if (isset($config['parse_body_options'])) {
             $service->setParseBodyOptions($config['parse_body_options']);
