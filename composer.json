@@ -74,12 +74,12 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "Framework\\MVC\\": "src/"
+            "Aplus\\Mvc\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\MVC\\": "tests/"
+            "Tests\\Mvc\\": "tests/"
         }
     },
     "config": {
