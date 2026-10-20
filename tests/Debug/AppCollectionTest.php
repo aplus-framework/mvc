@@ -7,9 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\MVC\Debug;
+namespace Tests\Mvc\Debug;
 
-use Framework\MVC\Debug\AppCollection;
+use Aplus\Mvc\Debug\AppCollection;
 use PHPUnit\Framework\TestCase;
 
 final class AppCollectionTest extends TestCase

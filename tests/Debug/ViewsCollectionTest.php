@@ -7,9 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\MVC\Debug;
+namespace Tests\Mvc\Debug;
 
-use Framework\MVC\Debug\ViewsCollection;
+use Aplus\Mvc\Debug\ViewsCollection;
 use PHPUnit\Framework\TestCase;
 
 final class ViewsCollectionTest extends TestCase

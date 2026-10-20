@@ -7,11 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\MVC;
+namespace Tests\Mvc;
 
-use Framework\Date\Date;
-use Framework\HTTP\URL;
-use Framework\MVC\Entity;
+use Aplus\Date\Date;
+use Aplus\Http\Url;
+use Aplus\Mvc\Entity;
 use Override;
 
 /**
@@ -51,10 +51,10 @@ class EntityMock extends Entity
         }
     }
 
-    public URL $url {
+    public Url $url {
         get {
             $url = 'https://foo.com/users/' . $this->id;
-            return new URL($url);
+            return new Url($url);
         }
     }
 

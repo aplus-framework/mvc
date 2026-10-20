@@ -7,11 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\MVC;
+namespace Tests\Mvc;
 
+use Aplus\Date\Date;
+use Aplus\Mvc\Entity;
 use Error;
-use Framework\Date\Date;
-use Framework\MVC\Entity;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -50,7 +50,7 @@ final class EntityTest extends TestCase
         self::assertSame($this->time, $this->entity->currentTime);
         $this->expectException(Error::class);
         $this->expectExceptionMessage(
-            'Cannot modify private(set) property Tests\MVC\EntityMock::$currentTime from scope Tests\MVC\EntityTest'
+            'Cannot modify private(set) property Tests\Mvc\EntityMock::$currentTime from scope Tests\Mvc\EntityTest'
         );
         $this->entity->currentTime = $this->time;  // @phpstan-ignore-line
     }

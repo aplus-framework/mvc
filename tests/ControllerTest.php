@@ -7,12 +7,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\MVC;
+namespace Tests\Mvc;
 
-use Framework\Config\Config;
-use Framework\MVC\Controller;
+use Aplus\Config\Config;
+use Aplus\Mvc\Controller;
 use PHPUnit\Framework\TestCase;
-use Tests\MVC\AppMock as App;
+use Tests\Mvc\AppMock as App;
 
 /**
  * Class ControllerTest.

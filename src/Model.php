@@ -7,20 +7,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\MVC;
+namespace Aplus\Mvc;
 
+use Aplus\Cache\Cache;
+use Aplus\Database\Database;
+use Aplus\Database\Manipulation\Traits\Where;
+use Aplus\Language\Language;
+use Aplus\Pagination\Pager;
+use Aplus\Validation\Debug\ValidationCollector;
+use Aplus\Validation\FilesValidator;
+use Aplus\Validation\Validation;
 use BadMethodCallException;
 use DateTime;
 use DateTimeZone;
 use Exception;
-use Framework\Cache\Cache;
-use Framework\Database\Database;
-use Framework\Database\Manipulation\Traits\Where;
-use Framework\Language\Language;
-use Framework\Pagination\Pager;
-use Framework\Validation\Debug\ValidationCollector;
-use Framework\Validation\FilesValidator;
-use Framework\Validation\Validation;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;

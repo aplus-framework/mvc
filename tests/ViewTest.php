@@ -7,11 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\MVC;
+namespace Tests\Mvc;
 
-use Framework\MVC\App;
-use Framework\MVC\Debug\ViewsCollector;
-use Framework\MVC\View;
+use Aplus\Mvc\App;
+use Aplus\Mvc\Debug\ViewsCollector;
+use Aplus\Mvc\View;
 use PHPUnit\Framework\TestCase;
 
 final class ViewTest extends TestCase

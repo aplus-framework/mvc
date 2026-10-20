@@ -7,10 +7,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\MVC;
+namespace Tests\Mvc;
 
-use Framework\MVC\Model;
-use Framework\Validation\Validation;
+use Aplus\Mvc\Model;
+use Aplus\Validation\Validation;
 use mysqli_sql_exception;
 
 class ModelMock extends Model

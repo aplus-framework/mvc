@@ -7,11 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\MVC;
+namespace Tests\Mvc;
 
-use Framework\Config\Config;
-use Framework\Database\Definition\Table\TableDefinition;
-use Framework\MVC\App;
+use Aplus\Config\Config;
+use Aplus\Database\Definition\Table\TableDefinition;
+use Aplus\Mvc\App;
 use PHPUnit\Framework\TestCase;
 
 abstract class ModelTestCase extends TestCase

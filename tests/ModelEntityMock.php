@@ -7,10 +7,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\MVC;
+namespace Tests\Mvc;
 
-use Framework\Date\Date;
-use Framework\MVC\Entity;
+use Aplus\Date\Date;
+use Aplus\Mvc\Entity;
 use Override;
 
 class ModelEntityMock extends Entity

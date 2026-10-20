@@ -11,7 +11,7 @@
  * @see App::response()
  */
 
-use Framework\HTTP\CSP;
+use Aplus\Http\Csp;
 
 return [
     'default' => [
@@ -25,16 +25,16 @@ return [
             'public' => true,
         ],
         'csp' => [
-            CSP::defaultSrc => [
+            Csp::defaultSrc => [
                 'self',
             ],
-            CSP::styleSrc => [
+            Csp::styleSrc => [
                 'self',
                 'cdn.foo.tld',
             ],
         ],
         'csp_report_only' => [
-            CSP::defaultSrc => [
+            Csp::defaultSrc => [
                 'self',
             ],
         ],

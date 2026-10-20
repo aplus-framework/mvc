@@ -7,9 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use Framework\MVC\App;
-use Framework\Routing\RouteCollection;
-use Framework\Routing\Router;
+use Aplus\Mvc\App;
+use Aplus\Routing\RouteCollection;
+use Aplus\Routing\Router;
 
 /**
  * @var Router $router Must be set in App::router()

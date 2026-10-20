@@ -7,9 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\MVC;
+namespace Aplus\Mvc;
 
-use Framework\Helpers\ArraySimple;
+use Aplus\Helpers\ArraySimple;
 use LogicException;
 
 /**
@@ -17,7 +17,7 @@ use LogicException;
  *
  * @package mvc
  */
-class Validator extends \Framework\Validation\Validator
+class Validator extends \Aplus\Validation\Validator
 {
     /**
      * Validates database table not unique value.

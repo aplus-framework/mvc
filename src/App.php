@@ -7,60 +7,60 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\MVC;
+namespace Aplus\Mvc;
 
-use Framework\Autoload\Autoloader;
-use Framework\Autoload\Debug\AutoloadCollection;
-use Framework\Autoload\Locator;
-use Framework\Cache\Cache;
-use Framework\Cache\Debug\CacheCollection;
-use Framework\Cache\Debug\CacheCollector;
-use Framework\Cache\Serializer;
-use Framework\CLI\Command;
-use Framework\CLI\Console;
-use Framework\Config\Config;
-use Framework\Config\Debug\ConfigCollection;
-use Framework\Config\Debug\ConfigCollector;
-use Framework\Database\Database;
-use Framework\Database\Debug\DatabaseCollection;
-use Framework\Database\Debug\DatabaseCollector;
-use Framework\Database\Extra\Migrator;
-use Framework\Debug\Debugger;
-use Framework\Debug\ExceptionHandler;
-use Framework\Email\Debug\EmailCollection;
-use Framework\Email\Debug\EmailCollector;
-use Framework\Email\Mailer;
-use Framework\Helpers\Isolation;
-use Framework\HTTP\AntiCSRF;
-use Framework\HTTP\CSP;
-use Framework\HTTP\Debug\HTTPCollection;
-use Framework\HTTP\Debug\HTTPCollector;
-use Framework\HTTP\Request;
-use Framework\HTTP\Response;
-use Framework\Language\Debug\LanguageCollection;
-use Framework\Language\Debug\LanguageCollector;
-use Framework\Language\FallbackLevel;
-use Framework\Language\Language;
-use Framework\Log\Debug\LogCollection;
-use Framework\Log\Debug\LogCollector;
-use Framework\Log\Logger;
-use Framework\Log\Loggers\MultiFileLogger;
-use Framework\Log\LogLevel;
-use Framework\MVC\Debug\AppCollection;
-use Framework\MVC\Debug\AppCollector;
-use Framework\MVC\Debug\ViewsCollection;
-use Framework\MVC\Debug\ViewsCollector;
-use Framework\Routing\Debug\RoutingCollection;
-use Framework\Routing\Debug\RoutingCollector;
-use Framework\Routing\Router;
-use Framework\Session\Debug\SessionCollection;
-use Framework\Session\Debug\SessionCollector;
-use Framework\Session\SaveHandlers\DatabaseHandler;
-use Framework\Session\Session;
-use Framework\Validation\Debug\ValidationCollection;
-use Framework\Validation\Debug\ValidationCollector;
-use Framework\Validation\FilesValidator;
-use Framework\Validation\Validation;
+use Aplus\Autoload\Autoloader;
+use Aplus\Autoload\Debug\AutoloadCollection;
+use Aplus\Autoload\Locator;
+use Aplus\Cache\Cache;
+use Aplus\Cache\Debug\CacheCollection;
+use Aplus\Cache\Debug\CacheCollector;
+use Aplus\Cache\Serializer;
+use Aplus\Cli\Command;
+use Aplus\Cli\Console;
+use Aplus\Config\Config;
+use Aplus\Config\Debug\ConfigCollection;
+use Aplus\Config\Debug\ConfigCollector;
+use Aplus\Database\Database;
+use Aplus\Database\Debug\DatabaseCollection;
+use Aplus\Database\Debug\DatabaseCollector;
+use Aplus\Database\Extra\Migrator;
+use Aplus\Debug\Debugger;
+use Aplus\Debug\ExceptionHandler;
+use Aplus\Email\Debug\EmailCollection;
+use Aplus\Email\Debug\EmailCollector;
+use Aplus\Email\Mailer;
+use Aplus\Helpers\Isolation;
+use Aplus\Http\AntiCsrf;
+use Aplus\Http\Csp;
+use Aplus\Http\Debug\HttpCollection;
+use Aplus\Http\Debug\HttpCollector;
+use Aplus\Http\Request;
+use Aplus\Http\Response;
+use Aplus\Language\Debug\LanguageCollection;
+use Aplus\Language\Debug\LanguageCollector;
+use Aplus\Language\FallbackLevel;
+use Aplus\Language\Language;
+use Aplus\Log\Debug\LogCollection;
+use Aplus\Log\Debug\LogCollector;
+use Aplus\Log\Logger;
+use Aplus\Log\Loggers\MultiFileLogger;
+use Aplus\Log\LogLevel;
+use Aplus\Mvc\Debug\AppCollection;
+use Aplus\Mvc\Debug\AppCollector;
+use Aplus\Mvc\Debug\ViewsCollection;
+use Aplus\Mvc\Debug\ViewsCollector;
+use Aplus\Routing\Debug\RoutingCollection;
+use Aplus\Routing\Debug\RoutingCollector;
+use Aplus\Routing\Router;
+use Aplus\Session\Debug\SessionCollection;
+use Aplus\Session\Debug\SessionCollector;
+use Aplus\Session\SaveHandlers\DatabaseHandler;
+use Aplus\Session\Session;
+use Aplus\Validation\Debug\ValidationCollection;
+use Aplus\Validation\Debug\ValidationCollector;
+use Aplus\Validation\FilesValidator;
+use Aplus\Validation\Validation;
 use LogicException;
 use ReflectionClass;
 use ReflectionException;
@@ -655,9 +655,9 @@ class App
      *
      * @param string $instance The antiCsrf instance name
      *
-     * @return AntiCSRF
+     * @return AntiCsrf
      */
-    public static function antiCsrf(string $instance = 'default') : AntiCSRF
+    public static function antiCsrf(string $instance = 'default') : AntiCsrf
     {
         $service = static::getService('antiCsrf', $instance);
         if ($service) {
@@ -678,13 +678,13 @@ class App
      *
      * @param string $instance The antiCsrf instance name
      *
-     * @return AntiCSRF
+     * @return AntiCsrf
      */
-    protected static function setAntiCsrf(string $instance) : AntiCSRF
+    protected static function setAntiCsrf(string $instance) : AntiCsrf
     {
         $config = static::config()->get('antiCsrf', $instance);
         static::session($config['session_instance'] ?? 'default');
-        $service = new AntiCSRF(
+        $service = new AntiCsrf(
             static::request($config['request_instance'] ?? 'default'),
             $config['token_bytes_length'] ?? null,
             $config['generate_token_function'] ?? null,
@@ -1149,10 +1149,10 @@ class App
             $start = \microtime(true);
             $service = static::setRequest($instance);
             $end = \microtime(true);
-            $collector = new HTTPCollector($instance);
+            $collector = new HttpCollector($instance);
             $collector->setRequest($service);
             $collection = static::debugger()->getCollection('HTTP')
-                ?? new HTTPCollection('HTTP');
+                ?? new HttpCollection('HTTP');
             $collection->addCollector($collector);
             static::debugger()->addCollection($collection);
             static::addDebugData('request', $instance, $start, $end);
@@ -1269,10 +1269,10 @@ class App
                 : $service->setCache($config['cache']['seconds'], $config['cache']['public'] ?? false);
         }
         if (!empty($config['csp'])) {
-            $service->setCsp(new CSP($config['csp']));
+            $service->setCsp(new Csp($config['csp']));
         }
         if (!empty($config['csp_report_only'])) {
-            $service->setCspReportOnly(new CSP($config['csp_report_only']));
+            $service->setCspReportOnly(new Csp($config['csp_report_only']));
         }
         if (isset($config['json_flags'])) {
             $service->setJsonFlags($config['json_flags']);

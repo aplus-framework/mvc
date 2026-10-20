@@ -11,7 +11,7 @@
  * @see App::router()
  */
 
-use Framework\Routing\Router;
+use Aplus\Routing\Router;
 
 return [
     'default' => [

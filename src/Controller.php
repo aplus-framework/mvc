@@ -7,11 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\MVC;
+namespace Aplus\Mvc;
 
-use Framework\HTTP\Request;
-use Framework\HTTP\Response;
-use Framework\Routing\RouteActions;
+use Aplus\Http\Request;
+use Aplus\Http\Response;
+use Aplus\Routing\RouteActions;
 use ReflectionClass;
 use ReflectionNamedType;
 

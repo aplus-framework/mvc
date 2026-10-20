@@ -7,10 +7,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\MVC\Debug;
+namespace Aplus\Mvc\Debug;
 
-use Framework\Debug\Collection;
-use Framework\Helpers\Isolation;
+use Aplus\Debug\Collection;
+use Aplus\Helpers\Isolation;
 
 /**
  * Class ViewsCollection.

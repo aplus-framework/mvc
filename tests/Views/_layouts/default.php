@@ -1,6 +1,6 @@
 <?php
 /**
- * @var Framework\MVC\View $view
+ * @var Aplus\Mvc\View $view
  */
 ?>
 <h1>Layout Default</h1>

@@ -7,11 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\MVC\Debug;
+namespace Tests\Mvc\Debug;
 
-use Framework\Debug\Debugger;
-use Framework\MVC\Debug\ViewsCollector;
-use Framework\MVC\View;
+use Aplus\Debug\Debugger;
+use Aplus\Mvc\Debug\ViewsCollector;
+use Aplus\Mvc\View;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -15,7 +15,7 @@ return [
             '/unknown',
         ],
         'commands' => [
-            Tests\MVC\Commands\Hello::class,
+            Tests\Mvc\Commands\Hello::class,
         ],
         'language_instance' => 'default',
         'locator_instance' => 'default',

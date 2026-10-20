@@ -7,32 +7,32 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\MVC;
+namespace Tests\Mvc;
 
-use Framework\Autoload\Autoloader;
-use Framework\Autoload\Locator;
-use Framework\Cache\Cache;
-use Framework\CLI\Console;
-use Framework\CLI\Streams\Stdout;
-use Framework\Config\Config;
-use Framework\Database\Database;
-use Framework\Database\Definition\Table\TableDefinition;
-use Framework\Database\Extra\Migrator;
-use Framework\Debug\Debugger;
-use Framework\Debug\ExceptionHandler;
-use Framework\Email\Mailer;
-use Framework\HTTP\AntiCSRF;
-use Framework\HTTP\Request;
-use Framework\HTTP\Response;
-use Framework\Language\Language;
-use Framework\Log\Logger;
-use Framework\MVC\View;
-use Framework\Routing\Router;
-use Framework\Session\SaveHandlers\DatabaseHandler;
-use Framework\Session\Session;
-use Framework\Validation\Validation;
+use Aplus\Autoload\Autoloader;
+use Aplus\Autoload\Locator;
+use Aplus\Cache\Cache;
+use Aplus\Cli\Console;
+use Aplus\Cli\Streams\Stdout;
+use Aplus\Config\Config;
+use Aplus\Database\Database;
+use Aplus\Database\Definition\Table\TableDefinition;
+use Aplus\Database\Extra\Migrator;
+use Aplus\Debug\Debugger;
+use Aplus\Debug\ExceptionHandler;
+use Aplus\Email\Mailer;
+use Aplus\Http\AntiCsrf;
+use Aplus\Http\Request;
+use Aplus\Http\Response;
+use Aplus\Language\Language;
+use Aplus\Log\Logger;
+use Aplus\Mvc\View;
+use Aplus\Routing\Router;
+use Aplus\Session\SaveHandlers\DatabaseHandler;
+use Aplus\Session\Session;
+use Aplus\Validation\Validation;
 use PHPUnit\Framework\TestCase;
-use Tests\MVC\AppMock as App;
+use Tests\Mvc\AppMock as App;
 
 /**
  * Class AppTest.
@@ -104,8 +104,8 @@ final class AppTest extends TestCase
         self::assertInstanceOf(Console::class, App::console());
         self::assertInstanceOf(ExceptionHandler::class, App::exceptionHandler());
         self::assertInstanceOf(ExceptionHandler::class, App::exceptionHandler());
-        self::assertInstanceOf(AntiCSRF::class, App::antiCsrf());
-        self::assertInstanceOf(AntiCSRF::class, App::antiCsrf());
+        self::assertInstanceOf(AntiCsrf::class, App::antiCsrf());
+        self::assertInstanceOf(AntiCsrf::class, App::antiCsrf());
         self::assertInstanceOf(Console::class, App::console());
         self::assertInstanceOf(Database::class, App::database());
         self::assertInstanceOf(Database::class, App::database());
@@ -229,7 +229,7 @@ final class AppTest extends TestCase
     {
         App::config()->add('session', [
             'save_handler' => [
-                'class' => \Framework\Session\SaveHandlers\FilesHandler::class,
+                'class' => \Aplus\Session\SaveHandlers\FilesHandler::class,
                 'config' => [
                     'directory' => \sys_get_temp_dir(),
                 ],

@@ -7,8 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use Framework\Cache\FilesCache;
-use Framework\Cache\Serializer;
+use Aplus\Cache\FilesCache;
+use Aplus\Cache\Serializer;
 
 return [
     'default' => [

@@ -10,8 +10,8 @@
 return [
     'default' => [
         'validators' => [
-            Framework\MVC\Validator::class,
-            Framework\Validation\FilesValidator::class,
+            Aplus\Mvc\Validator::class,
+            Aplus\Validation\FilesValidator::class,
         ],
         'language_instance' => 'default',
     ],

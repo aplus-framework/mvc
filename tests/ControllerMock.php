@@ -7,11 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\MVC;
+namespace Tests\Mvc;
 
-use Framework\HTTP\Request;
-use Framework\HTTP\Response;
-use Framework\MVC\Controller;
+use Aplus\Http\Request;
+use Aplus\Http\Response;
+use Aplus\Mvc\Controller;
 
 class ControllerMock extends Controller
 {
@@ -27,6 +27,7 @@ class ControllerMock extends Controller
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['HTTP_HOST'] = 'localhost';
         $_SERVER['REQUEST_URI'] = '/';
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
         $request = new Request();
         parent::__construct($request, new Response($request));
     }

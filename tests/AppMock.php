@@ -7,13 +7,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\MVC;
+namespace Tests\Mvc;
 
-use Framework\Config\Config;
-use Framework\Language\Language;
-use Framework\MVC\Debug\AppCollector;
+use Aplus\Config\Config;
+use Aplus\Language\Language;
+use Aplus\Mvc\Debug\AppCollector;
 
-class AppMock extends \Framework\MVC\App
+class AppMock extends \Aplus\Mvc\App
 {
     public function loadConfigs(string $name) : ?array
     {

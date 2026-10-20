@@ -7,8 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use Framework\Log\Loggers\MultiFileLogger;
-use Framework\Log\LogLevel;
+use Aplus\Log\Loggers\MultiFileLogger;
+use Aplus\Log\LogLevel;
 
 return [
     'default' => [

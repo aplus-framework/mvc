@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 /**
- * @var Framework\MVC\View $view
+ * @var Aplus\Mvc\View $view
  */
 $view->extends('default');
 $view->block('contents');
