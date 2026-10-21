@@ -43,7 +43,7 @@ Initialization:
 
 .. code-block:: php
 
-    use Framework\MVC\App;
+    use Aplus\Mvc\App;
 
     $app = new App();
 
@@ -98,7 +98,7 @@ instance:
 
 .. code-block:: php
 
-    $result = App::database()->select()->from('Users')->run(); // Framework\Database\Result
+    $result = App::database()->select()->from('Users')->run(); // Aplus\Database\Result
 
     while($user = $result->fetch()) {
         App::database('replica')->replace()->into('Users')->set($user)->run();
@@ -129,7 +129,7 @@ This is the **public/index.php** file:
 
 .. code-block:: php
 
-    use Framework\MVC\App;
+    use Aplus\Mvc\App;
 
     new App([
         'autoloader' => [
@@ -156,8 +156,8 @@ The **routes/front.php** file is for the front end. The origin will be
 
 .. code-block:: php
 
-    use Framework\MVC\App;
-    use Framework\Routing\RouteCollection;
+    use Aplus\Mvc\App;
+    use Aplus\Routing\RouteCollection;
     
     App::router()->serve('https://domain.tld', function (RouteCollection $routes) {
         $routes->get('/', fn () => '<h1>Homepage</h1>');
@@ -168,8 +168,8 @@ The **routes/api.php** is for the REST API. The origin will be
 
 .. code-block:: php
 
-    use Framework\MVC\App;
-    use Framework\Routing\RouteCollection;
+    use Aplus\Mvc\App;
+    use Aplus\Routing\RouteCollection;
     
     App::router()->serve('https://api.domain.tld', function (RouteCollection $routes) {
         $routes->get('/', fn () => App::router()->getMatchedCollection());
@@ -183,11 +183,11 @@ This is the **api/UsersController.php** example:
 
     namespace Api;
 
-    use Framework\HTTP\Response;
-    use Framework\HTTP\ResponseHeader;
-    use Framework\HTTP\Status;
-    use Framework\MVC\App;
-    use Framework\MVC\Controller;
+    use Aplus\Http\Response;
+    use Aplus\Http\ResponseHeader;
+    use Aplus\Http\Status;
+    use Aplus\Mvc\App;
+    use Aplus\Mvc\Controller;
 
     class UsersController extends Controller
     {
@@ -254,7 +254,7 @@ Let's create the **console.php** file:
 
 .. code-block:: php
 
-    use Framework\MVC\App;
+    use Aplus\Mvc\App;
 
     $app = new App();
     $app::config()->set('console', [
@@ -268,15 +268,15 @@ Now, let's add a command in the **commands/Meet.php** file:
 
 .. code-block:: php
 
-    use Framework\CLI\CLI;
-    use Framework\CLI\Command;
+    use Aplus\Cli\Cli;
+    use Aplus\Cli\Command;
 
     class Meet extends Command
     {
         public function run() : void
         {
-            $name = CLI::prompt('What is your name?', 'Tadandan');
-            CLI::write("Nice to meet you, $name. I'm Aplus.");
+            $name = Cli::prompt('What is your name?', 'Tadandan');
+            Cli::write("Nice to meet you, $name. I'm Aplus.");
         }
     }
 
@@ -307,7 +307,7 @@ App services can be extended. See `Extending`_.
 
 Built-in services:
 
-- `AntiCSRF Service`_
+- `Anti-CSRF Service`_
 - `Autoloader Service`_
 - `Cache Service`_
 - `Console Service`_
@@ -326,21 +326,21 @@ Built-in services:
 - `Validation Service`_
 - `View Service`_
 
-AntiCSRF Service
-^^^^^^^^^^^^^^^^
+Anti-CSRF Service
+^^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\HTTP\AntiCSRF <https://docs.aplus-framework.com/classes/Framework-HTTP-AntiCSRF.html>`_:
+`Aplus\Http\AntiCsrf <https://docs.aplus-framework.com/classes/Aplus-Http-AntiCsrf.html>`_:
 
 .. code-block:: php
 
     App::antiCsrf()
 
-More details about AntiCSRF can be found
+More details about AntiCsrf can be found
 `here <https://docs.aplus-framework.com/guides/libraries/http/index.html#anticsrf>`_.
 
-AntiCSRF Config Options
-***********************
+Anti-CSRF Config Options
+************************
 
 .. code-block:: php
 
@@ -393,7 +393,7 @@ Autoloader Service
 ^^^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Autoload\Autoloader <https://docs.aplus-framework.com/classes/Framework-Autoload-Autoloader.html>`_:
+`Aplus\Autoload\Autoloader <https://docs.aplus-framework.com/classes/Aplus-Autoload-Autoloader.html>`_:
 
 .. code-block:: php
 
@@ -443,7 +443,7 @@ Cache Service
 ^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Cache\Cache <https://docs.aplus-framework.com/classes/Framework-Cache-Cache.html>`_:
+`Aplus\Cache\Cache <https://docs.aplus-framework.com/classes/Aplus-Cache-Cache.html>`_:
 
 .. code-block:: php
 
@@ -463,7 +463,7 @@ Cache Config Options
                 'class' => ???, // Must be set
                 'configs' => [],
                 'prefix' => null,
-                'serializer' => Framework\Cache\Serializer::PHP,
+                'serializer' => Aplus\Cache\Serializer::PHP,
                 'default_ttl' => null,
                 'logger_instance' => 'default',
             ],
@@ -473,7 +473,7 @@ Cache Config Options
 class
 """""
 
-The Fully Qualified Class Name of a class that extends ``Framework\Cache\Cache``.
+The Fully Qualified Class Name of a class that extends ``Aplus\Cache\Cache``.
 
 There is no default value, it must be set.
 
@@ -490,10 +490,10 @@ A prefix for the name of cache items. By default nothing is set.
 serializer
 """"""""""
 
-Sets the serializer with a value from the enum ``Framework\Cache\Serializer``,
+Sets the serializer with a value from the enum ``Aplus\Cache\Serializer``,
 which can be a case of the enum or a string.
 
-The default value is ``Framework\Cache\Serializer::PHP``.
+The default value is ``Aplus\Cache\Serializer::PHP``.
 
 default_ttl
 """""""""""
@@ -512,7 +512,7 @@ Console Service
 ^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\CLI\Console <https://docs.aplus-framework.com/classes/Framework-CLI-Console.html>`_:
+`Aplus\Cli\Console <https://docs.aplus-framework.com/classes/Aplus-Cli-Console.html>`_:
 
 .. code-block:: php
 
@@ -556,7 +556,7 @@ commands
 """"""""
 
 Sets an array of Fully Qualified Class Names or instances of the
-``Framework\CLI\Command`` class. By default, no additional classes are set.
+``Aplus\Cli\Command`` class. By default, no additional classes are set.
 
 These commands are added after finding through namespaces and directories.
 
@@ -575,7 +575,7 @@ Database Service
 ^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Database\Database <https://docs.aplus-framework.com/classes/Framework-Database-Database.html>`_:
+`Aplus\Database\Database <https://docs.aplus-framework.com/classes/Aplus-Database-Database.html>`_:
 
 .. code-block:: php
 
@@ -617,7 +617,7 @@ Debugger Service
 ^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Debug\Debugger <https://docs.aplus-framework.com/classes/Framework-Debug-Debugger.html>`_:
+`Aplus\Debug\Debugger <https://docs.aplus-framework.com/classes/Aplus-Debug-Debugger.html>`_:
 
 .. code-block:: php
 
@@ -658,7 +658,7 @@ ExceptionHandler Service
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Debug\ExceptionHandler <https://docs.aplus-framework.com/classes/Framework-Debug-ExceptionHandler.html>`_:
+`Aplus\Debug\ExceptionHandler <https://docs.aplus-framework.com/classes/Aplus-Debug-ExceptionHandler.html>`_:
 
 .. code-block:: php
 
@@ -675,7 +675,7 @@ ExceptionHandler Config Options
     [
         'exceptionHandler' => [
             'default' => [
-                'environment' => Framework\Debug\ExceptionHandler::PRODUCTION,
+                'environment' => Aplus\Debug\ExceptionHandler::PRODUCTION,
                 'logger_instance' => 'default',
                 'language_instance' => 'default',
                 'development_view' => null,
@@ -755,7 +755,7 @@ Language Service
 ^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Language\Language <https://docs.aplus-framework.com/classes/Framework-Language-Language.html>`_:
+`Aplus\Language\Language <https://docs.aplus-framework.com/classes/Aplus-Language-Language.html>`_:
 
 .. code-block:: php
 
@@ -777,7 +777,7 @@ Language Config Options
                 'supported' => null,
                 'negotiate' => false,
                 'request_instance' => 'default',
-                'fallback_level' => Framework\Language\FallbackLevel::none,
+                'fallback_level' => Aplus\Language\FallbackLevel::none,
                 'directories' => [],
                 'find_in_namespaces' => false,
                 'autoloader_instance' => 'default',
@@ -814,7 +814,7 @@ default is ``default``.
 fallback_level
 """"""""""""""
 
-Sets the Fallback Level to a ``Framework\Language\FallbackLevel`` enum case or
+Sets the Fallback Level to a ``Aplus\Language\FallbackLevel`` enum case or
 an integer. The default is to set none.
 
 directories
@@ -839,7 +839,7 @@ Locator Service
 ^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Autoload\Locator <https://docs.aplus-framework.com/classes/Framework-Autoload-Locator.html>`_:
+`Aplus\Autoload\Locator <https://docs.aplus-framework.com/classes/Aplus-Autoload-Locator.html>`_:
 
 .. code-block:: php
 
@@ -870,7 +870,7 @@ Logger Service
 ^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Log\Logger <https://docs.aplus-framework.com/classes/Framework-Log-Logger.html>`_:
+`Aplus\Log\Logger <https://docs.aplus-framework.com/classes/Aplus-Log-Logger.html>`_:
 
 .. code-block:: php
 
@@ -887,9 +887,9 @@ Logger Config Options
     [
         'logger' => [
             'default' => [
-                'class' => Framework\Log\Logger\MultiFileLogger::class,
+                'class' => Aplus\Log\Logger\MultiFileLogger::class,
                 'destination' => ???, // Must be set
-                'level' => Framework\Log\LogLevel::DEBUG,
+                'level' => Aplus\Log\LogLevel::DEBUG,
                 'config' => [],
             ],
         ],
@@ -898,9 +898,9 @@ Logger Config Options
 class
 """""
 
-A Fully Qualified Class Name of a child class of ``Framework\Log\Logger``.
+A Fully Qualified Class Name of a child class of ``Aplus\Log\Logger``.
 
-The default is ``Framework\Log\Logger\MultiFileLogger``.
+The default is ``Aplus\Log\Logger\MultiFileLogger``.
 
 destination
 """""""""""
@@ -911,7 +911,7 @@ according to the class used.
 level
 """""
 
-Sets the level of logs with a case of ``Framework\Log\LogLevel`` or an integer.
+Sets the level of logs with a case of ``Aplus\Log\LogLevel`` or an integer.
 If none is set, the ``DEBUG`` level will be used.
 
 config
@@ -924,7 +924,7 @@ Mailer Service
 ^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Email\Mailer <https://docs.aplus-framework.com/classes/Framework-Email-Mailer.html>`_:
+`Aplus\Email\Mailer <https://docs.aplus-framework.com/classes/Aplus-Email-Mailer.html>`_:
 
 .. code-block:: php
 
@@ -968,7 +968,7 @@ Migrator Service
 ^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Database\Extra\Migrator <https://docs.aplus-framework.com/classes/Framework-Database-Extra-Migrator.html>`_:
+`Aplus\Database\Extra\Migrator <https://docs.aplus-framework.com/classes/Aplus-Database-Extra-Migrator.html>`_:
 
 .. code-block:: php
 
@@ -1011,7 +1011,7 @@ Request Service
 ^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\HTTP\Request <https://docs.aplus-framework.com/classes/Framework-HTTP-Request.html>`_:
+`Aplus\Http\Request <https://docs.aplus-framework.com/classes/Aplus-Http-Request.html>`_:
 
 .. code-block:: php
 
@@ -1076,7 +1076,7 @@ Response Service
 ^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\HTTP\Response <https://docs.aplus-framework.com/classes/Framework-HTTP-Response.html>`_:
+`Aplus\Http\Response <https://docs.aplus-framework.com/classes/Aplus-Http-Response.html>`_:
 
 .. code-block:: php
 
@@ -1144,7 +1144,7 @@ csp
 If it is empty, it does nothing.
 
 It can take an array of directives to initialize an instance of
-``Framework\HTTP\CSP`` and pass it as the **Content-Security-Policy** of the
+``Aplus\Http\Csp`` and pass it as the **Content-Security-Policy** of the
 response.
 
 csp_report_only
@@ -1153,7 +1153,7 @@ csp_report_only
 If it is empty, it does nothing.
 
 It can take an array of directives to initialize an instance of
-``Framework\HTTP\CSP`` and pass it as the **Content-Security-Policy-Report-Only**
+``Aplus\Http\Csp`` and pass it as the **Content-Security-Policy-Report-Only**
 of the response.
 
 json_flags
@@ -1175,7 +1175,7 @@ Router Service
 ^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Routing\Router <https://docs.aplus-framework.com/classes/Framework-Routing-Router.html>`_:
+`Aplus\Routing\Router <https://docs.aplus-framework.com/classes/Aplus-Routing-Router.html>`_:
 
 .. code-block:: php
 
@@ -1248,7 +1248,7 @@ Session Service
 ^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Session\Session <https://docs.aplus-framework.com/classes/Framework-Session-Session.html>`_:
+`Aplus\Session\Session <https://docs.aplus-framework.com/classes/Aplus-Session-Session.html>`_:
 
 .. code-block:: php
 
@@ -1280,10 +1280,10 @@ save_handler
 """"""""""""
 
 Optional. Sets an array containing the ``class`` key with the Fully Qualified
-Class Name of a child class of ``Framework\Session\SaveHandler``. And also the
+Class Name of a child class of ``Aplus\Session\SaveHandler``. And also the
 ``config`` key with the configurations passed to the SaveHandler.
 
-If the ``class`` is an instance of ``Framework\Session\SaveHandlers\DatabaseHandler``
+If the ``class`` is an instance of ``Aplus\Session\SaveHandlers\DatabaseHandler``
 it is possible to set the instance of a `Database Service`_ through the key 
 ``database_instance``.
 
@@ -1309,7 +1309,7 @@ Validation Service
 ^^^^^^^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\Validation\Validation <https://docs.aplus-framework.com/classes/Framework-Validation-Validation.html>`_:
+`Aplus\Validation\Validation <https://docs.aplus-framework.com/classes/Aplus-Validation-Validation.html>`_:
 
 .. code-block:: php
 
@@ -1327,8 +1327,8 @@ Validation Config Options
         'validation' => [
             'default' => [
                 'validators' => [
-                    Framework\MVC\Validator::class,
-                    Framework\Validation\FilesValidator::class,
+                    Aplus\Mvc\Validator::class,
+                    Aplus\Validation\FilesValidator::class,
                 ],
                 'language_instance' => 'default',
             ],
@@ -1351,7 +1351,7 @@ View Service
 ^^^^^^^^^^^^
 
 Gets an instance of
-`Framework\MVC\View <https://docs.aplus-framework.com/classes/Framework-MVC-View.html>`_:
+`Aplus\Mvc\View <https://docs.aplus-framework.com/classes/Aplus-Mvc-View.html>`_:
 
 .. code-block:: php
 
@@ -1420,9 +1420,9 @@ methods, ``isGet`` and ``isPost``:
 
 .. code-block:: php
 
-    namespace Lupalupa\HTTP;
+    namespace Lupalupa\Http;
 
-    class Request extends \Framework\HTTP\Request
+    class Request extends \Aplus\Http\Request
     {
         public function isGet() : bool
         {
@@ -1445,10 +1445,10 @@ The example below adds a new method, ``App::other``, which also uses
 
 .. code-block:: php
 
-    use Lupalupa\HTTP\Request;
+    use Lupalupa\Http\Request;
     use Lupalupa\Other;
 
-    class App extends \Framework\MVC\App
+    class App extends \Aplus\Mvc\App
     {
         public static function request(string $instance = 'default') : Request
         {
@@ -1502,11 +1502,11 @@ and delete) methods, with validation, localization and performance
 optimization with caching and separation of read and write data.
 
 To create a model that represents a table, just create a class that extends the
-``Framework\MVC\Model`` class:
+``Aplus\Mvc\Model`` class:
 
 .. code-block:: php
 
-    use Framework\MVC\Model;
+    use Aplus\Mvc\Model;
 
     class Users extends Model
     {
@@ -1533,7 +1533,7 @@ Database Connections
 
 Each model allows two database connections, one for reading and one for writing.
 
-The connections are obtained through the ``Framework\MVC\App::database`` method
+The connections are obtained through the ``Aplus\Mvc\App::database`` method
 and the name of the instances must be defined in the model.
 
 To set the name of the read connection instance, use the ``$connectionRead``
@@ -1544,7 +1544,7 @@ property:
     protected string $connectionRead = 'default';
 
 The name of the connection can be obtained through the ``getConnectionRead``
-method and the instance of ``Framework\Database\Database`` can be obtained
+method and the instance of ``Aplus\Database\Database`` can be obtained
 through the ``getDatabaseToRead`` method.
 
 The name of the write connection, by default, is also ``default``. But it can
@@ -1615,7 +1615,7 @@ making it easier to work with object orientation.
 
 But, the ``$returnType`` property can also be set as ``array`` (making the
 returned rows an associative array) or as a class-string of a child class of
-``Framework\MVC\Entity``:
+``Aplus\Mvc\Entity``:
 
 .. code-block:: php
 
@@ -1678,7 +1678,7 @@ Validation
 
 When one of the ``create``, ``update`` or ``replace`` methods is called for the
 first time, the ``$validation`` property will receive an instance of
-``Framework\Validation\Validation`` for exclusive use in the model, which can be
+``Aplus\Validation\Validation`` for exclusive use in the model, which can be
 obtained by the ``getValidation`` method.
 
 To make changes it is required that the validation rules are set, otherwise a
@@ -1696,7 +1696,7 @@ You can set the rules in the ``$validationRules`` property:
 Or returning in the ``getValidationRules`` method.
 
 Validators can also be customized. By default, the ones used are
-``Framework\MVC\Validator`` and ``Framework\Validation\FilesValidator``:
+``Aplus\Mvc\Validator`` and ``Aplus\Validation\FilesValidator``:
 
 .. code-block:: php
 
@@ -1787,7 +1787,7 @@ Also, it is possible to order the results by the last parameters:
     ); // array
 
 After calling the ``paginate`` method, the ``$pager`` property will have an
-instance of the ``Framework\Pagination\Pager`` class, which can be obtained by
+instance of the ``Aplus\Pagination\Pager`` class, which can be obtained by
 the ``getPager`` method.
 
 So you can render the pagination wherever you need it, like in the HTTP Link
@@ -1840,7 +1840,7 @@ Whenever you want to know if the cache is active, you can use the
 ``isCacheActive`` method.
 
 And the name of the service instance obtained through the method
-``Framework\MVC\App::cache`` can be set as in the property below:
+``Aplus\Mvc\App::cache`` can be set as in the property below:
 
 .. code-block:: php
 
@@ -1848,7 +1848,7 @@ And the name of the service instance obtained through the method
 
 Whenever it is necessary to get the name of the cache instance, you can use the
 ``getCacheInstance`` method and to get the object instance of the
-``Framework\Cache\Cache`` class, you can use the ``getCache`` method.
+``Aplus\Cache\Cache`` class, you can use the ``getCache`` method.
 
 The default Time To Live value for each item is 60 seconds, as shown below:
 
@@ -1862,11 +1862,11 @@ Language
 ########
 
 Some features, such as validation, on labels and error messages, or pagination
-need an instance of ``Framework\Language\Language`` to locate the displayed
+need an instance of ``Aplus\Language\Language`` to locate the displayed
 texts.
 
 The name of the instance defined in the ``$languageInstance`` property is
-obtained through the service available in the ``Framework\MVC\App::language``
+obtained through the service available in the ``Aplus\Mvc\App::language``
 method, and can be obtained through the ``getLanguage`` method.
 
 The default instance is ``default``, as shown below:
@@ -2029,9 +2029,9 @@ Let's see the entity **User** below:
 
 .. code-block:: php
 
-    use Framework\Date\Date;
-    use Framework\HTTP\URL;
-    use Framework\MVC\Entity;
+    use Aplus\Date\Date;
+    use Aplus\Http\Url;
+    use Aplus\Mvc\Entity;
 
     class User extends Entity
     {
@@ -2050,11 +2050,11 @@ Let's see the entity **User** below:
 
         public string $passwordHash;
 
-        public URL $url
+        public Url $url
         {
-            set(URL | string $value) {
+            set(Url | string $value) {
                 if(is_string($value)) {
-                    $value = new URL($value);
+                    $value = new Url($value);
                 }
                 $this->url = $value;
             }
@@ -2142,11 +2142,11 @@ Below is an example of automatically setting the ``$url`` property:
 
 .. code-block:: php
 
-    public URL $url
+    public Url $url
     {
-        set(URL | string $value) {
+        set(Url | string $value) {
             if(is_string($value)) {
-                $value = new URL($value);
+                $value = new Url($value);
             }
             $this->url = $value;
         }
@@ -2251,7 +2251,7 @@ While the ``updatedAt`` property was formatted before serialization.
 Validator
 ---------
 
-The ``Framework\MVC\Validator`` class has additional rules that work, for example,
+The ``Aplus\Mvc\Validator`` class has additional rules that work, for example,
 using database connections.
 
 The following rules can be used alongside the
@@ -2365,7 +2365,7 @@ in the example below:
 
 .. code-block:: php
 
-    use Framework\MVC\View;
+    use Aplus\Mvc\View;
 
     $baseDir = __DIR__ . '/views';
     $extension = '.php';
@@ -2375,7 +2375,7 @@ Or getting an instance of the ``view`` service in the App class:
 
 .. code-block:: php
 
-    use Framework\MVC\App;
+    use Aplus\Mvc\App;
 
     $view = App::view();
 
@@ -2622,8 +2622,8 @@ And the output will be like this:
 Controllers
 -----------
 
-The abstract class ``Framework\MVC\Controller`` extends the class
-``Framework\Routing\RouteActions``, inheriting the characteristics necessary
+The abstract class ``Aplus\Mvc\Controller`` extends the class
+``Aplus\Routing\RouteActions``, inheriting the characteristics necessary
 for your methods to be used as route actions.
 
 Below we see an example with the **Home** class and the ``index`` action method
@@ -2631,7 +2631,7 @@ returning a string that will be appended to the HTTP Response body:
 
 .. code-block:: php
 
-    use Framework\MVC\Controller;
+    use Aplus\Mvc\Controller;
 
     class Home extends Controller
     {
@@ -2652,7 +2652,7 @@ In this case, we render the ``home/index`` view:
 
 .. code-block:: php
 
-    use Framework\MVC\Controller;
+    use Aplus\Mvc\Controller;
 
     class Home extends Controller
     {
@@ -2681,7 +2681,7 @@ successfully:
 
 .. code-block:: php
 
-    use Framework\MVC\Controller;
+    use Aplus\Mvc\Controller;
 
     class Contact extends Controller
     {
@@ -2722,8 +2722,8 @@ in the Response body:
 
 .. code-block:: php
 
-    use Framework\HTTP\Response;
-    use Framework\MVC\Controller;
+    use Aplus\Http\Response;
+    use Aplus\Mvc\Controller;
 
     class Home extends Controller
     {
@@ -2745,7 +2745,7 @@ Model Instances
 Each controller can have model instances in properties, which will be automatically
 instantiated in the class constructor.
 
-The properties must be child classes of the ``Framework\MVC\Model`` class.
+The properties must be child classes of the ``Aplus\Mvc\Model`` class.
 
 Let's see below that ``$users`` receives the type name of the
 ``App\Models\UsersModel`` class and in the ``show`` method the direct call to
@@ -2754,8 +2754,8 @@ the ``$users`` property is used, which has the instance of
 
 .. code-block:: php
 
+    use Aplus\Mvc\Controller;
     use App\Models\UsersModel;
-    use Framework\MVC\Controller;
 
     class Users extends Controller
     {
@@ -2773,7 +2773,7 @@ the ``$users`` property is used, which has the instance of
 JSON Responses
 ##############
 
-As with the ``Framework\Routing\RouteActions`` class, the controller action methods
+As with the ``Aplus\Routing\RouteActions`` class, the controller action methods
 can return an array, stdClass, or JsonSerializable instance so that the Response
 is automatically set with the JSON Content-Type and the message body as well.
 
@@ -2783,8 +2783,8 @@ JSON-encoded and added to the Response body:
 
 .. code-block:: php
 
+    use Aplus\Mvc\Controller;
     use App\Models\UsersModel;
-    use Framework\MVC\Controller;
 
     class Users extends Controller
     {
@@ -2801,7 +2801,7 @@ JSON-encoded and added to the Response body:
 Before and After Actions
 ########################
 
-Every controller has two methods inherited from ``Framework\Routing\RouteActions``
+Every controller has two methods inherited from ``Aplus\Routing\RouteActions``
 that can be used to prepare configurations, filter input data, and also to
 finalize configurations and filter output data.
 
@@ -2816,8 +2816,8 @@ the user can access the admin area:
 
 .. code-block:: php
 
-    use Framework\MVC\App;
-    use Framework\MVC\Controller;
+    use Aplus\Mvc\App;
+    use Aplus\Mvc\Controller;
 
     abstract class AdminController extends Controller
     {
