@@ -951,7 +951,7 @@ abstract class Model implements ModelInterface
     ) : false | int | string {
         $data = $this->makeArray($data);
         $data[$column] ??= $value;
-        if ($this->getValidation()->validateOnly($data) === false) {
+        if ($this->getValidation()->validateOnlySet($data) === false) {
             return false;
         }
         $data = $this->filterAllowedFields($data);
