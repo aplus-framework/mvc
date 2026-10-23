@@ -37,82 +37,82 @@ registerArgumentsSet(
     'unique',
 );
 expectedArguments(
-    \Framework\Config\Config::get(),
+    \Aplus\Config\Config::get(),
     0,
     argumentsSet('service_names')
 );
 expectedArguments(
-    \Framework\Config\Config::set(),
+    \Aplus\Config\Config::set(),
     0,
     argumentsSet('service_names')
 );
 expectedArguments(
-    \Framework\Config\Config::add(),
+    \Aplus\Config\Config::add(),
     0,
     argumentsSet('service_names')
 );
 expectedArguments(
-    \Framework\Config\Config::getInstances(),
+    \Aplus\Config\Config::getInstances(),
     0,
     argumentsSet('service_names')
 );
 expectedArguments(
-    \Framework\Config\Config::load(),
+    \Aplus\Config\Config::load(),
     0,
     argumentsSet('service_names')
 );
 expectedArguments(
-    \Framework\MVC\App::getService(),
+    \Aplus\Mvc\App::getService(),
     0,
     argumentsSet('service_names')
 );
 expectedArguments(
-    \Framework\MVC\App::setService(),
+    \Aplus\Mvc\App::setService(),
     0,
     argumentsSet('service_names')
 );
 expectedArguments(
-    \Framework\MVC\App::removeService(),
+    \Aplus\Mvc\App::removeService(),
     0,
     argumentsSet('service_names')
 );
-override(\Framework\MVC\App::getService(), map([
-    'antiCsrf' => \Framework\HTTP\AntiCSRF::class,
-    'autoloader' => \Framework\Autoload\Autoloader::class,
-    'cache' => \Framework\Cache\Cache::class,
-    'console' => \Framework\CLI\Console::class,
-    'database' => \Framework\Database\Database::class,
-    'debugger' => \Framework\Debug\Debugger::class,
-    'exceptionHandler' => \Framework\Debug\ExceptionHandler::class,
-    'language' => \Framework\Language\Language::class,
-    'locator' => \Framework\Autoload\Locator::class,
-    'logger' => \Framework\Log\Logger::class,
-    'mailer' => \Framework\Email\Mailer::class,
-    'migrator' => \Framework\Database\Extra\Migrator::class,
-    'request' => \Framework\HTTP\Request::class,
-    'response' => \Framework\HTTP\Response::class,
-    'router' => \Framework\Routing\Router::class,
-    'session' => \Framework\Session\Session::class,
-    'validation' => \Framework\Validation\Validation::class,
-    'view' => \Framework\MVC\View::class,
+override(\Aplus\Mvc\App::getService(), map([
+    'antiCsrf' => \Aplus\Http\AntiCsrf::class,
+    'autoloader' => \Aplus\Autoload\Autoloader::class,
+    'cache' => \Aplus\Cache\Cache::class,
+    'console' => \Aplus\Cli\Console::class,
+    'database' => \Aplus\Database\Database::class,
+    'debugger' => \Aplus\Debug\Debugger::class,
+    'exceptionHandler' => \Aplus\Debug\ExceptionHandler::class,
+    'language' => \Aplus\Language\Language::class,
+    'locator' => \Aplus\Autoload\Locator::class,
+    'logger' => \Aplus\Log\Logger::class,
+    'mailer' => \Aplus\Email\Mailer::class,
+    'migrator' => \Aplus\Database\Extra\Migrator::class,
+    'request' => \Aplus\Http\Request::class,
+    'response' => \Aplus\Http\Response::class,
+    'router' => \Aplus\Routing\Router::class,
+    'session' => \Aplus\Session\Session::class,
+    'validation' => \Aplus\Validation\Validation::class,
+    'view' => \Aplus\Mvc\View::class,
 ]));
 expectedArguments(
-    \Framework\Validation\Validation::getMessage(),
+    \Aplus\Validation\Validation::getMessage(),
     1,
     argumentsSet('rules')
 );
 expectedArguments(
-    \Framework\Validation\Validation::isRuleAvailable(),
+    \Aplus\Validation\Validation::isRuleAvailable(),
     0,
     argumentsSet('rules')
 );
 expectedArguments(
-    \Framework\Validation\Validation::setMessage(),
+    \Aplus\Validation\Validation::setMessage(),
     1,
     argumentsSet('rules')
 );
 expectedArguments(
-    \Framework\Validation\Validation::setRule(),
+    \Aplus\Validation\Validation::setRule(),
     1,
     argumentsSet('rules')
 );
@@ -122,7 +122,7 @@ registerArgumentsSet(
     'desc',
 );
 expectedArguments(
-    \Framework\MVC\Model::paginate(),
+    \Aplus\Mvc\Model::paginate(),
     4,
     argumentsSet('order_by_directions')
 );
