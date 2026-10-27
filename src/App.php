@@ -1034,13 +1034,17 @@ class App
         if (\is_int($config['level'])) {
             $config['level'] = LogLevel::from($config['level']);
         }
+        $logger = new $class(
+            $config['destination'],
+            $config['level'],
+            $config['config'] ?? [],
+        );
+        if (isset($config['enabled']) && $config['enabled'] === false) {
+            $logger->disable();
+        }
         return static::setService(
             'logger',
-            new $class(
-                $config['destination'],
-                $config['level'],
-                $config['config'] ?? [],
-            ),
+            $logger,
             $instance
         );
     }
