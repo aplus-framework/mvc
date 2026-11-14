@@ -676,11 +676,39 @@ abstract class Model implements ModelInterface
     /**
      * Find all rows.
      *
+     * @param array<string>|string $orderBy Order by columns
+     * @param string $orderByDirection asc or desc
+     *
      * @return array<int,Entity|array<mixed>|stdClass>
      */
-    public function findAll() : array
-    {
-        return $this->list();
+    public function findAll(
+        array | string | null $orderBy = null,
+        string $orderByDirection = 'asc',
+    ) : array {
+        $select = $this->getDatabaseToRead()
+            ->select()
+            ->from($this->getTable());
+        if ($orderBy !== null) {
+            $orderBy = (array) $orderBy;
+            $orderByDir = \strtolower($orderByDirection);
+            if (!\in_array($orderByDir, [
+                'asc',
+                'desc',
+            ])) {
+                throw new InvalidArgumentException(
+                    'Invalid ORDER BY direction: ' . $orderByDirection
+                );
+            }
+            $orderByDir === 'asc'
+                ? $select->orderByAsc(...$orderBy)
+                : $select->orderByDesc(...$orderBy);
+        }
+        $data = $select->run()->fetchArrayAll();
+        foreach ($data as &$row) {
+            $row = $this->makeEntity($row);
+        }
+        unset($row);
+        return $data;
     }
 
     /**

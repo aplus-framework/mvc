@@ -101,6 +101,22 @@ final class ModelTest extends ModelTestCase
         $data = $this->model->findAll();
         self::assertSame(1, $data[0]['id']); // @phpstan-ignore-line
         self::assertSame(2, $data[1]['id']); // @phpstan-ignore-line
+        $this->model->returnType = 'stdClass';
+        $data = $this->model->findAll('id');
+        self::assertSame(1, $data[0]->id); // @phpstan-ignore-line
+        self::assertSame(2, $data[1]->id); // @phpstan-ignore-line
+        $data = $this->model->findAll('id', 'desc');
+        self::assertSame(2, $data[0]->id); // @phpstan-ignore-line
+        self::assertSame(1, $data[1]->id); // @phpstan-ignore-line
+        $data = $this->model->findAll(['data', 'id'], 'desc');
+        self::assertSame('foo', $data[0]->data); // @phpstan-ignore-line
+        self::assertSame('bar', $data[1]->data); // @phpstan-ignore-line
+        $data = $this->model->findAll(['data', 'id'], 'asc');
+        self::assertSame('bar', $data[0]->data); // @phpstan-ignore-line
+        self::assertSame('foo', $data[1]->data); // @phpstan-ignore-line
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid ORDER BY direction: foo');
+        $this->model->findAll('id', 'foo');
     }
 
     public function testList() : void
