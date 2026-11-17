@@ -348,13 +348,15 @@ final class AppTest extends TestCase
 
     public function testRequestWithForceHttps() : void
     {
+        \define('TESTING', true);
         App::config()->add('request', [
             'force_https' => true,
-            'server_vars' => [
-                'HTTPS' => 'on',
-            ],
         ]);
-        self::assertSame('https', App::request()->getUrl()->getScheme());
+        App::request();
+        self::assertContains(
+            'Location: https://localhost/',
+            xdebug_get_headers()
+        );
     }
 
     public function testResponse() : void
