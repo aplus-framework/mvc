@@ -16,6 +16,8 @@ return [
         ],
         'json_flags' => \JSON_THROW_ON_ERROR,
         'ip_key' => 'REMOTE_ADDR',
+        'proto_key' => 'HTTPS',
+        'host_key' => 'HTTP_HOST',
         'parse_body_options' => [],
     ],
 ];

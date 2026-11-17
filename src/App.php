@@ -1193,6 +1193,12 @@ class App
             static::setServerVars($config['server_vars'] ?? []);
         }
         $constructor = [];
+        if (isset($config['proto_key'])) {
+            $constructor['proto_key'] = $config['proto_key'];
+        }
+        if (isset($config['host_key'])) {
+            $constructor['host_key'] = $config['host_key'];
+        }
         if (isset($config['allowed_hosts'])) {
             $constructor['allowed_hosts'] = $config['allowed_hosts'];
         }
